@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-dim: #00cc6a;
+    --green-muted: #00ff8822;
+    --red: #ff3355;
+    --red-muted: #ff335522;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,255,136,0.012) 2px,
+      rgba(0,255,136,0.012) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    background: rgba(5,6,8,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--text-bright);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-logo span { color: var(--green); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover {
+    background: var(--green);
+    color: var(--black);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ANIMATED CHART BACKGROUND */
+  .chart-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--green);
+  }
+
+  .hero-headline {
+    font-family: var(--display);
+    font-size: clamp(64px, 7vw, 96px);
+    line-height: 0.92;
+    color: var(--text-bright);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+
+  .hero-headline .accent { color: var(--green); }
+  .hero-headline .red-accent { color: var(--red); }
+
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin: 28px 0 44px;
+    max-width: 420px;
+    border-left: 2px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '_';
+    animation: blink 1s infinite;
+  }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--text-dim);
+    color: var(--text-bright);
+  }
+
+  .hero-disclaimer {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 20px;
+    opacity: 0.6;
+  }
+
+  /* HERO RIGHT - LIVE CANDLE CHART */
+  .hero-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    padding: 80px 40px;
+  }
+
+  .chart-container {
+    width: 100%;
+    max-width: 540px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .chart-title { color: var(--text-bright); letter-spacing: 0.1em; }
+
+  .chart-price {
+    color: var(--green);
+    font-size: 13px;
+  }
+
+  .chart-price.down { color: var(--red); }
+
+  .chart-canvas-wrap {
+    position: relative;
+    height: 260px;
+    padding: 16px;
+  }
+
+  canvas#candleChart {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-footer {
+    display: flex;
+    gap: 20px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .stat-up { color: var(--green); }
+  .stat-down { color: var(--red); }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding: 10px 0;
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 60px;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--text-dim);
+  }
+
+  .ticker-item .sym { color: var(--text-bright); }
+  .ticker-item .up { color: var(--green); }
+  .ticker-item .dn { color: var(--red); }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* MANIFESTO SECTION */
+  .manifesto {
+    padding: 100px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .manifesto-left {
+    position: relative;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .manifesto-title {
+    font-family: var(--display);
+    font-size: clamp(40px, 4vw, 58px);
+    line-height: 0.95;
+    color: var(--text-bright);
+    margin-bottom: 24px;
+  }
+
+  .manifesto-title .green { color: var(--green); }
+
+  .manifesto-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .manifesto-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+
+  .compare-them {
+    color: var(--red);
+    opacity: 0.7;
+    text-decoration: line-through;
+    text-align: right;
+  }
+
+  .compare-vs {
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .compare-us { color: var(--green); }
+
+  /* FEATURES GRID */
+  .features {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .features-title {
+    font-family: var(--display);
+    font-size: clamp(36px, 4vw, 54px);
+    color: var(--text-bright);
+    margin-top: 12px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .feature-card {
+    background: var(--dark);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover { background: var(--card); }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 0.3s;
+  }
+
+  .feature-card:hover::before { background: var(--green); }
+
+  .feature-icon {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--green);
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .feature-name {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--text-bright);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .feature-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    margin-top: 16px;
+    opacity: 0.6;
+  }
+
+  /* LIVE FEED */
+  .live-section {
+    padding: 100px 80px;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .feed-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .feed-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .feed-header .live-dot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green);
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .feed-messages {
+    height: 320px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .feed-inner {
+    padding: 0;
+    animation: scrollFeed 20s linear infinite;
+  }
+
+  @keyframes scrollFeed {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  .feed-msg {
+    display: grid;
+    grid-template-columns: 60px auto 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(26,31,38,0.5);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .feed-time { color: var(--text-dim); padding-top: 1px; }
+
+  .feed-user {
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .feed-user.core { background: var(--green-muted); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .feed-user.member { background: rgba(90,106,122,0.15); color: var(--text-dim); border: 1px solid var(--border); }
+  .feed-user.signal { background: var(--red-muted); color: var(--red); border: 1px solid rgba(255,51,85,0.2); }
+
+  .feed-text { color: var(--text); line-height: 1.5; }
+  .feed-text .hi { color: var(--green); }
+  .feed-text .lo { color: var(--red); }
+
+  /* PRICING */
+  .pricing {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pricing-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .pricing-title {
+    font-family: var(--display);
+    font-size: clamp(36px, 4vw, 54px);
+    color: var(--text-bright);
+    margin-top: 12px;
+  }
+
+  .pricing-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: var(--dark);
+    padding: 40px 32px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .price-card.featured {
+    background: var(--card);
+    outline: 1px solid var(--green);
+    outline-offset: -1px;
+    z-index: 1;
+  }
+
+  .price-tier {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .price-tier.featured-label { color: var(--green); }
+
+  .price-amount {
+    font-family: var(--display);
+    font-size: 52px;
+    color: var(--text-bright);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-amount span {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text-dim);
+    vertical-align: super;
+  }
+
+  .price-period {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  .price-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .price-features li {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .price-features li::before {
+    content: '→';
+    color: var(--green);
+    opacity: 0.6;
+  }
+
+  .price-features li.locked { opacity: 0.3; }
+  .price-features li.locked::before { content: '×'; color: var(--red); }
+
+  .price-btn {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .price-btn:hover, .price-btn.featured-btn {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .price-btn.featured-btn {
+    background: var(--green);
+    color: var(--black);
+    font-weight: 700;
+  }
+
+  .price-note {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 24px;
+    opacity: 0.6;
+  }
+
+  /* QUOTE SECTION */
+  .quote-section {
+    padding: 80px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quote-section::before {
+    content: '"';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--display);
+    font-size: 300px;
+    color: var(--green);
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  .big-quote {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.5vw, 44px);
+    color: var(--text-bright);
+    max-width: 800px;
+    margin: 0 auto 16px;
+    line-height: 1.1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .big-quote .green { color: var(--green); }
+
+  .quote-attr {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-logo { color: var(--text-bright); }
+  .footer-logo span { color: var(--green); }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--green); }
+
+  .footer-right {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .social-icon {
+    width: 28px; height: 28px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .social-icon:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* UNGURUED STRIP */
+  .ungurued-strip {
+    padding: 60px 80px;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ungurued-left { flex: 1; }
+
+  .ungurued-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--red);
+    border: 1px solid var(--red);
+    padding: 4px 10px;
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .ungurued-title {
+    font-family: var(--display);
+    font-size: clamp(32px, 3vw, 46px);
+    color: var(--text-bright);
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+
+  .ungurued-title .red { color: var(--red); }
+
+  .ungurued-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    max-width: 480px;
+  }
+
+  .ungurued-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 280px;
+  }
+
+  .expose-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .expose-item .x-mark { color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">&gt;_ Raw<span>Core</span>Trading</div>
+  <ul class="nav-links">
+    <li><a href="#">HOME</a></li>
+    <li><a href="#">UNGURUED</a></li>
+    <li><a href="#">SYSTEMS</a></li>
+    <li><a href="#">COMMUNITY</a></li>
+    <li><a href="#">PRICING</a></li>
+  </ul>
+  <a href="#" class="nav-cta">ENTER THE CORE →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="chart-bg" viewBox="0 0 1200 800" preserveAspectRatio="none">
+    <polyline points="0,600 80,550 160,580 240,480 320,500 400,380 480,420 560,300 640,340 720,260 800,280 880,200 960,220 1040,160 1120,180 1200,120" fill="none" stroke="#00ff88" stroke-width="1.5"/>
+  </svg>
+
+  <div class="hero-left">
+    <div class="hero-tag">// BUILT BY TRADERS. FOR TRADERS.</div>
+    <h1 class="hero-headline">
+      NO<br>
+      FAKE<br>
+      <span class="accent">GURUS.</span>
+    </h1>
+    <p class="hero-sub">
+      Real systems. Real code. Real results.<br>
+      We build automated trading tools and teach<br>
+      you to do the same. No demo accounts.<br>
+      No promises. Just the raw core of it.
+    </p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">ACCESS THE CORE &gt;</a>
+      <a href="#" class="btn-secondary">EXPLORE UNGURUED</a>
+    </div>
+    <p class="hero-disclaimer">// This is not for everyone. Good.</p>
+  </div>
+
+  <div class="hero-right">
+    <div class="chart-container">
+      <div class="chart-header">
+        <span class="chart-title">XAUUSD // 5M</span>
+        <span class="chart-price" id="livePrice">2,341.84</span>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="candleChart"></canvas>
+      </div>
+      <div class="chart-footer">
+        <span>VOL: <span class="stat-up">HIGH</span></span>
+        <span>ATR: <span class="stat-up">1.24</span></span>
+        <span>EMA9: <span class="stat-up">▲</span></span>
+        <span>EMA21: <span class="stat-up">▲</span></span>
+        <span>SESSION: <span style="color:var(--text)">LONDON</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up">2341.84 ▲ +0.34%</span></div>
+    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up">71,240 ▲ +1.2%</span></div>
+    <div class="ticker-item"><span class="sym">ETHUSD</span><span class="dn">3,412 ▼ -0.8%</span></div>
+    <div class="ticker-item"><span class="sym">EURUSD</span><span class="up">1.0842 ▲ +0.12%</span></div>
+    <div class="ticker-item"><span class="sym">SOLUSD</span><span class="up">182.40 ▲ +2.1%</span></div>
+    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.06%</span></div>
+    <div class="ticker-item"><span class="sym">DXY</span><span class="dn">104.32 ▼ -0.3%</span></div>
+    <div class="ticker-item"><span class="sym">NASDAQ</span><span class="up">17,890 ▲ +0.54%</span></div>
+    <!-- duplicate for infinite loop -->
+    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up">2341.84 ▲ +0.34%</span></div>
+    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up">71,240 ▲ +1.2%</span></div>
+    <div class="ticker-item"><span class="sym">ETHUSD</span><span class="dn">3,412 ▼ -0.8%</span></div>
+    <div class="ticker-item"><span class="sym">EURUSD</span><span class="up">1.0842 ▲ +0.12%</span></div>
+    <div class="ticker-item"><span class="sym">SOLUSD</span><span class="up">182.40 ▲ +2.1%</span></div>
+    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.06%</span></div>
+    <div class="ticker-item"><span class="sym">DXY</span><span class="dn">104.32 ▼ -0.3%</span></div>
+    <div class="ticker-item"><span class="sym">NASDAQ</span><span class="up">17,890 ▲ +0.54%</span></div>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto reveal">
+  <div class="manifesto-left">
+    <div class="section-label">// THE RAWCORE WAY</div>
+    <h2 class="manifesto-title">WE KILLED<br>THE <span class="green">GURU</span><br>PLAYBOOK.</h2>
+    <p class="manifesto-body">
+      Most trading education is a product designed to sell you more products. 
+      Courses that teach you to buy more courses. Signals that keep you dependent. 
+      Communities built around one person's ego.
+    </p>
+    <p class="manifesto-body">
+      We build systems. We share code. We explain the why behind every signal. 
+      When you leave, you leave better — not broke.
+    </p>
+  </div>
+  <div class="manifesto-right">
+    <div class="compare-row">
+      <div class="compare-them">$2,000 course</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">€20/month, cancel anytime</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-them">Demo account screenshots</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">Live bot logs & real results</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-them">Secret sauce signals</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">Full explanation of every trade</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-them">Lock-in yearly plans</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">Weekly or monthly, your choice</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-them">Lambo thumbnails</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">Working code you can run tonight</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-them">One guru, one gospel</div>
+      <div class="compare-vs">VS</div>
+      <div class="compare-us">Community of builders & thinkers</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features reveal">
+  <div class="features-header">
+    <div class="section-label">// WHAT YOU ACTUALLY GET</div>
+    <h2 class="features-title">THE FULL TOOLKIT</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&lt;/&gt;</div>
+      <div class="feature-name">BOT SYSTEMS</div>
+      <div class="feature-desc">Real MT5 and crypto EAs with full source code. Modify them, break them, learn from them. Built on XAUUSD, BTC, ETH, SOL — tested live, not backtested fantasy.</div>
+      <div class="feature-tag">// NOVA · NOVA-GS · GOLDBOT</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">◈</div>
+      <div class="feature-name">SIGNAL LOGIC</div>
+      <div class="feature-desc">Every signal comes with the why. EMA structure, liquidity sweeps, session timing. You understand what you're following or you don't follow it.</div>
+      <div class="feature-tag">// NOT FINANCIAL ADVICE</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⬡</div>
+      <div class="feature-name">PSYCHOLOGY EA</div>
+      <div class="feature-desc">Can't stick to your SL? We automate your discipline. EAs that enforce your own rules so you stop overriding them at 2am in revenge mode.</div>
+      <div class="feature-tag">// THE EDGE IS IN EXECUTION</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">◎</div>
+      <div class="feature-name">BROKER GUIDES</div>
+      <div class="feature-desc">Honest breakdown of brokers for gold, forex, crypto. No affiliate spam — just what works, what to watch out for, and which quirks will wreck your bot.</div>
+      <div class="feature-tag">// TRADEQUO · BYBIT · MORE</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⌘</div>
+      <div class="feature-name">COMMUNITY CORE</div>
+      <div class="feature-desc">A space where coders and traders share setups, improve each other's code, and give honest feedback. No ego. No hype. No noise.</div>
+      <div class="feature-tag">// BUILDERS ONLY</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">▲</div>
+      <div class="feature-name">UNGURUED</div>
+      <div class="feature-desc">Our breakdown series exposing what the big names actually teach vs. what makes money. Free content, real talk — your starting point before you spend a single cent.</div>
+      <div class="feature-tag">// ALWAYS FREE</div>
+    </div>
+  </div>
+</section>
+
+<!-- UNGURUED STRIP -->
+<section class="ungurued-strip reveal">
+  <div class="ungurued-left">
+    <div class="ungurued-badge">// UNGURUED SERIES</div>
+    <h2 class="ungurued-title">WE WATCH<br>SO YOU <span class="red">DON'T HAVE TO.</span></h2>
+    <p class="ungurued-desc">Every week we break down what the big trading names are actually selling. No hate — just facts. What's real, what's recycled free YouTube content, and what's just a course to sell the next course.</p>
+  </div>
+  <div class="ungurued-right">
+    <div class="expose-item"><span class="x-mark">✕</span> Showing P&L without showing the losses</div>
+    <div class="expose-item"><span class="x-mark">✕</span> "Proprietary" systems that are just EMA crosses</div>
+    <div class="expose-item"><span class="x-mark">✕</span> Demo account "proof" passed off as live</div>
+    <div class="expose-item"><span class="x-mark">✕</span> Entry courses that unlock... more paid courses</div>
+    <div class="expose-item"><span class="x-mark">✕</span> Lifestyle content designed to manufacture FOMO</div>
+  </div>
+</section>
+
+<!-- LIVE FEED -->
+<section class="live-section reveal">
+  <div class="feed-box">
+    <div class="feed-header">
+      <div class="live-dot"><div class="dot"></div> CORE FEED</div>
+      <span>CONNECTED: 312</span>
+    </div>
+    <div class="feed-messages">
+      <div class="feed-inner" id="feedInner">
+        <div class="feed-msg">
+          <span class="feed-time">09:14:22</span>
+          <span class="feed-user core">CORE</span>
+          <span class="feed-text">XAUUSD — EMA9 crossed EMA21 on 5M. ATR elevated. Watching for London push above <span class="hi">2344.00</span></span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:12:05</span>
+          <span class="feed-user member">USR_041</span>
+          <span class="feed-text">Modified NOVA-GS SL logic, moved to ATR-based instead of fixed. Backtested 3 months — improved by 0.4R average. Sharing the diff in #systems</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:08:44</span>
+          <span class="feed-user signal">SIGNAL</span>
+          <span class="feed-text">Gold liquidity sweep confirmed below <span class="lo">2338.20</span>. Bias bullish for London session. Explanation thread posted.</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:04:11</span>
+          <span class="feed-user member">USR_182</span>
+          <span class="feed-text">First live trade with the bot — 1.8R on XAUUSD. Wanted to manually close at 1R but the EA held the position. This is literally why automation exists</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">08:58:33</span>
+          <span class="feed-user core">CORE</span>
+          <span class="feed-text">New UnguruED episode live — breaking down a $1,500 ICT course. Full thread in #ungurued. Short version: it's free on YouTube.</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">08:44:17</span>
+          <span class="feed-user member">USR_299</span>
+          <span class="feed-text">Added dynamic session risk to my fork of GoldBOT. Higher lot in London/NY overlap, reduces in Asian session. Cleaner equity curve already.</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">08:31:02</span>
+          <span class="feed-user member">USR_076</span>
+          <span class="feed-text">Been here 3 weeks. Learned more about actual execution than 6 months on other platforms. The code examples alone are worth it.</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">08:20:48</span>
+          <span class="feed-user signal">SIGNAL</span>
+          <span class="feed-text">BTC consolidating below <span class="lo">71,400</span>. NOVA bot flat — no setup confirmed. Patience is a position. Not every candle needs a trade.</span>
+        </div>
+        <!-- duplicate for loop -->
+        <div class="feed-msg">
+          <span class="feed-time">09:14:22</span>
+          <span class="feed-user core">CORE</span>
+          <span class="feed-text">XAUUSD — EMA9 crossed EMA21 on 5M. ATR elevated. Watching for London push above <span class="hi">2344.00</span></span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:12:05</span>
+          <span class="feed-user member">USR_041</span>
+          <span class="feed-text">Modified NOVA-GS SL logic, moved to ATR-based instead of fixed. Backtested 3 months — improved by 0.4R average. Sharing the diff in #systems</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:08:44</span>
+          <span class="feed-user signal">SIGNAL</span>
+          <span class="feed-text">Gold liquidity sweep confirmed below <span class="lo">2338.20</span>. Bias bullish for London session. Explanation thread posted.</span>
+        </div>
+        <div class="feed-msg">
+          <span class="feed-time">09:04:11</span>
+          <span class="feed-user member">USR_182</span>
+          <span class="feed-text">First live trade with the bot — 1.8R on XAUUSD. Wanted to manually close at 1R but the EA held the position. This is literally why automation exists</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:40px;">
+    <div>
+      <div class="section-label">// WHY RAWCORE</div>
+      <h2 style="font-family:var(--display);font-size:clamp(32px,3vw,46px);color:var(--text-bright);line-height:0.95;margin-bottom:20px;">BECOME A TRADER<br><span style="color:var(--green);">WHO BUILDS.</span></h2>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">The market doesn't care about your feelings or your favourite guru's course. It rewards those with a system, a process, and the discipline to follow it.</p>
+      <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">We give you the tools. The community sharpens you. You do the rest.</p>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);padding:24px;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px;">// COMMUNITY STATS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-family:var(--display);font-size:36px;color:var(--text-bright);">312</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">ACTIVE MEMBERS</div>
+        </div>
+        <div>
+          <div style="font-family:var(--display);font-size:36px;color:var(--green);">47</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">BOT FORKS SHARED</div>
+        </div>
+        <div>
+          <div style="font-family:var(--display);font-size:36px;color:var(--text-bright);">€0</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">LAMBOS SHOWN</div>
+        </div>
+        <div>
+          <div style="font-family:var(--display);font-size:36px;color:var(--red);">∞</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">GURUS EXPOSED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing reveal">
+  <div class="pricing-header">
+    <div class="section-label">// NO LOCK-IN. NO NONSENSE.</div>
+    <h2 class="pricing-title">PAY AS YOU GROW</h2>
+    <p class="pricing-sub">Weekly or monthly. Cancel anytime. No yearly traps.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">FREE TIER</div>
+      <div class="price-amount"><span></span>0</div>
+      <div class="price-period">// FOREVER FREE</div>
+      <ul class="price-features">
+        <li>UnguruED content series</li>
+        <li>2 bot samples with explanation</li>
+        <li>Broker comparison guide</li>
+        <li>Public community access</li>
+        <li class="locked">Full bot source code</li>
+        <li class="locked">Signal feed + explanations</li>
+        <li class="locked">Private community core</li>
+      </ul>
+      <button class="price-btn">START FREE</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-tier featured-label">// MOST POPULAR</div>
+      <div class="price-tier">CORE MEMBER</div>
+      <div class="price-amount"><span>€</span>20</div>
+      <div class="price-period">// PER MONTH · CANCEL ANYTIME</div>
+      <ul class="price-features">
+        <li>Everything in Free</li>
+        <li>Full bot library + source code</li>
+        <li>Signal feed with full breakdowns</li>
+        <li>Private community access</li>
+        <li>Monthly live build sessions</li>
+        <li>Broker setup walkthroughs</li>
+        <li>Early access to new systems</li>
+      </ul>
+      <button class="price-btn featured-btn">JOIN THE CORE</button>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">WEEKLY ACCESS</div>
+      <div class="price-amount"><span>€</span>7</div>
+      <div class="price-period">// PER WEEK · TRY BEFORE YOU COMMIT</div>
+      <ul class="price-features">
+        <li>Full Core Member access</li>
+        <li>No monthly commitment</li>
+        <li>Perfect for testing the waters</li>
+        <li>Same bots, same community</li>
+        <li class="locked">Live build session access</li>
+        <li class="locked">Early system access</li>
+      </ul>
+      <button class="price-btn">START WEEKLY</button>
+    </div>
+  </div>
+  <p class="price-note">// No yearly plans. No upsells. No surprises. What you see is what you get.</p>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section reveal">
+  <p class="big-quote">THE MARKET DOESN'T CARE ABOUT YOUR FEELINGS.<br>BUILD SKILLS. TRUST THE PROCESS. <span class="green">STAY RAW.</span></p>
+  <p class="quote-attr">// RawCore Trading — Knowledge. Systems. Community.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">&gt;_ Raw<span>Core</span>Trading</div>
+  <ul class="footer-links">
+    <li><a href="#">HOME</a></li>
+    <li><a href="#">UNGURUED</a></li>
+    <li><a href="#">SYSTEMS</a></li>
+    <li><a href="#">COMMUNITY</a></li>
+    <li><a href="#">PRICING</a></li>
+  </ul>
+  <div class="footer-right">
+    <a href="#" class="social-icon">TG</a>
+    <a href="#" class="social-icon">YT</a>
+    <a href="#" class="social-icon">X</a>
+    <span style="font-size:9px;color:var(--text-dim);margin-left:8px;">© 2024 RAWCORETRADING.COM</span>
+  </div>
+</footer>
+
+<script>
+// CANDLE CHART
+const canvas = document.getElementById('candleChart');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const wrap = canvas.parentElement;
+  canvas.width = wrap.clientWidth - 32;
+  canvas.height = wrap.clientHeight - 32;
+}
+
+resizeCanvas();
+
+let candles = [];
+let basePrice = 2341.84;
+
+function generateCandle(prev) {
+  const open = prev ? prev.close : basePrice;
+  const change = (Math.random() - 0.48) * 3.5;
+  const close = open + change;
+  const high = Math.max(open, close) + Math.random() * 1.2;
+  const low = Math.min(open, close) - Math.random() * 1.2;
+  return { open, close, high, low };
+}
+
+for (let i = 0; i < 60; i++) {
+  candles.push(generateCandle(candles[candles.length - 1]));
+}
+
+function drawChart() {
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const prices = candles.flatMap(c => [c.high, c.low]);
+  const minP = Math.min(...prices);
+  const maxP = Math.max(...prices);
+  const range = maxP - minP || 1;
+  const pad = 10;
+
+  const toY = p => pad + (1 - (p - minP) / range) * (h - 2 * pad);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(26,31,38,0.8)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad + (i / 4) * (h - 2 * pad);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  }
+
+  const cw = (w - 20) / candles.length;
+  const body = cw * 0.6;
+
+  candles.forEach((c, i) => {
+    const x = 10 + i * cw + cw / 2;
+    const bull = c.close >= c.open;
+    const color = bull ? '#00ff88' : '#ff3355';
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, toY(c.high));
+    ctx.lineTo(x, toY(c.low));
+    ctx.stroke();
+
+    const bodyTop = toY(Math.max(c.open, c.close));
+    const bodyBot = toY(Math.min(c.open, c.close));
+    const bodyH = Math.max(bodyBot - bodyTop, 1);
+
+    ctx.fillStyle = bull ? 'rgba(0,255,136,0.85)' : 'rgba(255,51,85,0.85)';
+    ctx.fillRect(x - body / 2, bodyTop, body, bodyH);
+  });
+
+  // EMA line (simplified visual)
+  ctx.strokeStyle = 'rgba(0,255,136,0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  candles.forEach((c, i) => {
+    const x = 10 + i * cw + cw / 2;
+    const y = toY((c.open + c.close) / 2);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+
+drawChart();
+
+// Live update
+setInterval(() => {
+  candles.push(generateCandle(candles[candles.length - 1]));
+  if (candles.length > 70) candles.shift();
+  
+  const last = candles[candles.length - 1];
+  const priceEl = document.getElementById('livePrice');
+  priceEl.textContent = last.close.toFixed(2);
+  priceEl.className = 'chart-price' + (last.close >= last.open ? '' : ' down');
+  
+  drawChart();
+}, 1200);
+
+// SCROLL REVEALS
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
