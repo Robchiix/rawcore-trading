@@ -479,6 +479,96 @@
   .mobile-menu-btn { display: none; }
   .mobile-nav { display: none; }
 
+
+  /* ============================================
+     LOGIN MOBILE RESPONSIVE
+  ============================================ */
+  @media (max-width: 768px) {
+    body { cursor: default; overflow-y: auto; }
+
+    nav { padding: 0 20px; }
+
+    /* HIDE BRAND SIDE ON MOBILE */
+    .brand-side { display: none !important; }
+
+    /* FULL WIDTH FORM */
+    .main {
+      grid-template-columns: 1fr !important;
+      min-height: calc(100vh - 60px);
+    }
+
+    .form-side {
+      padding: 32px 24px !important;
+      justify-content: flex-start;
+    }
+
+    /* TABS */
+    .form-tabs { margin-bottom: 28px; }
+    .form-tab { padding: 10px 18px; font-size: 11px; }
+
+    /* TITLE */
+    .form-title { font-size: 28px; }
+    .form-subtitle { font-size: 10px; margin-bottom: 24px; }
+
+    /* TIER SELECTOR */
+    .tier-options {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .tier-option-name { font-size: 14px; }
+    .tier-option-price { font-size: 9px; }
+
+    /* FORM ROWS STACK */
+    .form-row {
+      grid-template-columns: 1fr !important;
+      gap: 0 !important;
+    }
+
+    /* INPUTS */
+    .form-input, .form-select {
+      font-size: 14px;
+      padding: 13px 14px;
+    }
+
+    /* SUBMIT */
+    .form-submit {
+      padding: 16px;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    /* SOCIAL BUTTONS */
+    .social-btns {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 10px !important;
+    }
+
+    .social-btn { padding: 13px; font-size: 11px; }
+
+    /* TERMS */
+    .terms-check span { font-size: 11px; }
+
+    /* FOOTER */
+    .page-footer {
+      padding: 16px 20px !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      text-align: center !important;
+    }
+
+    .footer-links { justify-content: center !important; flex-wrap: wrap !important; }
+
+    /* SUCCESS STATE */
+    .success-state { padding: 20px 0; }
+    .success-title { font-size: 28px; }
+    .success-btn { width: 100%; text-align: center; display: block; }
+  }
+
+  @media (max-width: 480px) {
+    .form-side { padding: 24px 18px !important; }
+    .form-tabs { margin-bottom: 20px; }
+  }
+
 </style>
 </head>
 <body>
