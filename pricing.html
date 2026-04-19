@@ -397,7 +397,7 @@
       <div class="price-name">CORE</div>
       <div class="price-amount-wrap">
         <span class="price-currency">€</span>
-        <span class="price-amount green" id="corePrice">20</span>
+        <span class="price-amount green" id="corePrice">28</span>
       </div>
       <div class="price-period" id="corePeriod">// PER MONTH · CANCEL ANYTIME</div>
       <div class="price-divider"></div>
@@ -608,13 +608,13 @@ function toggleBilling() {
     toggle.classList.add('weekly');
     monthlyLabel.classList.remove('active');
     weeklyLabel.classList.add('active');
-    corePrice.textContent = '5';
+    corePrice.textContent = '8';
     corePeriod.textContent = '// PER WEEK · CANCEL ANYTIME';
   } else {
     toggle.classList.remove('weekly');
     monthlyLabel.classList.add('active');
     weeklyLabel.classList.remove('active');
-    corePrice.textContent = '20';
+    corePrice.textContent = '28';
     corePeriod.textContent = '// PER MONTH · CANCEL ANYTIME';
   }
 }
