@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join the Core — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.01) 2px, rgba(0,255,136,0.01) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text-bright); text-decoration: none; }
+  .nav-logo span { color: var(--green); }
+  .nav-back { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; transition: color 0.2s; display: flex; align-items: center; gap: 8px; }
+  .nav-back:hover { color: var(--green); }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* LEFT SIDE — BRAND */
+  .brand-side {
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-side::before {
+    content: 'RC';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    font-family: var(--display);
+    font-size: 300px;
+    color: var(--green);
+    opacity: 0.025;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .brand-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .brand-tag::before { content: ''; width: 24px; height: 1px; background: var(--green); }
+
+  .brand-title { font-family: var(--display); font-size: clamp(48px, 5vw, 72px); line-height: 0.92; color: var(--text-bright); margin-bottom: 24px; }
+  .brand-title .green { color: var(--green); }
+
+  .brand-desc { font-size: 15px; color: var(--text-dim); line-height: 1.7; max-width: 400px; margin-bottom: 40px; }
+  .brand-desc strong { color: var(--text); }
+
+  .brand-perks { display: flex; flex-direction: column; gap: 12px; }
+
+  .perk-item { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .perk-item::before { content: '→'; color: var(--green); flex-shrink: 0; }
+
+  .brand-note { margin-top: 48px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); padding: 14px 16px; border: 1px solid var(--border); line-height: 1.6; max-width: 400px; }
+  .brand-note span { color: var(--green); }
+
+  /* RIGHT SIDE — FORM */
+  .form-side {
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* TABS */
+  .form-tabs { display: flex; gap: 0; margin-bottom: 40px; border-bottom: 1px solid var(--border); }
+
+  .form-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+
+  .form-tab:hover { color: var(--text); }
+  .form-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  /* FORM */
+  .auth-form { display: none; }
+  .auth-form.active { display: block; }
+
+  .form-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 8px; letter-spacing: 0.05em; }
+  .form-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 32px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; display: block; margin-bottom: 7px; }
+
+  .form-input {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--green); }
+  .form-input::placeholder { color: var(--text-dim); opacity: 0.4; }
+  .form-input.error { border-color: var(--red); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .form-error { font-family: var(--mono); font-size: 10px; color: var(--red); margin-top: 5px; display: none; }
+  .form-error.show { display: block; }
+
+  .form-submit {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 8px;
+    transition: opacity 0.2s;
+    position: relative;
+  }
+
+  .form-submit:hover { opacity: 0.9; }
+  .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .form-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SOCIAL LOGIN */
+  .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .social-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    padding: 11px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .social-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .form-footer { margin-top: 20px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-align: center; }
+  .form-footer a { color: var(--green); text-decoration: none; }
+  .form-footer a:hover { text-decoration: underline; }
+
+  /* TIER SELECTOR */
+  .tier-selector { margin-bottom: 20px; }
+  .tier-selector-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 10px; }
+
+  .tier-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); }
+
+  .tier-option {
+    background: var(--dark);
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+
+  .tier-option:hover { background: var(--card); }
+  .tier-option.selected { background: var(--green-muted); border-color: rgba(0,255,136,0.3); }
+
+  .tier-option-name { font-family: var(--display); font-size: 18px; color: var(--text-bright); letter-spacing: 0.05em; }
+  .tier-option.selected .tier-option-name { color: var(--green); }
+  .tier-option-price { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+  /* PASSWORD STRENGTH */
+  .pwd-strength { margin-top: 6px; }
+  .pwd-bar { height: 2px; background: var(--border); margin-bottom: 4px; }
+  .pwd-fill { height: 2px; width: 0%; transition: width 0.3s, background 0.3s; }
+  .pwd-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+  /* TERMS */
+  .terms-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; cursor: pointer; }
+  .terms-check input { width: 14px; height: 14px; margin-top: 2px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+  .terms-check span { font-family: var(--mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+  .terms-check a { color: var(--green); text-decoration: none; }
+
+  /* SUCCESS STATE */
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .success-icon { font-family: var(--mono); font-size: 48px; color: var(--green); margin-bottom: 16px; }
+  .success-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 12px; }
+  .success-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.7; }
+  .success-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 32px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; display: inline-block; }
+
+  /* FOOTER */
+  .page-footer { padding: 20px 48px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; flex-shrink: 0; }
+  .page-footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .page-footer a:hover { color: var(--green); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <a href="index.html" class="nav-back">← BACK TO SITE</a>
+</nav>
+
+<div class="main">
+
+  <!-- BRAND SIDE -->
+  <div class="brand-side">
+    <div class="brand-tag">// ENTER THE CORE</div>
+    <h1 class="brand-title">YOUR EDGE<br>STARTS<br><span class="green">HERE.</span></h1>
+    <p class="brand-desc">
+      Join a community of traders and builders who share real knowledge, real systems, and real results.
+      <strong>No fake gurus. No demo screenshots. Just the raw core of trading.</strong>
+    </p>
+    <div class="brand-perks">
+      <div class="perk-item">Free tier — no card needed, start immediately</div>
+      <div class="perk-item">Full bot library with source code — Core members</div>
+      <div class="perk-item">Signal feed with full trade explanations</div>
+      <div class="perk-item">Live community chat + AI trading assistant</div>
+      <div class="perk-item">Core Credits, leaderboard and monthly pot</div>
+      <div class="perk-item">Cancel anytime — weekly or monthly</div>
+    </div>
+    <div class="brand-note">
+      <span>// FOUNDING MEMBER LOCK</span><br>
+      Join now and your price is locked forever. When we grow and pricing increases, you stay at the founding rate. Always.
+    </div>
+  </div>
+
+  <!-- FORM SIDE -->
+  <div class="form-side">
+
+    <div class="form-tabs">
+      <div class="form-tab active" onclick="switchTab('register')">CREATE ACCOUNT</div>
+      <div class="form-tab" onclick="switchTab('login')">SIGN IN</div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-form active" id="registerForm">
+      <div class="form-title">JOIN THE CORE</div>
+      <div class="form-subtitle">// Takes 30 seconds. No card needed for free tier.</div>
+
+      <div class="tier-selector">
+        <div class="tier-selector-label">// START WITH</div>
+        <div class="tier-options">
+          <div class="tier-option selected" onclick="selectTier(this)">
+            <div class="tier-option-name">FREE</div>
+            <div class="tier-option-price">Forever free</div>
+          </div>
+          <div class="tier-option" onclick="selectTier(this)">
+            <div class="tier-option-name">WEEKLY</div>
+            <div class="tier-option-price">€7 / week</div>
+          </div>
+          <div class="tier-option" onclick="selectTier(this)">
+            <div class="tier-option-name">CORE</div>
+            <div class="tier-option-price">€20 / month</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">// USERNAME</label>
+          <input class="form-input" type="text" id="regUsername" placeholder="your_handle" oninput="validateUsername(this)" />
+          <div class="form-error" id="usernameError">// letters, numbers, underscores only</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">// EMAIL</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@email.com" oninput="validateEmail(this)" />
+          <div class="form-error" id="emailError">// enter a valid email</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">// PASSWORD</label>
+        <input class="form-input" type="password" id="regPassword" placeholder="min 8 characters" oninput="checkPassword(this)" />
+        <div class="pwd-strength">
+          <div class="pwd-bar"><div class="pwd-fill" id="pwdFill"></div></div>
+          <div class="pwd-label" id="pwdLabel">// enter password</div>
+        </div>
+      </div>
+
+      <div class="terms-check">
+        <input type="checkbox" id="termsCheck" />
+        <span>I understand that nothing on RawCore Trading is financial advice. Trading involves risk and I am responsible for my own decisions. I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</span>
+      </div>
+
+      <button class="form-submit" onclick="handleRegister()">CREATE ACCOUNT →</button>
+
+      <div class="form-divider">or continue with</div>
+
+      <div class="social-btns">
+        <a href="#" class="social-btn">G · GOOGLE</a>
+        <a href="#" class="social-btn">TG · TELEGRAM</a>
+      </div>
+
+      <div class="form-footer">
+        Already have an account? <a href="#" onclick="switchTab('login')">Sign in →</a>
+      </div>
+
+      <div class="success-state" id="registerSuccess">
+        <div class="success-icon">✓</div>
+        <div class="success-title">WELCOME TO THE CORE</div>
+        <div class="success-sub">// Account created successfully.<br>// Redirecting to your dashboard...</div>
+        <a href="member-dashboard.html" class="success-btn">ENTER THE CORE →</a>
+      </div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-form" id="loginForm">
+      <div class="form-title">WELCOME BACK</div>
+      <div class="form-subtitle">// Sign in to your Core account</div>
+
+      <div class="form-group">
+        <label class="form-label">// EMAIL OR USERNAME</label>
+        <input class="form-input" type="text" id="loginEmail" placeholder="email or username" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">// PASSWORD</label>
+        <input class="form-input" type="password" id="loginPassword" placeholder="your password" onkeydown="if(event.key==='Enter') handleLogin()" />
+        <div class="form-error" id="loginError">// incorrect email or password</div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--text-dim);cursor:pointer">
+          <input type="checkbox" style="accent-color:var(--green)" /> REMEMBER ME
+        </label>
+        <a href="#" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">FORGOT PASSWORD?</a>
+      </div>
+
+      <button class="form-submit" onclick="handleLogin()">SIGN IN →</button>
+
+      <div class="form-divider">or continue with</div>
+
+      <div class="social-btns">
+        <a href="#" class="social-btn">G · GOOGLE</a>
+        <a href="#" class="social-btn">TG · TELEGRAM</a>
+      </div>
+
+      <div class="form-footer" style="margin-top:20px">
+        Don't have an account? <a href="#" onclick="switchTab('register')">Create one free →</a>
+      </div>
+
+      <div class="success-state" id="loginSuccess">
+        <div class="success-icon">✓</div>
+        <div class="success-title">SIGNED IN</div>
+        <div class="success-sub">// Welcome back.<br>// Taking you to your dashboard...</div>
+        <a href="member-dashboard.html" class="success-btn">ENTER THE CORE →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="page-footer">
+  <span>© 2026 RAWCORETRADING.COM</span>
+  <div style="display:flex;gap:24px">
+    <a href="#">TERMS</a>
+    <a href="#">PRIVACY</a>
+    <a href="contact.html">CONTACT</a>
+    <a href="index.html">BACK TO SITE</a>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.form-tab').forEach((t, i) => {
+    t.classList.toggle('active', (tab === 'register' && i === 0) || (tab === 'login' && i === 1));
+  });
+  document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+}
+
+function selectTier(el) {
+  document.querySelectorAll('.tier-option').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function validateUsername(input) {
+  const valid = /^[a-zA-Z0-9_]{3,20}$/.test(input.value);
+  input.classList.toggle('error', !valid && input.value.length > 0);
+  document.getElementById('usernameError').classList.toggle('show', !valid && input.value.length > 0);
+}
+
+function validateEmail(input) {
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+  input.classList.toggle('error', !valid && input.value.length > 0);
+  document.getElementById('emailError').classList.toggle('show', !valid && input.value.length > 0);
+}
+
+function checkPassword(input) {
+  const val = input.value;
+  const fill = document.getElementById('pwdFill');
+  const label = document.getElementById('pwdLabel');
+  let strength = 0;
+  if (val.length >= 8) strength++;
+  if (/[A-Z]/.test(val)) strength++;
+  if (/[0-9]/.test(val)) strength++;
+  if (/[^a-zA-Z0-9]/.test(val)) strength++;
+
+  const colors = ['var(--red)', 'var(--red)', 'var(--amber)', 'var(--green)', 'var(--green)'];
+  const labels = ['// too short', '// weak', '// okay', '// strong', '// very strong'];
+  const widths = ['0%', '25%', '50%', '75%', '100%'];
+
+  fill.style.width = widths[strength];
+  fill.style.background = colors[strength];
+  label.textContent = val.length === 0 ? '// enter password' : labels[strength];
+}
+
+function handleRegister() {
+  const username = document.getElementById('regUsername').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const terms = document.getElementById('termsCheck').checked;
+
+  if (!username || !email || !password || !terms) {
+    const btn = document.querySelector('#registerForm .form-submit');
+    btn.textContent = 'FILL IN ALL FIELDS ✕';
+    btn.style.background = 'var(--red)';
+    setTimeout(() => { btn.textContent = 'CREATE ACCOUNT →'; btn.style.background = 'var(--green)'; }, 2000);
+    return;
+  }
+
+  const btn = document.querySelector('#registerForm .form-submit');
+  btn.textContent = 'CREATING ACCOUNT...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('registerSuccess').style.display = 'block';
+  }, 1200);
+}
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if (!email || !password) {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginPassword').classList.add('error');
+    return;
+  }
+
+  const btn = document.querySelector('#loginForm .form-submit');
+  btn.textContent = 'SIGNING IN...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('loginSuccess').style.display = 'block';
+  }, 1000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Core — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .member-nav {
+    height: 56px;
+    background: rgba(5,6,8,0.98);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
+  .nav-logo span { color: var(--green); }
+  .nav-items { display: flex; gap: 0; flex: 1; }
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; gap: 7px; cursor: pointer; }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
+  .nav-credits::before { content: '◈'; }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
+
+  .page-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* PROFILE HERO */
+  .profile-hero {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--green);
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 32px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-hero::before {
+    content: 'RC';
+    position: absolute;
+    right: -20px; top: -20px;
+    font-family: var(--display);
+    font-size: 200px;
+    color: var(--green);
+    opacity: 0.025;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .profile-avatar-wrap { position: relative; }
+  .profile-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: var(--green-muted);
+    border: 2px solid rgba(0,255,136,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display);
+    font-size: 32px;
+    color: var(--green);
+  }
+
+  .profile-online {
+    position: absolute;
+    bottom: 4px; right: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid var(--dark);
+  }
+
+  .profile-edit-btn {
+    position: absolute;
+    bottom: -4px; right: -4px;
+    width: 24px; height: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .profile-edit-btn:hover { border-color: var(--green); color: var(--green); }
+
+  .profile-info { }
+  .profile-handle { font-family: var(--display); font-size: 40px; color: var(--text-bright); line-height: 1; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .profile-handle span { color: var(--green); }
+  .profile-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .profile-badge { font-family: var(--mono); font-size: 9px; padding: 3px 10px; border: 1px solid; letter-spacing: 0.15em; }
+  .badge-founder { border-color: rgba(0,255,136,0.4); color: var(--green); background: var(--green-muted); }
+  .badge-core { border-color: rgba(59,130,246,0.3); color: var(--blue); background: rgba(59,130,246,0.08); }
+  .badge-builder { border-color: rgba(139,92,246,0.3); color: var(--purple); background: rgba(139,92,246,0.08); }
+  .profile-joined { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+  .profile-stats { display: flex; gap: 24px; }
+  .ps-item { text-align: center; }
+  .ps-val { font-family: var(--display); font-size: 32px; color: var(--text-bright); line-height: 1; }
+  .ps-val.green { color: var(--green); }
+  .ps-val.amber { color: var(--amber); }
+  .ps-val.blue { color: var(--blue); }
+  .ps-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-top: 4px; }
+  .ps-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* TABS */
+  .page-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--dark); }
+  .page-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 20px; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .page-tab:hover { color: var(--text); }
+  .page-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* PANEL */
+  .panel { background: var(--card); border: 1px solid var(--border); overflow: hidden; }
+  .panel-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; }
+  .panel-action { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s; background: none; border: none; }
+  .panel-action:hover { color: var(--green); }
+  .panel-body { padding: 16px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* CREDITS ACTIVITY */
+  .activity-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .activity-row { background: var(--dark); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto auto; gap: 14px; align-items: center; }
+  .activity-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; flex-shrink: 0; }
+  .activity-icon.earn { color: var(--green); background: var(--green-muted); border: 1px solid rgba(0,255,136,0.15); }
+  .activity-icon.spend { color: var(--amber); background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15); }
+  .activity-info { }
+  .activity-name { font-family: var(--mono); font-size: 11px; color: var(--text); }
+  .activity-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+  .activity-pts { font-family: var(--display); font-size: 20px; }
+  .activity-pts.earn { color: var(--green); }
+  .activity-pts.spend { color: var(--amber); }
+  .activity-total { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+  /* CREDITS BREAKDOWN */
+  .credits-big { font-family: var(--display); font-size: 64px; color: var(--green); line-height: 1; margin-bottom: 4px; }
+  .credits-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 20px; }
+  .credits-breakdown { display: flex; flex-direction: column; gap: 10px; }
+  .cb-item { display: flex; align-items: center; gap: 12px; }
+  .cb-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); width: 140px; flex-shrink: 0; }
+  .cb-bar-wrap { flex: 1; height: 3px; background: var(--border); }
+  .cb-bar { height: 3px; }
+  .cb-val { font-family: var(--mono); font-size: 10px; color: var(--text-bright); width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* SUBSCRIPTION */
+  .sub-card { background: var(--black); border: 1px solid var(--border); border-left: 2px solid var(--green); padding: 20px; margin-bottom: 12px; }
+  .sub-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .sub-name { font-family: var(--display); font-size: 28px; color: var(--text-bright); }
+  .sub-status { font-family: var(--mono); font-size: 9px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 3px 8px; letter-spacing: 0.15em; background: var(--green-muted); }
+  .sub-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .sub-detail { }
+  .sub-detail-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 4px; }
+  .sub-detail-val { font-family: var(--mono); font-size: 12px; color: var(--text-bright); }
+  .sub-detail-val.green { color: var(--green); }
+
+  .sub-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .sub-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 16px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.2s; background: transparent; }
+  .sub-btn:hover { border-color: var(--green); color: var(--green); }
+  .sub-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+  /* ACHIEVEMENTS */
+  .achievements-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .achievement { background: var(--dark); border: 1px solid var(--border); padding: 16px 12px; text-align: center; position: relative; transition: border-color 0.2s; }
+  .achievement.earned { border-color: rgba(0,255,136,0.2); }
+  .achievement.locked { opacity: 0.4; }
+  .achievement:hover { border-color: var(--green); }
+  .ach-icon { font-family: var(--mono); font-size: 24px; margin-bottom: 8px; }
+  .ach-icon.earned-icon { color: var(--green); }
+  .ach-icon.locked-icon { color: var(--text-dim); }
+  .ach-name { font-family: var(--mono); font-size: 10px; color: var(--text-bright); letter-spacing: 0.1em; margin-bottom: 4px; }
+  .ach-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  .ach-earned-badge { position: absolute; top: 8px; right: 8px; font-family: var(--mono); font-size: 8px; color: var(--green); }
+
+  /* SETTINGS */
+  .settings-section { margin-bottom: 24px; }
+  .settings-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(26,31,38,0.4); }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-info { }
+  .setting-name { font-family: var(--mono); font-size: 11px; color: var(--text); margin-bottom: 3px; }
+  .setting-desc { font-size: 12px; color: var(--text-dim); }
+  .setting-input { background: var(--black); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 8px 12px; outline: none; width: 200px; transition: border-color 0.2s; }
+  .setting-input:focus { border-color: var(--green); }
+
+  /* TOGGLE */
+  .toggle { width: 40px; height: 20px; background: var(--border); position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+  .toggle.on { background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); }
+  .toggle-knob { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: var(--text-dim); transition: all 0.2s; }
+  .toggle.on .toggle-knob { left: 23px; background: var(--green); }
+
+  .save-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 24px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; transition: opacity 0.2s; margin-top: 8px; }
+  .save-btn:hover { opacity: 0.9; }
+
+  /* NOTIFICATIONS */
+  .notif-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .notif-item { background: var(--dark); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+  .notif-item.unread { background: var(--card); border-left: 2px solid var(--green); }
+  .notif-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .notif-dot.unread { background: var(--green); }
+  .notif-dot.read { background: var(--border); }
+  .notif-text { font-family: var(--mono); font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+  .notif-text.unread { color: var(--text); }
+  .notif-text span { color: var(--green); }
+  .notif-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); white-space: nowrap; }
+
+  /* DANGER ZONE */
+  .danger-zone { background: rgba(255,51,85,0.04); border: 1px solid rgba(255,51,85,0.15); padding: 20px; }
+  .danger-title { font-family: var(--mono); font-size: 10px; color: var(--red); letter-spacing: 0.2em; margin-bottom: 14px; }
+  .danger-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,51,85,0.1); }
+  .danger-row:last-child { border-bottom: none; }
+  .danger-info { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .danger-btn { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; padding: 7px 14px; border: 1px solid rgba(255,51,85,0.3); color: var(--red); cursor: pointer; background: transparent; transition: all 0.2s; }
+  .danger-btn:hover { background: rgba(255,51,85,0.08); }
+</style>
+</head>
+<body>
+
+<nav class="member-nav">
+  <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
+  <div class="nav-items">
+    <a href="member-dashboard.html" class="nav-item">Home</a>
+    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
+    <a href="member-bots.html" class="nav-item">Bots</a>
+    <a href="member-knowledge.html" class="nav-item">Learn</a>
+    <a href="member-core.html" class="nav-item active">My Core</a>
+    <a href="member-shop.html" class="nav-item">Shop</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-credits">1,240 pts</div>
+    <div class="nav-user">
+      <div class="nav-avatar">RC</div>
+      <span>Robchiix</span>
+      <div class="nav-tier">CORE</div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-body">
+
+  <!-- PROFILE HERO -->
+  <div class="profile-hero">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar">RC</div>
+      <div class="profile-online"></div>
+      <div class="profile-edit-btn" title="Edit avatar">✎</div>
+    </div>
+    <div class="profile-info">
+      <div class="profile-handle">ROB<span>CHIIX</span></div>
+      <div class="profile-badges">
+        <span class="profile-badge badge-founder">FOUNDER</span>
+        <span class="profile-badge badge-core">CORE MEMBER</span>
+        <span class="profile-badge badge-builder">BUILDER</span>
+      </div>
+      <div class="profile-joined">// Member since April 2026 · rawcoretrading.com</div>
+    </div>
+    <div class="profile-stats">
+      <div class="ps-item">
+        <div class="ps-val green">1,240</div>
+        <div class="ps-label">CREDITS</div>
+      </div>
+      <div class="ps-divider"></div>
+      <div class="ps-item">
+        <div class="ps-val amber">#7</div>
+        <div class="ps-label">RANK</div>
+      </div>
+      <div class="ps-divider"></div>
+      <div class="ps-item">
+        <div class="ps-val">3</div>
+        <div class="ps-label">BOTS</div>
+      </div>
+      <div class="ps-divider"></div>
+      <div class="ps-item">
+        <div class="ps-val blue">12</div>
+        <div class="ps-label">LESSONS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab('credits')">CREDITS</div>
+    <div class="page-tab" onclick="switchTab('subscription')">SUBSCRIPTION</div>
+    <div class="page-tab" onclick="switchTab('achievements')">ACHIEVEMENTS</div>
+    <div class="page-tab" onclick="switchTab('notifications')">NOTIFICATIONS <span class="nav-badge" style="background:var(--red)">4</span></div>
+    <div class="page-tab" onclick="switchTab('settings')">SETTINGS</div>
+  </div>
+
+  <!-- CREDITS TAB -->
+  <div class="tab-content active" id="tab-credits">
+    <div class="grid-2" style="margin-top:16px">
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// CREDITS BREAKDOWN</span>
+        </div>
+        <div class="panel-body">
+          <div class="credits-big">1,240</div>
+          <div class="credits-sub">// TOTAL CORE CREDITS THIS MONTH</div>
+          <div class="credits-breakdown">
+            <div class="cb-item">
+              <span class="cb-label">Messages posted</span>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:60%;background:var(--blue)"></div></div>
+              <span class="cb-val">240</span>
+            </div>
+            <div class="cb-item">
+              <span class="cb-label">Trade breakdowns</span>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:40%;background:var(--green)"></div></div>
+              <span class="cb-val">400</span>
+            </div>
+            <div class="cb-item">
+              <span class="cb-label">Bot forks shared</span>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:30%;background:var(--purple)"></div></div>
+              <span class="cb-val">300</span>
+            </div>
+            <div class="cb-item">
+              <span class="cb-label">Lesson completions</span>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:30%;background:var(--amber)"></div></div>
+              <span class="cb-val">300</span>
+            </div>
+          </div>
+          <div style="margin-top:20px;padding:12px;background:var(--black);border:1px solid var(--border)">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:8px">// HOW TO EARN MORE</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Post a message</span><span style="color:var(--green)">+2 pts</span></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Share trade breakdown</span><span style="color:var(--green)">+20 pts</span></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Fork a bot</span><span style="color:var(--green)">+50 pts</span></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Publish original bot</span><span style="color:var(--green)">+200 pts</span></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Bot accepted to marketplace</span><span style="color:var(--green)">+500 pts</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// RECENT ACTIVITY</span>
+          <button class="panel-action">VIEW ALL</button>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div class="activity-list">
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Posted in #general</div><div class="activity-time">Today · 09:14</div></div>
+              <div class="activity-pts earn">+2</div>
+              <div class="activity-total">1,240</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Shared trade breakdown — XAUUSD</div><div class="activity-time">Today · 08:44</div></div>
+              <div class="activity-pts earn">+20</div>
+              <div class="activity-total">1,238</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Completed lesson — Bot Logic</div><div class="activity-time">Yesterday · 21:12</div></div>
+              <div class="activity-pts earn">+10</div>
+              <div class="activity-total">1,218</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Forked ATR Rider bot</div><div class="activity-time">Apr 18 · 14:30</div></div>
+              <div class="activity-pts earn">+50</div>
+              <div class="activity-total">1,208</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon spend">→</div>
+              <div class="activity-info"><div class="activity-name">Redeemed — Shop discount 10%</div><div class="activity-time">Apr 17 · 11:00</div></div>
+              <div class="activity-pts spend">-100</div>
+              <div class="activity-total">1,158</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Quiz completed — Psychology 100%</div><div class="activity-time">Apr 16 · 19:45</div></div>
+              <div class="activity-pts earn">+50</div>
+              <div class="activity-total">1,258</div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-icon earn">↑</div>
+              <div class="activity-info"><div class="activity-name">Account created — welcome bonus</div><div class="activity-time">Apr 16 · 10:00</div></div>
+              <div class="activity-pts earn">+100</div>
+              <div class="activity-total">100</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTION TAB -->
+  <div class="tab-content" id="tab-subscription">
+    <div style="margin-top:16px;max-width:700px">
+
+      <div class="sub-card">
+        <div class="sub-header">
+          <div class="sub-name">CORE MONTHLY</div>
+          <div class="sub-status">● ACTIVE</div>
+        </div>
+        <div class="sub-details">
+          <div class="sub-detail">
+            <div class="sub-detail-label">// AMOUNT</div>
+            <div class="sub-detail-val green">€20 / month</div>
+          </div>
+          <div class="sub-detail">
+            <div class="sub-detail-label">// NEXT BILLING</div>
+            <div class="sub-detail-val">May 16, 2026</div>
+          </div>
+          <div class="sub-detail">
+            <div class="sub-detail-label">// MEMBER SINCE</div>
+            <div class="sub-detail-val">April 16, 2026</div>
+          </div>
+          <div class="sub-detail">
+            <div class="sub-detail-label">// FOUNDING RATE</div>
+            <div class="sub-detail-val green">LOCKED FOREVER ✓</div>
+          </div>
+          <div class="sub-detail">
+            <div class="sub-detail-label">// CORE POT</div>
+            <div class="sub-detail-val">€2/month contributed</div>
+          </div>
+          <div class="sub-detail">
+            <div class="sub-detail-label">// PAYMENT</div>
+            <div class="sub-detail-val">•••• 4411</div>
+          </div>
+        </div>
+        <div class="sub-actions">
+          <button class="sub-btn">CHANGE PLAN</button>
+          <button class="sub-btn">UPDATE PAYMENT</button>
+          <button class="sub-btn">BILLING HISTORY</button>
+          <button class="sub-btn danger" onclick="confirmCancel()">CANCEL SUBSCRIPTION</button>
+        </div>
+      </div>
+
+      <div style="background:var(--green-muted);border:1px solid rgba(0,255,136,0.15);padding:16px;font-family:var(--mono);font-size:11px;color:var(--green);line-height:1.7">
+        // FOUNDING MEMBER LOCK ACTIVE<br>
+        <span style="color:var(--text-dim)">You joined during the founding period. Your €20/month rate is locked permanently — even if pricing increases to €28, €58 or beyond, you always pay €20. This is our promise to early members.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS TAB -->
+  <div class="tab-content" id="tab-achievements">
+    <div style="margin-top:16px">
+      <div class="achievements-grid">
+        <div class="achievement earned">
+          <div class="ach-earned-badge">✓</div>
+          <div class="ach-icon earned-icon">⚡</div>
+          <div class="ach-name">FIRST TRADE</div>
+          <div class="ach-desc">Logged your first trade breakdown</div>
+        </div>
+        <div class="achievement earned">
+          <div class="ach-earned-badge">✓</div>
+          <div class="ach-icon earned-icon">◎</div>
+          <div class="ach-name">PSYCHOLOGIST</div>
+          <div class="ach-desc">Completed psychology module 100%</div>
+        </div>
+        <div class="achievement earned">
+          <div class="ach-earned-badge">✓</div>
+          <div class="ach-icon earned-icon">&lt;/&gt;</div>
+          <div class="ach-name">BOT BUILDER</div>
+          <div class="ach-desc">Forked and shared your first bot</div>
+        </div>
+        <div class="achievement earned">
+          <div class="ach-earned-badge">✓</div>
+          <div class="ach-icon earned-icon">▲</div>
+          <div class="ach-name">FOUNDER</div>
+          <div class="ach-desc">Joined during founding month</div>
+        </div>
+        <div class="achievement">
+          <div class="ach-icon locked-icon">◈</div>
+          <div class="ach-name">1K CREDITS</div>
+          <div class="ach-desc">Reach 1,000 Core Credits — 1,240 ✓</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">⬡</div>
+          <div class="ach-name">SIGNAL MASTER</div>
+          <div class="ach-desc">Follow 10 signals with documented results</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">★</div>
+          <div class="ach-name">TOP 5</div>
+          <div class="ach-desc">Reach top 5 on the leaderboard</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">∞</div>
+          <div class="ach-name">MARKETPLACE</div>
+          <div class="ach-desc">Get a bot accepted into Core marketplace</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">◑</div>
+          <div class="ach-name">POT WINNER</div>
+          <div class="ach-desc">Win the monthly Core Pot</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">✦</div>
+          <div class="ach-name">CONTRIBUTOR</div>
+          <div class="ach-desc">Become a verified Core Contributor</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">⊕</div>
+          <div class="ach-name">COMPLETIONIST</div>
+          <div class="ach-desc">Complete all knowledge topics</div>
+        </div>
+        <div class="achievement locked">
+          <div class="ach-icon locked-icon">▣</div>
+          <div class="ach-name">100 FORKS</div>
+          <div class="ach-desc">Your bot reaches 100 community forks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS TAB -->
+  <div class="tab-content" id="tab-notifications">
+    <div style="margin-top:16px">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// NOTIFICATIONS</span>
+          <button class="panel-action" onclick="markAllRead()">MARK ALL READ</button>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item unread">
+            <div class="notif-dot unread"></div>
+            <div class="notif-text unread"><span>CORE SIGNAL</span> — XAUUSD long posted. Entry 2,339.40 · TP1 hit at 2,344.80 +1.5R</div>
+            <div class="notif-time">09:14 today</div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-dot unread"></div>
+            <div class="notif-text unread"><span>LEADERBOARD</span> — You moved up 2 positions to #7 this week 🔥</div>
+            <div class="notif-time">08:00 today</div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-dot unread"></div>
+            <div class="notif-text unread"><span>CORE POT</span> — May pot is now €134. Draw in 12 days. You're entered.</div>
+            <div class="notif-time">Yesterday</div>
+          </div>
+          <div class="notif-item unread">
+            <div class="notif-dot unread"></div>
+            <div class="notif-text unread"><span>ACHIEVEMENT</span> — You unlocked "1K Credits" badge 🎯</div>
+            <div class="notif-time">Apr 18</div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot read"></div>
+            <div class="notif-text"><span>NEW BOT</span> — Community bot "SESSION SCALP" published by MarketKing</div>
+            <div class="notif-time">Apr 17</div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot read"></div>
+            <div class="notif-text"><span>UNGURUED</span> — New episode: ICT $1,500 course breakdown</div>
+            <div class="notif-time">Apr 17</div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot read"></div>
+            <div class="notif-text">Welcome to RawCore Trading. Your founding member rate is locked forever.</div>
+            <div class="notif-time">Apr 16</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div class="tab-content" id="tab-settings">
+    <div style="margin-top:16px;max-width:700px;display:flex;flex-direction:column;gap:16px">
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">// PROFILE SETTINGS</span></div>
+        <div class="panel-body">
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Username</div><div class="setting-desc">Your public handle across the platform</div></div>
+              <input class="setting-input" type="text" value="Robchiix" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Email</div><div class="setting-desc">Used for billing and notifications</div></div>
+              <input class="setting-input" type="email" value="hello@rawcoretrading.com" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Display name</div><div class="setting-desc">Shown in community chat</div></div>
+              <input class="setting-input" type="text" value="Robchiix" />
+            </div>
+          </div>
+          <button class="save-btn" onclick="saveSettings(this)">SAVE CHANGES →</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">// NOTIFICATIONS</span></div>
+        <div class="panel-body">
+          <div class="settings-section">
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Signal alerts</div><div class="setting-desc">Get notified when a new signal is posted</div></div>
+              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Community mentions</div><div class="setting-desc">When someone tags you in chat</div></div>
+              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">Core Pot updates</div><div class="setting-desc">Monthly pot announcements and draw results</div></div>
+              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">New bot releases</div><div class="setting-desc">When a new system is published</div></div>
+              <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div class="setting-info"><div class="setting-name">UnguruED episodes</div><div class="setting-desc">New content drops</div></div>
+              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <div class="danger-title">// DANGER ZONE</div>
+        <div class="danger-row">
+          <div class="danger-info">Cancel subscription — you keep access until billing period ends</div>
+          <button class="danger-btn" onclick="confirmCancel()">CANCEL SUB</button>
+        </div>
+        <div class="danger-row">
+          <div class="danger-info">Delete account — permanently removes all data</div>
+          <button class="danger-btn">DELETE ACCOUNT</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+}
+
+function saveSettings(btn) {
+  btn.textContent = 'SAVED ✓';
+  btn.style.background = 'var(--border)';
+  btn.style.color = 'var(--green)';
+  setTimeout(() => {
+    btn.textContent = 'SAVE CHANGES →';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'var(--black)';
+  }, 2000);
+}
+
+function markAllRead() {
+  document.querySelectorAll('.notif-item').forEach(n => {
+    n.classList.remove('unread');
+    n.querySelector('.notif-dot').classList.remove('unread');
+    n.querySelector('.notif-dot').classList.add('read');
+    const text = n.querySelector('.notif-text');
+    if (text) { text.classList.remove('unread'); }
+  });
+}
+
+function confirmCancel() {
+  const confirmed = confirm('Are you sure? You keep access until May 16, 2026. Your founding member rate will be lost permanently.');
+  if (confirmed) alert('Subscription cancelled. Access continues until May 16, 2026.');
+}
+</script>
+</body>
+</html>

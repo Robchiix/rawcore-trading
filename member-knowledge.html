@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .member-nav {
+    height: 56px;
+    background: rgba(5,6,8,0.98);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
+  .nav-logo span { color: var(--green); }
+  .nav-items { display: flex; gap: 0; flex: 1; }
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; cursor: pointer; }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; margin-left: 6px; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
+  .nav-credits::before { content: '◈'; }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
+
+  /* PAGE LAYOUT */
+  .page-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    overflow: hidden;
+    height: calc(100vh - 56px);
+  }
+
+  /* LEFT SIDEBAR — TOPICS */
+  .topics-sidebar {
+    background: var(--dark);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-title { font-family: var(--display); font-size: 22px; color: var(--text-bright); margin-bottom: 4px; }
+  .sidebar-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; }
+
+  /* STREAK BAR */
+  .streak-bar {
+    margin: 12px 16px;
+    background: var(--black);
+    border: 1px solid rgba(245,158,11,0.2);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .streak-icon { font-family: var(--mono); font-size: 18px; color: var(--amber); }
+  .streak-info { flex: 1; }
+  .streak-val { font-family: var(--display); font-size: 22px; color: var(--amber); line-height: 1; }
+  .streak-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .streak-dots { display: flex; gap: 4px; margin-top: 6px; }
+  .streak-dot { width: 20px; height: 4px; background: var(--border); }
+  .streak-dot.done { background: var(--amber); }
+  .streak-dot.today { background: var(--green); }
+
+  /* TOPIC ITEMS */
+  .topic-group { padding: 10px 0; border-bottom: 1px solid rgba(26,31,38,0.5); }
+  .topic-group:last-child { border-bottom: none; }
+
+  .topic-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .topic-item:hover { background: var(--card); }
+  .topic-item.active { background: var(--card); border-left: 2px solid var(--green); }
+  .topic-item.locked { opacity: 0.4; cursor: not-allowed; }
+
+  .ti-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .ti-icon { font-family: var(--mono); font-size: 14px; width: 20px; text-align: center; }
+  .ti-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); flex: 1; }
+  .ti-lock { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+  .ti-progress-wrap { height: 2px; background: var(--border); margin-left: 30px; }
+  .ti-progress-fill { height: 2px; transition: width 0.5s; }
+
+  .ti-meta { display: flex; justify-content: space-between; margin-left: 30px; margin-top: 4px; font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+  /* MAIN CONTENT */
+  .main-content {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* DAILY CHALLENGE */
+  .daily-challenge {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .dc-badge { font-family: var(--mono); font-size: 9px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 4px 10px; letter-spacing: 0.15em; background: rgba(245,158,11,0.08); white-space: nowrap; flex-shrink: 0; }
+  .dc-content { flex: 1; }
+  .dc-title { font-family: var(--mono); font-size: 12px; color: var(--text-bright); margin-bottom: 3px; }
+  .dc-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .dc-reward { font-family: var(--display); font-size: 20px; color: var(--green); white-space: nowrap; }
+  .dc-btn { font-family: var(--mono); font-size: 10px; padding: 8px 16px; border: 1px solid rgba(245,158,11,0.3); color: var(--amber); background: transparent; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .dc-btn:hover { background: rgba(245,158,11,0.08); }
+
+  /* LESSON VIEW */
+  .lesson-area { flex: 1; padding: 24px; }
+
+  .lesson-header { margin-bottom: 24px; }
+  .lesson-breadcrumb { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .lesson-breadcrumb span { color: var(--green); }
+  .lesson-title { font-family: var(--display); font-size: 40px; color: var(--text-bright); line-height: 0.95; margin-bottom: 8px; }
+  .lesson-meta { display: flex; gap: 16px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .lesson-meta .free-tag { color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; }
+  .lesson-meta .core-tag { color: var(--blue); border: 1px solid rgba(59,130,246,0.3); padding: 2px 6px; }
+
+  .lesson-body { max-width: 680px; }
+
+  .lesson-section { margin-bottom: 28px; }
+  .lesson-section-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .lesson-section-title::before { content: '//'; color: var(--text-dim); }
+
+  .lesson-text { font-size: 15px; color: var(--text); line-height: 1.8; margin-bottom: 14px; }
+  .lesson-text strong { color: var(--text-bright); }
+  .lesson-text .highlight { color: var(--green); }
+  .lesson-text .warning { color: var(--amber); }
+
+  .lesson-callout {
+    background: var(--dark);
+    border-left: 2px solid var(--green);
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .lesson-callout.warning { border-left-color: var(--amber); }
+  .lesson-callout .label { color: var(--green); display: block; margin-bottom: 6px; letter-spacing: 0.15em; font-size: 10px; }
+  .lesson-callout.warning .label { color: var(--amber); }
+
+  /* EXAMPLE CHART */
+  .chart-example {
+    background: var(--black);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .chart-label { color: var(--text-dim); font-size: 9px; letter-spacing: 0.15em; margin-bottom: 12px; }
+
+  .chart-ascii {
+    color: var(--green);
+    line-height: 1.4;
+    font-size: 11px;
+    white-space: pre;
+  }
+
+  .chart-annotation { color: var(--text-dim); font-size: 10px; margin-top: 10px; }
+  .chart-annotation span { color: var(--green); }
+
+  /* TASK SECTION */
+  .task-section {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--green);
+    padding: 20px;
+    margin: 24px 0;
+  }
+
+  .task-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .task-title { font-family: var(--display); font-size: 22px; color: var(--text-bright); letter-spacing: 0.05em; }
+  .task-reward { font-family: var(--mono); font-size: 10px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 4px 10px; background: var(--green-muted); }
+
+  .task-question { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 16px; }
+
+  /* MULTIPLE CHOICE */
+  .mc-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .mc-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--black);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .mc-option:hover { border-color: var(--green); color: var(--text); }
+  .mc-option.selected { border-color: var(--green); color: var(--text); background: var(--green-muted); }
+  .mc-option.correct { border-color: var(--green); background: rgba(0,255,136,0.1); color: var(--green); }
+  .mc-option.wrong { border-color: var(--red); background: rgba(255,51,85,0.08); color: var(--red); }
+  .mc-option.disabled { cursor: not-allowed; }
+
+  .mc-letter { width: 20px; height: 20px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+
+  /* TEXT INPUT TASK */
+  .task-input { width: 100%; background: var(--black); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 13px; padding: 12px 14px; outline: none; transition: border-color 0.2s; margin-bottom: 12px; }
+  .task-input:focus { border-color: var(--green); }
+  .task-input::placeholder { color: var(--text-dim); opacity: 0.4; }
+
+  .task-submit { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 24px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; transition: opacity 0.2s; }
+  .task-submit:hover { opacity: 0.9; }
+  .task-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .task-feedback {
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    display: none;
+    margin-top: 12px;
+    border-left: 2px solid;
+  }
+
+  .task-feedback.correct { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.06); }
+  .task-feedback.partial { border-color: var(--amber); color: var(--amber); background: rgba(245,158,11,0.06); }
+  .task-feedback.wrong { border-color: var(--red); color: var(--red); background: rgba(255,51,85,0.06); }
+  .task-feedback.show { display: block; }
+
+  .credits-earned {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--green-muted);
+    border: 1px solid rgba(0,255,136,0.2);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 8px;
+    animation: fadeIn 0.4s forwards;
+  }
+
+  .credits-earned.show { display: flex; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* COMMUNITY ANSWERS */
+  .community-answers {
+    background: var(--black);
+    border: 1px solid var(--border);
+    margin-top: 16px;
+    display: none;
+  }
+
+  .community-answers.show { display: block; }
+  .ca-header { padding: 10px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; display: flex; justify-content: space-between; }
+  .ca-item { padding: 12px 14px; border-bottom: 1px solid rgba(26,31,38,0.4); display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; }
+  .ca-item:last-child { border-bottom: none; }
+  .ca-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9px; color: var(--text-dim); flex-shrink: 0; }
+  .ca-text { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .ca-text strong { color: var(--text); font-size: 11px; font-family: var(--mono); display: block; margin-bottom: 2px; }
+  .ca-votes { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .ca-upvote { font-family: var(--mono); font-size: 10px; color: var(--text-dim); cursor: pointer; transition: color 0.15s; background: none; border: none; }
+  .ca-upvote:hover, .ca-upvote.voted { color: var(--green); }
+  .ca-vote-count { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+  /* LESSON NAVIGATION */
+  .lesson-nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid var(--border); background: var(--dark); flex-shrink: 0; }
+  .lesson-nav-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; padding: 10px 20px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.2s; background: transparent; }
+  .lesson-nav-btn:hover { border-color: var(--green); color: var(--green); }
+  .lesson-nav-btn.next { background: var(--green); color: var(--black); border-color: var(--green); font-weight: 700; }
+  .lesson-nav-btn.next:hover { opacity: 0.9; }
+  .lesson-progress-info { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+  /* RIGHT SIDEBAR */
+  .right-sidebar {
+    background: var(--dark);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    gap: 1px;
+  }
+
+  .rs-panel { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 16px; }
+  .rs-title { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 12px; }
+
+  /* LEADERBOARD MINI */
+  .lb-mini { display: flex; flex-direction: column; gap: 6px; }
+  .lb-mini-item { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; }
+  .lb-mini-rank { color: var(--text-dim); width: 16px; text-align: center; }
+  .lb-mini-rank.g { color: var(--amber); }
+  .lb-mini-av { width: 20px; height: 20px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--text-dim); }
+  .lb-mini-name { flex: 1; color: var(--text-dim); }
+  .lb-mini-name.you { color: var(--blue); }
+  .lb-mini-pts { color: var(--green); }
+
+  /* KNOWLEDGE TREE */
+  .knowledge-tree { display: flex; flex-direction: column; gap: 4px; }
+  .kt-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; cursor: pointer; transition: background 0.15s; border-radius: 0; }
+  .kt-item:hover { background: var(--dark); }
+  .kt-item.active { background: var(--green-muted); }
+  .kt-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .kt-dot.done { background: var(--green); }
+  .kt-dot.current { background: var(--amber); animation: pulse 2s infinite; }
+  .kt-dot.locked { background: var(--border); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .kt-name { font-family: var(--mono); font-size: 10px; color: var(--text-dim); flex: 1; }
+  .kt-name.done { color: var(--text); }
+  .kt-name.active { color: var(--green); }
+  .kt-pct { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+  /* ACHIEVEMENT UNLOCK */
+  .achievement-notify {
+    background: var(--green-muted);
+    border: 1px solid rgba(0,255,136,0.2);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .an-icon { font-family: var(--mono); font-size: 20px; color: var(--green); }
+  .an-info { }
+  .an-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.1em; }
+  .an-desc { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+
+  /* DAILY CHALLENGE MODAL */
+  .challenge-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .challenge-modal.open { display: flex; }
+  .challenge-box { background: var(--dark); border: 1px solid var(--border); border-top: 2px solid var(--amber); width: 100%; max-width: 560px; padding: 32px; }
+  .cb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .cb-title { font-family: var(--display); font-size: 28px; color: var(--text-bright); }
+  .cb-close { font-family: var(--mono); font-size: 14px; color: var(--text-dim); background: none; border: none; cursor: pointer; }
+  .cb-badge { font-family: var(--mono); font-size: 9px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 3px 8px; background: rgba(245,158,11,0.08); }
+  .cb-question { font-size: 16px; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
+  .cb-image { background: var(--black); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; font-family: var(--mono); font-size: 11px; }
+  .cb-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cb-option { padding: 12px 16px; background: var(--black); border: 1px solid var(--border); cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--text-dim); transition: all 0.15s; }
+  .cb-option:hover { border-color: var(--amber); color: var(--text); }
+  .cb-option.correct { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.08); }
+  .cb-option.wrong { border-color: var(--red); color: var(--red); background: rgba(255,51,85,0.08); }
+  .cb-reward { font-family: var(--mono); font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 12px; }
+  .cb-reward span { color: var(--amber); }
+</style>
+</head>
+<body>
+
+<nav class="member-nav">
+  <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
+  <div class="nav-items">
+    <a href="member-dashboard.html" class="nav-item">Home</a>
+    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
+    <a href="member-bots.html" class="nav-item">Bots</a>
+    <a href="member-knowledge.html" class="nav-item active">Learn</a>
+    <a href="member-core.html" class="nav-item">My Core</a>
+    <a href="member-shop.html" class="nav-item">Shop</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-credits" id="creditsDisplay">1,240 pts</div>
+    <div class="nav-user">
+      <div class="nav-avatar">RC</div>
+      <span>Robchiix</span>
+      <div class="nav-tier">CORE</div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-layout">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="topics-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">LEARN</div>
+      <div class="sidebar-sub">// 6 TOPICS · 28 LESSONS · 14 TASKS</div>
+    </div>
+
+    <div class="streak-bar">
+      <div class="streak-icon">🔥</div>
+      <div class="streak-info">
+        <div class="streak-val">3</div>
+        <div class="streak-label">// DAY STREAK</div>
+        <div class="streak-dots">
+          <div class="streak-dot done"></div>
+          <div class="streak-dot done"></div>
+          <div class="streak-dot done"></div>
+          <div class="streak-dot today"></div>
+          <div class="streak-dot"></div>
+          <div class="streak-dot"></div>
+          <div class="streak-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item active" onclick="openTopic('psychology')">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--purple)">◎</span>
+          <span class="ti-name">Psychology</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--green)">80%</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:80%;background:var(--purple)"></div></div>
+        <div class="ti-meta"><span>4/5 lessons</span><span>2 tasks done</span></div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item" onclick="openTopic('markets')">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--blue)">⬡</span>
+          <span class="ti-name">Market Structure</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--blue)">60%</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:60%;background:var(--blue)"></div></div>
+        <div class="ti-meta"><span>3/5 lessons</span><span>1 task done</span></div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item" onclick="openTopic('risk')">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--red)">▲</span>
+          <span class="ti-name">Risk Management</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--amber)">40%</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:40%;background:var(--red)"></div></div>
+        <div class="ti-meta"><span>2/5 lessons</span><span>1 task done</span></div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item" onclick="openTopic('bots')">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--green)">&lt;/&gt;</span>
+          <span class="ti-name">Trading Bots</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--green)">100%</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:100%;background:var(--green)"></div></div>
+        <div class="ti-meta"><span>5/5 lessons</span><span>✓ Complete</span></div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item" onclick="openTopic('signals')">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--amber)">◈</span>
+          <span class="ti-name">Signals</span>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--amber)">20%</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:20%;background:var(--amber)"></div></div>
+        <div class="ti-meta"><span>1/4 lessons</span><span>0 tasks done</span></div>
+      </div>
+    </div>
+
+    <div class="topic-group">
+      <div class="topic-item locked">
+        <div class="ti-header">
+          <span class="ti-icon" style="color:var(--text-dim)">⊕</span>
+          <span class="ti-name">Brokers</span>
+          <span class="ti-lock">🔒</span>
+        </div>
+        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:0%;background:var(--text-dim)"></div></div>
+        <div class="ti-meta"><span>Complete Signals first</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- DAILY CHALLENGE BAR -->
+    <div class="daily-challenge">
+      <div class="dc-badge">// DAILY CHALLENGE</div>
+      <div class="dc-content">
+        <div class="dc-title">Identify the liquidity sweep on today's XAUUSD chart</div>
+        <div class="dc-sub">// Resets in 14h 22m · Complete to keep your streak alive</div>
+      </div>
+      <div class="dc-reward">+25 pts</div>
+      <button class="dc-btn" onclick="openChallenge()">START →</button>
+    </div>
+
+    <!-- LESSON CONTENT -->
+    <div class="lesson-area" id="lessonArea">
+
+      <div class="lesson-header">
+        <div class="lesson-breadcrumb">Psychology <span>→</span> Lesson 4 of 5</div>
+        <div class="lesson-title">REVENGE TRADING —<br>THE SPIRAL AND HOW TO BREAK IT</div>
+        <div class="lesson-meta">
+          <span>// 8 MIN READ</span>
+          <span>// INTERMEDIATE</span>
+          <span class="core-tag">CORE</span>
+          <span>+10 pts on completion</span>
+        </div>
+      </div>
+
+      <div class="lesson-body">
+
+        <div class="lesson-section">
+          <div class="lesson-section-title">WHAT IS REVENGE TRADING</div>
+          <p class="lesson-text">You take a loss. A clean, properly managed loss — stop loss hit, 1R down, move on. That's the plan. But instead something different happens. <strong>You immediately open another trade, larger than usual, trying to "win back" the loss.</strong> That's revenge trading.</p>
+          <p class="lesson-text">It's one of the most common and destructive patterns in retail trading. Not because traders are stupid — but because <span class="highlight">the emotional response to loss is deeply wired into human psychology.</span> Losses feel twice as painful as equivalent gains feel good. That pain demands action.</p>
+
+          <div class="lesson-callout">
+            <span class="label">// KEY CONCEPT</span>
+            Loss aversion is a well-documented cognitive bias. A €100 loss produces roughly twice the psychological pain of a €100 gain produces pleasure. This is why discipline systems and automation exist — to override the human response.
+          </div>
+        </div>
+
+        <div class="lesson-section">
+          <div class="lesson-section-title">THE SPIRAL IN PRACTICE</div>
+          <p class="lesson-text">Here's how it typically unfolds:</p>
+
+          <div class="chart-example">
+            <div class="chart-label">// THE REVENGE TRADING SPIRAL</div>
+            <div class="chart-ascii">Trade 1: -1R  (Clean loss. SL hit.)
+Trade 2: -2R  (Doubled size. "I'll make it back.")
+Trade 3: -3R  (Tripled size. "One more.")
+Trade 4: -2R  (Starting to panic.)
+────────────────────────────────────
+Total:   -8R  (Account down 8% in one session)</div>
+            <div class="chart-annotation">The <span>first loss</span> was fine. The next three were emotional decisions that had nothing to do with the market.</div>
+          </div>
+
+          <p class="lesson-text">Notice what happened — the <span class="warning">first loss was properly sized and managed.</span> Everything after it was emotional. One clean -1R trade turned into -8R because of psychology, not strategy.</p>
+        </div>
+
+        <div class="lesson-section">
+          <div class="lesson-section-title">HOW TO BREAK THE PATTERN</div>
+          <p class="lesson-text">There are three reliable methods — and the best traders use all three together:</p>
+
+          <p class="lesson-text"><strong>1. The Daily Loss Limit</strong> — Set a maximum daily loss in advance. When you hit it, the trading day is over. No exceptions. This is a rule you set when you're calm, so you don't have to make decisions when you're emotional. Our bots have this built in.</p>
+
+          <p class="lesson-text"><strong>2. The Mandatory Break</strong> — After any loss, take a minimum 15 minute break before the next trade. Walk away from the screen. The urge to revenge trade is strongest in the first 5 minutes after a loss and fades significantly after 15-20 minutes.</p>
+
+          <p class="lesson-text"><strong>3. The Pre-Trade Checklist</strong> — Before every trade ask: <span class="highlight">Is this setup valid on its own merits?</span> If the answer involves the previous trade in any way, don't take it.</p>
+
+          <div class="lesson-callout warning">
+            <span class="label">// WARNING</span>
+            Automating your entries and exits removes the opportunity for revenge trading entirely. When the bot executes, there's no "one more trade" — the rules are the rules. This is one of the most underrated benefits of trading automation.
+          </div>
+        </div>
+
+        <!-- TASK 1 — MULTIPLE CHOICE -->
+        <div class="task-section">
+          <div class="task-header">
+            <div class="task-title">TASK 01 — QUICK CHECK</div>
+            <div class="task-reward">+10 PTS</div>
+          </div>
+          <div class="task-question">A trader takes a -1R loss on a properly managed trade. 3 minutes later they open a new position with double their normal size without a clear setup. What is this an example of?</div>
+          <div class="mc-options" id="mc1">
+            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
+              <div class="mc-letter">A</div>
+              <span>Good risk management — recovering losses is part of the game</span>
+            </div>
+            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
+              <div class="mc-letter">B</div>
+              <span>A valid strategy adjustment based on market conditions</span>
+            </div>
+            <div class="mc-option" onclick="selectMC(this, 'mc1', true)">
+              <div class="mc-letter">C</div>
+              <span>Revenge trading — an emotional response to loss, not a logical trading decision</span>
+            </div>
+            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
+              <div class="mc-letter">D</div>
+              <span>Martingale strategy — a legitimate approach to position sizing</span>
+            </div>
+          </div>
+          <div class="task-feedback" id="mc1-feedback"></div>
+          <div class="credits-earned" id="mc1-credits">
+            <span>+10 Core Credits earned ✓</span>
+          </div>
+          <div class="community-answers" id="mc1-community">
+            <div class="ca-header">
+              <span>// HOW OTHERS ANSWERED</span>
+              <span style="color:var(--green)">312 responses</span>
+            </div>
+            <div class="ca-item">
+              <div class="ca-avatar">MK</div>
+              <div class="ca-text"><strong>MarketKing</strong>C — classic revenge pattern. Doubled size with no setup is the tell. The market doesn't care about your previous trade.</div>
+              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">47</span></div>
+            </div>
+            <div class="ca-item">
+              <div class="ca-avatar">ST</div>
+              <div class="ca-text"><strong>SteadyTrade</strong>Answered C. Also worth noting — the 3 minute timing is a red flag. No valid setup forms that fast after a loss in most strategies.</div>
+              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">31</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TASK 2 — OPEN ANSWER -->
+        <div class="task-section">
+          <div class="task-header">
+            <div class="task-title">TASK 02 — REFLECT</div>
+            <div class="task-reward">+20 PTS</div>
+          </div>
+          <div class="task-question">Describe one specific rule or system you would put in place to prevent revenge trading in your own trading. Be specific — "be more disciplined" doesn't count. What is the actual rule?</div>
+          <textarea class="task-input" id="task2Input" rows="4" placeholder="// Example: 'After any losing trade I will close MT5, walk away for 20 minutes, and only re-open if my daily loss limit has not been hit...'"></textarea>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="task-submit" id="task2Btn" onclick="submitTask2()">SUBMIT ANSWER →</button>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Your answer will be visible to the community</span>
+          </div>
+          <div class="task-feedback" id="task2-feedback"></div>
+          <div class="credits-earned" id="task2-credits"></div>
+          <div class="community-answers" id="task2-community">
+            <div class="ca-header">
+              <span>// COMMUNITY ANSWERS — TOP VOTED</span>
+              <span style="color:var(--green)">89 answers</span>
+            </div>
+            <div class="ca-item">
+              <div class="ca-avatar">AX</div>
+              <div class="ca-text"><strong>AlgoX</strong>I set a daily drawdown limit of 2% in my bot config. When hit, the bot stops automatically and sends me a Telegram alert. I can't override it without editing the config — which forces a deliberate action.</div>
+              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">62</span></div>
+            </div>
+            <div class="ca-item">
+              <div class="ca-avatar">GF</div>
+              <div class="ca-text"><strong>GoldFox</strong>After every loss I physically close my laptop and make a coffee. By the time I'm back (15-20 min) the emotional charge is gone. Simple but it works better than any mental rule I ever set.</div>
+              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">44</span></div>
+            </div>
+            <div class="ca-item">
+              <div class="ca-avatar">PL</div>
+              <div class="ca-text"><strong>PipLord</strong>I keep a trading journal and I have to write the entry reason before I open any trade. If my entry reason mentions the previous trade in any way, it's an automatic no.</div>
+              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">38</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LESSON NAV -->
+    <div class="lesson-nav">
+      <button class="lesson-nav-btn" onclick="prevLesson()">← PREV LESSON</button>
+      <div class="lesson-progress-info">Lesson 4 of 5 · Psychology · 80% complete</div>
+      <button class="lesson-nav-btn next" onclick="nextLesson()">NEXT LESSON →</button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-sidebar">
+
+    <div class="rs-panel">
+      <div class="rs-title">// YOUR PROGRESS TODAY</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
+          <span style="color:var(--text-dim)">Lessons read</span>
+          <span style="color:var(--text-bright)">1</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
+          <span style="color:var(--text-dim)">Tasks completed</span>
+          <span style="color:var(--green)" id="tasksCompleted">0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
+          <span style="color:var(--text-dim)">Credits earned today</span>
+          <span style="color:var(--green)" id="creditsToday">+0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
+          <span style="color:var(--text-dim)">Streak</span>
+          <span style="color:var(--amber)">🔥 3 days</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rs-panel">
+      <div class="rs-title">// KNOWLEDGE TREE</div>
+      <div class="knowledge-tree">
+        <div class="kt-item">
+          <div class="kt-dot done"></div>
+          <span class="kt-name done">Trading Bots</span>
+          <span class="kt-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="kt-item active">
+          <div class="kt-dot current"></div>
+          <span class="kt-name active">Psychology</span>
+          <span class="kt-pct" style="color:var(--amber)">80%</span>
+        </div>
+        <div class="kt-item">
+          <div class="kt-dot current"></div>
+          <span class="kt-name">Market Structure</span>
+          <span class="kt-pct">60%</span>
+        </div>
+        <div class="kt-item">
+          <div class="kt-dot current"></div>
+          <span class="kt-name">Risk Management</span>
+          <span class="kt-pct">40%</span>
+        </div>
+        <div class="kt-item">
+          <div class="kt-dot current"></div>
+          <span class="kt-name">Signals</span>
+          <span class="kt-pct">20%</span>
+        </div>
+        <div class="kt-item">
+          <div class="kt-dot locked"></div>
+          <span class="kt-name" style="opacity:0.4">Brokers 🔒</span>
+          <span class="kt-pct">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rs-panel">
+      <div class="rs-title">// LEARN LEADERBOARD</div>
+      <div class="lb-mini">
+        <div class="lb-mini-item">
+          <span class="lb-mini-rank g">1</span>
+          <div class="lb-mini-av">MK</div>
+          <span class="lb-mini-name">MarketKing</span>
+          <span class="lb-mini-pts">890</span>
+        </div>
+        <div class="lb-mini-item">
+          <span class="lb-mini-rank">2</span>
+          <div class="lb-mini-av">AX</div>
+          <span class="lb-mini-name">AlgoX</span>
+          <span class="lb-mini-pts">720</span>
+        </div>
+        <div class="lb-mini-item">
+          <span class="lb-mini-rank">3</span>
+          <div class="lb-mini-av">ST</div>
+          <span class="lb-mini-name">SteadyTrade</span>
+          <span class="lb-mini-pts">640</span>
+        </div>
+        <div class="lb-mini-item" style="background:rgba(59,130,246,0.06);padding:4px 6px;border-left:2px solid var(--blue)">
+          <span class="lb-mini-rank" style="color:var(--blue)">7</span>
+          <div class="lb-mini-av" style="background:rgba(59,130,246,0.1);color:var(--blue)">RC</div>
+          <span class="lb-mini-name you">Robchiix</span>
+          <span class="lb-mini-pts" style="color:var(--blue)" id="learnPts">240</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rs-panel achievement-notify">
+      <div class="an-icon">◎</div>
+      <div class="an-info">
+        <div class="an-title">ACHIEVEMENT CLOSE</div>
+        <div class="an-desc">Complete 1 more task to unlock "Deep Thinker" badge</div>
+      </div>
+    </div>
+
+    <div class="rs-panel">
+      <div class="rs-title">// NEXT UP</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--dark);padding:10px 12px;border:1px solid var(--border)">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:3px">Building a pre-trade routine</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Psychology · Lesson 5 · +10pts</div>
+        </div>
+        <div style="background:var(--dark);padding:10px 12px;border:1px solid var(--border);opacity:0.6">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:3px">What are trading sessions</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Market Structure · Lesson 4 · +10pts</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DAILY CHALLENGE MODAL -->
+<div class="challenge-modal" id="challengeModal">
+  <div class="challenge-box">
+    <div class="cb-header">
+      <div class="cb-title">DAILY CHALLENGE</div>
+      <button class="cb-close" onclick="closeChallenge()">✕</button>
+    </div>
+    <div class="cb-badge">// TODAY · APR 19, 2026 · +25 PTS</div>
+    <div style="margin-top:16px"></div>
+    <div class="cb-question">Look at the XAUUSD price action below. Before the bullish move at point C, what happened at point B?</div>
+    <div class="cb-image">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:8px">// XAUUSD 5M · LONDON SESSION</div>
+      <div style="color:var(--green);white-space:pre;line-height:1.4;font-size:11px">         C ↑ (strong move up)
+        /
+──────B──  ← what happened here?
+      ↓
+  A (swing low)</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:8px">Price made a swing low at A, moved to B, then launched to C</div>
+    </div>
+    <div class="cb-options" id="challengeOptions">
+      <div class="cb-option" onclick="answerChallenge(this, false)">A — Price consolidated sideways at B before moving up</div>
+      <div class="cb-option" onclick="answerChallenge(this, true)">B — Price swept below the swing low at A (liquidity sweep) before reversing up strongly</div>
+      <div class="cb-option" onclick="answerChallenge(this, false)">C — Price formed a double bottom pattern at B and A</div>
+      <div class="cb-option" onclick="answerChallenge(this, false)">D — Price broke above resistance at B causing the move to C</div>
+    </div>
+    <div class="cb-reward">// Complete daily challenges to maintain your streak · <span>+25 pts</span> on correct answer</div>
+  </div>
+</div>
+
+<script>
+let totalCredits = 1240;
+let todayCredits = 0;
+let tasksCompleted = 0;
+
+function selectMC(option, groupId, isCorrect) {
+  const group = document.getElementById(groupId);
+  if (group.querySelector('.correct, .wrong')) return;
+  const options = group.querySelectorAll('.mc-option');
+  options.forEach(o => o.classList.add('disabled'));
+  const feedback = document.getElementById(groupId + '-feedback');
+  const credits = document.getElementById(groupId + '-credits');
+  const community = document.getElementById(groupId + '-community');
+
+  if (isCorrect) {
+    option.classList.add('correct');
+    feedback.innerHTML = '✓ Correct — Revenge trading is defined by the emotional motivation behind the trade, not just the position size. The combination of immediate timing after a loss and doubled size with no clear setup are the key red flags.';
+    feedback.className = 'task-feedback correct show';
+    earnCredits(10);
+    credits.classList.add('show');
+  } else {
+    option.classList.add('wrong');
+    group.querySelectorAll('.mc-option')[2].classList.add('correct');
+    feedback.innerHTML = '✕ Not quite — the answer is C. Revenge trading is specifically about trading to emotionally recover from a loss rather than acting on a valid setup. The timing (3 minutes after loss) and increased size are clear indicators.';
+    feedback.className = 'task-feedback wrong show';
+    earnCredits(2);
+    credits.innerHTML = '<span>+2 Core Credits for participating ✓</span>';
+    credits.classList.add('show');
+  }
+  community.classList.add('show');
+}
+
+function submitTask2() {
+  const input = document.getElementById('task2Input');
+  const btn = document.getElementById('task2Btn');
+  const feedback = document.getElementById('task2-feedback');
+  const credits = document.getElementById('task2-credits');
+  const community = document.getElementById('task2-community');
+
+  if (input.value.trim().length < 20) {
+    feedback.innerHTML = '// Please write a more detailed answer — be specific about your rule.';
+    feedback.className = 'task-feedback wrong show';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'SUBMITTED ✓';
+  input.disabled = true;
+
+  feedback.innerHTML = '✓ Answer submitted — your response has been added to the community answers. Other members can upvote it. Keep building your systems!';
+  feedback.className = 'task-feedback correct show';
+  earnCredits(20);
+  credits.innerHTML = '<span>+20 Core Credits earned ✓</span>';
+  credits.classList.add('show');
+  community.classList.add('show');
+}
+
+function earnCredits(amount) {
+  totalCredits += amount;
+  todayCredits += amount;
+  tasksCompleted++;
+  document.getElementById('creditsDisplay').textContent = totalCredits.toLocaleString() + ' pts';
+  document.getElementById('creditsToday').textContent = '+' + todayCredits;
+  document.getElementById('tasksCompleted').textContent = tasksCompleted;
+  document.getElementById('learnPts').textContent = 240 + todayCredits;
+}
+
+function upvote(btn) {
+  btn.classList.toggle('voted');
+  const countEl = btn.nextElementSibling;
+  countEl.textContent = parseInt(countEl.textContent) + (btn.classList.contains('voted') ? 1 : -1);
+}
+
+function openChallenge() {
+  document.getElementById('challengeModal').classList.add('open');
+}
+
+function closeChallenge() {
+  document.getElementById('challengeModal').classList.remove('open');
+}
+
+function answerChallenge(option, isCorrect) {
+  const options = document.getElementById('challengeOptions').querySelectorAll('.cb-option');
+  options.forEach(o => o.style.pointerEvents = 'none');
+  if (isCorrect) {
+    option.className = 'cb-option correct';
+    earnCredits(25);
+    setTimeout(() => {
+      closeChallenge();
+      alert('🔥 Correct! +25 Core Credits earned. Streak maintained!');
+    }, 800);
+  } else {
+    option.className = 'cb-option wrong';
+    options[1].className = 'cb-option correct';
+    setTimeout(() => {
+      alert('Not quite — the correct answer is B. A liquidity sweep below the swing low triggers stop losses and provides the fuel for the reversal. +5 pts for participating.');
+      earnCredits(5);
+      closeChallenge();
+    }, 800);
+  }
+}
+
+function openTopic(topic) {
+  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function prevLesson() { alert('Previous lesson — navigation coming with full backend integration.'); }
+function nextLesson() { alert('Next lesson — navigation coming with full backend integration.'); }
+</script>
+</body>
+</html>

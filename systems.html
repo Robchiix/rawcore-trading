@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.012) 2px, rgba(0,255,136,0.012) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(5,6,8,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
+  .nav-logo span { color: var(--green); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .nav-cta:hover { background: var(--green); color: var(--black); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 80px 80px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'SYSTEMS';
+    position: absolute;
+    right: -40px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--display);
+    font-size: 240px;
+    color: var(--green);
+    opacity: 0.02;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .hero-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.6s forwards 0.1s; }
+  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--green); }
+  .hero-title { font-family: var(--display); font-size: clamp(60px, 8vw, 110px); line-height: 0.9; color: var(--text-bright); margin-bottom: 24px; opacity: 0; animation: fadeUp 0.6s forwards 0.2s; }
+  .hero-title .green { color: var(--green); }
+  .hero-sub { max-width: 640px; font-size: 17px; line-height: 1.7; color: var(--text-dim); opacity: 0; animation: fadeUp 0.6s forwards 0.3s; }
+  .hero-sub strong { color: var(--text); }
+
+  .hero-stats { display: flex; gap: 48px; margin-top: 48px; opacity: 0; animation: fadeUp 0.6s forwards 0.4s; }
+  .stat-val { font-family: var(--display); font-size: 48px; color: var(--text-bright); line-height: 1; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.amber { color: var(--amber); }
+  .stat-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-top: 4px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
+  .section-tag::before { content: '//'; color: var(--text-dim); }
+
+  /* HOW BOTS WORK */
+  .how-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+  .how-left { }
+  .how-title { font-family: var(--display); font-size: clamp(36px, 4vw, 54px); color: var(--text-bright); line-height: 0.95; margin-bottom: 24px; }
+  .how-title .green { color: var(--green); }
+  .how-p { font-size: 15px; color: var(--text-dim); line-height: 1.75; margin-bottom: 16px; }
+  .how-p strong { color: var(--text); }
+
+  .how-right { }
+  .terminal {
+    background: var(--black);
+    border: 1px solid var(--border);
+  }
+
+  .t-bar { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--card); }
+  .t-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .t-dot.r { background: #ff3355; opacity: 0.6; }
+  .t-dot.y { background: #f59e0b; opacity: 0.6; }
+  .t-dot.g { background: #00ff88; opacity: 0.6; }
+  .t-title { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-left: 8px; }
+
+  .t-body { padding: 20px; font-family: var(--mono); font-size: 11px; line-height: 1.9; }
+  .t-comment { color: var(--text-dim); }
+  .t-key { color: var(--blue); }
+  .t-val { color: var(--green); }
+  .t-str { color: var(--amber); }
+  .t-fn { color: var(--purple); }
+  .t-blank { height: 6px; }
+  .t-cursor { display: inline-block; width: 8px; height: 13px; background: var(--green); animation: blink 1s infinite; vertical-align: middle; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* SYSTEM FAMILIES */
+  .families-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .families-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .family-card {
+    background: var(--dark);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .family-card:hover { background: var(--card); }
+
+  .family-header {
+    padding: 32px 32px 24px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .family-glow {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .family-glow.omega { background: linear-gradient(90deg, var(--amber), transparent); }
+  .family-glow.nova { background: linear-gradient(90deg, var(--blue), transparent); }
+  .family-glow.alpha { background: linear-gradient(90deg, var(--green), transparent); }
+
+  .family-icon {
+    font-family: var(--display);
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .family-icon.omega { color: var(--amber); }
+  .family-icon.nova { color: var(--blue); }
+  .family-icon.alpha { color: var(--green); }
+
+  .family-subtitle { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 12px; }
+  .family-desc { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+
+  .family-body { padding: 24px 32px 32px; }
+
+  .bot-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-bottom: 20px; }
+
+  .bot-item {
+    background: var(--black);
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+
+  .bot-item:hover { background: var(--card); }
+
+  .bot-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .bot-dot.live { background: var(--green); animation: pulse 2s infinite; }
+  .bot-dot.beta { background: var(--amber); }
+  .bot-dot.dev { background: var(--text-dim); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .bot-info { }
+  .bot-name { font-family: var(--mono); font-size: 12px; color: var(--text-bright); }
+  .bot-pair { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+
+  .bot-badge {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    padding: 3px 7px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .badge-live { border-color: rgba(0,255,136,0.3); color: var(--green); background: var(--green-muted); }
+  .badge-beta { border-color: rgba(245,158,11,0.3); color: var(--amber); background: rgba(245,158,11,0.08); }
+  .badge-dev { border-color: var(--border); color: var(--text-dim); }
+  .badge-core { border-color: rgba(59,130,246,0.3); color: var(--blue); background: rgba(59,130,246,0.08); }
+
+  .family-cta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .family-cta:hover { border-color: var(--green); color: var(--green); }
+
+  /* FEATURED BOT */
+  .featured-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .featured-bot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .fb-left {
+    background: var(--card);
+    padding: 48px;
+    border-top: 2px solid var(--amber);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fb-right {
+    background: var(--dark);
+    padding: 48px;
+  }
+
+  .fb-badge { font-family: var(--mono); font-size: 9px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 4px 10px; display: inline-block; margin-bottom: 20px; letter-spacing: 0.15em; background: rgba(245,158,11,0.08); }
+  .fb-name { font-family: var(--display); font-size: 56px; color: var(--text-bright); line-height: 0.9; margin-bottom: 4px; }
+  .fb-sub { font-family: var(--mono); font-size: 12px; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 20px; }
+  .fb-desc { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px; }
+  .fb-desc strong { color: var(--text); }
+
+  .fb-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+  .fb-spec { background: var(--black); padding: 12px 16px; }
+  .fb-spec-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 4px; }
+  .fb-spec-val { font-family: var(--mono); font-size: 12px; color: var(--text-bright); }
+  .fb-spec-val.green { color: var(--green); }
+  .fb-spec-val.amber { color: var(--amber); }
+
+  .fb-right-title { font-family: var(--display); font-size: 28px; color: var(--text-bright); margin-bottom: 20px; }
+
+  .logic-steps { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-bottom: 24px; }
+  .logic-step { background: var(--dark); padding: 14px 18px; display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: start; transition: background 0.2s; }
+  .logic-step:hover { background: var(--card); }
+  .step-num { font-family: var(--mono); font-size: 10px; color: var(--amber); border: 1px solid rgba(245,158,11,0.2); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .step-text strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 2px; }
+
+  .fb-access { padding: 16px 20px; background: var(--black); border: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center; }
+  .fb-access a { color: var(--green); text-decoration: none; }
+
+  /* COMMUNITY BOTS */
+  .community-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .community-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+
+  .community-card { background: var(--dark); padding: 28px; transition: background 0.2s; cursor: pointer; position: relative; }
+  .community-card:hover { background: var(--card); }
+  .community-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.2s; }
+  .community-card:hover::before { background: var(--green); }
+
+  .cc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .cc-name { font-family: var(--display); font-size: 22px; color: var(--text-bright); letter-spacing: 0.05em; }
+  .cc-author { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 10px; }
+  .cc-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
+  .cc-meta { display: flex; gap: 12px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .cc-meta .up { color: var(--green); }
+
+  /* COMING SOON */
+  .coming-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .coming-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+
+  .coming-card { background: var(--dark); padding: 32px 28px; position: relative; overflow: hidden; }
+  .coming-card::after { content: 'COMING SOON'; position: absolute; top: 16px; right: -28px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.15em; color: var(--black); background: var(--text-dim); padding: 4px 36px; transform: rotate(45deg); }
+
+  .coming-icon { font-family: var(--mono); font-size: 20px; color: var(--text-dim); margin-bottom: 16px; opacity: 0.5; }
+  .coming-name { font-family: var(--display); font-size: 24px; color: var(--text-dim); letter-spacing: 0.05em; margin-bottom: 8px; }
+  .coming-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; opacity: 0.6; }
+  .coming-eta { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 16px; opacity: 0.4; letter-spacing: 0.15em; }
+
+  /* CONTRIBUTE */
+  .contribute-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .contrib-title { font-family: var(--display); font-size: clamp(36px, 4vw, 52px); color: var(--text-bright); line-height: 0.95; margin-bottom: 20px; }
+  .contrib-title .green { color: var(--green); }
+  .contrib-p { font-size: 15px; color: var(--text-dim); line-height: 1.75; margin-bottom: 16px; }
+  .contrib-p strong { color: var(--text); }
+
+  .contrib-rewards { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .reward-item { background: var(--dark); padding: 16px 20px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; }
+  .reward-label { font-family: var(--mono); font-size: 11px; color: var(--text); }
+  .reward-label span { color: var(--text-dim); font-size: 10px; display: block; margin-top: 3px; }
+  .reward-pts { font-family: var(--display); font-size: 28px; color: var(--green); }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 600px; border-radius: 50%; border: 1px solid rgba(0,255,136,0.04); pointer-events: none; }
+
+  .cta-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 20px; position: relative; z-index: 1; }
+  .cta-title { font-family: var(--display); font-size: clamp(40px, 5vw, 70px); color: var(--text-bright); line-height: 0.95; margin-bottom: 16px; position: relative; z-index: 1; }
+  .cta-title .green { color: var(--green); }
+  .cta-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 40px; position: relative; z-index: 1; line-height: 1.8; }
+  .cta-btns { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; }
+  .btn-primary { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 28px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; transition: opacity 0.2s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 28px; background: transparent; color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text-bright); }
+
+  footer { padding: 32px 80px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-dim); border-top: 1px solid var(--border); }
+  .footer-logo { color: var(--text-bright); text-decoration: none; }
+  .footer-logo span { color: var(--green); }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--green); }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="knowledge.html">Knowledge</a></li>
+    <li><a href="systems.html" class="active">Systems</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="pricing.html" class="nav-cta">JOIN THE CORE →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">// THE BOT ARSENAL</div>
+  <h1 class="hero-title">BUILD.<br>TEST.<br><span class="green">EXECUTE.</span></h1>
+  <p class="hero-sub">
+    Three system families. Real source code. Real results — not backtested fantasy.
+    <strong>Every bot here has been run live, debugged in real market conditions,
+    and documented honestly.</strong> Take them, break them, make them yours.
+  </p>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-val green">3</div>
+      <div class="stat-label">// BOT FAMILIES</div>
+    </div>
+    <div>
+      <div class="stat-val">8</div>
+      <div class="stat-label">// ACTIVE SYSTEMS</div>
+    </div>
+    <div>
+      <div class="stat-val amber">47</div>
+      <div class="stat-label">// COMMUNITY FORKS</div>
+    </div>
+    <div>
+      <div class="stat-val">100%</div>
+      <div class="stat-label">// OPEN SOURCE TO CORE</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section reveal">
+  <div class="how-grid">
+    <div class="how-left">
+      <div class="section-tag">HOW OUR BOTS WORK</div>
+      <h2 class="how-title">LOGIC YOU CAN<br><span class="green">UNDERSTAND.</span></h2>
+      <p class="how-p">Every system at RawCore is built on <strong>clear, readable logic</strong>. No black boxes. No "trust the algorithm." You get the full source code, line-by-line comments, and an explanation of why each decision was made.</p>
+      <p class="how-p">Whether you're a coder who wants to modify the strategy, or a trader who just wants to understand what's running on your account — <strong>you'll always know exactly what your bot is doing and why.</strong></p>
+      <p class="how-p">All MT5 bots are built in Python via MetaTrader5 API. Crypto bots run on Bybit via CCXT. Full setup guides included.</p>
+    </div>
+    <div class="how-right">
+      <div class="terminal">
+        <div class="t-bar">
+          <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+          <span class="t-title">omega_gold_logic.py</span>
+        </div>
+        <div class="t-body">
+          <div class="t-comment"># OMEGA GOLD — core entry logic</div>
+          <div class="t-blank"></div>
+          <div><span class="t-key">def </span><span class="t-fn">check_entry</span>(symbol, tf):</div>
+          <div style="padding-left:16px"><span class="t-comment"># 1. Check session filter</span></div>
+          <div style="padding-left:16px"><span class="t-key">if not </span><span class="t-fn">is_london_or_ny</span>(): <span class="t-key">return</span></div>
+          <div class="t-blank"></div>
+          <div style="padding-left:16px"><span class="t-comment"># 2. EMA9 crosses above EMA21</span></div>
+          <div style="padding-left:16px">ema_cross = <span class="t-fn">ema_cross_up</span>(<span class="t-val">9</span>, <span class="t-val">21</span>)</div>
+          <div class="t-blank"></div>
+          <div style="padding-left:16px"><span class="t-comment"># 3. ATR confirms volatility</span></div>
+          <div style="padding-left:16px">atr_ok = <span class="t-fn">atr</span>(<span class="t-val">14</span>) > <span class="t-val">0.8</span></div>
+          <div class="t-blank"></div>
+          <div style="padding-left:16px"><span class="t-comment"># 4. Execute with structured SL/TP</span></div>
+          <div style="padding-left:16px"><span class="t-key">if </span>ema_cross <span class="t-key">and </span>atr_ok:</div>
+          <div style="padding-left:32px"><span class="t-fn">place_order</span>(</div>
+          <div style="padding-left:48px">sl=<span class="t-str">"structure_low"</span>,</div>
+          <div style="padding-left:48px">tp1=<span class="t-val">1.5</span>R, tp2=<span class="t-val">2.5</span>R</div>
+          <div style="padding-left:32px">)</div>
+          <div class="t-blank"></div>
+          <div><span class="t-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM FAMILIES -->
+<section class="families-section reveal">
+  <div class="section-tag">SYSTEM FAMILIES</div>
+  <div class="families-grid">
+
+    <!-- OMEGA -->
+    <div class="family-card">
+      <div class="family-header">
+        <div class="family-glow omega"></div>
+        <div class="family-icon omega">OMEGA</div>
+        <div class="family-subtitle">// GOLD · XAUUSD · MT5</div>
+        <div class="family-desc">Built specifically for gold trading on MetaTrader 5. Session-aware, ATR-filtered, and structured around real XAUUSD market behaviour. The flagship family.</div>
+      </div>
+      <div class="family-body">
+        <div class="bot-list">
+          <div class="bot-item">
+            <div class="bot-dot live"></div>
+            <div class="bot-info"><div class="bot-name">OMEGA GS</div><div class="bot-pair">XAUUSD · 5M · EMA Cross + ATR</div></div>
+            <span class="bot-badge badge-live">LIVE</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot beta"></div>
+            <div class="bot-info"><div class="bot-name">OMEGA SCALPER</div><div class="bot-pair">XAUUSD · 1M · Fast momentum</div></div>
+            <span class="bot-badge badge-beta">BETA</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot dev"></div>
+            <div class="bot-info"><div class="bot-name">OMEGA SWING</div><div class="bot-pair">XAUUSD · 4H · Structure based</div></div>
+            <span class="bot-badge badge-dev">IN DEV</span>
+          </div>
+        </div>
+        <a href="pricing.html" class="family-cta">ACCESS OMEGA FAMILY →</a>
+      </div>
+    </div>
+
+    <!-- NOVA -->
+    <div class="family-card">
+      <div class="family-header">
+        <div class="family-glow nova"></div>
+        <div class="family-icon nova">NOVA</div>
+        <div class="family-subtitle">// CRYPTO · BYBIT · PERPETUALS</div>
+        <div class="family-desc">Designed for crypto perpetual futures on Bybit. Isolated margin, multi-asset, built to handle the speed and volatility of crypto markets without blowing up.</div>
+      </div>
+      <div class="family-body">
+        <div class="bot-list">
+          <div class="bot-item">
+            <div class="bot-dot live"></div>
+            <div class="bot-info"><div class="bot-name">NOVA BTC</div><div class="bot-pair">BTCUSDT · 1H · Bybit Perp</div></div>
+            <span class="bot-badge badge-live">LIVE</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot beta"></div>
+            <div class="bot-info"><div class="bot-name">NOVA ETH</div><div class="bot-pair">ETHUSDT · 1H · Bybit Perp</div></div>
+            <span class="bot-badge badge-beta">BETA</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot beta"></div>
+            <div class="bot-info"><div class="bot-name">NOVA SOL</div><div class="bot-pair">SOLUSDT · 30M · Bybit Perp</div></div>
+            <span class="bot-badge badge-beta">BETA</span>
+          </div>
+        </div>
+        <a href="pricing.html" class="family-cta">ACCESS NOVA FAMILY →</a>
+      </div>
+    </div>
+
+    <!-- ALPHA -->
+    <div class="family-card">
+      <div class="family-header">
+        <div class="family-glow alpha"></div>
+        <div class="family-icon alpha">ALPHA</div>
+        <div class="family-subtitle">// SIGNAL EXECUTOR · MT5 + BYBIT</div>
+        <div class="family-desc">No strategy of its own — pure execution engine. Feed it a signal, it handles entry, SL, TP, position sizing and trailing stops automatically. Your discipline, automated.</div>
+      </div>
+      <div class="family-body">
+        <div class="bot-list">
+          <div class="bot-item">
+            <div class="bot-dot live"></div>
+            <div class="bot-info"><div class="bot-name">ALPHA EXECUTOR</div><div class="bot-pair">Any pair · Signal driven · MT5</div></div>
+            <span class="bot-badge badge-live">LIVE</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot beta"></div>
+            <div class="bot-info"><div class="bot-name">ALPHA CRYPTO</div><div class="bot-pair">Any pair · Signal driven · Bybit</div></div>
+            <span class="bot-badge badge-beta">BETA</span>
+          </div>
+          <div class="bot-item">
+            <div class="bot-dot dev"></div>
+            <div class="bot-info"><div class="bot-name">ALPHA TELEGRAM</div><div class="bot-pair">Telegram signal → auto execution</div></div>
+            <span class="bot-badge badge-dev">IN DEV</span>
+          </div>
+        </div>
+        <a href="pricing.html" class="family-cta">ACCESS ALPHA FAMILY →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURED BOT — OMEGA GS -->
+<section class="featured-section reveal">
+  <div class="section-tag">FEATURED SYSTEM — OMEGA GS</div>
+  <div class="featured-bot">
+    <div class="fb-left">
+      <div class="fb-badge">// OMEGA FAMILY · FLAGSHIP</div>
+      <div class="fb-name">OMEGA GS</div>
+      <div class="fb-sub">XAUUSD · 5M · MT5 · LIVE</div>
+      <div class="fb-desc">The most battle-tested system in the RawCore arsenal. Built and refined through months of live trading on XAUUSD. <strong>Every quirk of gold behaviour is accounted for</strong> — session timing, ATR spikes, broker-specific execution. This is the real thing.</div>
+      <div class="fb-specs">
+        <div class="fb-spec"><div class="fb-spec-label">// ASSET</div><div class="fb-spec-val">XAUUSD</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// TIMEFRAME</div><div class="fb-spec-val">5M + 15M filter</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// BROKER</div><div class="fb-spec-val">MT5 compatible</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// STATUS</div><div class="fb-spec-val green">LIVE</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// RISK/TRADE</div><div class="fb-spec-val">1-2% configurable</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// AVG R</div><div class="fb-spec-val amber">1.8R</div></div>
+      </div>
+    </div>
+    <div class="fb-right">
+      <div class="fb-right-title">HOW IT THINKS</div>
+      <div class="logic-steps">
+        <div class="logic-step">
+          <div class="step-num">01</div>
+          <div class="step-text"><strong>Session Filter</strong>London or New York session only. No Asian session trades — gold moves with purpose during these windows.</div>
+        </div>
+        <div class="logic-step">
+          <div class="step-num">02</div>
+          <div class="step-text"><strong>15M Regime Check</strong>Higher timeframe must confirm bullish or bearish bias before any 5M entry is considered.</div>
+        </div>
+        <div class="logic-step">
+          <div class="step-num">03</div>
+          <div class="step-text"><strong>EMA Cross Entry</strong>EMA9 crossing EMA21 on 5M confirms momentum direction. Cross without ATR confirmation is ignored.</div>
+        </div>
+        <div class="logic-step">
+          <div class="step-num">04</div>
+          <div class="step-text"><strong>ATR Volatility Filter</strong>Only trades when market has real movement. Avoids choppy low-volume periods that kill most strategies.</div>
+        </div>
+        <div class="logic-step">
+          <div class="step-num">05</div>
+          <div class="step-text"><strong>4-Leg TP + Trailing SL</strong>Partial closes at TP1, TP2, TP3. Remainder runs with trailing stop — capturing big moves without giving back profit.</div>
+        </div>
+      </div>
+      <div class="fb-access">
+        <span>Full source code available to Core members</span>
+        <a href="pricing.html">JOIN CORE →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY BOTS -->
+<section class="community-section reveal">
+  <div class="section-tag">COMMUNITY BUILT SYSTEMS</div>
+  <div class="community-grid">
+    <div class="community-card">
+      <div class="cc-header">
+        <div>
+          <div class="cc-name">ATR RIDER</div>
+          <div class="cc-author">// by USR_041 · fork of OMEGA GS</div>
+        </div>
+        <span class="bot-badge badge-live">LIVE</span>
+      </div>
+      <div class="cc-desc">Modified OMEGA GS with ATR-based dynamic SL instead of fixed pips. Improved average R by 0.4 across 3 months of testing. Full diff documented.</div>
+      <div class="cc-meta"><span class="up">↑ 89% approval</span><span>· 34 forks</span><span>· XAUUSD</span></div>
+    </div>
+    <div class="community-card">
+      <div class="cc-header">
+        <div>
+          <div class="cc-name">SESSION SCALP</div>
+          <div class="cc-author">// by MarketKing · original build</div>
+        </div>
+        <span class="bot-badge badge-beta">BETA</span>
+      </div>
+      <div class="cc-desc">Ultra-tight 1M scalper for London open first 30 minutes only. High frequency, small targets. Not for everyone but consistently profitable in the right conditions.</div>
+      <div class="cc-meta"><span class="up">↑ 76% approval</span><span>· 21 forks</span><span>· XAUUSD</span></div>
+    </div>
+    <div class="community-card">
+      <div class="cc-header">
+        <div>
+          <div class="cc-name">NOVA MULTI</div>
+          <div class="cc-author">// by AlgoX · fork of NOVA BTC</div>
+        </div>
+        <span class="bot-badge badge-beta">BETA</span>
+      </div>
+      <div class="cc-desc">Multi-asset NOVA fork running BTC, ETH and SOL simultaneously with shared risk budget. Auto-reduces position size when correlation is high.</div>
+      <div class="cc-meta"><span class="up">↑ 81% approval</span><span>· 18 forks</span><span>· CRYPTO</span></div>
+    </div>
+  </div>
+  <div style="margin-top:1px;background:var(--dark);border:1px solid var(--border);padding:20px 28px;font-family:var(--mono);font-size:11px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center;">
+    <span>Community bots require Core membership to access. Publish your own bot and earn <span style="color:var(--green)">+500 Core Credits.</span></span>
+    <a href="pricing.html" style="color:var(--green);text-decoration:none;">JOIN CORE →</a>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="coming-section reveal">
+  <div class="section-tag">IN DEVELOPMENT</div>
+  <div class="coming-grid">
+    <div class="coming-card">
+      <div class="coming-icon">◈</div>
+      <div class="coming-name">OMEGA FOREX</div>
+      <div class="coming-desc">OMEGA logic adapted for major forex pairs. EURUSD, GBPUSD. Session-based with news filter.</div>
+      <div class="coming-eta">// ETA: Q3 2026</div>
+    </div>
+    <div class="coming-card">
+      <div class="coming-icon">⬡</div>
+      <div class="coming-name">ALPHA TELEGRAM</div>
+      <div class="coming-desc">Full Telegram signal to live trade pipeline. Receive signal in channel → bot executes automatically on MT5 or Bybit.</div>
+      <div class="coming-eta">// ETA: Q2 2026</div>
+    </div>
+    <div class="coming-card">
+      <div class="coming-icon">▲</div>
+      <div class="coming-name">NOVA STOCKS</div>
+      <div class="coming-desc">Stock CFD system for US market open. Momentum based, earnings calendar aware, sector rotation logic.</div>
+      <div class="coming-eta">// ETA: Q4 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTE -->
+<section class="contribute-section reveal">
+  <div>
+    <div class="section-tag">BUILD YOUR OWN</div>
+    <h2 class="contrib-title">GOT A SYSTEM<br>IDEA? <span class="green">BUILD IT.</span></h2>
+    <p class="contrib-p">Every bot in the community marketplace started as one person's idea. <strong>You bring the strategy concept</strong> — the community helps refine the logic, test it, and improve it. If it makes the cut, it gets published for all Core members.</p>
+    <p class="contrib-p">You don't need to be an expert coder. You need a clear idea, a willingness to test honestly, and the humility to accept feedback. The community does the rest.</p>
+  </div>
+  <div>
+    <div class="contrib-rewards">
+      <div class="reward-item">
+        <div class="reward-label">Fork an existing system and share improvements<span>Document your changes properly</span></div>
+        <div class="reward-pts">+50</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-label">Submit an original bot for review<span>Full source code + strategy explanation</span></div>
+        <div class="reward-pts">+200</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-label">Bot accepted into Core marketplace<span>Available to all paying members</span></div>
+        <div class="reward-pts">+500</div>
+      </div>
+      <div class="reward-item">
+        <div class="reward-label">Bot reaches 50 community forks<span>Top tier contributor recognition</span></div>
+        <div class="reward-pts">+1000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+  <div class="cta-tag">// READY TO RUN REAL SYSTEMS?</div>
+  <h2 class="cta-title">THE CODE IS<br><span class="green">WAITING.</span></h2>
+  <p class="cta-sub">// Full source code. Real documentation. Community support.<br>// Everything you need to run, modify, and improve these systems.</p>
+  <div class="cta-btns">
+    <a href="pricing.html" class="btn-primary">JOIN CORE — ACCESS ALL SYSTEMS →</a>
+    <a href="knowledge.html" class="btn-secondary">LEARN THE BASICS FIRST</a>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="knowledge.html">Knowledge</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span>© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</span>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

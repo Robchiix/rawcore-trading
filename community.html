@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.012) 2px, rgba(0,255,136,0.012) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(5,6,8,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
+  .nav-logo span { color: var(--green); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .nav-cta:hover { background: var(--green); color: var(--black); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 80px 80px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'COMMUNITY';
+    position: absolute;
+    right: -40px; top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--display);
+    font-size: 200px;
+    color: var(--green);
+    opacity: 0.02;
+    pointer-events: none;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+  }
+
+  .hero-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.6s forwards 0.1s; }
+  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--green); }
+
+  .hero-title { font-family: var(--display); font-size: clamp(60px, 8vw, 110px); line-height: 0.9; color: var(--text-bright); margin-bottom: 32px; opacity: 0; animation: fadeUp 0.6s forwards 0.2s; }
+  .hero-title .green { color: var(--green); }
+
+  .hero-sub { max-width: 620px; font-size: 17px; line-height: 1.7; color: var(--text-dim); opacity: 0; animation: fadeUp 0.6s forwards 0.3s; }
+  .hero-sub strong { color: var(--text); }
+
+  .hero-stats { display: flex; gap: 48px; margin-top: 48px; opacity: 0; animation: fadeUp 0.6s forwards 0.4s; }
+  .hero-stat { }
+  .stat-val { font-family: var(--display); font-size: 48px; color: var(--text-bright); line-height: 1; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.red { color: var(--red); }
+  .stat-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-top: 4px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 48px; display: flex; align-items: center; gap: 12px; }
+  .section-tag::before { content: '//'; color: var(--text-dim); }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 0;
+  }
+
+  .how-card {
+    background: var(--dark);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .how-card:hover { background: var(--card); }
+  .how-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.3s; }
+  .how-card:hover::before { background: var(--green); }
+
+  .how-num { font-family: var(--display); font-size: 80px; color: var(--green); opacity: 0.06; line-height: 1; margin-bottom: -20px; }
+  .how-icon { font-family: var(--mono); font-size: 20px; color: var(--green); margin-bottom: 16px; }
+  .how-title { font-family: var(--display); font-size: 26px; color: var(--text-bright); letter-spacing: 0.05em; margin-bottom: 12px; }
+  .how-desc { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+
+  /* TIERS */
+  .tiers-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .tiers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .tier-card {
+    background: var(--dark);
+    padding: 48px 40px;
+    position: relative;
+  }
+
+  .tier-card.core {
+    background: var(--card);
+    outline: 1px solid var(--green);
+    outline-offset: -1px;
+  }
+
+  .tier-badge { font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em; padding: 4px 10px; border: 1px solid; display: inline-block; margin-bottom: 20px; }
+  .tier-badge.free { border-color: var(--text-dim); color: var(--text-dim); }
+  .tier-badge.core-badge { border-color: var(--green); color: var(--green); }
+
+  .tier-name { font-family: var(--display); font-size: 48px; color: var(--text-bright); line-height: 1; margin-bottom: 8px; }
+  .tier-desc { font-size: 14px; color: var(--text-dim); margin-bottom: 32px; line-height: 1.6; }
+
+  .tier-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .tier-features li { font-family: var(--mono); font-size: 11px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .tier-features li.on { color: var(--text); }
+  .tier-features li.on::before { content: '→'; color: var(--green); flex-shrink: 0; }
+  .tier-features li.off::before { content: '×'; color: var(--border); flex-shrink: 0; }
+
+  .tier-btn { width: 100%; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.2s; text-decoration: none; display: block; text-align: center; }
+  .tier-btn:hover { border-color: var(--green); color: var(--green); }
+  .tier-btn.featured { background: var(--green); color: var(--black); border-color: var(--green); font-weight: 700; }
+  .tier-btn.featured:hover { opacity: 0.9; }
+
+  /* CORE POT */
+  .pot-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+  .pot-left { }
+  .pot-title { font-family: var(--display); font-size: clamp(40px, 4vw, 60px); color: var(--text-bright); line-height: 0.95; margin-bottom: 24px; }
+  .pot-title .green { color: var(--green); }
+  .pot-p { font-size: 15px; color: var(--text-dim); line-height: 1.75; margin-bottom: 16px; }
+  .pot-p strong { color: var(--text); }
+
+  .pot-choices { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
+  .pot-choice { font-family: var(--mono); font-size: 10px; padding: 8px 16px; border: 1px solid var(--border); color: var(--text-dim); }
+  .pot-choice.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
+
+  .pot-right { }
+  .pot-box { background: var(--card); border: 1px solid var(--border); padding: 32px; }
+  .pot-box-header { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 24px; display: flex; justify-content: space-between; }
+  .pot-amount-big { font-family: var(--display); font-size: 72px; color: var(--green); line-height: 1; margin-bottom: 4px; }
+  .pot-sub-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 24px; }
+  .pot-bar-wrap { height: 4px; background: var(--border); margin-bottom: 8px; }
+  .pot-bar-fill { height: 4px; background: var(--green); width: 67%; }
+  .pot-bar-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-bottom: 24px; }
+  .pot-divider { height: 1px; background: var(--border); margin-bottom: 16px; }
+  .pot-winner { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .pot-winner span { color: var(--green); }
+
+  /* CREDITS */
+  .credits-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .credits-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
+
+  .credits-left { }
+  .credits-title { font-family: var(--display); font-size: clamp(36px, 4vw, 54px); color: var(--text-bright); line-height: 0.95; margin-bottom: 24px; }
+  .credits-title .green { color: var(--green); }
+  .credits-p { font-size: 15px; color: var(--text-dim); line-height: 1.75; margin-bottom: 16px; }
+
+  .earn-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-top: 32px; }
+  .earn-item { background: var(--dark); padding: 16px 20px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; transition: background 0.2s; }
+  .earn-item:hover { background: var(--card); }
+  .earn-action { font-family: var(--mono); font-size: 11px; color: var(--text); }
+  .earn-action span { color: var(--text-dim); font-size: 10px; display: block; margin-top: 3px; }
+  .earn-pts { font-family: var(--display); font-size: 24px; color: var(--green); }
+
+  .credits-right { }
+  .lb-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 16px; }
+  .lb-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .lb-item { background: var(--dark); padding: 14px 16px; display: grid; grid-template-columns: 24px 32px 1fr auto; gap: 10px; align-items: center; transition: background 0.2s; }
+  .lb-item:hover { background: var(--card); }
+  .lb-rank { font-family: var(--mono); font-size: 11px; color: var(--text-dim); text-align: center; }
+  .lb-rank.g { color: var(--amber); }
+  .lb-rank.s { color: #c8d4e0; }
+  .lb-rank.b { color: #cd7c2e; }
+  .lb-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .lb-info { }
+  .lb-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); }
+  .lb-badge { font-size: 10px; color: var(--text-dim); }
+  .lb-score { font-family: var(--display); font-size: 22px; color: var(--green); }
+  .lb-bar { height: 2px; background: var(--border); margin-top: 4px; }
+  .lb-bar-fill { height: 2px; background: var(--green); }
+
+  /* CONTRIBUTORS */
+  .contrib-section {
+    padding: 100px 80px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .contrib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+  .contrib-left { }
+  .contrib-title { font-family: var(--display); font-size: clamp(36px, 4vw, 54px); color: var(--text-bright); line-height: 0.95; margin-bottom: 24px; }
+  .contrib-title .green { color: var(--green); }
+  .contrib-p { font-size: 15px; color: var(--text-dim); line-height: 1.75; margin-bottom: 16px; }
+
+  .contrib-perks { display: flex; flex-direction: column; gap: 1px; background: var(--border); margin-top: 24px; }
+  .contrib-perk { background: var(--dark); padding: 16px 20px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); display: flex; gap: 12px; align-items: center; }
+  .contrib-perk::before { content: '→'; color: var(--green); flex-shrink: 0; }
+
+  .contrib-right { }
+
+  /* FORM */
+  .reg-form { background: var(--card); border: 1px solid var(--border); padding: 32px; }
+  .form-header { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; display: block; margin-bottom: 7px; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--black);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); }
+  .form-textarea { height: 100px; resize: vertical; }
+  .form-select { cursor: pointer; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .form-submit { width: 100%; font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; margin-top: 8px; transition: opacity 0.2s; }
+  .form-submit:hover { opacity: 0.9; }
+  .form-note { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 12px; text-align: center; }
+
+  /* TELEGRAM CTA */
+  .telegram-section {
+    padding: 80px;
+    text-align: center;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .telegram-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,255,136,0.05);
+    pointer-events: none;
+  }
+
+  .tg-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 20px; position: relative; z-index: 1; }
+  .tg-title { font-family: var(--display); font-size: clamp(36px, 4vw, 60px); color: var(--text-bright); line-height: 0.95; margin-bottom: 16px; position: relative; z-index: 1; }
+  .tg-title .green { color: var(--green); }
+  .tg-sub { font-family: var(--mono); font-size: 12px; color: var(--text-dim); margin-bottom: 32px; position: relative; z-index: 1; }
+  .tg-btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 32px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; position: relative; z-index: 1; transition: opacity 0.2s; }
+  .tg-btn:hover { opacity: 0.9; }
+
+  footer { padding: 32px 80px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-dim); border-top: 1px solid var(--border); }
+  .footer-logo { color: var(--text-bright); text-decoration: none; }
+  .footer-logo span { color: var(--green); }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--green); }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="community.html" class="active">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="pricing.html" class="nav-cta">JOIN THE CORE →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">// THE CORE COMMUNITY</div>
+  <h1 class="hero-title">BUILDERS.<br>THINKERS.<br><span class="green">TRADERS.</span></h1>
+  <p class="hero-sub">
+    Not a Discord full of signal spam. Not a Telegram group pumping coins. 
+    <strong>A real community of people who build systems, share knowledge, and grow together.</strong> 
+    No ego. No noise. Just the core.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="stat-val green">312</div>
+      <div class="stat-label">// ACTIVE MEMBERS</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-val">47</div>
+      <div class="stat-label">// BOT FORKS SHARED</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-val">€134</div>
+      <div class="stat-label">// THIS MONTH'S POT</div>
+    </div>
+    <div class="hero-stat">
+      <div class="stat-val red">0</div>
+      <div class="stat-label">// LAMBOS SHOWN</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section reveal">
+  <div class="section-tag">HOW THE COMMUNITY WORKS</div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01</div>
+      <div class="how-icon">[ JOIN ]</div>
+      <div class="how-title">JOIN FREE OR CORE</div>
+      <div class="how-desc">Start free — access UnguruED content, basic bot templates, and public community. Upgrade to Core when you're ready for the full toolkit, signal feed, and private community.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">02</div>
+      <div class="how-icon">[ BUILD ]</div>
+      <div class="how-title">BUILD AND SHARE</div>
+      <div class="how-desc">Take a bot, improve it, share it back. Ask questions, get real answers — not "buy my course." Every contribution earns Core Credits and builds your reputation in the community.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03</div>
+      <div class="how-icon">[ GROW ]</div>
+      <div class="how-title">GROW TOGETHER</div>
+      <div class="how-desc">The more you give, the more you get. Community-built bots become available to all Core members. Top contributors get their own profile page and recognition. Everyone lifts.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section class="tiers-section reveal">
+  <div class="section-tag">MEMBERSHIP TIERS</div>
+  <div class="tiers-grid">
+    <div class="tier-card">
+      <div class="tier-badge free">// FREE TIER</div>
+      <div class="tier-name">OBSERVER</div>
+      <div class="tier-desc">Get started. See what we're about. No credit card required.</div>
+      <ul class="tier-features">
+        <li class="on">UnguruED content series — full access</li>
+        <li class="on">2 bot sample templates with explanations</li>
+        <li class="on">Broker comparison guide</li>
+        <li class="on">Public Telegram channel</li>
+        <li class="on">Trading psychology fundamentals</li>
+        <li class="off">Full bot library and source code</li>
+        <li class="off">Signal feed with explanations</li>
+        <li class="off">Private Core community</li>
+        <li class="off">Core Credits and leaderboard</li>
+        <li class="off">Monthly Core Pot entry</li>
+      </ul>
+      <a href="contact.html" class="tier-btn">START FREE</a>
+    </div>
+    <div class="tier-card core">
+      <div class="tier-badge core-badge">// CORE MEMBER</div>
+      <div class="tier-name">CORE</div>
+      <div class="tier-desc">Full access. Real tools. Real community. Cancel anytime.</div>
+      <ul class="tier-features">
+        <li class="on">Everything in Free tier</li>
+        <li class="on">Full bot library — source code included</li>
+        <li class="on">Signal feed with full trade explanations</li>
+        <li class="on">Private Core community access</li>
+        <li class="on">Core Credits system and leaderboard</li>
+        <li class="on">Monthly Core Pot entry — €2 contributed</li>
+        <li class="on">Monthly live build sessions</li>
+        <li class="on">Broker setup walkthroughs</li>
+        <li class="on">Community bot marketplace access</li>
+        <li class="on">Early access to new systems</li>
+      </ul>
+      <a href="pricing.html" class="tier-btn featured">JOIN THE CORE →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CORE POT -->
+<section class="pot-section reveal">
+  <div class="pot-grid">
+    <div class="pot-left">
+      <div class="section-tag">THE CORE POT</div>
+      <h2 class="pot-title">WE GIVE BACK.<br><span class="green">EVERY MONTH.</span></h2>
+      <p class="pot-p">Every Core membership contributes <strong>€2/month</strong> into the Core Pot. At the end of each month, one member wins the entire pot — chosen randomly from all active Core members.</p>
+      <p class="pot-p">The winner gets to choose what they do with it. No strings attached. No conditions. Just a community giving back to itself.</p>
+      <div class="pot-choices">
+        <div class="pot-choice active">Trading Funds</div>
+        <div class="pot-choice">Cash Withdrawal</div>
+        <div class="pot-choice">RawCore Merch</div>
+        <div class="pot-choice">Donate It</div>
+      </div>
+    </div>
+    <div class="pot-right">
+      <div class="pot-box">
+        <div class="pot-box-header">
+          <span>// MAY 2026 POT</span>
+          <span style="color:var(--text-dim)">DRAW: MAY 31</span>
+        </div>
+        <div class="pot-amount-big">€134</div>
+        <div class="pot-sub-label">// CURRENT POT VALUE</div>
+        <div class="pot-bar-wrap"><div class="pot-bar-fill"></div></div>
+        <div class="pot-bar-labels"><span>67 members contributing</span><span>67% of month complete</span></div>
+        <div class="pot-divider"></div>
+        <div class="pot-winner">Last winner: <span>USR_041</span> — chose trading funds — Apr 2026</div>
+        <div style="margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--text-dim)">Every active Core member on draw date is automatically entered. No tickets. No catches.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDITS -->
+<section class="credits-section reveal">
+  <div class="credits-grid">
+    <div class="credits-left">
+      <div class="section-tag">CORE CREDITS SYSTEM</div>
+      <h2 class="credits-title">THE MORE YOU<br>GIVE, THE MORE<br><span class="green">YOU EARN.</span></h2>
+      <p class="credits-p">Credits aren't just points — they're your reputation in the community. Top earners get their own contributor profile, early access to new systems, and recognition on the leaderboard.</p>
+      <p class="credits-p">We reward knowledge sharing, not just activity. A message earns a little. A working bot shared with the community earns a lot.</p>
+      <div class="earn-list">
+        <div class="earn-item">
+          <div class="earn-action">Post a message in community<span>Ask questions, share insights, help others</span></div>
+          <div class="earn-pts">+2</div>
+        </div>
+        <div class="earn-item">
+          <div class="earn-action">Share a trade breakdown<span>Entry, exit, reasoning, result</span></div>
+          <div class="earn-pts">+20</div>
+        </div>
+        <div class="earn-item">
+          <div class="earn-action">Fork and improve an existing bot<span>Document your changes and share the diff</span></div>
+          <div class="earn-pts">+50</div>
+        </div>
+        <div class="earn-item">
+          <div class="earn-action">Publish an original bot to the library<span>Reviewed and approved by Core team</span></div>
+          <div class="earn-pts">+200</div>
+        </div>
+        <div class="earn-item">
+          <div class="earn-action">Bot accepted into Core marketplace<span>Available to all paying members</span></div>
+          <div class="earn-pts">+500</div>
+        </div>
+      </div>
+    </div>
+    <div class="credits-right">
+      <div class="lb-title">// THIS MONTH'S LEADERBOARD</div>
+      <div class="lb-list">
+        <div class="lb-item">
+          <div class="lb-rank g">1</div>
+          <div class="lb-avatar">MK</div>
+          <div class="lb-info"><div class="lb-name">MarketKing</div><div class="lb-badge">3 bots published</div><div class="lb-bar"><div class="lb-bar-fill" style="width:100%;background:var(--amber)"></div></div></div>
+          <div class="lb-score" style="color:var(--amber)">4,820</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank s">2</div>
+          <div class="lb-avatar">AX</div>
+          <div class="lb-info"><div class="lb-name">AlgoX</div><div class="lb-badge">1 bot published</div><div class="lb-bar"><div class="lb-bar-fill" style="width:78%"></div></div></div>
+          <div class="lb-score">3,760</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank b">3</div>
+          <div class="lb-avatar">ST</div>
+          <div class="lb-info"><div class="lb-name">SteadyTrade</div><div class="lb-badge">Top contributor</div><div class="lb-bar"><div class="lb-bar-fill" style="width:62%"></div></div></div>
+          <div class="lb-score">2,990</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank" style="color:var(--text-dim)">4</div>
+          <div class="lb-avatar">GF</div>
+          <div class="lb-info"><div class="lb-name">GoldFox</div><div class="lb-badge">Active in signals</div><div class="lb-bar"><div class="lb-bar-fill" style="width:48%"></div></div></div>
+          <div class="lb-score">2,310</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank" style="color:var(--text-dim)">5</div>
+          <div class="lb-avatar">RW</div>
+          <div class="lb-info"><div class="lb-name">RawWick</div><div class="lb-badge">2 bot forks shared</div><div class="lb-bar"><div class="lb-bar-fill" style="width:38%"></div></div></div>
+          <div class="lb-score">1,840</div>
+        </div>
+        <div class="lb-item">
+          <div class="lb-rank" style="color:var(--text-dim)">6</div>
+          <div class="lb-avatar">PL</div>
+          <div class="lb-info"><div class="lb-name">PipLord</div><div class="lb-badge">Trade breakdowns</div><div class="lb-bar"><div class="lb-bar-fill" style="width:30%"></div></div></div>
+          <div class="lb-score">1,440</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:var(--black);border:1px solid var(--border);font-family:var(--mono);font-size:10px;color:var(--text-dim)">
+        Leaderboard resets monthly. Top 3 earn contributor profile pages and early system access.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTORS -->
+<section class="contrib-section reveal">
+  <div class="contrib-grid">
+    <div class="contrib-left">
+      <div class="section-tag">CORE CONTRIBUTORS</div>
+      <h2 class="contrib-title">GOT KNOWLEDGE?<br><span class="green">SHARE IT HERE.</span></h2>
+      <p class="contrib-p">RawCore is built on knowledge exchange. If you run a trading community, have genuine expertise in a specific market, strategy, or tool — we want you as a Core Contributor.</p>
+      <p class="contrib-p">No payment. No hidden deals. You get a profile page, visibility to our community, and the satisfaction of actually helping people — not selling them false hopes.</p>
+      <p class="contrib-p">Contributors are vetted. Not everyone gets in. That's what keeps the quality high.</p>
+      <div class="contrib-perks">
+        <div class="contrib-perk">Your own contributor profile page on rawcoretrading.com</div>
+        <div class="contrib-perk">Access to contributor-only community channels</div>
+        <div class="contrib-perk">Core Contributor badge across the platform</div>
+        <div class="contrib-perk">Link back to your own community or platform</div>
+        <div class="contrib-perk">Collaborate on content, bots, and breakdowns</div>
+        <div class="contrib-perk">Zero financial arrangement — knowledge only</div>
+      </div>
+    </div>
+    <div class="contrib-right">
+      <div class="reg-form">
+        <div class="form-header">// CONTRIBUTOR REGISTRATION — APPLY NOW</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">// YOUR NAME</label>
+            <input class="form-input" type="text" placeholder="First name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">// HANDLE / USERNAME</label>
+            <input class="form-input" type="text" placeholder="@yourhandle" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">// EMAIL</label>
+          <input class="form-input" type="email" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">// YOUR COMMUNITY OR PLATFORM</label>
+          <input class="form-input" type="text" placeholder="Telegram group, YouTube, website etc." />
+        </div>
+        <div class="form-group">
+          <label class="form-label">// AREA OF EXPERTISE</label>
+          <select class="form-select">
+            <option value="">Select your main area</option>
+            <option>Gold / XAUUSD Trading</option>
+            <option>Crypto Trading</option>
+            <option>Forex Trading</option>
+            <option>Trading Bot Development</option>
+            <option>Technical Analysis</option>
+            <option>Risk Management</option>
+            <option>Trading Psychology</option>
+            <option>Market Structure / ICT Concepts</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">// WHAT WOULD YOU BRING TO RAWCORE?</label>
+          <textarea class="form-textarea" placeholder="Tell us about your knowledge, your community, and how you'd contribute. Be specific — generic answers don't make the cut."></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit()">SUBMIT APPLICATION →</button>
+        <p class="form-note">// We review every application personally. No bots. No auto-replies. Expect a response within 48 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TELEGRAM CTA -->
+<section class="telegram-section reveal">
+  <div class="tg-tag">// JOIN THE CONVERSATION NOW</div>
+  <h2 class="tg-title">THE COMMUNITY IS<br>ALREADY <span class="green">LIVE.</span></h2>
+  <p class="tg-sub">// t.me/rawcoretrading — free to join, no sign up required</p>
+  <a href="https://t.me/rawcoretrading" target="_blank" class="tg-btn">
+    <span>→</span> JOIN ON TELEGRAM
+  </a>
+</section>
+
+<footer>
+  <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span>© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</span>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function handleSubmit() {
+  const btn = document.querySelector('.form-submit');
+  btn.textContent = 'APPLICATION SENT ✓';
+  btn.style.background = 'var(--border)';
+  btn.style.color = 'var(--green)';
+  btn.disabled = true;
+}
+
+document.querySelectorAll('.pot-choice').forEach(c => {
+  c.addEventListener('click', function() {
+    document.querySelectorAll('.pot-choice').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

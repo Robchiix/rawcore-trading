@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* MEMBER NAV */
+  .member-nav {
+    height: 56px;
+    background: rgba(5,6,8,0.98);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+  }
+
+  .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
+  .nav-logo span { color: var(--green); }
+
+  .nav-items { display: flex; gap: 0; flex: 1; }
+
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; gap: 7px; cursor: pointer; }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center; }
+
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
+  .nav-credits::before { content: '◈'; font-size: 10px; }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
+
+  /* MARKET BAR */
+  .market-bar { padding: 8px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; background: var(--black); flex-shrink: 0; overflow-x: auto; }
+  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+  .market-sym { color: var(--text-bright); }
+  .market-price { color: var(--text); }
+  .market-change.up { color: var(--green); }
+  .market-change.dn { color: var(--red); }
+
+  /* DASHBOARD BODY */
+  .dash-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* WELCOME BAR */
+  .welcome-bar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--dark); border: 1px solid var(--border); border-left: 2px solid var(--green); }
+  .welcome-left { }
+  .welcome-greeting { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 4px; }
+  .welcome-name { font-family: var(--display); font-size: 28px; color: var(--text-bright); letter-spacing: 0.05em; line-height: 1; }
+  .welcome-name span { color: var(--green); }
+  .welcome-right { display: flex; gap: 12px; align-items: center; }
+  .welcome-stat { text-align: center; }
+  .welcome-stat-val { font-family: var(--display); font-size: 24px; color: var(--text-bright); line-height: 1; }
+  .welcome-stat-val.green { color: var(--green); }
+  .welcome-stat-val.amber { color: var(--amber); }
+  .welcome-stat-val.blue { color: var(--blue); }
+  .welcome-stat-label { font-family: var(--mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.15em; margin-top: 3px; }
+  .welcome-divider { width: 1px; height: 40px; background: var(--border); }
+
+  /* STAT CARDS ROW */
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  .stat-card { background: var(--card); border: 1px solid var(--border); padding: 16px 18px; position: relative; overflow: hidden; transition: border-color 0.2s; cursor: pointer; }
+  .stat-card:hover { border-color: var(--green); }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.amber::before { background: var(--amber); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.red::before { background: var(--red); }
+
+  .sc-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 8px; }
+  .sc-val { font-family: var(--display); font-size: 32px; color: var(--text-bright); line-height: 1; margin-bottom: 4px; }
+  .sc-val.green { color: var(--green); }
+  .sc-val.amber { color: var(--amber); }
+  .sc-val.blue { color: var(--blue); }
+  .sc-val.red { color: var(--red); }
+  .sc-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .sc-sub.up { color: var(--green); }
+  .sc-sub.dn { color: var(--red); }
+
+  /* MAIN GRID */
+  .main-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px; }
+  .side-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+  /* PANEL */
+  .panel { background: var(--card); border: 1px solid var(--border); overflow: hidden; }
+  .panel-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; }
+  .panel-action { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s; text-decoration: none; }
+  .panel-action:hover { color: var(--green); }
+  .panel-body { padding: 14px 16px; }
+
+  /* BOT PROJECTS */
+  .bot-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+
+  .bot-row { background: var(--dark); padding: 12px 14px; display: grid; grid-template-columns: auto 1fr auto auto; gap: 12px; align-items: center; cursor: pointer; transition: background 0.15s; }
+  .bot-row:hover { background: var(--black); }
+
+  .bot-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .bot-dot.live { background: var(--green); animation: pulse 2s infinite; }
+  .bot-dot.idle { background: var(--text-dim); }
+  .bot-dot.dev { background: var(--amber); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .bot-info { }
+  .bot-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); }
+  .bot-pair { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+  .bot-rr { font-family: var(--display); font-size: 20px; }
+  .bot-rr.pos { color: var(--green); }
+  .bot-rr.neg { color: var(--red); }
+  .bot-rr.neu { color: var(--text-dim); }
+
+  .bot-open { font-family: var(--mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); padding: 3px 8px; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .bot-open:hover { border-color: var(--green); color: var(--green); }
+
+  /* AI BOX */
+  .ai-box { background: var(--black); border: 1px solid rgba(59,130,246,0.2); padding: 12px 14px; margin-top: 12px; }
+  .ai-box-label { font-family: var(--mono); font-size: 9px; color: var(--blue); letter-spacing: 0.2em; margin-bottom: 10px; }
+  .ai-box-input { width: 100%; background: var(--dark); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 9px 12px; outline: none; transition: border-color 0.2s; }
+  .ai-box-input:focus { border-color: var(--blue); }
+  .ai-box-input::placeholder { color: var(--text-dim); opacity: 0.4; }
+  .ai-response { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 10px; line-height: 1.6; display: none; border-left: 2px solid var(--blue); padding-left: 10px; }
+  .ai-response.show { display: block; color: var(--text); }
+  .ai-response .hi { color: var(--green); }
+
+  /* LIVE FEED */
+  .feed-list { display: flex; flex-direction: column; }
+  .feed-msg { padding: 10px 0; border-bottom: 1px solid rgba(26,31,38,0.5); display: grid; grid-template-columns: 44px auto 1fr; gap: 8px; align-items: start; }
+  .feed-msg:last-child { border-bottom: none; }
+  .feed-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); padding-top: 2px; }
+  .feed-tag { font-family: var(--mono); font-size: 9px; padding: 2px 6px; border: 1px solid; white-space: nowrap; }
+  .feed-tag.core { background: var(--green-muted); color: var(--green); border-color: rgba(0,255,136,0.2); }
+  .feed-tag.member { background: rgba(90,106,122,0.1); color: var(--text-dim); border-color: var(--border); }
+  .feed-tag.signal { background: rgba(255,51,85,0.08); color: var(--red); border-color: rgba(255,51,85,0.2); }
+  .feed-tag.expose { background: rgba(245,158,11,0.08); color: var(--amber); border-color: rgba(245,158,11,0.2); }
+  .feed-text { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .feed-text .hi { color: var(--green); }
+  .feed-text .lo { color: var(--red); }
+
+  /* LEADERBOARD */
+  .lb-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .lb-row { background: var(--dark); padding: 10px 14px; display: grid; grid-template-columns: 20px 28px 1fr auto; gap: 10px; align-items: center; transition: background 0.15s; cursor: pointer; }
+  .lb-row:hover { background: var(--black); }
+  .lb-row.you { background: rgba(59,130,246,0.06); border-left: 2px solid var(--blue); }
+  .lb-rank { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-align: center; }
+  .lb-rank.g { color: var(--amber); }
+  .lb-rank.s { color: #c8d4e0; }
+  .lb-rank.b { color: #cd7c2e; }
+  .lb-av { width: 24px; height: 24px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .lb-av.you-av { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.2); }
+  .lb-info { }
+  .lb-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); }
+  .lb-name.you-name { color: var(--blue); }
+  .lb-bar-wrap { height: 2px; background: var(--border); margin-top: 4px; }
+  .lb-bar-fill { height: 2px; background: var(--green); }
+  .lb-score { font-family: var(--display); font-size: 20px; color: var(--green); }
+  .lb-score.you-score { color: var(--blue); }
+
+  /* CORE POT */
+  .pot-box { background: var(--black); border: 1px solid rgba(0,255,136,0.15); padding: 16px; }
+  .pot-amount { font-family: var(--display); font-size: 48px; color: var(--green); line-height: 1; }
+  .pot-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-bottom: 12px; }
+  .pot-bar-wrap { height: 3px; background: var(--border); margin-bottom: 6px; }
+  .pot-bar { height: 3px; background: var(--green); width: 67%; }
+  .pot-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-bottom: 12px; }
+  .pot-choices { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pot-choice { font-family: var(--mono); font-size: 9px; padding: 4px 10px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
+  .pot-choice.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
+
+  /* KNOWLEDGE PROGRESS */
+  .progress-list { display: flex; flex-direction: column; gap: 10px; }
+  .progress-item { }
+  .progress-header { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; margin-bottom: 5px; }
+  .progress-name { color: var(--text); }
+  .progress-pct { color: var(--text-dim); }
+  .progress-bar-wrap { height: 3px; background: var(--border); }
+  .progress-bar-fill { height: 3px; transition: width 1s ease; }
+
+  /* QUICK ACTIONS */
+  .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .action-btn { background: var(--dark); border: 1px solid var(--border); padding: 14px 12px; cursor: pointer; transition: all 0.15s; text-decoration: none; display: flex; flex-direction: column; gap: 6px; }
+  .action-btn:hover { border-color: var(--green); background: var(--card); }
+  .action-icon { font-family: var(--mono); font-size: 16px; color: var(--green); }
+  .action-name { font-family: var(--mono); font-size: 10px; color: var(--text-bright); letter-spacing: 0.1em; }
+  .action-desc { font-size: 11px; color: var(--text-dim); }
+
+  /* SIGNAL CARD */
+  .signal-mini { background: var(--black); border: 1px solid rgba(0,255,136,0.15); border-left: 2px solid var(--green); padding: 12px 14px; margin-bottom: 8px; }
+  .signal-mini.bear { border-color: rgba(255,51,85,0.15); border-left-color: var(--red); }
+  .sm-header { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; margin-bottom: 8px; }
+  .sm-type { color: var(--green); }
+  .sm-type.bear { color: var(--red); }
+  .sm-time { color: var(--text-dim); }
+  .sm-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .sm-field { font-family: var(--mono); font-size: 10px; }
+  .sm-label { color: var(--text-dim); font-size: 9px; }
+  .sm-val { color: var(--text-bright); }
+  .sm-val.g { color: var(--green); }
+  .sm-val.r { color: var(--red); }
+
+  /* BOTTOM GRID */
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+</style>
+</head>
+<body>
+
+<!-- MEMBER NAV -->
+<nav class="member-nav">
+  <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
+  <div class="nav-items">
+    <a href="member-dashboard.html" class="nav-item active">Home</a>
+    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
+    <a href="member-bots.html" class="nav-item">Bots</a>
+    <a href="member-knowledge.html" class="nav-item">Learn</a>
+    <a href="member-core.html" class="nav-item">My Core</a>
+    <a href="member-shop.html" class="nav-item">Shop</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-credits">1,240 pts</div>
+    <div class="nav-user">
+      <div class="nav-avatar">RC</div>
+      <span>Robchiix</span>
+      <div class="nav-tier">CORE</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MARKET BAR -->
+<div class="market-bar">
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
+  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
+  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
+  <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
+  <div class="market-item"><span class="market-sym">SOLUSD</span><span class="market-price">182.40</span><span class="market-change up">▲ +2.1%</span></div>
+  <div class="market-item"><span class="market-sym">GBPUSD</span><span class="market-price">1.2614</span><span class="market-change dn">▼ -0.06%</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" style="color:var(--green)">LONDON</span><span class="market-change up">● ACTIVE</span></div>
+</div>
+
+<div class="dash-body">
+
+  <!-- WELCOME BAR -->
+  <div class="welcome-bar">
+    <div class="welcome-left">
+      <div class="welcome-greeting">// GOOD MORNING</div>
+      <div class="welcome-name">WELCOME BACK, <span>ROBCHIIX</span></div>
+    </div>
+    <div class="welcome-right">
+      <div class="welcome-stat">
+        <div class="welcome-stat-val green">ACTIVE</div>
+        <div class="welcome-stat-label">SUBSCRIPTION</div>
+      </div>
+      <div class="welcome-divider"></div>
+      <div class="welcome-stat">
+        <div class="welcome-stat-val blue">1,240</div>
+        <div class="welcome-stat-label">CORE CREDITS</div>
+      </div>
+      <div class="welcome-divider"></div>
+      <div class="welcome-stat">
+        <div class="welcome-stat-val amber">#7</div>
+        <div class="welcome-stat-label">LEADERBOARD</div>
+      </div>
+      <div class="welcome-divider"></div>
+      <div class="welcome-stat">
+        <div class="welcome-stat-val">3</div>
+        <div class="welcome-stat-label">ACTIVE BOTS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-row">
+    <div class="stat-card green">
+      <div class="sc-label">// SUBSCRIPTION</div>
+      <div class="sc-val green">CORE</div>
+      <div class="sc-sub">Next billing: May 16</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="sc-label">// CORE CREDITS</div>
+      <div class="sc-val blue">1,240</div>
+      <div class="sc-sub up">+50 this week</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="sc-label">// RANK THIS MONTH</div>
+      <div class="sc-val amber">#7</div>
+      <div class="sc-sub up">↑ 2 positions</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">// CORE POT ENTRY</div>
+      <div class="sc-val green">€134</div>
+      <div class="sc-sub">Draw: May 31</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+
+    <!-- LEFT — BOTS + AI -->
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// ACTIVE BOT PROJECTS</span>
+          <a href="member-bots.html" class="panel-action">VIEW ALL →</a>
+        </div>
+        <div class="panel-body">
+          <div class="bot-list">
+            <div class="bot-row">
+              <div class="bot-dot live"></div>
+              <div class="bot-info"><div class="bot-name">OMEGA GS</div><div class="bot-pair">XAUUSD · 5M · MT5 · Tradequo</div></div>
+              <div class="bot-rr pos">+2.1R</div>
+              <a href="member-bots.html" class="bot-open">OPEN</a>
+            </div>
+            <div class="bot-row">
+              <div class="bot-dot live"></div>
+              <div class="bot-info"><div class="bot-name">NOVA BTC</div><div class="bot-pair">BTCUSDT · 1H · Bybit Perp</div></div>
+              <div class="bot-rr pos">+1.4R</div>
+              <a href="member-bots.html" class="bot-open">OPEN</a>
+            </div>
+            <div class="bot-row">
+              <div class="bot-dot idle"></div>
+              <div class="bot-info"><div class="bot-name">ALPHA EXECUTOR</div><div class="bot-pair">Signal based · MT5 · Waiting</div></div>
+              <div class="bot-rr neu">IDLE</div>
+              <a href="member-bots.html" class="bot-open">OPEN</a>
+            </div>
+            <div class="bot-row">
+              <div class="bot-dot dev"></div>
+              <div class="bot-info"><div class="bot-name">Community Fork #14</div><div class="bot-pair">EURUSD · 30M · In testing</div></div>
+              <div class="bot-rr neu">TEST</div>
+              <a href="member-bots.html" class="bot-open">OPEN</a>
+            </div>
+          </div>
+
+          <div class="ai-box">
+            <div class="ai-box-label">// CORE AI — ASK ABOUT YOUR BOTS</div>
+            <input class="ai-box-input" id="aiInput" placeholder="e.g. why did OMEGA GS not trade this morning?" onkeydown="if(event.key==='Enter') askAI()" />
+            <div class="ai-response" id="aiResponse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LATEST SIGNALS -->
+      <div class="panel" style="margin-top:12px">
+        <div class="panel-head">
+          <span class="panel-title">// LATEST SIGNALS</span>
+          <a href="core-room.html" class="panel-action">FULL FEED →</a>
+        </div>
+        <div class="panel-body">
+          <div class="signal-mini">
+            <div class="sm-header"><span class="sm-type">▲ LONG · XAUUSD</span><span class="sm-time">09:14 · London</span></div>
+            <div class="sm-body">
+              <div class="sm-field"><div class="sm-label">ENTRY</div><div class="sm-val">2,339.40</div></div>
+              <div class="sm-field"><div class="sm-label">SL</div><div class="sm-val r">2,335.80</div></div>
+              <div class="sm-field"><div class="sm-label">TP1</div><div class="sm-val g">2,344.80</div></div>
+            </div>
+          </div>
+          <div class="signal-mini bear">
+            <div class="sm-header"><span class="sm-type bear">▼ SHORT · BTCUSD</span><span class="sm-time">08:44 · London</span></div>
+            <div class="sm-body">
+              <div class="sm-field"><div class="sm-label">ENTRY</div><div class="sm-val">71,420</div></div>
+              <div class="sm-field"><div class="sm-label">SL</div><div class="sm-val r">71,890</div></div>
+              <div class="sm-field"><div class="sm-label">TP1</div><div class="sm-val g">70,680</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="side-grid">
+
+      <!-- LIVE FEED -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// CORE FEED</span>
+          <a href="core-room.html" class="panel-action">OPEN ROOM →</a>
+        </div>
+        <div class="panel-body" style="padding:0 16px">
+          <div class="feed-list">
+            <div class="feed-msg">
+              <span class="feed-time">09:14</span>
+              <span class="feed-tag core">CORE</span>
+              <div class="feed-text">XAUUSD EMA cross confirmed. London bias <span class="hi">bullish</span>. Signal posted.</div>
+            </div>
+            <div class="feed-msg">
+              <span class="feed-time">09:06</span>
+              <span class="feed-tag member">USR_041</span>
+              <div class="feed-text">ATR Rider fork live — improved SL logic. Results in #systems</div>
+            </div>
+            <div class="feed-msg">
+              <span class="feed-time">08:58</span>
+              <span class="feed-tag signal">SIGNAL</span>
+              <div class="feed-text">BTC sweep below <span class="lo">71,200</span>. Short bias confirmed.</div>
+            </div>
+            <div class="feed-msg">
+              <span class="feed-time">08:44</span>
+              <span class="feed-tag expose">UNGURUED</span>
+              <div class="feed-text">New episode — ICT $1,500 course breakdown. Thread in #ungurued</div>
+            </div>
+            <div class="feed-msg">
+              <span class="feed-time">08:31</span>
+              <span class="feed-tag member">GoldFox</span>
+              <div class="feed-text">TP1 hit on XAUUSD <span class="hi">+1.5R</span> — SL to breakeven. Running.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// QUICK ACTIONS</span>
+        </div>
+        <div class="panel-body">
+          <div class="actions-grid">
+            <a href="core-room.html" class="action-btn">
+              <div class="action-icon">#</div>
+              <div class="action-name">CORE ROOM</div>
+              <div class="action-desc">Join the live chat</div>
+            </a>
+            <a href="member-bots.html" class="action-btn">
+              <div class="action-icon">&lt;/&gt;</div>
+              <div class="action-name">BOT LIBRARY</div>
+              <div class="action-desc">Browse all systems</div>
+            </a>
+            <a href="member-knowledge.html" class="action-btn">
+              <div class="action-icon">◎</div>
+              <div class="action-name">CONTINUE LEARNING</div>
+              <div class="action-desc">Risk management · L3</div>
+            </a>
+            <a href="member-shop.html" class="action-btn">
+              <div class="action-icon">▲</div>
+              <div class="action-name">SHOP</div>
+              <div class="action-desc">Member discount active</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="bottom-grid">
+
+    <!-- LEADERBOARD -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">// LEADERBOARD</span>
+        <a href="member-core.html" class="panel-action">FULL BOARD →</a>
+      </div>
+      <div class="panel-body" style="padding:0">
+        <div class="lb-list">
+          <div class="lb-row">
+            <div class="lb-rank g">1</div>
+            <div class="lb-av">MK</div>
+            <div class="lb-info"><div class="lb-name">MarketKing</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:100%;background:var(--amber)"></div></div></div>
+            <div class="lb-score" style="color:var(--amber)">4,820</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank s">2</div>
+            <div class="lb-av">AX</div>
+            <div class="lb-info"><div class="lb-name">AlgoX</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:78%"></div></div></div>
+            <div class="lb-score">3,760</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank b">3</div>
+            <div class="lb-av">ST</div>
+            <div class="lb-info"><div class="lb-name">SteadyTrade</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:62%"></div></div></div>
+            <div class="lb-score">2,990</div>
+          </div>
+          <div class="lb-row you">
+            <div class="lb-rank" style="color:var(--blue)">7</div>
+            <div class="lb-av you-av">RC</div>
+            <div class="lb-info"><div class="lb-name you-name">Robchiix (you)</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:26%;background:var(--blue)"></div></div></div>
+            <div class="lb-score you-score">1,240</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE PROGRESS -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">// LEARNING PROGRESS</span>
+        <a href="member-knowledge.html" class="panel-action">CONTINUE →</a>
+      </div>
+      <div class="panel-body">
+        <div class="progress-list">
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Psychology</span><span class="progress-pct">80%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:80%;background:var(--purple)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Market Structure</span><span class="progress-pct">60%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%;background:var(--blue)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Risk Management</span><span class="progress-pct">40%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:40%;background:var(--green)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Trading Bots</span><span class="progress-pct">100%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Signals</span><span class="progress-pct">20%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:20%;background:var(--amber)"></div></div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-header"><span class="progress-name">Brokers</span><span class="progress-pct">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--text-dim)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORE POT -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">// CORE POT — MAY 2026</span>
+        <a href="member-core.html" class="panel-action">DETAILS →</a>
+      </div>
+      <div class="panel-body">
+        <div class="pot-box">
+          <div class="pot-amount">€134</div>
+          <div class="pot-sub">// CURRENT POT · DRAW MAY 31</div>
+          <div class="pot-bar-wrap"><div class="pot-bar"></div></div>
+          <div class="pot-labels"><span>67 members</span><span>12 days left</span></div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:10px">If you win, choose your reward:</div>
+          <div class="pot-choices">
+            <div class="pot-choice active" onclick="choosePot(this)">Trading Funds</div>
+            <div class="pot-choice" onclick="choosePot(this)">Cash</div>
+            <div class="pot-choice" onclick="choosePot(this)">Merch</div>
+            <div class="pot-choice" onclick="choosePot(this)">Donate</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--text-dim);padding:10px;background:var(--black);border:1px solid var(--border)">
+          Last winner: <span style="color:var(--green)">USR_041</span> chose trading funds — Apr 2026
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const aiAnswers = [
+  'OMEGA GS has a <span class="hi">session filter</span> — it only trades during London and NY sessions. If the signal came outside those windows, the bot correctly stayed flat. Check the session times in your config.',
+  'The <span class="hi">ATR filter</span> may have blocked the entry — if volatility was below threshold (ATR < 0.8) OMEGA GS skips the trade even if the EMA cross happened. Low volatility = low quality setups.',
+  'Your NOVA BTC position is currently <span class="hi">running at +1.4R</span>. TP1 hit at 1R, SL moved to breakeven. The remainder is trailing toward TP2 at 2R. No action needed.',
+  'Position sizing on XAUUSD: with a 1% risk on a €1,000 account and 40 pip SL, your lot size should be <span class="hi">0.025 lots</span>. OMEGA GS calculates this automatically based on your account balance.',
+];
+
+let aiIndex = 0;
+
+function askAI() {
+  const input = document.getElementById('aiInput');
+  const response = document.getElementById('aiResponse');
+  if (!input.value.trim()) return;
+
+  response.classList.remove('show');
+  response.innerHTML = '<span style="color:var(--blue)">// thinking...</span>';
+  response.classList.add('show');
+
+  setTimeout(() => {
+    response.innerHTML = aiAnswers[aiIndex % aiAnswers.length];
+    aiIndex++;
+    input.value = '';
+  }, 900);
+}
+
+function choosePot(el) {
+  document.querySelectorAll('.pot-choice').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Live gold price ticker
+let goldBase = 2341.84;
+setInterval(() => {
+  goldBase += (Math.random() - 0.48) * 0.8;
+  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
+  const el = document.getElementById('goldPrice');
+  const chEl = document.getElementById('goldChange');
+  if (el) el.textContent = goldBase.toFixed(2);
+  if (chEl) {
+    const up = parseFloat(change) >= 0;
+    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
+    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
+  }
+}, 2000);
+</script>
+</body>
+</html>
