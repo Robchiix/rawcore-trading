@@ -569,6 +569,61 @@
     .form-tabs { margin-bottom: 20px; }
   }
 
+
+  @media (max-width: 768px) {
+
+    /* FIX BOTTOM OVERLAP */
+    .form-divider {
+      margin: 16px 0 !important;
+    }
+
+    /* SOCIAL BUTTONS - keep separate from footer */
+    .social-btns {
+      margin-bottom: 0 !important;
+    }
+
+    /* PAGE FOOTER - fix overlap with form */
+    .page-footer {
+      position: relative !important;
+      padding: 16px 20px !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+      text-align: center !important;
+      border-top: 1px solid var(--border) !important;
+      margin-top: 0 !important;
+    }
+
+    .footer-links {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      gap: 12px !important;
+    }
+
+    /* MAIN - allow scrolling, no fixed height */
+    .main {
+      height: auto !important;
+      min-height: auto !important;
+      overflow: visible !important;
+    }
+
+    html, body {
+      height: auto !important;
+      overflow-y: auto !important;
+    }
+
+    /* FORM FOOTER TEXT */
+    .form-footer {
+      margin-top: 16px !important;
+      padding-bottom: 8px !important;
+    }
+
+    /* HIDE the "or continue with" copyright overlap */
+    .form-divider + .social-btns {
+      margin-bottom: 12px !important;
+    }
+  }
+
 </style>
 </head>
 <body>
