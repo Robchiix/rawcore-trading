@@ -320,6 +320,212 @@
 
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ============================================
+     MOBILE RESPONSIVE — under 768px
+  ============================================ */
+  @media (max-width: 768px) {
+    body { cursor: default; }
+
+    nav {
+      padding: 0 20px;
+      height: 56px;
+    }
+
+    .nav-links { display: none; }
+    .nav-cta { font-size: 9px; padding: 7px 12px; }
+
+    .mobile-menu-btn {
+      display: flex !important;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 12px;
+    }
+
+    .mobile-menu-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-dim);
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 56px; left: 0; right: 0;
+      background: rgba(5,6,8,0.98);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      flex-direction: column;
+      gap: 0;
+      z-index: 99;
+    }
+
+    .mobile-nav.open { display: flex !important; }
+
+    .mobile-nav a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-nav a:last-child { border-bottom: none; }
+
+    /* HERO */
+    .hero, .about-hero, .shop-hero {
+      padding: 88px 24px 40px;
+    }
+
+    .hero-title, .about-title {
+      font-size: clamp(52px, 13vw, 80px);
+    }
+
+    .hero-stats {
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* 2 COL GRIDS → 1 COL */
+    .manifesto-grid, .story-grid, .nfe-grid,
+    .grid-2, .pot-grid, .credits-grid,
+    .contrib-grid, .how-grid, .tiers-grid,
+    .contact-section, .ungurued-strip,
+    .live-section, .bottom-grid,
+    .featured-section, .families-section,
+    .featured-bot, .contribute-section,
+    .promise-btns, .cta-btns, .join-btns,
+    .hero-buttons, .sub-actions {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+    }
+
+    /* 3-4 COL GRIDS → 1 COL */
+    .features-grid, .how-grid.row-3,
+    .coming-grid, .community-grid,
+    .trust-grid, .faq-grid,
+    .achievements-grid, .actions-grid,
+    .overview-grid, .config-grid,
+    .products-grid, .stat-row,
+    .form-row, .pricing-grid,
+    .families-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1px !important;
+    }
+
+    /* BOTTOM GRID 3 COL */
+    .bottom-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+
+    /* PADDING */
+    .manifesto, .story-section, .nfe-section,
+    .promise-section, .features, .how-section,
+    .tiers-section, .pot-section, .credits-section,
+    .contrib-section, .contact-section, .faq-section,
+    .bottom-cta, .quote-section, .pricing-section,
+    .compare-section, .pot-mini, .trust-section,
+    .families-section, .featured-section,
+    .community-section, .coming-section,
+    .contribute-section, .cta-section,
+    .products-section, .join-section,
+    .telegram-section, .ungurued-strip {
+      padding: 40px 20px !important;
+    }
+
+    /* TYPOGRAPHY */
+    .big-statement, .manifesto-title, .story-title,
+    .about-title, .features-title, .pricing-title,
+    .contrib-title, .credits-title, .pot-title,
+    .ungurued-title, .tg-title, .cta-title,
+    .join-title, .promise-title {
+      font-size: clamp(32px, 9vw, 52px) !important;
+      line-height: 0.95 !important;
+    }
+
+    /* COMPARISON TABLE */
+    .compare-table { font-size: 9px; }
+    .compare-table td, .compare-table th { padding: 8px 6px; }
+
+    /* FOOTER */
+    footer {
+      padding: 24px 20px !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      text-align: center !important;
+    }
+
+    .footer-links {
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+      gap: 12px !important;
+    }
+
+    .footer-right { justify-content: center !important; }
+
+    /* BUTTONS */
+    .btn-primary, .btn-secondary, .tg-btn,
+    .price-btn, .tier-btn, .form-submit,
+    .checkout-btn, .config-save, .save-btn {
+      width: 100% !important;
+      text-align: center !important;
+    }
+
+    /* PROFILE HERO */
+    .profile-hero {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+
+    .profile-stats {
+      flex-wrap: wrap !important;
+      gap: 16px !important;
+    }
+
+    /* PAGE TABS */
+    .page-tabs { overflow-x: auto; }
+    .page-tab { font-size: 9px; padding: 10px 12px; white-space: nowrap; }
+
+    /* FILTER BAR */
+    .filter-bar { flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
+    .sort-select { width: 100%; margin-left: 0 !important; }
+
+    /* MODAL */
+    .modal { grid-template-columns: 1fr !important; }
+    .modal-left { display: none; }
+
+    /* HERO DISCLAIMER */
+    .hero-disclaimer { font-size: 9px; }
+
+    /* TICKER - hide on mobile */
+    .ticker-wrap { display: none; }
+
+    /* SIGNAL CARD */
+    .sc-body { grid-template-columns: 1fr 1fr !important; }
+
+    /* OVERVIEW GRID 4 col */
+    .overview-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title, .about-title {
+      font-size: clamp(40px, 11vw, 60px) !important;
+    }
+    nav { padding: 0 16px; }
+  }
+
+  .mobile-menu-btn { display: none; }
+  .mobile-nav { display: none; }
+
 </style>
 </head>
 <body>
@@ -618,6 +824,17 @@ function toggleBilling() {
     corePeriod.textContent = '// PER MONTH · CANCEL ANYTIME';
   }
 }
+
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobileNav');
+  nav.classList.toggle('open');
+}
+document.querySelectorAll('.mobile-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('mobileNav').classList.remove('open');
+  });
+});
+
 </script>
 </body>
 </html>

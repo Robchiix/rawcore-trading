@@ -896,6 +896,217 @@
   }
 
   .expose-item .x-mark { color: var(--red); }
+
+  /* ============================================
+     MOBILE RESPONSIVE — under 768px
+  ============================================ */
+  @media (max-width: 768px) {
+
+    body { cursor: default; }
+
+    /* NAV — hamburger */
+    nav {
+      padding: 0 20px;
+      height: 56px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links { display: none; }
+
+    .nav-cta {
+      font-size: 9px;
+      padding: 7px 12px;
+    }
+
+    /* HAMBURGER MENU */
+    .mobile-menu-btn {
+      display: flex !important;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 12px;
+    }
+
+    .mobile-menu-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-dim);
+      transition: all 0.2s;
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 56px; left: 0; right: 0;
+      background: rgba(5,6,8,0.98);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      flex-direction: column;
+      gap: 0;
+      z-index: 99;
+    }
+
+    .mobile-nav.open { display: flex !important; }
+
+    .mobile-nav a {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+
+    .mobile-nav a:last-child { border-bottom: none; }
+    .mobile-nav a:hover { color: var(--green); }
+
+    /* HERO */
+    .hero {
+      grid-template-columns: 1fr;
+      padding-top: 80px;
+      min-height: auto;
+    }
+
+    .hero-left {
+      padding: 40px 24px 24px;
+    }
+
+    .hero-right {
+      padding: 0 24px 40px;
+    }
+
+    .hero-headline {
+      font-size: clamp(52px, 14vw, 80px);
+    }
+
+    .hero-sub {
+      font-size: 12px;
+    }
+
+    .hero-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary, .btn-secondary {
+      text-align: center;
+      width: 100%;
+      padding: 14px;
+    }
+
+    /* TICKER */
+    .ticker-wrap { display: none; }
+
+    /* MANIFESTO */
+    .manifesto {
+      padding: 48px 24px;
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .manifesto-right {
+      gap: 0;
+    }
+
+    .compare-row {
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      font-size: 10px;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 48px 24px;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* UNGURUED STRIP */
+    .ungurued-strip {
+      padding: 40px 24px;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* LIVE SECTION */
+    .live-section {
+      padding: 48px 24px;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    /* PRICING */
+    .pricing {
+      padding: 48px 24px;
+    }
+
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      max-width: 100%;
+    }
+
+    .price-card.featured {
+      order: -1;
+    }
+
+    /* QUOTE */
+    .quote-section {
+      padding: 48px 24px;
+    }
+
+    .big-quote {
+      font-size: clamp(22px, 5vw, 36px);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 24px 20px;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .footer-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .footer-right {
+      justify-content: center;
+    }
+
+    /* CHART CONTAINER */
+    .chart-container {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-headline {
+      font-size: clamp(44px, 12vw, 64px);
+    }
+
+    .compare-row {
+      font-size: 9px;
+    }
+
+    .compare-them, .compare-us {
+      font-size: 9px;
+    }
+  }
+
+  /* Hide hamburger on desktop */
+  .mobile-menu-btn { display: none; }
+  .mobile-nav { display: none; }
+
 </style>
 </head>
 <body>
@@ -911,7 +1122,20 @@
     <li><a href="pricing.html"> PRICING</a></li>
   </ul>
   <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
+  <div class="mobile-menu-btn" onclick="toggleMobileMenu()" id="menuBtn"><span></span><span></span><span></span></div>
 </nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">HOME</a>
+  <a href="about.html">ABOUT</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a>
+  <a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="login.html" style="color:var(--green)">ENTER THE CORE →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1376,6 +1600,21 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobileNav');
+  const btn = document.getElementById('menuBtn');
+  nav.classList.toggle('open');
+  btn.style.opacity = nav.classList.contains('open') ? '1' : '0.6';
+}
+
+// Close mobile menu on link click
+document.querySelectorAll('.mobile-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('mobileNav').classList.remove('open');
+  });
+});
+
 </script>
 </body>
 </html>

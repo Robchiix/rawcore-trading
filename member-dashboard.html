@@ -247,6 +247,20 @@
 
   /* BOTTOM GRID */
   .bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  @media (max-width: 768px) {
+    body { cursor: default; }
+    .mobile-banner { display: flex !important; }
+    .member-nav { padding: 0 16px; overflow-x: auto; }
+    .nav-items { gap: 0; }
+    .nav-item { padding: 0 12px; font-size: 9px; }
+    .nav-credits { display: none; }
+    .nav-user span { display: none; }
+    .market-bar { padding: 6px 12px; gap: 14px; }
+    .market-item { font-size: 9px; }
+  }
+  .mobile-banner { display: none; }
+
 </style>
 </head>
 <body>
@@ -271,6 +285,10 @@
     </div>
   </div>
 </nav>
+
+<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
+  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
+</div>
 
 <!-- MARKET BAR -->
 <div class="market-bar">
