@@ -783,160 +783,38 @@
     </div>
 
     <!-- LESSON CONTENT -->
-    <div class="lesson-area" id="contentArea">
-
-      <div class="lesson-header">
-        <div class="lesson-breadcrumb">Psychology <span>→</span> Lesson 4 of 5</div>
-        <div class="lesson-title">REVENGE TRADING —<br>THE SPIRAL AND HOW TO BREAK IT</div>
-        <div class="lesson-meta">
-          <span>// 8 MIN READ</span>
-          <span>// INTERMEDIATE</span>
-          <span class="core-tag">CORE</span>
-          <span>+10 pts on completion</span>
-        </div>
-      </div>
-
-      <div class="lesson-body">
-
-        <div class="lesson-section">
-          <div class="lesson-section-title">WHAT IS REVENGE TRADING</div>
-          <p class="lesson-text">You take a loss. A clean, properly managed loss — stop loss hit, 1R down, move on. That's the plan. But instead something different happens. <strong>You immediately open another trade, larger than usual, trying to "win back" the loss.</strong> That's revenge trading.</p>
-          <p class="lesson-text">It's one of the most common and destructive patterns in retail trading. Not because traders are stupid — but because <span class="highlight">the emotional response to loss is deeply wired into human psychology.</span> Losses feel twice as painful as equivalent gains feel good. That pain demands action.</p>
-
-          <div class="lesson-callout">
-            <span class="label">// KEY CONCEPT</span>
-            Loss aversion is a well-documented cognitive bias. A €100 loss produces roughly twice the psychological pain of a €100 gain produces pleasure. This is why discipline systems and automation exist — to override the human response.
+    <div id="contentArea" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;">
+      <!-- content injected by JS -->
+      <div style="padding:32px">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px">// SELECT A TOPIC TO BEGIN</div>
+        <div style="font-family:var(--display);font-size:48px;color:var(--text-bright);line-height:0.9;margin-bottom:16px">CHOOSE YOUR<br><span style="color:var(--green)">LESSON.</span></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);max-width:560px;margin-top:24px">
+          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('psychology')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--purple);margin-bottom:6px">PSYCHOLOGY</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          </div>
+          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('markets')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--blue);margin-bottom:6px">MARKETS</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          </div>
+          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('risk')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--red);margin-bottom:6px">RISK MANAGEMENT</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          </div>
+          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('systems')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">TRADING BOTS</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
           </div>
         </div>
-
-        <div class="lesson-section">
-          <div class="lesson-section-title">THE SPIRAL IN PRACTICE</div>
-          <p class="lesson-text">Here's how it typically unfolds:</p>
-
-          <div class="chart-example">
-            <div class="chart-label">// THE REVENGE TRADING SPIRAL</div>
-            <div class="chart-ascii">Trade 1: -1R  (Clean loss. SL hit.)
-Trade 2: -2R  (Doubled size. "I'll make it back.")
-Trade 3: -3R  (Tripled size. "One more.")
-Trade 4: -2R  (Starting to panic.)
-────────────────────────────────────
-Total:   -8R  (Account down 8% in one session)</div>
-            <div class="chart-annotation">The <span>first loss</span> was fine. The next three were emotional decisions that had nothing to do with the market.</div>
-          </div>
-
-          <p class="lesson-text">Notice what happened — the <span class="warning">first loss was properly sized and managed.</span> Everything after it was emotional. One clean -1R trade turned into -8R because of psychology, not strategy.</p>
-        </div>
-
-        <div class="lesson-section">
-          <div class="lesson-section-title">HOW TO BREAK THE PATTERN</div>
-          <p class="lesson-text">There are three reliable methods — and the best traders use all three together:</p>
-
-          <p class="lesson-text"><strong>1. The Daily Loss Limit</strong> — Set a maximum daily loss in advance. When you hit it, the trading day is over. No exceptions. This is a rule you set when you're calm, so you don't have to make decisions when you're emotional. Our bots have this built in.</p>
-
-          <p class="lesson-text"><strong>2. The Mandatory Break</strong> — After any loss, take a minimum 15 minute break before the next trade. Walk away from the screen. The urge to revenge trade is strongest in the first 5 minutes after a loss and fades significantly after 15-20 minutes.</p>
-
-          <p class="lesson-text"><strong>3. The Pre-Trade Checklist</strong> — Before every trade ask: <span class="highlight">Is this setup valid on its own merits?</span> If the answer involves the previous trade in any way, don't take it.</p>
-
-          <div class="lesson-callout warning">
-            <span class="label">// WARNING</span>
-            Automating your entries and exits removes the opportunity for revenge trading entirely. When the bot executes, there's no "one more trade" — the rules are the rules. This is one of the most underrated benefits of trading automation.
-          </div>
-        </div>
-
-        <!-- TASK 1 — MULTIPLE CHOICE -->
-        <div class="task-section">
-          <div class="task-header">
-            <div class="task-title">TASK 01 — QUICK CHECK</div>
-            <div class="task-reward">+10 PTS</div>
-          </div>
-          <div class="task-question">A trader takes a -1R loss on a properly managed trade. 3 minutes later they open a new position with double their normal size without a clear setup. What is this an example of?</div>
-          <div class="mc-options" id="mc1">
-            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
-              <div class="mc-letter">A</div>
-              <span>Good risk management — recovering losses is part of the game</span>
-            </div>
-            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
-              <div class="mc-letter">B</div>
-              <span>A valid strategy adjustment based on market conditions</span>
-            </div>
-            <div class="mc-option" onclick="selectMC(this, 'mc1', true)">
-              <div class="mc-letter">C</div>
-              <span>Revenge trading — an emotional response to loss, not a logical trading decision</span>
-            </div>
-            <div class="mc-option" onclick="selectMC(this, 'mc1', false)">
-              <div class="mc-letter">D</div>
-              <span>Martingale strategy — a legitimate approach to position sizing</span>
-            </div>
-          </div>
-          <div class="task-feedback" id="mc1-feedback"></div>
-          <div class="credits-earned" id="mc1-credits">
-            <span>+10 Core Credits earned ✓</span>
-          </div>
-          <div class="community-answers" id="mc1-community">
-            <div class="ca-header">
-              <span>// HOW OTHERS ANSWERED</span>
-              <span style="color:var(--green)">312 responses</span>
-            </div>
-            <div class="ca-item">
-              <div class="ca-avatar">MK</div>
-              <div class="ca-text"><strong>MarketKing</strong>C — classic revenge pattern. Doubled size with no setup is the tell. The market doesn't care about your previous trade.</div>
-              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">47</span></div>
-            </div>
-            <div class="ca-item">
-              <div class="ca-avatar">ST</div>
-              <div class="ca-text"><strong>SteadyTrade</strong>Answered C. Also worth noting — the 3 minute timing is a red flag. No valid setup forms that fast after a loss in most strategies.</div>
-              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">31</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TASK 2 — OPEN ANSWER -->
-        <div class="task-section">
-          <div class="task-header">
-            <div class="task-title">TASK 02 — REFLECT</div>
-            <div class="task-reward">+20 PTS</div>
-          </div>
-          <div class="task-question">Describe one specific rule or system you would put in place to prevent revenge trading in your own trading. Be specific — "be more disciplined" doesn't count. What is the actual rule?</div>
-          <textarea class="task-input" id="task2Input" rows="4" placeholder="// Example: 'After any losing trade I will close MT5, walk away for 20 minutes, and only re-open if my daily loss limit has not been hit...'"></textarea>
-          <div style="display:flex;align-items:center;gap:12px">
-            <button class="task-submit" id="task2Btn" onclick="submitTask2()">SUBMIT ANSWER →</button>
-            <span style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Your answer will be visible to the community</span>
-          </div>
-          <div class="task-feedback" id="task2-feedback"></div>
-          <div class="credits-earned" id="task2-credits"></div>
-          <div class="community-answers" id="task2-community">
-            <div class="ca-header">
-              <span>// COMMUNITY ANSWERS — TOP VOTED</span>
-              <span style="color:var(--green)">89 answers</span>
-            </div>
-            <div class="ca-item">
-              <div class="ca-avatar">AX</div>
-              <div class="ca-text"><strong>AlgoX</strong>I set a daily drawdown limit of 2% in my bot config. When hit, the bot stops automatically and sends me a Telegram alert. I can't override it without editing the config — which forces a deliberate action.</div>
-              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">62</span></div>
-            </div>
-            <div class="ca-item">
-              <div class="ca-avatar">GF</div>
-              <div class="ca-text"><strong>GoldFox</strong>After every loss I physically close my laptop and make a coffee. By the time I'm back (15-20 min) the emotional charge is gone. Simple but it works better than any mental rule I ever set.</div>
-              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">44</span></div>
-            </div>
-            <div class="ca-item">
-              <div class="ca-avatar">PL</div>
-              <div class="ca-text"><strong>PipLord</strong>I keep a trading journal and I have to write the entry reason before I open any trade. If my entry reason mentions the previous trade in any way, it's an automatic no.</div>
-              <div class="ca-votes"><button class="ca-upvote" onclick="upvote(this)">▲</button><span class="ca-vote-count">38</span></div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <!-- LESSON NAV -->
-    <div class="lesson-nav">
-      <button class="lesson-nav-btn" onclick="prevLesson()">← PREV LESSON</button>
-      <div class="lesson-progress-info">Lesson 4 of 5 · Psychology · 80% complete</div>
-      <button class="lesson-nav-btn next" onclick="nextLesson()">NEXT LESSON →</button>
+    <!-- LESSON NAV BAR — fixed at bottom, updated by JS -->
+    <div id="lessonNavBar" style="display:none;justify-content:space-between;align-items:center;padding:14px 28px;border-top:1px solid var(--border);background:var(--dark);flex-shrink:0">
+      <button id="navPrevBtn" style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;background:transparent;transition:all 0.2s" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">← PREV</button>
+      <div id="navInfo" style="font-family:var(--mono);font-size:10px;color:var(--text-dim)"></div>
+      <button id="navNextBtn" style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700">NEXT →</button>
     </div>
-
   </div>
 
   <!-- RIGHT SIDEBAR -->
@@ -1619,14 +1497,22 @@ function openLesson(lessonId) {
         <div class="lv-body">${l.content}</div>
         ${taskHtml}
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-top:1px solid var(--border);background:var(--dark);flex-shrink:0">
-        <button style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;background:transparent;transition:all 0.2s" onclick="${prevId ? `openLesson('${prevId}')` : `openTopic('${l.topic}')`}" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">← ${prevId ? 'PREV' : 'BACK TO TOPIC'}</button>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">${l.num} / ${topicLessons.length}</div>
-        <button style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700" onclick="${nextId ? `openLesson('${nextId}')` : `openTopic('${l.topic}')`}">${nextId ? 'NEXT →' : 'TOPIC DONE ✓'}</button>
-      </div>
     </div>`;
 
   document.getElementById('mainContent').scrollTop = 0;
+
+  // Update fixed nav bar
+  const navBar = document.getElementById('lessonNavBar');
+  const prevBtn = document.getElementById('navPrevBtn');
+  const nextBtn = document.getElementById('navNextBtn');
+  const navInfo = document.getElementById('navInfo');
+  navBar.style.display = 'flex';
+  navInfo.textContent = 'Lesson ' + l.num + ' of ' + topicLessons.length + ' · ' + topicData[l.topic].title.split(' ')[0];
+  prevBtn.textContent = prevId ? '← PREV' : '← BACK';
+  prevBtn.onclick = prevId ? () => openLesson(prevId) : () => openTopic(l.topic);
+  nextBtn.textContent = nextId ? 'NEXT →' : 'DONE ✓';
+  nextBtn.onclick = nextId ? () => openLesson(nextId) : () => openTopic(l.topic);
+  nextBtn.style.background = nextId ? 'var(--green)' : 'var(--blue)';
   if (!completedLessons.has(lessonId)) {
     completedLessons.add(lessonId);
     todayLessons++;
