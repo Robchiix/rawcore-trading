@@ -459,7 +459,71 @@
   }
   .mobile-banner { display: none; }
 
-</style>
+
+  /* ── TASK OPTIONS ── */
+  .task-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--black);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .task-option:hover:not(.disabled) { border-color: var(--green); color: var(--text); }
+  .task-option.correct { border-color: var(--green) !important; background: rgba(0,255,136,0.08) !important; color: var(--green) !important; cursor: default; }
+  .task-option.wrong   { border-color: var(--red)   !important; background: rgba(255,51,85,0.08)  !important; color: var(--red)   !important; cursor: default; }
+  .task-option.disabled { cursor: not-allowed; pointer-events: none; }
+
+  .opt-letter {
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    font-family: var(--mono);
+  }
+  .task-option.correct .opt-letter { border-color: var(--green); color: var(--green); }
+  .task-option.wrong   .opt-letter { border-color: var(--red);   color: var(--red);   }
+
+  .task-feedback {
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.6;
+    border-left: 2px solid;
+    display: none;
+    margin-top: 8px;
+  }
+  .task-feedback.show   { display: block; }
+  .task-feedback.correct { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.05); }
+  .task-feedback.wrong   { border-color: var(--red);   color: var(--red);   background: rgba(255,51,85,0.05); }
+
+  .credits-pop {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.2);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    margin-top: 8px;
+    animation: fadeUp 0.3s ease;
+  }
+  .credits-pop.show { display: flex; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- SUPABASE AUTH GUARD -->
