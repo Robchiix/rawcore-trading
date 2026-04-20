@@ -283,6 +283,39 @@
       }
     })();
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- SUPABASE AUTH GUARD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async () => {
+    const sb = supabase.createClient(
+      'https://mlzxnrmctblfpijtihvm.supabase.co',
+      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+    );
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
+    // Set user info in nav if elements exist
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const avatar = user.user_metadata?.avatar_url || null;
+    const nameEl = document.getElementById('navUsername');
+    const avatarEl = document.getElementById('navAvatar');
+    if (nameEl) nameEl.textContent = name;
+    if (avatarEl && avatar) {
+      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
+    }
+
+    // Sign out function
+    window.signOut = async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    };
+  })();
+  </script>
 </head>
 <body>
 
@@ -300,8 +333,8 @@
   <div class="nav-right">
     <div class="nav-credits">1,240 pts</div>
     <div class="nav-user">
-      <div class="nav-avatar">RC</div>
-      <span>Robchiix</span>
+      <div class="nav-avatar" id="navAvatar">RC</div>
+      <span id="navUsername">Robchiix</span>
       <div class="nav-tier">CORE</div>
       <button onclick="signOut()" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);background:none;border:1px solid var(--border);padding:4px 10px;cursor:pointer;letter-spacing:0.1em;margin-left:8px;transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">LOGOUT</button>
     </div>
@@ -328,8 +361,8 @@
   <!-- WELCOME BAR -->
   <div class="welcome-bar">
     <div class="welcome-left">
-      <div class="welcome-greeting">// GOOD MORNING</div>
-      <div class="welcome-name">WELCOME BACK, <span>ROBCHIIX</span></div>
+      <div class="welcome-greeting" id="welcomeGreeting">// GOOD MORNING</div>
+      <div class="welcome-name">WELCOME BACK, <span id="welcomeName">...</span></div>
     </div>
     <div class="welcome-right">
       <div class="welcome-stat">
@@ -359,12 +392,12 @@
     <div class="stat-card green">
       <div class="sc-label">// SUBSCRIPTION</div>
       <div class="sc-val green">CORE</div>
-      <div class="sc-sub">Next billing: May 16</div>
+      <div class="sc-sub" id="billingDate">Active member</div>
     </div>
     <div class="stat-card blue">
       <div class="sc-label">// CORE CREDITS</div>
-      <div class="sc-val blue">1,240</div>
-      <div class="sc-sub up">+50 this week</div>
+      <div class="sc-val blue" id="dashCredits">0</div>
+      <div class="sc-sub up">Core Credits</div>
     </div>
     <div class="stat-card amber">
       <div class="sc-label">// RANK THIS MONTH</div>
@@ -392,33 +425,27 @@
           <div class="bot-list">
             <div class="bot-row">
               <div class="bot-dot live"></div>
-              <div class="bot-info"><div class="bot-name">OMEGA GS</div><div class="bot-pair">XAUUSD · 5M · MT5 · Tradequo</div></div>
-              <div class="bot-rr pos">+2.1R</div>
+              <div class="bot-info"><div class="bot-name">OMEGA</div><div class="bot-pair">Gold scalping bot · XAUUSD · 5M · Tradequo</div></div>
+              <div class="bot-rr neu">LIVE</div>
               <a href="member-bots.html" class="bot-open">OPEN</a>
             </div>
             <div class="bot-row">
               <div class="bot-dot live"></div>
-              <div class="bot-info"><div class="bot-name">NOVA BTC</div><div class="bot-pair">BTCUSDT · 1H · Bybit Perp</div></div>
-              <div class="bot-rr pos">+1.4R</div>
+              <div class="bot-info"><div class="bot-name">NOVA</div><div class="bot-pair">Crypto trading bot · BTC/ETH/SOL · Bybit</div></div>
+              <div class="bot-rr neu">LIVE</div>
               <a href="member-bots.html" class="bot-open">OPEN</a>
             </div>
             <div class="bot-row">
               <div class="bot-dot idle"></div>
-              <div class="bot-info"><div class="bot-name">ALPHA EXECUTOR</div><div class="bot-pair">Signal based · MT5 · Waiting</div></div>
+              <div class="bot-info"><div class="bot-name">ALPHA</div><div class="bot-pair">Signal executor · MT5 · Waiting for signal</div></div>
               <div class="bot-rr neu">IDLE</div>
-              <a href="member-bots.html" class="bot-open">OPEN</a>
-            </div>
-            <div class="bot-row">
-              <div class="bot-dot dev"></div>
-              <div class="bot-info"><div class="bot-name">Community Fork #14</div><div class="bot-pair">EURUSD · 30M · In testing</div></div>
-              <div class="bot-rr neu">TEST</div>
               <a href="member-bots.html" class="bot-open">OPEN</a>
             </div>
           </div>
 
           <div class="ai-box">
             <div class="ai-box-label">// CORE AI — ASK ABOUT YOUR BOTS</div>
-            <input class="ai-box-input" id="aiInput" placeholder="e.g. why did OMEGA GS not trade this morning?" onkeydown="if(event.key==='Enter') askAI()" />
+            <input class="ai-box-input" id="aiInput" placeholder="e.g. why did OMEGA not trade this morning?" onkeydown="if(event.key==='Enter') askAI()" />
             <div class="ai-response" id="aiResponse"></div>
           </div>
         </div>
@@ -431,27 +458,15 @@
           <a href="core-room.html" class="panel-action">FULL FEED →</a>
         </div>
         <div class="panel-body">
-          <div class="signal-mini">
-            <div class="sm-header"><span class="sm-type">▲ LONG · XAUUSD</span><span class="sm-time">09:14 · London</span></div>
-            <div class="sm-body">
-              <div class="sm-field"><div class="sm-label">ENTRY</div><div class="sm-val">2,339.40</div></div>
-              <div class="sm-field"><div class="sm-label">SL</div><div class="sm-val r">2,335.80</div></div>
-              <div class="sm-field"><div class="sm-label">TP1</div><div class="sm-val g">2,344.80</div></div>
-            </div>
-          </div>
-          <div class="signal-mini bear">
-            <div class="sm-header"><span class="sm-type bear">▼ SHORT · BTCUSD</span><span class="sm-time">08:44 · London</span></div>
-            <div class="sm-body">
-              <div class="sm-field"><div class="sm-label">ENTRY</div><div class="sm-val">71,420</div></div>
-              <div class="sm-field"><div class="sm-label">SL</div><div class="sm-val r">71,890</div></div>
-              <div class="sm-field"><div class="sm-label">TP1</div><div class="sm-val g">70,680</div></div>
-            </div>
+          <div style="background:var(--black);border:1px solid var(--border);border-left:2px solid var(--amber);padding:16px;font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8">
+            <div style="color:var(--amber);font-size:9px;letter-spacing:0.2em;margin-bottom:8px">// SIGNALS — COMING SOON</div>
+            Signal providers being verified. No fake calls. When we go live — every signal will have a real track record behind it.<br><br>
+            <span style="color:var(--text-dim)">Follow</span> <a href="https://t.me/rawcoretrading" style="color:var(--green);text-decoration:none">t.me/rawcoretrading</a> <span style="color:var(--text-dim)">for the announcement.</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT SIDE -->
+      <!-- RIGHT SIDE -->
     <div class="side-grid">
 
       <!-- LIVE FEED -->
@@ -571,26 +586,26 @@
         <a href="member-knowledge.html" class="panel-action">CONTINUE →</a>
       </div>
       <div class="panel-body">
-        <div class="progress-list">
+        <div class="progress-list" id="knowledgeProgress">
           <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Psychology</span><span class="progress-pct">80%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:80%;background:var(--purple)"></div></div>
+            <div class="progress-header"><span class="progress-name">Psychology</span><span class="progress-pct" id="pctPsych">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="barPsych" style="width:0%;background:var(--purple)"></div></div>
           </div>
           <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Market Structure</span><span class="progress-pct">60%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%;background:var(--blue)"></div></div>
+            <div class="progress-header"><span class="progress-name">Market Structure</span><span class="progress-pct">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--blue)"></div></div>
           </div>
           <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Risk Management</span><span class="progress-pct">40%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:40%;background:var(--green)"></div></div>
+            <div class="progress-header"><span class="progress-name">Risk Management</span><span class="progress-pct">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--green)"></div></div>
           </div>
           <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Trading Bots</span><span class="progress-pct">100%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:100%;background:var(--green)"></div></div>
+            <div class="progress-header"><span class="progress-name">Trading Bots</span><span class="progress-pct">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--green)"></div></div>
           </div>
           <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Signals</span><span class="progress-pct">20%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:20%;background:var(--amber)"></div></div>
+            <div class="progress-header"><span class="progress-name">Signals</span><span class="progress-pct">0%</span></div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--amber)"></div></div>
           </div>
           <div class="progress-item">
             <div class="progress-header"><span class="progress-name">Brokers</span><span class="progress-pct">0%</span></div>
@@ -608,9 +623,9 @@
       </div>
       <div class="panel-body">
         <div class="pot-box">
-          <div class="pot-amount">€134</div>
-          <div class="pot-sub">// CURRENT POT · DRAW MAY 31</div>
-          <div class="pot-bar-wrap"><div class="pot-bar"></div></div>
+          <div class="pot-amount">€0</div>
+          <div class="pot-sub">// BUILDING · DRAW END OF MONTH</div>
+          <div class="pot-bar-wrap"><div class="pot-bar" style="width:2%"></div></div>
           <div class="pot-labels"><span>67 members</span><span>12 days left</span></div>
           <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:10px">If you win, choose your reward:</div>
           <div class="pot-choices">
@@ -687,5 +702,36 @@ async function signOut() {
   window.location.href = 'login.html';
 }
 </script>
+
+<script>
+// ============================================
+// SUPABASE AUTH CHECK — MEMBER AREA
+// ============================================
+const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check session on load
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+  // Update UI with user info
+  const user = session.user;
+  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  const nameEl = document.querySelector('.nav-user span');
+  if (nameEl) nameEl.textContent = username;
+})();
+
+// Logout function
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+</script>
+
 </body>
 </html>
