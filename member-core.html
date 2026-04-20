@@ -285,6 +285,39 @@
   .mobile-banner { display: none; }
 
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- SUPABASE AUTH GUARD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async () => {
+    const sb = supabase.createClient(
+      'https://mlzxnrmctblfpijtihvm.supabase.co',
+      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+    );
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
+    // Set user info in nav if elements exist
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const avatar = user.user_metadata?.avatar_url || null;
+    const nameEl = document.getElementById('navUsername');
+    const avatarEl = document.getElementById('navAvatar');
+    if (nameEl) nameEl.textContent = name;
+    if (avatarEl && avatar) {
+      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
+    }
+
+    // Sign out function
+    window.signOut = async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    };
+  })();
+  </script>
 </head>
 <body>
 
@@ -301,8 +334,8 @@
   <div class="nav-right">
     <div class="nav-credits">1,240 pts</div>
     <div class="nav-user">
-      <div class="nav-avatar">RC</div>
-      <span>Robchiix</span>
+      <div class="nav-avatar" id="navAvatar">RC</div>
+      <span id="navUsername">Robchiix</span>
       <div class="nav-tier">CORE</div>
     </div>
   </div>
@@ -744,5 +777,36 @@ function confirmCancel() {
   if (confirmed) alert('Subscription cancelled. Access continues until May 16, 2026.');
 }
 </script>
+
+<script>
+// ============================================
+// SUPABASE AUTH CHECK — MEMBER AREA
+// ============================================
+const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check session on load
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+  // Update UI with user info
+  const user = session.user;
+  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  const nameEl = document.querySelector('.nav-user span');
+  if (nameEl) nameEl.textContent = username;
+})();
+
+// Logout function
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+</script>
+
 </body>
 </html>
