@@ -587,6 +587,63 @@
   .lv-list li::before { content: '→'; color: var(--green); flex-shrink: 0; }
   .lv-list li strong { color: var(--text-bright); }
 
+  
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .page-layout {
+      grid-template-columns: 1fr !important;
+      grid-template-rows: auto 1fr auto;
+    }
+    .topics-sidebar {
+      display: none;
+    }
+    .right-sidebar {
+      display: none;
+    }
+    .member-nav .nav-items {
+      display: none;
+    }
+    .member-nav {
+      padding: 0 14px;
+    }
+    .mobile-topic-bar {
+      display: flex !important;
+    }
+    #contentArea {
+      padding-bottom: 60px;
+    }
+    .daily-challenge {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+    }
+    .dc-reward { margin-left: auto; }
+  }
+  .mobile-topic-bar {
+    display: none;
+    overflow-x: auto;
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 0 4px;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .mobile-topic-bar::-webkit-scrollbar { display: none; }
+  .mob-topic-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 10px 14px;
+    white-space: nowrap;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mob-topic-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -782,6 +839,14 @@
       <button class="dc-btn" onclick="openChallenge()">START →</button>
     </div>
 
+    <!-- MOBILE TOPIC NAV -->
+    <div class="mobile-topic-bar" id="mobileTopicBar">
+      <button class="mob-topic-btn" onclick="openTopic('psychology')">◎ PSYCHOLOGY</button>
+      <button class="mob-topic-btn" onclick="openTopic('markets')">⬡ MARKETS</button>
+      <button class="mob-topic-btn" onclick="openTopic('risk')">▲ RISK</button>
+      <button class="mob-topic-btn" onclick="openTopic('systems')">&lt;/&gt; BOTS</button>
+    </div>
+
     <!-- LESSON CONTENT -->
     <div id="contentArea" style="flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;">
       <!-- content injected by JS -->
@@ -825,15 +890,15 @@
       <div style="display:flex;flex-direction:column;gap:8px">
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
           <span style="color:var(--text-dim)">Lessons read</span>
-          <span style="color:var(--text-bright)">1</span>
+          <span style="color:var(--text-bright)" id="rsLessons">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
-          <span style="color:var(--text-dim)">Tasks completed</span>
-          <span style="color:var(--green)" id="tasksCompleted">0</span>
+          <span style="color:var(--text-dim)">Tasks answered</span>
+          <span style="color:var(--green)" id="rsTasks">0</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
-          <span style="color:var(--text-dim)">Credits earned today</span>
-          <span style="color:var(--green)" id="creditsToday">+0</span>
+          <span style="color:var(--text-dim)">Credits earned</span>
+          <span style="color:var(--green)" id="rsCredits">+0</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
           <span style="color:var(--text-dim)">Streak</span>
@@ -844,37 +909,8 @@
 
     <div class="rs-panel">
       <div class="rs-title">// KNOWLEDGE TREE</div>
-      <div class="knowledge-tree">
-        <div class="kt-item">
-          <div class="kt-dot done"></div>
-          <span class="kt-name done">Trading Bots</span>
-          <span class="kt-pct" style="color:var(--green)">100%</span>
-        </div>
-        <div class="kt-item active">
-          <div class="kt-dot current"></div>
-          <span class="kt-name active">Psychology</span>
-          <span class="kt-pct" style="color:var(--amber)">80%</span>
-        </div>
-        <div class="kt-item">
-          <div class="kt-dot current"></div>
-          <span class="kt-name">Market Structure</span>
-          <span class="kt-pct">60%</span>
-        </div>
-        <div class="kt-item">
-          <div class="kt-dot current"></div>
-          <span class="kt-name">Risk Management</span>
-          <span class="kt-pct">40%</span>
-        </div>
-        <div class="kt-item">
-          <div class="kt-dot current"></div>
-          <span class="kt-name">Signals</span>
-          <span class="kt-pct">20%</span>
-        </div>
-        <div class="kt-item">
-          <div class="kt-dot locked"></div>
-          <span class="kt-name" style="opacity:0.4">Brokers 🔒</span>
-          <span class="kt-pct">0%</span>
-        </div>
+      <div class="knowledge-tree" id="knowledgeTree">
+        <!-- populated by updateKnowledgeTree() -->
       </div>
     </div>
 
@@ -899,39 +935,23 @@
           <span class="lb-mini-name">SteadyTrade</span>
           <span class="lb-mini-pts">640</span>
         </div>
-        <div class="lb-mini-item" style="background:rgba(59,130,246,0.06);padding:4px 6px;border-left:2px solid var(--blue)">
+        <div class="lb-mini-item you">
           <span class="lb-mini-rank" style="color:var(--blue)">7</span>
           <div class="lb-mini-av" style="background:rgba(59,130,246,0.1);color:var(--blue)">RC</div>
-          <span class="lb-mini-name you">Robchiix</span>
-          <span class="lb-mini-pts" style="color:var(--blue)" id="learnPts">240</span>
+          <span class="lb-mini-name" style="color:var(--blue)" id="navUsername2">You</span>
+          <span class="lb-mini-pts" style="color:var(--blue)" id="lbPts">240</span>
         </div>
-      </div>
-    </div>
-
-    <div class="rs-panel achievement-notify">
-      <div class="an-icon">◎</div>
-      <div class="an-info">
-        <div class="an-title">ACHIEVEMENT CLOSE</div>
-        <div class="an-desc">Complete 1 more task to unlock "Deep Thinker" badge</div>
       </div>
     </div>
 
     <div class="rs-panel">
       <div class="rs-title">// NEXT UP</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:var(--dark);padding:10px 12px;border:1px solid var(--border)">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:3px">Building a pre-trade routine</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Psychology · Lesson 5 · +10pts</div>
-        </div>
-        <div style="background:var(--dark);padding:10px 12px;border:1px solid var(--border);opacity:0.6">
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:3px">What are trading sessions</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Market Structure · Lesson 4 · +10pts</div>
-        </div>
+      <div id="nextUpPanel" style="display:flex;flex-direction:column;gap:8px">
+        <!-- populated by updateNextUp() -->
       </div>
     </div>
 
   </div>
-</div>
 
 <!-- DAILY CHALLENGE MODAL -->
 <div class="challenge-modal" id="challengeModal">
@@ -1450,6 +1470,8 @@ function openTopic(topicId) {
 function openLesson(lessonId) {
   const l = lessonData[lessonId];
   if (!l) return;
+  // Gate locked lessons
+  if (!isLessonUnlocked(lessonId)) { showLockMsg(lessonId); return; }
   currentTopic = l.topic;
   document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
   document.getElementById('topic-' + l.topic)?.classList.add('active');
@@ -1566,7 +1588,6 @@ function earnCredits(amount) {
 function updateProgress() {
   ['psychology','markets','risk','systems'].forEach(t => {
     const tl = topicData[t].lessons;
-    // Score: full answer = 1.0 per lesson, partial = 0.5, unanswered = 0
     const score = tl.reduce((sum, lid) => {
       if (lessonScores[lid] === 'full') return sum + 1;
       if (lessonScores[lid] === 'partial') return sum + 0.5;
@@ -1574,16 +1595,143 @@ function updateProgress() {
     }, 0);
     const pct = Math.round((score / tl.length) * 100);
     const answered = tl.filter(lid => lessonScores[lid]).length;
-    const el = document.getElementById('pct-'+t);
+    const el  = document.getElementById('pct-'+t);
     const bar = document.getElementById('bar-'+t);
     const doneEl = document.getElementById('done-'+t);
-    const ktEl = document.getElementById('kt-'+t);
-    if (el) el.textContent = pct+'%';
-    if (bar) bar.style.width = pct+'%';
+    if (el)     el.textContent  = pct+'%';
+    if (bar)    bar.style.width = pct+'%';
     if (doneEl) doneEl.textContent = answered+'/'+tl.length+' answered';
-    if (ktEl) ktEl.textContent = pct+'%';
+  });
+  updateKnowledgeTree();
+  updateNextUp();
+  updateSidebarLocks();
+}
+
+function getTopicPct(t) {
+  const tl = topicData[t].lessons;
+  const score = tl.reduce((sum, lid) => {
+    if (lessonScores[lid] === 'full') return sum + 1;
+    if (lessonScores[lid] === 'partial') return sum + 0.5;
+    return sum;
+  }, 0);
+  return Math.round((score / tl.length) * 100);
+}
+
+function isTopicComplete(t) { return getTopicPct(t) === 100; }
+
+function isLessonUnlocked(lessonId) {
+  const l = lessonData[lessonId];
+  const tl = topicData[l.topic].lessons;
+  const idx = tl.indexOf(lessonId);
+  // First lesson of psychology always unlocked
+  if (idx === 0 && l.topic === 'psychology') return true;
+  // First lesson of a topic: previous topic must be 100%
+  const topicOrder = ['psychology','markets','risk','systems'];
+  const topicIdx = topicOrder.indexOf(l.topic);
+  if (idx === 0) return topicIdx === 0 || isTopicComplete(topicOrder[topicIdx - 1]);
+  // Subsequent lessons: previous lesson task must be answered
+  return !!lessonScores[tl[idx - 1]];
+}
+
+function updateKnowledgeTree() {
+  const tree = document.getElementById('knowledgeTree');
+  if (!tree) return;
+  const topics = [
+    { id:'psychology', label:'Psychology', color:'var(--purple)' },
+    { id:'markets',    label:'Market Structure', color:'var(--blue)' },
+    { id:'risk',       label:'Risk Management', color:'var(--red)' },
+    { id:'systems',    label:'Trading Bots', color:'var(--green)' },
+  ];
+  const topicOrder = ['psychology','markets','risk','systems'];
+  tree.innerHTML = topics.map(tp => {
+    const pct = getTopicPct(tp.id);
+    const done = pct === 100;
+    const topicIdx = topicOrder.indexOf(tp.id);
+    const unlocked = topicIdx === 0 || isTopicComplete(topicOrder[topicIdx - 1]);
+    const dotClass = done ? 'done' : unlocked ? 'current' : 'locked';
+    return `<div class="kt-item${currentTopic===tp.id?' active':''}" onclick="openTopic('${tp.id}')">
+      <div class="kt-dot ${dotClass}"></div>
+      <span class="kt-name${done?' done':currentTopic===tp.id?' active':''}">${tp.label}</span>
+      <span class="kt-pct" style="color:${done?'var(--green)':unlocked?'var(--amber)':'var(--text-dim)'}">${pct}%</span>
+    </div>`;
+  }).join('') + `
+    <div class="kt-item" style="opacity:0.35;cursor:not-allowed">
+      <div class="kt-dot locked"></div>
+      <span class="kt-name">Signals ⏳</span>
+      <span class="kt-pct">soon</span>
+    </div>
+    <div class="kt-item" style="opacity:0.25;cursor:not-allowed">
+      <div class="kt-dot locked"></div>
+      <span class="kt-name">Brokers 🔒</span>
+      <span class="kt-pct">0%</span>
+    </div>`;
+}
+
+function updateNextUp() {
+  const panel = document.getElementById('nextUpPanel');
+  if (!panel) return;
+  const allLessons = ['psych-1','psych-2','psych-3','psych-4','psych-5',
+    'market-1','market-2','market-3','market-4','market-5',
+    'risk-1','risk-2','risk-3','risk-4','risk-5',
+    'systems-1','systems-2','systems-3','systems-4','systems-5'];
+  const next = allLessons.filter(lid => isLessonUnlocked(lid) && !lessonScores[lid]).slice(0,2);
+  if (next.length === 0) {
+    panel.innerHTML = '<div style="font-family:var(--mono);font-size:10px;color:var(--green)">All lessons complete! 🎉</div>';
+    return;
+  }
+  panel.innerHTML = next.map(lid => {
+    const l = lessonData[lid];
+    const tName = topicData[l.topic].title.split(' ')[0];
+    return `<div style="background:var(--dark);padding:10px 12px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s" onclick="openLesson('${lid}')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:3px">${l.title}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${tName} · Lesson ${l.num} · +20pts</div>
+    </div>`;
+  }).join('');
+}
+
+function updateSidebarLocks() {
+  const allLessons = ['psych-1','psych-2','psych-3','psych-4','psych-5',
+    'market-1','market-2','market-3','market-4','market-5',
+    'risk-1','risk-2','risk-3','risk-4','risk-5',
+    'systems-1','systems-2','systems-3','systems-4','systems-5'];
+  allLessons.forEach(lid => {
+    const el = document.getElementById('ll-' + lid);
+    if (!el) return;
+    const unlocked = isLessonUnlocked(lid);
+    const done = !!lessonScores[lid];
+    el.style.opacity = unlocked ? '1' : '0.35';
+    el.style.cursor  = unlocked ? 'pointer' : 'not-allowed';
+    el.onclick = unlocked ? () => openLesson(lid) : () => showLockMsg(lid);
+    // Update badge
+    const badge = el.querySelector('.ll-badge');
+    if (badge && done) { badge.textContent = '✓'; badge.className = 'll-badge free'; }
   });
 }
+
+function showLockMsg(lid) {
+  const l = lessonData[lid];
+  const tl = topicData[l.topic].lessons;
+  const idx = tl.indexOf(lid);
+  const topicOrder = ['psychology','markets','risk','systems'];
+  const topicIdx = topicOrder.indexOf(l.topic);
+  let msg;
+  if (idx === 0 && topicIdx > 0) {
+    const prevTopic = topicData[topicOrder[topicIdx-1]].title;
+    msg = `Complete ${prevTopic} (100%) to unlock this topic.`;
+  } else {
+    const prevLesson = lessonData[tl[idx-1]];
+    msg = `Answer the task in "${prevLesson.title}" first.`;
+  }
+  // Show inline message in content area
+  const area = document.getElementById('contentArea');
+  area.innerHTML = `<div style="padding:32px;max-width:500px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:0.2em;margin-bottom:12px">// LOCKED</div>
+    <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);margin-bottom:16px">NOT YET.</div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text-dim);line-height:1.8">${msg}</div>
+  </div>`;
+  document.getElementById('lessonNavBar').style.display = 'none';
+}
+
 
 function showHome() {
   currentTopic = null;
@@ -1631,6 +1779,8 @@ function answerChallenge(opt, isCorrect) {
   setTimeout(closeChallenge, 1200);
 }
 document.getElementById('challengeModal').addEventListener('click', function(e) { if (e.target===this) closeChallenge(); });
+// Init right sidebar on load
+updateProgress();
 </script>
 </body>
 </html>
