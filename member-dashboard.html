@@ -262,6 +262,27 @@
   .mobile-banner { display: none; }
 
 </style>
+  <!-- Supabase Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Auth gate — redirect to login if not logged in
+    const _sb = supabase.createClient(
+      'https://mlzxnrmctblfpijtihvm.supabase.co',
+      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+    );
+    (async () => {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html';
+      } else {
+        // Set username in nav if available
+        const user = session.user;
+        const name = user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Member';
+        const nameEl = document.querySelector('.nav-user span');
+        if (nameEl) nameEl.textContent = name;
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -282,6 +303,7 @@
       <div class="nav-avatar">RC</div>
       <span>Robchiix</span>
       <div class="nav-tier">CORE</div>
+      <button onclick="signOut()" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);background:none;border:1px solid var(--border);padding:4px 10px;cursor:pointer;letter-spacing:0.1em;margin-left:8px;transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">LOGOUT</button>
     </div>
   </div>
 </nav>
@@ -653,6 +675,17 @@ setInterval(() => {
     chEl.className = 'market-change ' + (up ? 'up' : 'dn');
   }
 }, 2000);
+</script>
+
+<script>
+async function signOut() {
+  const sb = supabase.createClient(
+    'https://mlzxnrmctblfpijtihvm.supabase.co',
+    'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+  );
+  await sb.auth.signOut();
+  window.location.href = 'login.html';
+}
 </script>
 </body>
 </html>

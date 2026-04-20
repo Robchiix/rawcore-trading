@@ -625,6 +625,8 @@
   }
 
 </style>
+  <!-- Supabase Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -716,13 +718,13 @@
         <span>I understand that nothing on RawCore Trading is financial advice. Trading involves risk and I am responsible for my own decisions. I agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</span>
       </div>
 
-      <button class="form-submit" onclick="handleRegister()">CREATE ACCOUNT →</button>
+      <button class="form-submit" onclick="handleRegister()" id="registerBtn">CREATE ACCOUNT →</button>
 
       <div class="form-divider">or continue with</div>
 
       <div class="social-btns">
-        <a href="#" class="social-btn">G · GOOGLE</a>
-        <a href="#" class="social-btn">TG · TELEGRAM</a>
+        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtn">G · GOOGLE</button>
+        <button class="social-btn" style="opacity:0.4;cursor:not-allowed" title="Coming soon">TG · TELEGRAM</button>
       </div>
       <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google or Telegram — fastest, no password needed</p>
 
@@ -761,13 +763,13 @@
         <a href="#" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">FORGOT PASSWORD?</a>
       </div>
 
-      <button class="form-submit" onclick="handleLogin()">SIGN IN →</button>
+      <button class="form-submit" onclick="handleLogin()" id="loginBtn">SIGN IN →</button>
 
       <div class="form-divider">or continue with</div>
 
       <div class="social-btns">
-        <a href="#" class="social-btn">G · GOOGLE</a>
-        <a href="#" class="social-btn">TG · TELEGRAM</a>
+        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtn">G · GOOGLE</button>
+        <button class="social-btn" style="opacity:0.4;cursor:not-allowed" title="Coming soon">TG · TELEGRAM</button>
       </div>
       <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google or Telegram — fastest, no password needed</p>
 
@@ -896,5 +898,151 @@ document.querySelectorAll('.mobile-nav a').forEach(a => {
 });
 
 </script>
+
+<script>
+// ============================================
+// SUPABASE AUTH — RAWCORE TRADING
+// ============================================
+const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check if already logged in — redirect to dashboard
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    window.location.href = 'member-dashboard.html';
+  }
+})();
+
+// Handle auth state changes (after OAuth redirect)
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    window.location.href = 'member-dashboard.html';
+  }
+});
+
+// ---- GOOGLE LOGIN ----
+async function signInWithGoogle() {
+  const btn = document.getElementById('googleBtn');
+  if (btn) { btn.textContent = 'CONNECTING...'; btn.disabled = true; }
+
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://www.rawcoretrading.com/member-dashboard.html'
+    }
+  });
+
+  if (error) {
+    showError('Google login failed: ' + error.message);
+    if (btn) { btn.textContent = 'G · GOOGLE'; btn.disabled = false; }
+  }
+}
+
+// ---- EMAIL REGISTER ----
+async function handleRegister() {
+  const username = document.getElementById('username')?.value?.trim();
+  const email = document.getElementById('email')?.value?.trim();
+  const password = document.getElementById('password')?.value;
+  const terms = document.getElementById('terms')?.checked;
+  const btn = document.getElementById('registerBtn');
+
+  // Validation
+  if (!email || !password) {
+    showError('Please fill in your email and password.');
+    return;
+  }
+  if (password.length < 8) {
+    showError('Password must be at least 8 characters.');
+    return;
+  }
+  if (!terms) {
+    showError('Please agree to the Terms and Privacy Policy.');
+    return;
+  }
+
+  if (btn) { btn.textContent = 'CREATING ACCOUNT...'; btn.disabled = true; }
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { username: username || email.split('@')[0] },
+      emailRedirectTo: 'https://www.rawcoretrading.com/member-dashboard.html'
+    }
+  });
+
+  if (error) {
+    showError(error.message);
+    if (btn) { btn.textContent = 'CREATE ACCOUNT →'; btn.disabled = false; }
+    return;
+  }
+
+  // Success — show confirmation
+  if (btn) btn.textContent = 'CHECK YOUR EMAIL ✓';
+  showSuccess('Account created! Check your email to confirm your address, then come back to sign in.');
+}
+
+// ---- EMAIL LOGIN ----
+async function handleLogin() {
+  const email = document.getElementById('login-email')?.value?.trim();
+  const password = document.getElementById('login-password')?.value;
+  const btn = document.getElementById('loginBtn');
+
+  if (!email || !password) {
+    showError('Please enter your email and password.');
+    return;
+  }
+
+  if (btn) { btn.textContent = 'SIGNING IN...'; btn.disabled = true; }
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    showError(error.message);
+    if (btn) { btn.textContent = 'SIGN IN →'; btn.disabled = false; }
+    return;
+  }
+
+  // Redirect to dashboard
+  window.location.href = 'member-dashboard.html';
+}
+
+// ---- HELPERS ----
+function showError(msg) {
+  let el = document.getElementById('auth-message');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'auth-message';
+    el.style.cssText = 'font-family:var(--mono);font-size:11px;padding:10px 14px;margin:10px 0;border-left:2px solid var(--red);background:rgba(255,51,85,0.08);color:var(--red);';
+    const form = document.querySelector('.form-side');
+    if (form) form.appendChild(el);
+  }
+  el.style.borderLeftColor = 'var(--red)';
+  el.style.color = 'var(--red)';
+  el.style.background = 'rgba(255,51,85,0.08)';
+  el.textContent = '// ' + msg;
+  el.style.display = 'block';
+}
+
+function showSuccess(msg) {
+  let el = document.getElementById('auth-message');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'auth-message';
+    el.style.cssText = 'font-family:var(--mono);font-size:11px;padding:10px 14px;margin:10px 0;border-left:2px solid var(--green);background:rgba(0,255,136,0.08);color:var(--green);';
+    const form = document.querySelector('.form-side');
+    if (form) form.appendChild(el);
+  }
+  el.style.borderLeftColor = 'var(--green)';
+  el.style.color = 'var(--green)';
+  el.style.background = 'rgba(0,255,136,0.08)';
+  el.textContent = '// ' + msg;
+  el.style.display = 'block';
+}
+</script>
+
 </body>
 </html>
