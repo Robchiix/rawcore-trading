@@ -1425,6 +1425,7 @@ const topicData = {
 
 let credits = 1240, todayLessons = 0, todayTasks = 0, todayCredits = 0;
 let completedLessons = new Set(), completedTasks = new Set();
+let lessonScores = {}; // lessonId -> 'full' | 'partial'
 let currentTopic = null;
 
 function openTopic(topicId) {
@@ -1513,36 +1514,42 @@ function openLesson(lessonId) {
   nextBtn.textContent = nextId ? 'NEXT →' : 'DONE ✓';
   nextBtn.onclick = nextId ? () => openLesson(nextId) : () => openTopic(l.topic);
   nextBtn.style.background = nextId ? 'var(--green)' : 'var(--blue)';
+  // Track lesson as seen (no progress until task is answered)
   if (!completedLessons.has(lessonId)) {
     completedLessons.add(lessonId);
     todayLessons++;
-    todayCredits += 10;
-    credits += 10;
-    updateProgress();
-    // Update all displays
-    document.getElementById('creditsDisplay').textContent = credits.toLocaleString() + ' pts';
     document.getElementById('rsLessons').textContent = todayLessons;
-    document.getElementById('rsCredits').textContent = '+' + todayCredits;
   }
 }
 
 function answerTask(lessonId, optIdx, isCorrect) {
   if (completedTasks.has(lessonId)) return;
   completedTasks.add(lessonId);
+
   const l = lessonData[lessonId];
   const opts = document.querySelectorAll('.task-option');
   opts.forEach(o => o.classList.add('disabled'));
   opts[optIdx].classList.add(isCorrect ? 'correct' : 'wrong');
   if (!isCorrect) l.task.options.forEach((opt, i) => { if (opt.correct) opts[i].classList.add('correct'); });
+
   const fb = document.getElementById('taskFeedback');
   fb.textContent = l.task.options[optIdx].feedback;
   fb.className = 'task-feedback show ' + (isCorrect ? 'correct' : 'wrong');
-  const pts = isCorrect ? 10 : 3;
+
+  // Progress: correct = 20pts + full lesson credit, wrong = 10pts + partial
+  const pts = isCorrect ? 20 : 10;
   earnCredits(pts);
-  const cp = document.getElementById('creditsPop');
-  cp.innerHTML = `<span>${isCorrect ? '+10 Core Credits earned ✓' : '+3 pts for participating'}</span>`;
-  cp.classList.add('show');
   todayTasks++;
+
+  // Mark lesson progress score
+  lessonScores[lessonId] = isCorrect ? 'full' : 'partial';
+
+  const cp = document.getElementById('creditsPop');
+  cp.innerHTML = isCorrect
+    ? '<span>+20 pts earned · Lesson complete ✓</span>'
+    : '<span>+10 pts · Try the re-learn when it drops 🔄</span>';
+  cp.classList.add('show');
+
   updateProgress();
 }
 
@@ -1559,15 +1566,21 @@ function earnCredits(amount) {
 function updateProgress() {
   ['psychology','markets','risk','systems'].forEach(t => {
     const tl = topicData[t].lessons;
-    const done = tl.filter(l => completedLessons.has(l)).length;
-    const pct = Math.round((done/tl.length)*100);
+    // Score: full answer = 1.0 per lesson, partial = 0.5, unanswered = 0
+    const score = tl.reduce((sum, lid) => {
+      if (lessonScores[lid] === 'full') return sum + 1;
+      if (lessonScores[lid] === 'partial') return sum + 0.5;
+      return sum;
+    }, 0);
+    const pct = Math.round((score / tl.length) * 100);
+    const answered = tl.filter(lid => lessonScores[lid]).length;
     const el = document.getElementById('pct-'+t);
     const bar = document.getElementById('bar-'+t);
     const doneEl = document.getElementById('done-'+t);
     const ktEl = document.getElementById('kt-'+t);
     if (el) el.textContent = pct+'%';
     if (bar) bar.style.width = pct+'%';
-    if (doneEl) doneEl.textContent = done+'/'+tl.length+' lessons';
+    if (doneEl) doneEl.textContent = answered+'/'+tl.length+' answered';
     if (ktEl) ktEl.textContent = pct+'%';
   });
 }
