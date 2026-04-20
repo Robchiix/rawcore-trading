@@ -137,6 +137,27 @@
   .topic-item.active { background: var(--card); border-left: 2px solid var(--green); }
   .topic-item.locked { opacity: 0.4; cursor: not-allowed; }
 
+  .ll-item {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 16px 8px 32px;
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .ll-item:hover { background: var(--card); }
+  .ll-item.active-lesson { background: var(--card); border-left: 2px solid var(--green); padding-left: 30px; }
+  .ll-num { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.08em; }
+  .ll-title { font-size: 12px; color: var(--text); line-height: 1.3; }
+  .ll-item.active-lesson .ll-title { color: var(--text-bright); }
+  .ll-badge { font-family: var(--mono); font-size: 8px; padding: 2px 6px; border: 1px solid var(--border); color: var(--text-dim); letter-spacing: 0.08em; }
+  .ll-badge.free { color: var(--green); border-color: rgba(0,255,136,0.3); background: var(--green-muted); }
+  .ll-badge.core { color: var(--blue); border-color: rgba(59,130,246,0.3); }
+  .ll-badge.done { color: var(--green); border-color: rgba(0,255,136,0.3); background: var(--green-muted); }
+
   .ti-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
   .ti-icon { font-family: var(--mono); font-size: 14px; width: 20px; text-align: center; }
   .ti-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); flex: 1; }
