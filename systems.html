@@ -633,12 +633,12 @@
       <div class="stat-label">// BOT FAMILIES</div>
     </div>
     <div>
-      <div class="stat-val">8</div>
-      <div class="stat-label">// ACTIVE SYSTEMS</div>
+      <div class="stat-val amber">LIVE</div>
+      <div class="stat-label">// OMEGA STATUS</div>
     </div>
     <div>
-      <div class="stat-val amber">47</div>
-      <div class="stat-label">// COMMUNITY FORKS</div>
+      <div class="stat-val">LIVE</div>
+      <div class="stat-label">// NOVA STATUS</div>
     </div>
     <div>
       <div class="stat-val">100%</div>
@@ -700,28 +700,18 @@
       <div class="family-header">
         <div class="family-glow omega"></div>
         <div class="family-icon omega">OMEGA</div>
-        <div class="family-subtitle">// GOLD · XAUUSD · MT5</div>
-        <div class="family-desc">Built specifically for gold trading on MetaTrader 5. Session-aware, ATR-filtered, and structured around real XAUUSD market behaviour. The flagship family.</div>
+        <div class="family-subtitle">// GOLD SCALPING BOT · XAUUSD · MT5</div>
+        <div class="family-desc">Gold scalping bot built for MetaTrader 5. Trades XAUUSD during London and NY sessions using EMA cross signals, ATR volatility filter, and a 4-leg take profit system. Built and tested live on Tradequo.</div>
       </div>
       <div class="family-body">
         <div class="bot-list">
           <div class="bot-item">
             <div class="bot-dot live"></div>
-            <div class="bot-info"><div class="bot-name">OMEGA GS</div><div class="bot-pair">XAUUSD · 5M · EMA Cross + ATR</div></div>
+            <div class="bot-info"><div class="bot-name">OMEGA</div><div class="bot-pair">XAUUSD · 5M · EMA9×EMA21 + ATR · 40 pip SL · 4-leg TP</div></div>
             <span class="bot-badge badge-live">LIVE</span>
           </div>
-          <div class="bot-item">
-            <div class="bot-dot beta"></div>
-            <div class="bot-info"><div class="bot-name">OMEGA SCALPER</div><div class="bot-pair">XAUUSD · 1M · Fast momentum</div></div>
-            <span class="bot-badge badge-beta">BETA</span>
-          </div>
-          <div class="bot-item">
-            <div class="bot-dot dev"></div>
-            <div class="bot-info"><div class="bot-name">OMEGA SWING</div><div class="bot-pair">XAUUSD · 4H · Structure based</div></div>
-            <span class="bot-badge badge-dev">IN DEV</span>
-          </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS OMEGA FAMILY →</a>
+        <a href="pricing.html" class="family-cta">ACCESS OMEGA →</a>
       </div>
     </div>
 
@@ -730,28 +720,28 @@
       <div class="family-header">
         <div class="family-glow nova"></div>
         <div class="family-icon nova">NOVA</div>
-        <div class="family-subtitle">// CRYPTO · BYBIT · PERPETUALS</div>
-        <div class="family-desc">Designed for crypto perpetual futures on Bybit. Isolated margin, multi-asset, built to handle the speed and volatility of crypto markets without blowing up.</div>
+        <div class="family-subtitle">// CRYPTO TRADING BOT · BYBIT · PERPETUALS</div>
+        <div class="family-desc">Crypto trading bot running on Bybit perpetuals. Multi-timeframe confluence strategy — 4H bias, 1H S&D zones and FVGs, 15M rejection entry. Correlation guard prevents doubling up on correlated pairs.</div>
       </div>
       <div class="family-body">
         <div class="bot-list">
           <div class="bot-item">
             <div class="bot-dot live"></div>
-            <div class="bot-info"><div class="bot-name">NOVA BTC</div><div class="bot-pair">BTCUSDT · 1H · Bybit Perp</div></div>
+            <div class="bot-info"><div class="bot-name">NOVA — BTC</div><div class="bot-pair">BTCUSDT · Bybit Perp · 4H/1H/15M confluence</div></div>
             <span class="bot-badge badge-live">LIVE</span>
           </div>
           <div class="bot-item">
-            <div class="bot-dot beta"></div>
-            <div class="bot-info"><div class="bot-name">NOVA ETH</div><div class="bot-pair">ETHUSDT · 1H · Bybit Perp</div></div>
-            <span class="bot-badge badge-beta">BETA</span>
+            <div class="bot-dot live"></div>
+            <div class="bot-info"><div class="bot-name">NOVA — ETH</div><div class="bot-pair">ETHUSDT · Bybit Perp · 4H/1H/15M confluence</div></div>
+            <span class="bot-badge badge-live">LIVE</span>
           </div>
           <div class="bot-item">
-            <div class="bot-dot beta"></div>
-            <div class="bot-info"><div class="bot-name">NOVA SOL</div><div class="bot-pair">SOLUSDT · 30M · Bybit Perp</div></div>
-            <span class="bot-badge badge-beta">BETA</span>
+            <div class="bot-dot live"></div>
+            <div class="bot-info"><div class="bot-name">NOVA — SOL</div><div class="bot-pair">SOLUSDT · Bybit Perp · 4H/1H/15M confluence</div></div>
+            <span class="bot-badge badge-live">LIVE</span>
           </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS NOVA FAMILY →</a>
+        <a href="pricing.html" class="family-cta">ACCESS NOVA →</a>
       </div>
     </div>
 
@@ -760,50 +750,40 @@
       <div class="family-header">
         <div class="family-glow alpha"></div>
         <div class="family-icon alpha">ALPHA</div>
-        <div class="family-subtitle">// SIGNAL EXECUTOR · MT5 + BYBIT</div>
-        <div class="family-desc">No strategy of its own — pure execution engine. Feed it a signal, it handles entry, SL, TP, position sizing and trailing stops automatically. Your discipline, automated.</div>
+        <div class="family-subtitle">// SIGNAL EXECUTOR · MT5</div>
+        <div class="family-desc">No strategy of its own — pure execution engine. Reads signals from Telegram, opens the trade on MT5 with correct SL, TP and position sizing. Built so you never miss an entry because your hands are covered in oil.</div>
       </div>
       <div class="family-body">
         <div class="bot-list">
           <div class="bot-item">
             <div class="bot-dot live"></div>
-            <div class="bot-info"><div class="bot-name">ALPHA EXECUTOR</div><div class="bot-pair">Any pair · Signal driven · MT5</div></div>
+            <div class="bot-info"><div class="bot-name">ALPHA</div><div class="bot-pair">MT5 · Telegram signal → auto execution · any pair</div></div>
             <span class="bot-badge badge-live">LIVE</span>
           </div>
-          <div class="bot-item">
-            <div class="bot-dot beta"></div>
-            <div class="bot-info"><div class="bot-name">ALPHA CRYPTO</div><div class="bot-pair">Any pair · Signal driven · Bybit</div></div>
-            <span class="bot-badge badge-beta">BETA</span>
-          </div>
-          <div class="bot-item">
-            <div class="bot-dot dev"></div>
-            <div class="bot-info"><div class="bot-name">ALPHA TELEGRAM</div><div class="bot-pair">Telegram signal → auto execution</div></div>
-            <span class="bot-badge badge-dev">IN DEV</span>
-          </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS ALPHA FAMILY →</a>
+        <a href="pricing.html" class="family-cta">ACCESS ALPHA →</a>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- FEATURED BOT — OMEGA GS -->
+<!-- FEATURED BOT — OMEGA -->
 <section class="featured-section reveal">
-  <div class="section-tag">FEATURED SYSTEM — OMEGA GS</div>
+  <div class="section-tag">FEATURED SYSTEM — OMEGA</div>
   <div class="featured-bot">
     <div class="fb-left">
-      <div class="fb-badge">// OMEGA FAMILY · FLAGSHIP</div>
-      <div class="fb-name">OMEGA GS</div>
-      <div class="fb-sub">XAUUSD · 5M · MT5 · LIVE</div>
-      <div class="fb-desc">The most battle-tested system in the RawCore arsenal. Built and refined through months of live trading on XAUUSD. <strong>Every quirk of gold behaviour is accounted for</strong> — session timing, ATR spikes, broker-specific execution. This is the real thing.</div>
+      <div class="fb-badge">// GOLD SCALPING BOT · FLAGSHIP</div>
+      <div class="fb-name">OMEGA</div>
+      <div class="fb-sub">GOLD SCALPING BOT · XAUUSD · 5M · MT5 · TRADEQUO · LIVE</div>
+      <div class="fb-desc">The most battle-tested system in the RawCore arsenal. Built by a car mechanic who couldn't watch charts all day. Refined through months of live trading on XAUUSD with Tradequo. <strong>Every quirk of gold behaviour is accounted for</strong> — session timing, ATR spikes, broker-specific pip calculations. This is the real thing — not backtested fantasy.</div>
       <div class="fb-specs">
-        <div class="fb-spec"><div class="fb-spec-label">// ASSET</div><div class="fb-spec-val">XAUUSD</div></div>
-        <div class="fb-spec"><div class="fb-spec-label">// TIMEFRAME</div><div class="fb-spec-val">5M + 15M filter</div></div>
-        <div class="fb-spec"><div class="fb-spec-label">// BROKER</div><div class="fb-spec-val">MT5 compatible</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// ASSET</div><div class="fb-spec-val">XAUUSD (XAUUSDs)</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// TIMEFRAME</div><div class="fb-spec-val">5M entry</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// BROKER</div><div class="fb-spec-val amber">Tradequo (MT5)</div></div>
         <div class="fb-spec"><div class="fb-spec-label">// STATUS</div><div class="fb-spec-val green">LIVE</div></div>
-        <div class="fb-spec"><div class="fb-spec-label">// RISK/TRADE</div><div class="fb-spec-val">1-2% configurable</div></div>
-        <div class="fb-spec"><div class="fb-spec-label">// AVG R</div><div class="fb-spec-val amber">1.8R</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// STOP LOSS</div><div class="fb-spec-val">Fixed 40 pips</div></div>
+        <div class="fb-spec"><div class="fb-spec-label">// EXIT</div><div class="fb-spec-val amber">4-leg TP + trailing SL</div></div>
       </div>
     </div>
     <div class="fb-right">
@@ -840,45 +820,27 @@
 
 <!-- COMMUNITY BOTS -->
 <section class="community-section reveal">
-  <div class="section-tag">COMMUNITY BUILT SYSTEMS</div>
-  <div class="community-grid">
-    <div class="community-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">ATR RIDER</div>
-          <div class="cc-author">// by USR_041 · fork of OMEGA GS</div>
-        </div>
-        <span class="bot-badge badge-live">LIVE</span>
+  <div class="section-tag">COMMUNITY SYSTEMS</div>
+  <div style="background:var(--dark);border:1px solid var(--border);border-left:2px solid var(--green);padding:32px 40px;max-width:700px">
+    <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.2em;margin-bottom:12px">// COMING WITH THE COMMUNITY</div>
+    <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);margin-bottom:16px">BRING YOUR IDEA.</div>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.75;margin-bottom:16px">We're just getting started. As the Core community grows, members will be able to fork existing bots, submit original systems, and earn credits for contributions that help other traders.</p>
+    <p style="font-size:14px;color:var(--text-dim);line-height:1.75;margin-bottom:24px">You don't need to be a developer. You need a clear strategy idea, honest test results, and the humility to accept feedback. The community does the rest.</p>
+    <div style="display:flex;gap:1px;background:var(--border);margin-bottom:24px">
+      <div style="background:var(--black);padding:14px 18px;flex:1;font-family:var(--mono);font-size:10px">
+        <div style="color:var(--green);margin-bottom:4px">+50 pts</div>
+        <div style="color:var(--text-dim)">Fork a bot and document your changes</div>
       </div>
-      <div class="cc-desc">Modified OMEGA GS with ATR-based dynamic SL instead of fixed pips. Improved average R by 0.4 across 3 months of testing. Full diff documented.</div>
-      <div class="cc-meta"><span class="up">↑ 89% approval</span><span>· 34 forks</span><span>· XAUUSD</span></div>
-    </div>
-    <div class="community-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">SESSION SCALP</div>
-          <div class="cc-author">// by MarketKing · original build</div>
-        </div>
-        <span class="bot-badge badge-beta">BETA</span>
+      <div style="background:var(--black);padding:14px 18px;flex:1;font-family:var(--mono);font-size:10px">
+        <div style="color:var(--green);margin-bottom:4px">+200 pts</div>
+        <div style="color:var(--text-dim)">Submit an original bot for review</div>
       </div>
-      <div class="cc-desc">Ultra-tight 1M scalper for London open first 30 minutes only. High frequency, small targets. Not for everyone but consistently profitable in the right conditions.</div>
-      <div class="cc-meta"><span class="up">↑ 76% approval</span><span>· 21 forks</span><span>· XAUUSD</span></div>
-    </div>
-    <div class="community-card">
-      <div class="cc-header">
-        <div>
-          <div class="cc-name">NOVA MULTI</div>
-          <div class="cc-author">// by AlgoX · fork of NOVA BTC</div>
-        </div>
-        <span class="bot-badge badge-beta">BETA</span>
+      <div style="background:var(--black);padding:14px 18px;flex:1;font-family:var(--mono);font-size:10px">
+        <div style="color:var(--green);margin-bottom:4px">+500 pts</div>
+        <div style="color:var(--text-dim)">Bot accepted into Core marketplace</div>
       </div>
-      <div class="cc-desc">Multi-asset NOVA fork running BTC, ETH and SOL simultaneously with shared risk budget. Auto-reduces position size when correlation is high.</div>
-      <div class="cc-meta"><span class="up">↑ 81% approval</span><span>· 18 forks</span><span>· CRYPTO</span></div>
     </div>
-  </div>
-  <div style="margin-top:1px;background:var(--dark);border:1px solid var(--border);padding:20px 28px;font-family:var(--mono);font-size:11px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center;">
-    <span>Community bots require Core membership to access. Publish your own bot and earn <span style="color:var(--green)">+500 Core Credits.</span></span>
-    <a href="pricing.html" style="color:var(--green);text-decoration:none;">JOIN CORE →</a>
+    <a href="pricing.html" style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--green);text-decoration:none;border:1px solid rgba(0,255,136,0.3);padding:10px 20px;display:inline-block;transition:all 0.2s" onmouseover="this.style.background='var(--green-muted)'" onmouseout="this.style.background='transparent'">JOIN CORE TO CONTRIBUTE →</a>
   </div>
 </section>
 
@@ -890,19 +852,19 @@
       <div class="coming-icon">◈</div>
       <div class="coming-name">OMEGA FOREX</div>
       <div class="coming-desc">OMEGA logic adapted for major forex pairs. EURUSD, GBPUSD. Session-based with news filter.</div>
-      <div class="coming-eta">// ETA: Q3 2026</div>
+      <div class="coming-eta">// ETA: TBD</div>
     </div>
     <div class="coming-card">
       <div class="coming-icon">⬡</div>
-      <div class="coming-name">ALPHA TELEGRAM</div>
-      <div class="coming-desc">Full Telegram signal to live trade pipeline. Receive signal in channel → bot executes automatically on MT5 or Bybit.</div>
-      <div class="coming-eta">// ETA: Q2 2026</div>
+      <div class="coming-name">ALPHA — TELEGRAM</div>
+      <div class="coming-desc">Full Telegram signal to live trade pipeline. Receive signal in channel → ALPHA executes automatically on MT5. No manual entry needed.</div>
+      <div class="coming-eta">// ETA: IN PROGRESS</div>
     </div>
     <div class="coming-card">
       <div class="coming-icon">▲</div>
       <div class="coming-name">NOVA STOCKS</div>
       <div class="coming-desc">Stock CFD system for US market open. Momentum based, earnings calendar aware, sector rotation logic.</div>
-      <div class="coming-eta">// ETA: Q4 2026</div>
+      <div class="coming-eta">// ETA: TBD</div>
     </div>
   </div>
 </section>
