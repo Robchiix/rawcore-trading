@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — RawCore Trading</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;--green:#00ff88;--green-muted:#00ff8815;--red:#ff3355;--amber:#f59e0b;--blue:#3b82f6;--text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;--mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.008) 2px,rgba(0,255,136,0.008) 4px);pointer-events:none;z-index:9999;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}
+.nav-logo span{color:var(--green);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--green);}
+.nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.nav-cta:hover{background:var(--green);color:var(--black);}
+
+/* HERO */
+.shop-hero{padding:100px 80px 60px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.hero-tag::before{content:'//';color:var(--text-dim);}
+.hero-title{font-family:var(--display);font-size:clamp(52px,7vw,90px);color:var(--text-bright);line-height:0.9;margin-bottom:16px;}
+.hero-title span{color:var(--green);}
+.hero-sub{font-size:15px;color:var(--text-dim);line-height:1.75;max-width:480px;margin-bottom:28px;}
+.hero-sub strong{color:var(--text);}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;}
+.h-badge{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:6px 12px;border:1px solid;}
+.h-badge.green{border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted);}
+.h-badge.amber{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.06);}
+.hero-img-wrap{position:relative;}
+.hero-img-wrap img{width:100%;display:block;border:1px solid var(--border);}
+.img-label{position:absolute;bottom:0;left:0;right:0;background:rgba(5,6,8,0.85);padding:12px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center;}
+.img-label span{color:var(--green);}
+
+/* MEMBER PERK BAR */
+.perk-bar{background:var(--dark);border-bottom:1px solid var(--border);padding:16px 80px;display:flex;align-items:center;gap:40px;flex-wrap:wrap;}
+.perk-item{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+.perk-icon{color:var(--green);font-size:14px;}
+.perk-item strong{color:var(--text-bright);}
+
+/* PRODUCTS */
+.products-section{padding:60px 80px;}
+.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:32px;}
+.section-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;display:flex;align-items:center;gap:8px;}
+.section-tag::before{content:'//';color:var(--text-dim);}
+.section-note{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+
+.product-card{background:var(--dark);transition:background 0.2s;position:relative;}
+.product-card:hover{background:var(--card);}
+
+.product-img{width:100%;aspect-ratio:1;background:var(--black);overflow:hidden;border-bottom:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.product-card:hover .product-img img{transform:scale(1.03);}
+
+.product-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.placeholder-icon{font-family:var(--display);font-size:48px;color:var(--border);}
+.placeholder-text{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;}
+
+.prod-badges{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:4px;}
+.prod-badge{font-family:var(--mono);font-size:8px;padding:3px 7px;letter-spacing:0.1em;}
+.prod-badge.founding{background:var(--amber);color:var(--black);font-weight:700;}
+.prod-badge.new{background:var(--green);color:var(--black);font-weight:700;}
+.prod-badge.coming{background:var(--border);color:var(--text-dim);}
+
+.product-info{padding:16px 18px;}
+.product-name{font-family:var(--display);font-size:20px;color:var(--text-bright);letter-spacing:0.05em;margin-bottom:4px;}
+.product-desc{font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:12px;}
+.product-pricing{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;}
+.product-price{font-family:var(--display);font-size:26px;color:var(--green);}
+.product-original{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-decoration:line-through;}
+.product-save{font-family:var(--mono);font-size:8px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:2px 6px;}
+.product-price.dim{color:var(--text-dim);}
+
+.btn-add{width:100%;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;padding:10px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;transition:opacity 0.2s;text-transform:uppercase;}
+.btn-add:hover{opacity:0.9;}
+.btn-add.coming{background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:not-allowed;}
+.btn-add.notify{background:transparent;color:var(--amber);border:1px solid rgba(245,158,11,0.3);cursor:pointer;}
+.btn-add.notify:hover{background:rgba(245,158,11,0.08);}
+
+/* CORE MEMBER CTA */
+.member-cta{margin:1px 0;background:var(--dark);border:1px solid var(--border);border-left:2px solid var(--green);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:32px;}
+.mc-left{}
+.mc-tag{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.2em;margin-bottom:8px;}
+.mc-title{font-family:var(--display);font-size:28px;color:var(--text-bright);margin-bottom:6px;}
+.mc-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
+.mc-right{display:flex;gap:12px;align-items:center;flex-shrink:0;}
+.mc-perks{display:flex;flex-direction:column;gap:6px;}
+.mc-perk{font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+.mc-perk::before{content:'→';color:var(--green);}
+.btn-join{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;padding:12px 24px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block;white-space:nowrap;transition:opacity 0.2s;}
+.btn-join:hover{opacity:0.9;}
+
+/* PRINTFUL NOTE */
+.printful-note{padding:40px 80px;border-top:1px solid var(--border);background:var(--dark);}
+.pn-inner{display:flex;align-items:center;gap:24px;max-width:700px;}
+.pn-icon{font-family:var(--mono);font-size:24px;color:var(--text-dim);}
+.pn-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8;}
+.pn-text strong{color:var(--text);}
+
+/* FOOTER */
+footer{padding:32px 80px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim);border-top:1px solid var(--border);}
+.footer-logo{color:var(--text-bright);text-decoration:none;font-family:var(--mono);font-size:14px;}
+.footer-logo span{color:var(--green);}
+.footer-links{display:flex;gap:24px;list-style:none;}
+.footer-links a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--green);}
+.footer-socials{display:flex;gap:10px;}
+.social-icon{width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;transition:all 0.2s;text-decoration:none;flex-shrink:0;}
+.social-icon:hover{border-color:var(--green);color:var(--green);}
+.social-icon svg{display:block;}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* MOBILE */
+@media(max-width:768px){
+  nav{padding:0 20px;height:56px;}
+  .nav-links{display:none;}
+  .shop-hero{padding:80px 20px 40px;grid-template-columns:1fr;gap:32px;}
+  .perk-bar{padding:14px 20px;gap:20px;}
+  .products-section{padding:40px 20px;}
+  .products-grid{grid-template-columns:1fr;}
+  .member-cta{flex-direction:column;padding:24px 20px;}
+  .printful-note{padding:32px 20px;}
+  footer{padding:24px 20px;flex-direction:column;gap:20px;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="knowledge.html">Knowledge</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="shop.html" class="active">Shop</a></li>
+  </ul>
+  <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
+</nav>
+
+<!-- HERO -->
+<section class="shop-hero">
+  <div>
+    <div class="hero-tag">RAWCORE MERCH</div>
+    <h1 class="hero-title">WEAR THE<br><span>CORE.</span></h1>
+    <p class="hero-sub">No lambos. No fake flex. <strong>Real trader energy on quality kit.</strong> Every piece ships via Printful — print on demand, no dead stock.</p>
+    <div class="hero-badges">
+      <div class="h-badge green">// FREE WORLDWIDE SHIPPING ON ORDERS €60+</div>
+      <div class="h-badge amber">// CORE MEMBERS GET 20% OFF EVERYTHING</div>
+    </div>
+    <a href="login.html" class="nav-cta" style="display:inline-block">JOIN CORE FOR 20% OFF →</a>
+  </div>
+  <div class="hero-img-wrap reveal">
+    <img src="rc-cap.png" alt="RawCore Snapback Cap">
+    <div class="img-label">
+      <span>RC SNAPBACK CAP</span>
+      <span>// FOUNDING MEMBER PRICE — €32</span>
+    </div>
+  </div>
+</section>
+
+<!-- PERK BAR -->
+<div class="perk-bar">
+  <div class="perk-item"><span class="perk-icon">◈</span><span>Print on demand via <strong>Printful</strong> — ships worldwide</span></div>
+  <div class="perk-item"><span class="perk-icon">◈</span><span>Core members get <strong>20% off everything</strong></span></div>
+  <div class="perk-item"><span class="perk-icon">◈</span><span>Redeem <strong>Core Credits</strong> for extra discounts</span></div>
+  <div class="perk-item"><span class="perk-icon">◈</span><span><strong>Free shipping</strong> on orders over €60</span></div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section reveal">
+  <div class="section-header">
+    <div class="section-tag">ALL PRODUCTS</div>
+    <div class="section-note">// 3 products · More drops coming</div>
+  </div>
+
+  <div class="products-grid">
+
+    <!-- CAP -->
+    <div class="product-card">
+      <div class="product-img">
+        <img src="rc-cap.png" alt="RC Snapback Cap">
+        <div class="prod-badges">
+          <span class="prod-badge founding">FOUNDING PRICE</span>
+          <span class="prod-badge new">NEW</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">RC SNAPBACK CAP</div>
+        <div class="product-desc">Black snapback, green underbrim, embroidered RC logo. The secret handshake for people who actually trade.</div>
+        <div class="product-pricing">
+          <span class="product-price">€32</span>
+          <span class="product-original">€40</span>
+          <span class="product-save">FOUNDING PRICE</span>
+        </div>
+        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+      </div>
+    </div>
+
+    <!-- HOODIE PLACEHOLDER -->
+    <div class="product-card">
+      <div class="product-img">
+        <img src="rc-hoodie.png" alt="Buy Low Think High Hoodie">
+        <div class="prod-badges">
+          <span class="prod-badge founding">FOUNDING PRICE</span>
+          <span class="prod-badge new">NEW</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">BUY LOW THINK HIGH HOODIE</div>
+        <div class="product-desc">The flagship piece. Heavy black cotton, brush-stroke print. Wear the mindset.</div>
+        <div class="product-pricing">
+          <span class="product-price">€42</span>
+          <span class="product-original">€52</span>
+          <span class="product-save">FOUNDING PRICE</span>
+        </div>
+        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+      </div>
+    </div>
+
+    <!-- TEE PLACEHOLDER -->
+    <div class="product-card">
+      <div class="product-img">
+        <img src="rc-tee.png" alt="Bro Just Wait Tee">
+        <div class="prod-badges">
+          <span class="prod-badge founding">FOUNDING PRICE</span>
+          <span class="prod-badge new">NEW</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">BRO... JUST WAIT TEE</div>
+        <div class="product-desc">The most important lesson in trading. On a t-shirt. Premium black cotton, brush-stroke print.</div>
+        <div class="product-pricing">
+          <span class="product-price">€26</span>
+          <span class="product-original">€32</span>
+          <span class="product-save">FOUNDING PRICE</span>
+        </div>
+        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MEMBER CTA -->
+<div class="products-section" style="padding-top:0">
+  <div class="member-cta reveal">
+    <div class="mc-left">
+      <div class="mc-tag">// CORE MEMBERS GET MORE</div>
+      <div class="mc-title">JOIN CORE. SAVE 20%.</div>
+      <div class="mc-sub">// Plus redeem your learning credits for extra discounts and free items</div>
+    </div>
+    <div class="mc-right">
+      <div class="mc-perks">
+        <div class="mc-perk">20% off all merch, forever</div>
+        <div class="mc-perk">Core Credits redeemable in shop</div>
+        <div class="mc-perk">Early access to new drops</div>
+        <div class="mc-perk">Full bot access + knowledge</div>
+      </div>
+      <a href="pricing.html" class="btn-join">JOIN CORE — €28/MO →</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRINTFUL NOTE -->
+<div class="printful-note reveal">
+  <div class="pn-inner">
+    <div class="pn-icon">◈</div>
+    <div class="pn-text">
+      <strong>How orders work:</strong> All RawCore merch is printed and shipped on demand via Printful. No warehouse, no dead stock. Your order goes straight to production when placed — typical delivery is 5–10 business days worldwide. Quality guaranteed or we reprint.
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="footer-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="knowledge.html">KNOWLEDGE</a></li>
+    <li><a href="systems.html">SYSTEMS</a></li>
+    <li><a href="pricing.html">PRICING</a></li>
+    <li><a href="shop.html">SHOP</a></li>
+    <li><a href="terms.html">TERMS</a></li>
+    <li><a href="privacy.html">PRIVACY</a></li>
+  </ul>
+  <div class="footer-socials">
+    <a href="https://t.me/rawcoretrading" target="_blank" class="social-icon" title="Telegram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.67l-2.945-.92c-.64-.203-.654-.64.136-.954l11.498-4.43c.533-.194 1.001.131.835.855z"/></svg></a>
+    <a href="https://www.tiktok.com/@rawcoretrading" target="_blank" class="social-icon" title="TikTok"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>
+    <a href="https://www.instagram.com/rawcoretrading" target="_blank" class="social-icon" title="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+    <a href="https://x.com/rawcoretrading" target="_blank" class="social-icon" title="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function notifyMe(item) {
+  const names = { hoodie: 'Stay Raw Hoodie', tee: 'Emotions Off Tee' };
+  alert(`We'll let you know when the ${names[item]} drops!\n\nFor now — follow @rawcoretrading on Telegram and Instagram to be first to know.`);
+}
+</script>
+</body>
+</html>
