@@ -1550,46 +1550,23 @@ let completedLessons = new Set(), completedTasks = new Set();
 let currentTopic = null;
 
 function openTopic(topicId) {
+  // Update sidebar active state
   document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
   document.getElementById('topic-' + topicId)?.classList.add('active');
+
+  // Show this topic's lesson list, hide others
   ['psychology','markets','risk','systems'].forEach(t => {
     const list = document.getElementById('list-' + t);
     if (list) list.style.display = (t === topicId) ? 'block' : 'none';
   });
+
   currentTopic = topicId;
-  const topic = topicData[topicId];
-  const done = topic.lessons.filter(l => completedLessons.has(l)).length;
-  document.getElementById('contentArea').innerHTML = `
-    <div style="padding:28px;flex:1">
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:14px;cursor:pointer;width:fit-content" onclick="showHome()" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">← ALL TOPICS</div>
-      <div style="font-family:var(--display);font-size:clamp(28px,4vw,48px);color:var(--text-bright);line-height:0.9;margin-bottom:10px">${topic.title}</div>
-      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;max-width:580px;margin-bottom:20px">${topic.desc}</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);border:1px solid var(--border);padding:5px 10px">${topic.lessons.length} LESSONS</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:5px 10px;background:var(--green-muted)">1 FREE</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);border:1px solid var(--border);padding:5px 10px">${done}/${topic.lessons.length} COMPLETE</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">
-        ${topic.lessons.map((lid, i) => {
-          const l = lessonData[lid];
-          const isDone = completedLessons.has(lid);
-          return `<div style="background:var(--dark);padding:14px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;transition:background 0.15s" 
-            onclick="openLesson('${lid}')"
-            onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
-            <div style="font-family:var(--display);font-size:24px;color:var(--border);line-height:1;width:32px">0${i+1}</div>
-            <div>
-              <div style="font-size:13px;color:var(--text-bright);margin-bottom:3px">${l.title}</div>
-              <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${l.sub} · ${l.read}</div>
-            </div>
-            <div style="font-family:var(--mono);font-size:8px;padding:3px 8px;border:1px solid;${isDone ? 'border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted)' : l.free ? 'border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted)' : 'border-color:var(--border);color:var(--text-dim)'}">
-              ${isDone ? '✓ DONE' : l.free ? 'FREE' : 'CORE'}
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
-  document.getElementById('mainContent').scrollTop = 0;
+
+  // Go straight to first lesson — no overview panel
+  const firstLesson = topicData[topicId].lessons[0];
+  openLesson(firstLesson);
 }
+
 
 function openLesson(lessonId) {
   const l = lessonData[lessonId];
@@ -1653,8 +1630,13 @@ function openLesson(lessonId) {
   if (!completedLessons.has(lessonId)) {
     completedLessons.add(lessonId);
     todayLessons++;
-    earnCredits(10);
+    todayCredits += 10;
+    credits += 10;
     updateProgress();
+    // Update all displays
+    document.getElementById('creditsDisplay').textContent = credits.toLocaleString() + ' pts';
+    document.getElementById('rsLessons').textContent = todayLessons;
+    document.getElementById('rsCredits').textContent = '+' + todayCredits;
   }
 }
 
