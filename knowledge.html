@@ -6,55 +6,36 @@
 <title>Knowledge — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;
-    --green:#00ff88;--green-muted:#00ff8815;--red:#ff3355;
-    --amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;
-    --text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;
-    --mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
+  :root{--black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;--green:#00ff88;--green-muted:#00ff8815;--red:#ff3355;--amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;--mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;}
+  *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
   body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:crosshair;}
   body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9999;}
   nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-  .nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}
-  .nav-logo span{color:var(--green);}
-  .nav-links{display:flex;gap:24px;list-style:none;}
-  .nav-links a{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
-  .nav-links a:hover,.nav-links a.active{color:var(--green);}
-  .nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}
-  .nav-cta:hover{background:var(--green);color:var(--black);}
-  .mobile-menu-btn{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:12px;}
-  .mobile-menu-btn span{display:block;width:22px;height:2px;background:var(--text-dim);}
+  .nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}.nav-logo span{color:var(--green);}
+  .nav-links{display:flex;gap:24px;list-style:none;}.nav-links a{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}.nav-links a:hover,.nav-links a.active{color:var(--green);}
+  .nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}.nav-cta:hover{background:var(--green);color:var(--black);}
+  .mobile-menu-btn{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:12px;}.mobile-menu-btn span{display:block;width:22px;height:2px;background:var(--text-dim);}
   .mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(5,6,8,0.98);border-bottom:1px solid var(--border);padding:16px 20px;flex-direction:column;z-index:99;}
-  .mobile-nav.open{display:flex;}
-  .mobile-nav a{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;padding:14px 0;border-bottom:1px solid var(--border);}
-  .mobile-nav a:last-child{border-bottom:none;}
+  .mobile-nav.open{display:flex;}.mobile-nav a{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;padding:14px 0;border-bottom:1px solid var(--border);}.mobile-nav a:last-child{border-bottom:none;}
   .hero{padding:100px 80px 60px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
   .hero::before{content:'KNOWLEDGE';position:absolute;right:-60px;top:50%;transform:translateY(-50%);font-family:var(--display);font-size:180px;color:var(--green);opacity:0.02;pointer-events:none;white-space:nowrap;}
   .hero-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;display:flex;align-items:center;gap:12px;opacity:0;animation:fadeUp 0.6s forwards 0.1s;}
   .hero-tag::before{content:'';width:32px;height:1px;background:var(--green);}
-  .hero-title{font-family:var(--display);font-size:clamp(56px,7vw,96px);line-height:0.9;color:var(--text-bright);margin-bottom:20px;opacity:0;animation:fadeUp 0.6s forwards 0.2s;}
-  .hero-title .green{color:var(--green);}
-  .hero-sub{max-width:600px;font-size:16px;line-height:1.7;color:var(--text-dim);opacity:0;animation:fadeUp 0.6s forwards 0.3s;}
-  .hero-sub strong{color:var(--text);}
+  .hero-title{font-family:var(--display);font-size:clamp(56px,7vw,96px);line-height:0.9;color:var(--text-bright);margin-bottom:20px;opacity:0;animation:fadeUp 0.6s forwards 0.2s;}.hero-title .green{color:var(--green);}
+  .hero-sub{max-width:620px;font-size:16px;line-height:1.7;color:var(--text-dim);opacity:0;animation:fadeUp 0.6s forwards 0.3s;}.hero-sub strong{color:var(--text);}
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
   .free-banner{background:var(--green-muted);border-bottom:1px solid rgba(0,255,136,0.15);padding:12px 80px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .fb-badge{font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:3px 10px;letter-spacing:0.15em;background:var(--green-muted);white-space:nowrap;}
-  .fb-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);flex:1;}
-  .fb-text span{color:var(--green);}
-  .fb-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;padding:7px 16px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity 0.2s;}
-  .fb-cta:hover{opacity:0.9;}
+  .fb-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);flex:1;}.fb-text span{color:var(--green);}
+  .fb-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;padding:7px 16px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity 0.2s;}.fb-cta:hover{opacity:0.9;}
   .topics-section{padding:60px 80px 80px;}
-  .section-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:32px;display:flex;align-items:center;gap:12px;}
-  .section-tag::before{content:'//';color:var(--text-dim);}
+  .section-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:32px;display:flex;align-items:center;gap:12px;}.section-tag::before{content:'//';color:var(--text-dim);}
   .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
-  .topic-card{background:var(--dark);position:relative;overflow:hidden;transition:background 0.2s;}
-  .topic-card:hover{background:var(--card);}
-  .topic-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:opacity 0.2s;}
+  .topic-card{background:var(--dark);position:relative;overflow:hidden;transition:background 0.2s;}.topic-card:hover{background:var(--card);}
+  .topic-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
   .topic-card.free-topic::before{background:var(--green);}
   .topic-card.core-topic::before{background:var(--text-dim);opacity:0.4;}
+  .topic-card.locked-topic::before{background:var(--amber);opacity:0.6;}
   .tc-header{padding:24px 24px 16px;border-bottom:1px solid var(--border);}
   .tc-badges{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
   .tc-cat{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:3px 8px;border:1px solid;}
@@ -66,6 +47,7 @@
   .cat-brokers{border-color:var(--border);color:var(--text-dim);}
   .tc-free-badge{font-family:var(--mono);font-size:8px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:2px 7px;letter-spacing:0.15em;background:var(--green-muted);}
   .tc-core-badge{font-family:var(--mono);font-size:8px;color:var(--text-dim);border:1px solid var(--border);padding:2px 7px;letter-spacing:0.15em;}
+  .tc-soon-badge{font-family:var(--mono);font-size:8px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:2px 7px;letter-spacing:0.15em;background:rgba(245,158,11,0.06);}
   .tc-title{font-family:var(--display);font-size:20px;color:var(--text-bright);letter-spacing:0.05em;margin-bottom:8px;line-height:1.1;}
   .tc-desc{font-size:13px;color:var(--text-dim);line-height:1.6;}
   .tc-meta{display:flex;gap:12px;margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--text-dim);flex-wrap:wrap;}
@@ -80,7 +62,6 @@
   .li-badge{font-family:var(--mono);font-size:8px;padding:2px 7px;border:1px solid;white-space:nowrap;}
   .li-badge.free{border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted);}
   .li-badge.core{border-color:var(--border);color:var(--text-dim);}
-  /* MODAL */
   .lesson-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:80px 20px 20px;overflow-y:auto;}
   .lesson-modal.open{display:flex;}
   .lesson-box{background:var(--dark);border:1px solid var(--border);width:100%;max-width:760px;position:relative;}
@@ -88,115 +69,61 @@
   .lm-cat{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;margin-bottom:8px;}
   .lm-title{font-family:var(--display);font-size:clamp(22px,4vw,34px);color:var(--text-bright);line-height:1;}
   .lm-meta{font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;}
-  .lm-close{font-family:var(--mono);font-size:18px;color:var(--text-dim);cursor:pointer;background:none;border:none;flex-shrink:0;transition:color 0.2s;padding:4px;}
-  .lm-close:hover{color:var(--red);}
+  .lm-close{font-family:var(--mono);font-size:18px;color:var(--text-dim);cursor:pointer;background:none;border:none;flex-shrink:0;transition:color 0.2s;padding:4px;}.lm-close:hover{color:var(--red);}
   .lm-body{padding:28px;}
-  .lm-text{font-size:15px;color:var(--text-dim);line-height:1.8;margin-bottom:16px;}
-  .lm-text strong{color:var(--text);}
-  .lm-section-title{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
-  .lm-section-title::before{content:'//';color:var(--text-dim);}
+  .lm-text{font-size:15px;color:var(--text-dim);line-height:1.8;margin-bottom:16px;}.lm-text strong{color:var(--text);}
+  .lm-section-title{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin:24px 0 12px;display:flex;align-items:center;gap:8px;}.lm-section-title::before{content:'//';color:var(--text-dim);}
   .lm-callout{background:var(--black);border-left:2px solid var(--green);padding:14px 16px;margin:16px 0;font-family:var(--mono);font-size:12px;color:var(--text-dim);line-height:1.7;}
   .lm-callout .label{font-size:9px;color:var(--green);letter-spacing:0.2em;display:block;margin-bottom:6px;}
-  .lm-callout.warn{border-left-color:var(--amber);}
-  .lm-callout.warn .label{color:var(--amber);}
+  .lm-callout.warn{border-left-color:var(--amber);}.lm-callout.warn .label{color:var(--amber);}
   .lm-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
   .lm-list li{font-family:var(--mono);font-size:12px;color:var(--text-dim);display:flex;gap:10px;line-height:1.6;}
   .lm-list li::before{content:'→';color:var(--green);flex-shrink:0;}
   .lm-footer{padding:20px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
   .lm-footer-note{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
-  .lm-upgrade{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}
-  .lm-upgrade:hover{opacity:0.9;}
+  .lm-upgrade{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}.lm-upgrade:hover{opacity:0.9;}
   .locked-overlay{padding:40px 28px;text-align:center;}
   .lo-icon{font-family:var(--mono);font-size:32px;color:var(--text-dim);margin-bottom:16px;}
   .lo-title{font-family:var(--display);font-size:28px;color:var(--text-bright);margin-bottom:10px;}
   .lo-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:20px;line-height:1.7;}
   .lo-btn{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:13px 28px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block;}
-  /* PATH */
   .path-section{padding:60px 80px;background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
   .path-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);margin-top:32px;}
-  .path-card{background:var(--dark);padding:24px 16px;text-align:center;cursor:pointer;transition:background 0.2s;position:relative;}
-  .path-card:hover{background:var(--card);}
-  .path-card::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--border);z-index:1;}
-  .path-card:last-child::after{display:none;}
+  .path-card{background:var(--dark);padding:24px 16px;text-align:center;cursor:pointer;transition:background 0.2s;position:relative;}.path-card:hover{background:var(--card);}
+  .path-card::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--border);z-index:1;}.path-card:last-child::after{display:none;}
   .path-step{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.2em;margin-bottom:10px;}
   .path-icon{font-family:var(--mono);font-size:20px;color:var(--green);margin-bottom:8px;}
   .path-title{font-family:var(--display);font-size:18px;color:var(--text-bright);margin-bottom:6px;}
   .path-sub{font-size:11px;color:var(--text-dim);line-height:1.5;}
-  /* CTA */
   .cta-section{padding:80px;text-align:center;position:relative;overflow:hidden;}
   .cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;border:1px solid rgba(0,255,136,0.05);pointer-events:none;}
   .cta-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;position:relative;z-index:1;}
-  .cta-title{font-family:var(--display);font-size:clamp(36px,5vw,60px);color:var(--text-bright);line-height:0.95;margin-bottom:16px;position:relative;z-index:1;}
-  .cta-title .green{color:var(--green);}
+  .cta-title{font-family:var(--display);font-size:clamp(36px,5vw,60px);color:var(--text-bright);line-height:0.95;margin-bottom:16px;position:relative;z-index:1;}.cta-title .green{color:var(--green);}
   .cta-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:32px;position:relative;z-index:1;line-height:1.8;}
   .cta-btns{display:flex;gap:12px;justify-content:center;position:relative;z-index:1;flex-wrap:wrap;}
-  .btn-primary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}
-  .btn-primary:hover{opacity:0.9;}
-  .btn-secondary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:pointer;text-decoration:none;transition:all 0.2s;}
-  .btn-secondary:hover{border-color:var(--text-dim);color:var(--text-bright);}
+  .btn-primary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}.btn-primary:hover{opacity:0.9;}
+  .btn-secondary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:pointer;text-decoration:none;transition:all 0.2s;}.btn-secondary:hover{border-color:var(--text-dim);color:var(--text-bright);}
   footer{padding:24px 80px;border-top:1px solid var(--border);}
   .footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
-  .footer-logo{font-family:var(--mono);font-size:14px;color:var(--text-bright);text-decoration:none;}
-  .footer-logo span{color:var(--green);}
-  .footer-links{display:flex;gap:18px;list-style:none;flex-wrap:wrap;}
-  .footer-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
-  .footer-links a:hover{color:var(--green);}
-  .footer-social{display:flex;gap:8px;}
-  .social-icon{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:all 0.2s;}
-  .social-icon:hover{border-color:var(--green);color:var(--green);}
+  .footer-logo{font-family:var(--mono);font-size:14px;color:var(--text-bright);text-decoration:none;}.footer-logo span{color:var(--green);}
+  .footer-links{display:flex;gap:18px;list-style:none;flex-wrap:wrap;}.footer-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}.footer-links a:hover{color:var(--green);}
+  .footer-social{display:flex;gap:8px;}.social-icon{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:all 0.2s;}.social-icon:hover{border-color:var(--green);color:var(--green);}
   .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
   .footer-copy{font-family:var(--mono);font-size:9px;color:var(--text-dim);}
-  .footer-legal{display:flex;gap:20px;}
-  .footer-legal a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
-  .footer-legal a:hover{color:var(--green);}
-  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
-  .reveal.visible{opacity:1;transform:translateY(0);}
-  /* MOBILE */
+  .footer-legal{display:flex;gap:20px;}.footer-legal a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}.footer-legal a:hover{color:var(--green);}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}.reveal.visible{opacity:1;transform:translateY(0);}
   @media(max-width:768px){
-    body{cursor:default;}
-    nav{padding:0 20px;height:56px;}
-    .nav-links{display:none;}
-    .nav-cta{font-size:9px;padding:7px 12px;}
-    .mobile-menu-btn{display:flex!important;}
-    .hero{padding:80px 20px 40px;}
-    .hero::before{display:none;}
-    .hero-title{font-size:clamp(44px,12vw,68px);}
-    .free-banner{padding:12px 20px;flex-direction:column;align-items:flex-start;gap:10px;}
-    .fb-cta{width:100%;text-align:center;display:block;padding:12px;}
-    .topics-section{padding:32px 16px 48px;}
-    .topics-grid{grid-template-columns:1fr;}
-    .tc-header{padding:20px 16px 14px;}
-    .tc-title{font-size:18px;}
-    .lesson-item{padding:12px 16px;}
-    .li-title{font-size:12px;}
-    .li-sub{font-size:9px;}
-    .path-section{padding:40px 16px;}
-    .path-grid{grid-template-columns:1fr 1fr;gap:1px;}
-    .path-card::after{display:none;}
-    .path-card:nth-child(5){grid-column:1/-1;}
-    .path-title{font-size:16px;}
-    .path-sub{font-size:10px;}
-    .cta-section{padding:48px 20px;}
-    .cta-btns{flex-direction:column;}
-    .btn-primary,.btn-secondary{width:100%;text-align:center;}
-    footer{padding:20px;}
-    .footer-top{flex-direction:column;gap:16px;}
-    .footer-links{flex-wrap:wrap;gap:12px;}
-    .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
-    .footer-legal{justify-content:center;}
-    .lesson-modal{padding:56px 0 0;}
-    .lesson-box{min-height:100vh;border-radius:0;}
-    .lm-header{padding:20px;}
-    .lm-body{padding:20px;}
-    .lm-footer{padding:16px 20px;flex-direction:column;}
-    .lm-upgrade{width:100%;text-align:center;}
-    .section-tag{flex-wrap:wrap;}
+    body{cursor:default;}nav{padding:0 20px;height:56px;}.nav-links{display:none;}.nav-cta{font-size:9px;padding:7px 12px;}.mobile-menu-btn{display:flex!important;}
+    .hero{padding:80px 20px 40px;}.hero::before{display:none;}.hero-title{font-size:clamp(44px,12vw,68px);}
+    .free-banner{padding:12px 20px;flex-direction:column;align-items:flex-start;gap:10px;}.fb-cta{width:100%;text-align:center;display:block;padding:12px;}
+    .topics-section{padding:32px 16px 48px;}.topics-grid{grid-template-columns:1fr;}
+    .tc-header{padding:20px 16px 14px;}.tc-title{font-size:18px;}.lesson-item{padding:12px 16px;}.li-title{font-size:12px;}.li-sub{font-size:9px;}
+    .path-section{padding:40px 16px;}.path-grid{grid-template-columns:1fr 1fr;gap:1px;}.path-card::after{display:none;}.path-card:nth-child(5){grid-column:1/-1;}.path-title{font-size:16px;}
+    .cta-section{padding:48px 20px;}.cta-btns{flex-direction:column;}.btn-primary,.btn-secondary{width:100%;text-align:center;}
+    footer{padding:20px;}.footer-top{flex-direction:column;gap:16px;}.footer-links{flex-wrap:wrap;gap:12px;}.footer-bottom{flex-direction:column;gap:8px;text-align:center;}.footer-legal{justify-content:center;}
+    .lesson-modal{padding:56px 0 0;}.lesson-box{min-height:100vh;border-radius:0;}.lm-header{padding:20px;}.lm-body{padding:20px;}.lm-footer{padding:16px 20px;flex-direction:column;}.lm-upgrade{width:100%;text-align:center;}
   }
-  @media(max-width:480px){
-    .hero-title{font-size:clamp(38px,10vw,56px);}
-    .path-grid{grid-template-columns:1fr;}
-    .path-card:nth-child(5){grid-column:auto;}
-  }
+  @media(max-width:480px){.hero-title{font-size:clamp(38px,10vw,56px);}.path-grid{grid-template-columns:1fr;}.path-card:nth-child(5){grid-column:auto;}}
 </style>
 </head>
 <body>
@@ -215,126 +142,246 @@
   <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
 <div class="mobile-nav" id="mobileNav">
-  <a href="index.html">HOME</a>
-  <a href="about.html">ABOUT</a>
-  <a href="knowledge.html">KNOWLEDGE</a>
-  <a href="systems.html">SYSTEMS</a>
-  <a href="community.html">COMMUNITY</a>
-  <a href="pricing.html">PRICING</a>
-  <a href="contact.html">CONTACT</a>
+  <a href="index.html">HOME</a><a href="about.html">ABOUT</a><a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a><a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a><a href="contact.html">CONTACT</a>
   <a href="login.html" style="color:var(--green)">JOIN THE CORE →</a>
 </div>
 
 <section class="hero">
   <div class="hero-tag">// EDUCATION HUB</div>
   <h1 class="hero-title">LEARN THE<br><span class="green">REAL STUFF.</span></h1>
-  <p class="hero-sub">No fluff. No filler. No recycled YouTube content. <strong>Just the fundamentals that actually matter</strong> — explained clearly for beginners, with enough depth for experienced traders.</p>
+  <p class="hero-sub">No recycled YouTube content. No fake gurus. <strong>Real experience, real mistakes, real lessons</strong> — written by a trader who learned the hard way so you don't have to.</p>
 </section>
 
 <div class="free-banner">
   <span class="fb-badge">// FREE ACCESS</span>
-  <span class="fb-text">5 free lessons — <span>one per topic</span> — no account needed. Real content, no strings attached.</span>
+  <span class="fb-text">4 free lessons — <span>one per topic</span> — no account needed. Real content, no strings attached.</span>
   <a href="login.html" class="fb-cta">START FREE →</a>
 </div>
 
 <section class="topics-section reveal">
-  <div class="section-tag">ALL TOPICS — 5 FREE LESSONS · REST CORE</div>
+  <div class="section-tag">ALL TOPICS — 4 FREE LESSONS · REST CORE</div>
   <div class="topics-grid">
 
     <div class="topic-card free-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-psychology">PSYCHOLOGY</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-psychology">PSYCHOLOGY</span>
+          <span class="tc-free-badge">1 FREE LESSON</span>
+        </div>
         <div class="tc-title">TRADING PSYCHOLOGY</div>
-        <div class="tc-desc">Why smart people make stupid trading decisions — and how to build a mindset that actually executes your plan when it matters most.</div>
-        <div class="tc-meta"><span>5 LESSONS</span><span>ALL LEVELS</span><span>~45 MIN</span></div>
+        <div class="tc-desc">Why smart traders make emotional decisions — and how to build a mindset that executes your plan when it matters most. Written from real experience of the dopamine trap.</div>
+        <div class="tc-meta">5 LESSONS · ALL LEVELS · ~45 MIN</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item" onclick="openLesson('psych-1')"><span class="li-num">01</span><div><div class="li-title">Why you override your stop loss</div><div class="li-sub">The psychology behind "just this once"</div></div><span class="li-badge free">FREE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Fear vs greed — recognising both in real time</div><div class="li-sub">How market conditions trigger emotional responses</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Revenge trading — the spiral and how to break it</div><div class="li-sub">Practical steps to stop digging deeper</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Building a pre-trade routine</div><div class="li-sub">How professional traders prepare mentally</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Using automation to remove emotion from execution</div><div class="li-sub">How EAs enforce your own rules</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item" onclick="openLesson('psych-1')">
+          <span class="li-num">01</span>
+          <div><div class="li-title">The dopamine trap — why you blow up when you're winning</div><div class="li-sub">The pattern nobody talks about honestly</div></div>
+          <span class="li-badge free">FREE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">When to trade and when to walk away</div><div class="li-sub">Reading your own mental state before the chart</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">Volatility is not your friend</div><div class="li-sub">Why chasing crazy wicks costs most retail traders</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Building a system you can actually follow</div><div class="li-sub">Discipline is a design problem, not a willpower problem</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">05</span>
+          <div><div class="li-title">The independence goal — trading without needing anyone</div><div class="li-sub">Why signals are training wheels, not a destination</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
       </div>
     </div>
-
     <div class="topic-card free-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-markets">MARKETS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-markets">MARKETS</span>
+          <span class="tc-free-badge">1 FREE LESSON</span>
+        </div>
         <div class="tc-title">MARKET STRUCTURE</div>
-        <div class="tc-desc">How price actually moves — sessions, liquidity, key levels. The foundation everything else is built on. Skip this and nothing else makes sense.</div>
-        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER</span><span>~50 MIN</span></div>
+        <div class="tc-desc">Sessions, FVGs, supply and demand, liquidity sweeps, gold behaviour. The foundation everything else is built on. Skip this and nothing else makes sense.</div>
+        <div class="tc-meta">5 LESSONS · BEGINNER · ~50 MIN</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item" onclick="openLesson('market-1')"><span class="li-num">01</span><div><div class="li-title">Trading sessions and why they matter</div><div class="li-sub">London, New York, Asian — when the money moves</div></div><span class="li-badge free">FREE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Support and resistance properly explained</div><div class="li-sub">Not lines on a chart — zones of decision</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Liquidity sweeps — what they are and how to spot them</div><div class="li-sub">Why price hunts stops before reversing</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Higher vs lower timeframe bias</div><div class="li-sub">Reading the bigger picture before zooming in</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Gold (XAUUSD) specific market behaviour</div><div class="li-sub">Why gold moves differently and how to use it</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item" onclick="openLesson('market-1')">
+          <span class="li-num">01</span>
+          <div><div class="li-title">Trading sessions — when the real money moves</div><div class="li-sub">London, New York, Asian — and why not all hours are equal</div></div>
+          <span class="li-badge free">FREE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">Fair value gaps — what they are and why they fill</div><div class="li-sub">The imbalance that price always wants to return to</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">Demand and supply zones — where decisions get made</div><div class="li-sub">Not lines on a chart — areas where institutions placed orders</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Liquidity sweeps — why price hunts your stop loss</div><div class="li-sub">Understanding the most frustrating pattern in trading</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">05</span>
+          <div><div class="li-title">Gold (XAUUSD) — why it moves differently</div><div class="li-sub">The specific behaviours every gold trader needs to know</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
       </div>
     </div>
-
     <div class="topic-card free-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-risk">RISK MANAGEMENT</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-risk">RISK MANAGEMENT</span>
+          <span class="tc-free-badge">1 FREE LESSON</span>
+        </div>
         <div class="tc-title">RISK MANAGEMENT</div>
-        <div class="tc-desc">Position sizing, stop losses, R multiples. The boring stuff that keeps you in the game long enough to get good. Most traders skip this. Don't.</div>
-        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER</span><span>~40 MIN</span></div>
+        <div class="tc-desc">Position sizing, R multiples, stop loss placement, daily limits. The boring stuff that keeps you in the game long enough to get good. Most traders skip this. Don't.</div>
+        <div class="tc-meta">5 LESSONS · BEGINNER · ~40 MIN</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item" onclick="openLesson('risk-1')"><span class="li-num">01</span><div><div class="li-title">The R multiple — your most important number</div><div class="li-sub">Risk vs reward in plain English</div></div><span class="li-badge free">FREE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">How to size your position correctly</div><div class="li-sub">Never risk more than you should — the formula</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Where to actually place your stop loss</div><div class="li-sub">Not random — structural, logical, defensible</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Partial take profits and breakeven stops</div><div class="li-sub">Bank profit without killing your runners</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Trailing stop loss strategies</div><div class="li-sub">Locking in gains as the trade moves in your favour</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item" onclick="openLesson('risk-1')">
+          <span class="li-num">01</span>
+          <div><div class="li-title">The R multiple — the only number that matters</div><div class="li-sub">Why win rate is irrelevant without understanding R</div></div>
+          <span class="li-badge free">FREE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">Position sizing — how much to put on each trade</div><div class="li-sub">The calculation that keeps you in the game</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">Stop loss placement — where to put it and why</div><div class="li-sub">Structural stops vs arbitrary stops</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Taking profits — when to close and when to hold</div><div class="li-sub">Partial exits, breakeven stops, and letting winners run</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">05</span>
+          <div><div class="li-title">Daily limits and circuit breakers</div><div class="li-sub">The rules that save your account on bad days</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
       </div>
     </div>
-
     <div class="topic-card free-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-systems">SYSTEMS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-systems">SYSTEMS</span>
+          <span class="tc-free-badge">1 FREE LESSON</span>
+        </div>
         <div class="tc-title">TRADING BOTS EXPLAINED</div>
-        <div class="tc-desc">What automated trading actually is, how bots execute trades, what they're good at, and where they fall apart. No magic — just logic.</div>
-        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER — INTERMEDIATE</span><span>~55 MIN</span></div>
+        <div class="tc-desc">The real story behind ALPHA, OMEGA GS, and NOVA. How they were built, what they do, and why a car mechanic who couldn't watch his phone created them.</div>
+        <div class="tc-meta">5 LESSONS · BEGINNER — INTERMEDIATE · ~55 MIN</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item" onclick="openLesson('systems-1')"><span class="li-num">01</span><div><div class="li-title">What is an EA and how does it work on MT5</div><div class="li-sub">Expert Advisors explained from scratch</div></div><span class="li-badge free">FREE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Signal bots vs execution bots</div><div class="li-sub">What each type does and when to use which</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">How to read bot logic without coding</div><div class="li-sub">Understanding what your bot is doing</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Common bot mistakes and how to avoid them</div><div class="li-sub">Errors that blow accounts on autopilot</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Building your first simple EA concept</div><div class="li-sub">From idea to logic to live — step by step</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item" onclick="openLesson('systems-1')">
+          <span class="li-num">01</span>
+          <div><div class="li-title">Why a car mechanic built a trading bot</div><div class="li-sub">The real story behind ALPHA, OMEGA, and NOVA</div></div>
+          <span class="li-badge free">FREE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">How OMEGA GS works — the gold bot explained</div><div class="li-sub">Every rule, every filter, every decision — transparent</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">NOVA — the crypto bot family</div><div class="li-sub">BTC, ETH, SOL perpetuals on Bybit — how it works</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Reading bot results — what the numbers actually mean</div><div class="li-sub">How to evaluate performance without being fooled</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">05</span>
+          <div><div class="li-title">Building your first EA concept</div><div class="li-sub">From trading idea to automated logic — step by step</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
       </div>
     </div>
-
-    <div class="topic-card free-topic">
+    <div class="topic-card locked-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-signals">SIGNALS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-signals">SIGNALS</span>
+          <span class="tc-soon-badge">COMING SOON</span>
+        </div>
         <div class="tc-title">FOLLOWING SIGNALS INTELLIGENTLY</div>
-        <div class="tc-desc">Signals are everywhere. Most are useless. How to evaluate one, understand the reasoning, and decide whether it's worth following — or not.</div>
-        <div class="tc-meta"><span>4 LESSONS</span><span>BEGINNER — INTERMEDIATE</span><span>~35 MIN</span></div>
+        <div class="tc-desc">How to evaluate a signal, read the reasoning, and decide whether it's worth following. Content coming soon — with real signal providers, real accountability.</div>
+        <div class="tc-meta">4 LESSONS · COMING SOON</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item" onclick="openLesson('signals-1')"><span class="li-num">01</span><div><div class="li-title">What a good signal looks like vs a bad one</div><div class="li-sub">The red flags that most people miss</div></div><span class="li-badge free">FREE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Reading the reasoning behind a signal</div><div class="li-sub">Entry logic, bias, session context</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">When NOT to follow a signal</div><div class="li-sub">Context that invalidates even good setups</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Managing a signal trade vs automating it</div><div class="li-sub">Pros and cons of both approaches</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked" onclick="openComingSoon()">
+          <span class="li-num">01</span>
+          <div><div class="li-title">What a good signal looks like vs a bad one</div><div class="li-sub">The red flags that most people miss</div></div>
+          <span class="li-badge core">SOON</span>
+        </div>
+        <div class="lesson-item locked" onclick="openComingSoon()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">Reading the reasoning behind a signal</div><div class="li-sub">Entry logic, bias, session context</div></div>
+          <span class="li-badge core">SOON</span>
+        </div>
+        <div class="lesson-item locked" onclick="openComingSoon()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">When NOT to follow a signal</div><div class="li-sub">Context that invalidates even good setups</div></div>
+          <span class="li-badge core">SOON</span>
+        </div>
+        <div class="lesson-item locked" onclick="openComingSoon()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Managing a signal trade vs automating it</div><div class="li-sub">Pros and cons of both approaches</div></div>
+          <span class="li-badge core">SOON</span>
+        </div>
       </div>
     </div>
-
     <div class="topic-card core-topic">
       <div class="tc-header">
-        <div class="tc-badges"><span class="tc-cat cat-brokers">BROKERS</span><span class="tc-core-badge">CORE ONLY</span></div>
+        <div class="tc-badges">
+          <span class="tc-cat cat-brokers">BROKERS</span>
+          <span class="tc-core-badge">CORE ONLY</span>
+        </div>
         <div class="tc-title">CHOOSING THE RIGHT BROKER</div>
-        <div class="tc-desc">Spreads, execution, regulation, and the quirks that will break your bot if you don't know about them. The broker you pick matters more than most realise.</div>
-        <div class="tc-meta"><span>4 LESSONS</span><span>BEGINNER</span><span>~30 MIN</span></div>
+        <div class="tc-desc">Spreads, execution, regulation, and the quirks that will break your bot if you don't know about them. Tradequo, Bybit, and what to look for.</div>
+        <div class="tc-meta">4 LESSONS · BEGINNER · ~30 MIN</div>
       </div>
       <div class="tc-lessons">
-        <div class="lesson-item locked" onclick="openLocked()"><span class="li-num">01</span><div><div class="li-title">What to look for in a broker — the non-negotiables</div><div class="li-sub">Regulation, segregated funds, execution type</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Understanding spreads and how they affect trades</div><div class="li-sub">Why low spread doesn't always mean better</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">MT5 broker quirks that break automated bots</div><div class="li-sub">Order filling modes, pip sizes, symbol names</div></div><span class="li-badge core">CORE</span></div>
-        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Our recommended brokers — gold, forex, crypto</div><div class="li-sub">Honest breakdown with full transparency</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">01</span>
+          <div><div class="li-title">What to look for in a broker — the non-negotiables</div><div class="li-sub">Regulation, segregated funds, execution type</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">02</span>
+          <div><div class="li-title">Understanding spreads and how they affect trades</div><div class="li-sub">Why low spread doesn't always mean better</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">03</span>
+          <div><div class="li-title">MT5 broker quirks that break automated bots</div><div class="li-sub">Order filling modes, pip sizes, symbol names</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
+        <div class="lesson-item locked" onclick="openLocked()">
+          <span class="li-num">04</span>
+          <div><div class="li-title">Our recommended brokers — gold, forex, crypto</div><div class="li-sub">Honest breakdown with full transparency</div></div>
+          <span class="li-badge core">CORE</span>
+        </div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -342,20 +389,20 @@
   <div class="section-tag">NEW TO TRADING? START HERE</div>
   <div class="path-grid">
     <div class="path-card" onclick="openLesson('risk-1')"><div class="path-step">// STEP 01</div><div class="path-icon">⬡</div><div class="path-title">RISK FIRST</div><div class="path-sub">Learn risk before your first live trade</div></div>
-    <div class="path-card" onclick="openLesson('market-1')"><div class="path-step">// STEP 02</div><div class="path-icon">◈</div><div class="path-title">MARKET BASICS</div><div class="path-sub">Sessions, levels, liquidity — the foundation</div></div>
+    <div class="path-card" onclick="openLesson('market-1')"><div class="path-step">// STEP 02</div><div class="path-icon">◈</div><div class="path-title">MARKET BASICS</div><div class="path-sub">Sessions, FVGs, liquidity — the foundation</div></div>
     <div class="path-card" onclick="openLesson('psych-1')"><div class="path-step">// STEP 03</div><div class="path-icon">◎</div><div class="path-title">PSYCHOLOGY</div><div class="path-sub">Build the mindset before strategy matters</div></div>
-    <div class="path-card" onclick="openLesson('signals-1')"><div class="path-step">// STEP 04</div><div class="path-icon">▲</div><div class="path-title">READ SIGNALS</div><div class="path-sub">Evaluate setups intelligently</div></div>
-    <div class="path-card" onclick="openLesson('systems-1')"><div class="path-step">// STEP 05</div><div class="path-icon">&lt;/&gt;</div><div class="path-title">BUILD SYSTEMS</div><div class="path-sub">Automate your discipline with bots</div></div>
+    <div class="path-card" onclick="openLesson('systems-1')"><div class="path-step">// STEP 04</div><div class="path-icon">&lt;/&gt;</div><div class="path-title">UNDERSTAND BOTS</div><div class="path-sub">What automation actually is and isn't</div></div>
+    <div class="path-card" onclick="openLocked()"><div class="path-step">// STEP 05</div><div class="path-icon">▲</div><div class="path-title">GO DEEPER</div><div class="path-sub">Full curriculum unlocked with Core</div></div>
   </div>
 </section>
 
 <section class="cta-section reveal">
   <div class="cta-tag">// WANT THE FULL CURRICULUM?</div>
   <h2 class="cta-title">FREE GETS YOU<br><span class="green">STARTED.</span></h2>
-  <p class="cta-sub">// 5 free lessons — one per topic — no card needed.<br>// Upgrade to Core when you're ready for everything.</p>
+  <p class="cta-sub">// 4 free lessons — one per topic — no card needed.<br>// Upgrade to Core when you're ready for everything.</p>
   <div class="cta-btns">
     <a href="login.html" class="btn-primary">JOIN FREE NOW →</a>
-    <a href="community.html" class="btn-secondary">SEE WHAT'S INCLUDED</a>
+    <a href="pricing.html" class="btn-secondary">SEE WHAT'S INCLUDED</a>
   </div>
 </section>
 
@@ -384,41 +431,690 @@
 </div>
 
 <script>
-const lessons={
-'psych-1':{cat:'PSYCHOLOGY',catClass:'cat-psychology',title:'WHY YOU OVERRIDE YOUR STOP LOSS',sub:'The psychology behind "just this once"',read:'8 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE MOST EXPENSIVE WORDS IN TRADING</div><p class="lm-text">You set a stop loss before the trade. You had a plan. Then price gets close to it and something happens — a voice says <strong>"it'll come back."</strong> So you move the stop. Or you watch, frozen, hoping.</p><p class="lm-text">This isn't weakness. It's human biology working against you. The pain of a realised loss is psychologically more intense than the comfort of avoiding it temporarily. Your brain is literally wired to make you do this.</p><div class="lm-callout"><span class="label">// THE SCIENCE</span>Loss aversion is one of the most well-documented findings in behavioural economics. A €100 loss produces roughly twice the psychological pain of a €100 gain produces pleasure. This is why automation exists — to override the human response when it counts most.</div><div class="lm-section-title">THE THREE REASONS IT HAPPENS</div><p class="lm-text"><strong>1. Hope bias.</strong> You believe the trade will recover because you want it to. The market doesn't care about your position.</p><p class="lm-text"><strong>2. Ego protection.</strong> Closing a losing trade makes the loss real. As long as it's open, you haven't "failed" yet. A loss at -2R that becomes -5R because you held is a much bigger failure.</p><p class="lm-text"><strong>3. Recency bias.</strong> If the last time you held through a loss it came back, you learned the wrong lesson.</p><div class="lm-section-title">HOW TO FIX IT</div><ul class="lm-list"><li><strong>Automate it.</strong> A stop loss in your broker or EA that executes without your input removes the decision entirely.</li><li><strong>Pre-commit in writing.</strong> Before every trade, write down your stop level and the rule: "I will not move this stop."</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Your stop loss is not a suggestion. It is the price at which your trade idea is proven wrong. Moving it doesn't protect you — it turns a controlled loss into an uncontrolled one.</div>`},
-'market-1':{cat:'MARKETS',catClass:'cat-markets',title:'TRADING SESSIONS AND WHY THEY MATTER',sub:'London, New York, Asian — when the money moves',read:'7 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE MARKET NEVER SLEEPS BUT IT DOES WAKE UP</div><p class="lm-text">The forex and gold markets trade 24/5. But not all hours are equal. <strong>Volume, volatility, and opportunity are concentrated in specific windows</strong> — understanding those windows is one of the fastest ways to improve your results.</p><div class="lm-section-title">THE THREE SESSIONS</div><p class="lm-text"><strong>Asian Session (00:00–09:00 UTC)</strong> — Generally the quietest. Lower volume, tighter ranges. Gold tends to consolidate. Good for planning, not usually for trading.</p><p class="lm-text"><strong>London Session (08:00–17:00 UTC)</strong> — Where the real action starts. London is the largest forex trading centre in the world. Volume spikes at the open, spreads tighten, and price often makes its first major directional move. For gold traders this is critical.</p><p class="lm-text"><strong>New York Session (13:00–22:00 UTC)</strong> — The second major session. Overlaps with London 13:00–17:00 — this overlap is the highest volume period of the entire day.</p><div class="lm-callout"><span class="label">// THE OVERLAP — WHERE THE MONEY IS</span>13:00–17:00 UTC is the London-New York overlap. Both major financial centres active simultaneously. Highest liquidity, most reliable price movements. Most professional traders focus heavily on this window.</div><div class="lm-section-title">WHAT THIS MEANS FOR YOU</div><ul class="lm-list"><li>Trading Asian hours increases exposure to false breakouts and choppy price action</li><li>The London open (08:00 UTC) often creates the first major setup of the day</li><li>OMEGA GS has session filters built in — this is exactly why</li><li>Economic news during NY can create extreme volatility — know the calendar</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Not all hours are worth trading. Focusing on London and the London-NY overlap immediately filters out most low-quality setups — even if your strategy stays the same.</div>`},
-'risk-1':{cat:'RISK MANAGEMENT',catClass:'cat-risk',title:'THE R MULTIPLE — YOUR MOST IMPORTANT NUMBER',sub:'Risk vs reward in plain English',read:'7 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE NUMBER MOST TRADERS NEVER CALCULATE</div><p class="lm-text">Most new traders think in currency — "I made €200" or "I lost €80." This is the wrong way to think about it. <strong>The R multiple changes everything.</strong></p><p class="lm-text">R stands for Risk. Specifically, the amount you risked on a trade. If you risked €50 and made €100, your result was +2R. If you risked €50 and lost €50, it was -1R.</p><div class="lm-callout"><span class="label">// THE FORMULA</span>R = Amount risked per trade (distance from entry to stop × position size)<br><br>Result in R = Profit or Loss ÷ R<br><br>Example: Risked €40, made €80 → Result = +2R</div><div class="lm-section-title">WHY THIS CHANGES EVERYTHING</div><p class="lm-text">Once you think in R, a powerful truth emerges: <strong>you don't need a high win rate to be profitable.</strong></p><ul class="lm-list"><li>40% win rate with 2R average win = profitable</li><li>70% win rate with 0.5R average win = barely breaking even</li><li>The ratio between your average win and loss matters far more than how often you win</li></ul><div class="lm-section-title">PRACTICALLY</div><p class="lm-text">Before every trade, calculate your R. If your stop is 40 pips from entry and target is 60 pips, your R multiple is 1.5R. If it's less than 1R — risking more than you could make — <strong>the trade fails the most basic test before it opens.</strong></p><p class="lm-text">OMEGA GS targets a minimum of 1.5R per trade. The 4-leg take profit structure is built around this principle.</p><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Before any trade, ask: what is my R on this? If you can't answer instantly, you're not ready to take it. R is not optional — it is the foundation of every profitable system.</div>`},
-'systems-1':{cat:'SYSTEMS',catClass:'cat-systems',title:'WHAT IS AN EA AND HOW DOES IT WORK ON MT5',sub:'Expert Advisors explained from scratch',read:'9 MIN READ · BEGINNER',content:`<div class="lm-section-title">TAKING THE HUMAN OUT OF THE EQUATION</div><p class="lm-text">An Expert Advisor (EA) is a program that runs on MetaTrader 5 and executes trades automatically based on rules you define. No clicking. No watching charts at 3am. No emotional decisions. <strong>Just rules, executed precisely, every time.</strong></p><div class="lm-section-title">HOW AN EA ACTUALLY WORKS</div><p class="lm-text">At its core, an EA is just a series of if/then statements:</p><div class="lm-callout"><span class="label">// SIMPLIFIED EA LOGIC</span>IF EMA9 crosses above EMA21<br>AND ATR is above minimum threshold<br>AND current time is within London or NY session<br>THEN open a BUY trade<br>WITH stop loss at structure low<br>AND take profit at 1.5R</div><p class="lm-text">The EA checks these conditions on every new candle. When all true, it acts. When they're not, it waits. No second-guessing. No "maybe one more check."</p><div class="lm-section-title">WHAT EAs ARE GOOD AT</div><ul class="lm-list"><li><strong>Consistency</strong> — same rules every time, no emotional deviation</li><li><strong>Speed</strong> — reacts faster than any human</li><li><strong>Discipline</strong> — never skips a valid setup because it "doesn't feel right"</li><li><strong>Risk management</strong> — calculates position size and places SL/TP automatically</li></ul><div class="lm-section-title">WHAT EAs CANNOT DO</div><ul class="lm-list"><li>Think or adapt — only knows what you told it</li><li>Replace a bad strategy — automation makes a good strategy consistent, a bad strategy consistently loses</li><li>Guarantee profit — past performance does not guarantee future results</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>An EA is a tool, not a magic box. The strategy inside it is everything. Understanding what your EA does — and why — is the difference between using it intelligently and hoping for the best.</div>`},
-'signals-1':{cat:'SIGNALS',catClass:'cat-signals',title:'WHAT A GOOD SIGNAL LOOKS LIKE VS A BAD ONE',sub:'The red flags that most people miss',read:'8 MIN READ · BEGINNER',content:`<div class="lm-section-title">MOST SIGNALS ARE NOISE</div><p class="lm-text">Open any trading Telegram group and you'll see signals constantly. "BUY GOLD NOW 🚀🔥" with an entry and zero explanation. <strong>This is not a signal. This is a guess with formatting.</strong></p><p class="lm-text">A real signal is a documented trade idea with a clear reason behind every number. If you can't explain why the entry is here and the stop is there, it's speculation.</p><div class="lm-section-title">RED FLAGS — BAD SIGNAL</div><ul class="lm-list"><li><strong>No stop loss</strong> — not defining risk upfront is gambling</li><li><strong>No explanation</strong> — "BUY NOW" with no reasoning is a guess you can't evaluate</li><li><strong>Only showing winners</strong> — every channel has losses, if you never see them they're hiding them</li><li><strong>Pressure to act fast</strong> — "ENTER NOW or miss it!" is manipulation, not analysis</li><li><strong>No context</strong> — what session? What's the higher timeframe bias? What invalidates the setup?</li></ul><div class="lm-section-title">WHAT A GOOD SIGNAL INCLUDES</div><div class="lm-callout"><span class="label">// RAWCORE SIGNAL FORMAT</span>Direction: LONG · Asset: XAUUSD · Timeframe: 5M<br>Entry: 2,339.40 · SL: 2,335.80 (structural low)<br>TP1: 2,344.80 (+1.5R) · TP2: 2,349.20 (+2.8R)<br><br>WHY: Liquidity sweep confirmed below 2338. EMA9×EMA21 cross on 5M. ATR elevated. London session bias bullish.</div><p class="lm-text">Notice what's included: entry, stop, targets, R multiple, and <strong>the reason</strong>. You can evaluate this. You can learn from it whether it wins or loses.</p><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Never follow a signal you don't understand. If you can't explain the entry reason in one sentence, don't take the trade. Understanding protects you — blind following exposes you.</div>`}
+const lessons = {
+  'psych-1': {
+    cat: 'PSYCHOLOGY', catClass: 'cat-psychology',
+    title: `THE DOPAMINE TRAP — WHY YOU BLOW UP WHEN YOU'RE WINNING`,
+    read: '8 MIN READ · BEGINNER',
+    free: true,
+    content: `
+<div class="lm-section-title">THIS IS THE TRADE NOBODY TELLS YOU ABOUT</div>
+<p class="lm-text">You deposit €100. You start small — 0.01 lots, maybe 0.02. Two trades maximum. You're patient, disciplined, focused. The account grows. You double it. Then something changes.</p>
+<p class="lm-text">It's not your strategy that changes. It's not the market. <strong>It's your brain.</strong> The dopamine that comes with a winning account tells you that you've earned the right to push harder. So you double your lot sizes. You take more entries. You start feeling like you've figured it out.</p>
+<p class="lm-text">And that's exactly when it falls apart.</p>
+<div class="lm-callout">
+    <span class="label">// THE PATTERN</span>
+    Small fund → small lots → discipline → account grows → dopamine rises → lots increase → risks increase → account shrinks → repeat from start. Most traders live in this loop for years without ever naming it.
+</div>
+<div class="lm-section-title">THE MATH NOBODY DOES</div>
+<p class="lm-text">Here's the uncomfortable truth: <strong>doubling your account does not mean you should double your lot size.</strong> That's not how the math works.</p>
+<p class="lm-text">If you're risking 1% per trade on a €100 account, that's €1 per trade. If your account grows to €200, 1% is still 1% — it's €2 per trade. Not €4. Not €10. The percentage stays the same. The only thing that changes is the euro amount, because your account is bigger.</p>
+<p class="lm-text">When you double your lots because your account doubled, you're not being proportional — you're being emotional. The win streak felt good, and your brain wants more of that feeling. <strong>That's not a trading decision. That's a dopamine decision.</strong></p>
+<div class="lm-section-title">WIN STREAKS DON'T LAST</div>
+<p class="lm-text">The market is never going in one pace. It repeats itself, yes — but each day, each week, each year, it has to be found differently. A setup that worked perfectly for three months can stop working. Volatility changes. Sessions shift. News moves markets in ways no system can predict.</p>
+<p class="lm-text">Understanding that win streaks end is not pessimism — it's the most important thing you can know. <strong>The traders who survive long-term are not the ones who win the most. They're the ones who lose the least when their edge temporarily disappears.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    You can't throw a dice without knowing how many sides it has and yell "ten!" Trading is not gambling — but treating a win streak as proof you've mastered the market is. Keep your lots proportional. Keep your ego out of it. The account size changes. The rules don't.
+</div>
+`
+  },
+  'psych-2': {
+    cat: 'PSYCHOLOGY', catClass: 'cat-psychology',
+    title: `WHEN TO TRADE AND WHEN TO WALK AWAY`,
+    read: '7 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">THE CHART IS NOT THE PROBLEM</div>
+<p class="lm-text">Most traders spend all their time analysing the market and almost no time analysing themselves. But the truth is — the same setup, on the same chart, at the same time, will be traded completely differently depending on your mental state when you open the platform.</p>
+<p class="lm-text">After a losing trade, you see revenge opportunities everywhere. After a winning trade, every setup looks valid. After a long session of watching and waiting, impatience starts looking like conviction. <strong>Your emotional state is a filter on your chart — and most of the time, you don't even know it's there.</strong></p>
+<div class="lm-section-title">THE PRE-TRADE MENTAL CHECKLIST</div>
+<p class="lm-text">Before opening any position, run through these honestly:</p>
+<ul class="lm-list">
+    <li>Am I trading this setup because it's valid — or because I'm bored?</li>
+    <li>Am I still thinking about the last trade I took?</li>
+    <li>Have I hit my daily trade limit? (2 trades is a solid maximum when starting out)</li>
+    <li>Am I okay with this trade losing completely?</li>
+    <li>Would I take this trade if I hadn't already made money today?</li>
+</ul>
+<p class="lm-text">If you can't answer yes to the last question, don't take the trade. <strong>The best trades are the ones you'd take regardless of what happened before them.</strong></p>
+<div class="lm-callout">
+    <span class="label">// THE DAILY LIMIT RULE</span>
+    When you're building a small account, two quality trades are worth more than six mediocre ones. More entries means more exposure to emotional decision-making. Limit your trades. The market will always be there tomorrow.
+</div>
+<div class="lm-section-title">WALKING AWAY IS A TRADE</div>
+<p class="lm-text">The decision not to trade is a trading decision. On days when the market is choppy, when your head isn't right, when you've already hit your limit — closing the platform and walking away is the correct move. It preserves your capital and your mental state for when conditions are actually right.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Your mental state is part of your trading system. A good strategy executed in a bad mental state will produce bad results. Check yourself before you check the chart.
+</div>
+`
+  },
+  'psych-3': {
+    cat: 'PSYCHOLOGY', catClass: 'cat-psychology',
+    title: `VOLATILITY IS NOT YOUR FRIEND`,
+    read: '8 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">THE VOLATILITY TRAP</div>
+<p class="lm-text">There's something about a big, fast-moving candle that pulls traders in. The bigger the wick, the more exciting it looks. The more it moves, the more it seems like an opportunity. <strong>This instinct is almost always wrong — and it's one of the most expensive lessons in trading.</strong></p>
+<p class="lm-text">High volatility means price is moving fast, spreads are widening, stop losses are getting hunted, and the market is unpredictable. For retail traders with small accounts, this is not opportunity — it's a minefield. The big players who move price can absorb volatility. You cannot.</p>
+<div class="lm-section-title">WHERE THE REAL MONEY IS</div>
+<p class="lm-text">The most reliable setups happen when the market is steady — when there's clear structure, clean levels, and predictable session behaviour. London open is the prime example. Price has consolidated through the Asian session, liquidity has built up, and institutional players are ready to make their first directional move of the day.</p>
+<p class="lm-text">That first London push — when it aligns with your bias and your levels — is worth more than any crazy volatile spike. <strong>It's deliberate. It's structured. It respects your levels. And most importantly, it's manageable.</strong></p>
+<div class="lm-callout">
+    <span class="label">// STEADY VS CRAZY</span>
+    Steady market: clear levels, predictable sessions, manageable spreads, valid setups.<br><br>
+    Crazy market: wide spreads, stops getting hunted, false breakouts, news-driven spikes.<br><br>
+    One of these is for building accounts. The other is for blowing them.
+</div>
+<div class="lm-section-title">RECOGNISING WHEN TO STAY OUT</div>
+<ul class="lm-list">
+    <li>Major news events — NFP, FOMC, CPI — stay out 30 minutes before and after</li>
+    <li>Abnormally large candles with no clear direction — that's not a setup, that's noise</li>
+    <li>When spreads are 3x their normal size — your broker is telling you something</li>
+    <li>US session open if you haven't already identified a clear bias — it will move, just not always where you think</li>
+</ul>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    The market will be volatile. Your job is not to trade all of it — it's to identify when it's behaving predictably enough for your edge to work. Patience in high volatility is not missing out. It's staying solvent.
+</div>
+`
+  },
+  'psych-4': {
+    cat: 'PSYCHOLOGY', catClass: 'cat-psychology',
+    title: `BUILDING A SYSTEM YOU CAN ACTUALLY FOLLOW`,
+    read: '9 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">WILLPOWER IS FINITE. SYSTEMS ARE NOT.</div>
+<p class="lm-text">Every trader starts with the intention to follow their rules. Almost every trader breaks them at some point. The common explanation is lack of discipline — but that's the wrong diagnosis. <strong>The real problem is that the system was designed in a way that requires constant willpower to maintain.</strong></p>
+<p class="lm-text">Willpower depletes. After a long work shift, after a stressful day, after three losing trades in a row — you have less of it. If your trading rules depend on you making good decisions under emotional pressure, they will fail exactly when they need to work most.</p>
+<div class="lm-section-title">DESIGN FOR YOUR WORST DAY</div>
+<p class="lm-text">The solution is to design your trading system around the version of you that is tired, emotional, and wants to make back losses. That version of you will exist. The question is whether your rules can handle it.</p>
+<ul class="lm-list">
+    <li><strong>Maximum trades per day: 2.</strong> Not because you can't take more. Because you shouldn't need to.</li>
+    <li><strong>Fixed lot sizes until account doubles cleanly.</strong> Not "roughly the same" — exactly the same.</li>
+    <li><strong>Stop loss is untouchable.</strong> Set it before entry. Never move it against you.</li>
+    <li><strong>Close the platform after hitting daily limit.</strong> Not minimise. Close.</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// THE AUTOMATION ANSWER</span>
+    The cleanest solution to the discipline problem is removing the decision entirely. An EA that executes your rules automatically cannot be overridden by your emotional state. This is one of the most underrated benefits of trading automation — not speed, not efficiency, but the removal of your own worst instincts from the equation.
+</div>
+<div class="lm-section-title">START SMALL. STAY SMALL LONGER THAN YOU THINK.</div>
+<p class="lm-text">0.01 lots on a €100 account is not embarrassing. It's smart. It means a bad day costs you €2, not €20. It means you can make mistakes — and you will make mistakes — without them being fatal. <strong>The goal at the start is not to make money. It's to survive long enough to get good.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Discipline is not a character trait you either have or don't. It's a system design problem. Build rules that don't require you to be a perfect human to follow them — and then automate as much of it as possible.
+</div>
+`
+  },
+  'psych-5': {
+    cat: 'PSYCHOLOGY', catClass: 'cat-psychology',
+    title: `THE INDEPENDENCE GOAL — TRADING WITHOUT NEEDING ANYONE`,
+    read: '7 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">SIGNALS ARE TRAINING WHEELS</div>
+<p class="lm-text">Following signals is a legitimate way to start trading. You learn what setups look like in real time. You see how entries, stop losses, and take profits are structured by someone with experience. Used correctly, signal following is education — not dependency.</p>
+<p class="lm-text">The problem is when it stops there. When you're still following signals a year later without understanding why any of them work. When you can't spot a valid setup without someone telling you it's there. When the signal provider disappears and your trading disappears with them.</p>
+<p class="lm-text"><strong>That's not trading. That's outsourcing your thinking.</strong></p>
+<div class="lm-section-title">THE REAL GOAL</div>
+<p class="lm-text">Eventually, you want to be independent. To rely on yourself. To be able to make money without anyone telling you how and when to buy or sell. Every lesson on this platform is written with that goal in mind — not to make you dependent on RawCore, but to give you the foundation to eventually not need us.</p>
+<div class="lm-callout">
+    <span class="label">// THE PROGRESSION</span>
+    Follow signals with understanding → recognise the setups yourself → build your own rules → automate your own rules → refine and improve independently.<br><br>
+    Each stage builds on the last. There are no shortcuts — but there is a clear path.
+</div>
+<div class="lm-section-title">WHEN YOU'RE READY TO GO INDEPENDENT</div>
+<p class="lm-text">You're ready to trade independently when you can look at a chart before a signal is posted and say — with a reason — whether there's a valid setup or not. Not a guess. A reason based on structure, session, and confirmation.</p>
+<p class="lm-text">Until that point, following signals with full understanding of the reasoning is the fastest way to get there. <strong>The signal is not the lesson. The explanation behind it is.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Use signals to learn, not to avoid learning. The goal of every trade you follow should be to eventually make you capable of spotting it yourself.
+</div>
+`
+  },
+  'market-1': {
+    cat: 'MARKETS', catClass: 'cat-markets',
+    title: `TRADING SESSIONS — WHEN THE REAL MONEY MOVES`,
+    read: '7 MIN READ · BEGINNER',
+    free: true,
+    content: `
+<div class="lm-section-title">THE MARKET NEVER SLEEPS BUT IT DOES WAKE UP</div>
+<p class="lm-text">The forex and gold markets trade 24 hours a day, 5 days a week. But not all hours are equal. <strong>Volume, volatility, and opportunity are concentrated in specific windows</strong> — and understanding those windows is one of the fastest ways to improve your results without changing a single thing about your strategy.</p>
+<div class="lm-section-title">THE THREE SESSIONS</div>
+<p class="lm-text"><strong>Asian Session (00:00–09:00 UTC)</strong> — The quiet session. Lower volume, tighter ranges. Gold and major pairs tend to consolidate, claiming the highs or lows set by the previous London and New York sessions. Good for planning. Not usually the place for entries unless you specifically trade range strategies.</p>
+<p class="lm-text"><strong>London Session (08:00–17:00 UTC)</strong> — Where the real action starts. London is the largest forex trading centre in the world. Volume spikes at the open, spreads tighten, and price typically makes its first major directional move of the day. For gold traders especially, this session is critical. The FVGs, demand and supply zones, and liquidity sweeps are most reliable here — clean structure, deliberate moves.</p>
+<p class="lm-text"><strong>New York Session (13:00–22:00 UTC)</strong> — The second major session. Overlaps with London from 13:00–17:00 UTC, creating the highest volume period of the entire trading day. Major reversals and trend continuations happen here. The US session can be aggressive — fast moves, wide spreads, and news-driven spikes that make it harder to trade cleanly.</p>
+<div class="lm-callout">
+    <span class="label">// THE LONDON OPEN — WHY IT MATTERS</span>
+    The Asian session consolidates. Liquidity builds up above and below the range. When London opens, institutional players step in and make their directional decision — often sweeping that Asian liquidity first. This is one of the most consistent and readable patterns in the market. It's why London is the preferred session for clean FVG and supply/demand setups.
+</div>
+<div class="lm-section-title">PRACTICAL SESSION RULES</div>
+<ul class="lm-list">
+    <li>Focus entries on London open (08:00–11:00 UTC) for the cleanest setups</li>
+    <li>London-NY overlap (13:00–17:00 UTC) for continuation trades</li>
+    <li>Avoid trading major news releases — NFP, FOMC, CPI — stay flat 30 min either side</li>
+    <li>Asian session is for analysis and planning, not entries</li>
+    <li>US session alone (after London close) is aggressive — wider stops needed or stay out</li>
+</ul>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    The session you trade in matters as much as the setup you trade. The same entry on a clean London structure is a very different trade to the same entry during a choppy US afternoon. Know when the market is working for you.
+</div>
+`
+  },
+  'market-2': {
+    cat: 'MARKETS', catClass: 'cat-markets',
+    title: `FAIR VALUE GAPS — WHAT THEY ARE AND WHY THEY FILL`,
+    read: '9 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">WHEN PRICE MOVES TOO FAST</div>
+<p class="lm-text">A Fair Value Gap (FVG) is created when price moves so quickly in one direction that it leaves a gap — an imbalance — between three consecutive candles. The middle candle moves so aggressively that the wicks of the candles before and after it don't overlap.</p>
+<p class="lm-text">This imbalance represents unfilled orders. <strong>Institutional players who didn't get filled at those prices still want to be filled there.</strong> The market has a strong tendency to return to these zones — filling the gap — before continuing in the original direction.</p>
+<div class="lm-callout">
+    <span class="label">// HOW TO IDENTIFY AN FVG</span>
+    Candle 1: closes at X<br>
+    Candle 2: large aggressive move, body far from candle 1 and 3<br>
+    Candle 3: opens but doesn't overlap candle 1's wick<br><br>
+    The space between candle 1's high and candle 3's low (for bullish FVG) is the gap. That's your zone.
+</div>
+<div class="lm-section-title">TRADING THE RETURN</div>
+<p class="lm-text">The setup is straightforward: price creates an FVG on an impulsive move, then retraces back into the gap. You enter at the gap with your stop loss below the structure low (for a bullish setup) and target the previous high or a logical resistance level.</p>
+<p class="lm-text">The key filter is <strong>session context</strong>. An FVG created during London open on gold is far more reliable than one created during Asian session chop. The quality of the move that created the gap matters. A slow, grinding move does not create the same institutional imbalance as a sharp, deliberate impulse.</p>
+<div class="lm-section-title">FVG + SESSION = THE CORE SETUP</div>
+<p class="lm-text">When you combine a clean FVG from the London open with a clear higher timeframe bias, you have one of the most reliable setups in retail trading. This is not secret knowledge — it's widely understood. But most traders either don't wait for session context, or they take FVGs on timeframes that are too low to be reliable.</p>
+<ul class="lm-list">
+    <li>5M and 15M FVGs during London open — high reliability</li>
+    <li>1M FVGs — noise, avoid</li>
+    <li>1H FVGs — strong, use for bias confirmation</li>
+    <li>Always check higher timeframe bias before entering any FVG</li>
+</ul>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    FVGs work because institutional imbalances get filled. But not all FVGs are equal — session timing, timeframe, and higher timeframe context determine quality. A good FVG in the wrong session is a losing trade waiting to happen.
+</div>
+`
+  },
+  'market-3': {
+    cat: 'MARKETS', catClass: 'cat-markets',
+    title: `DEMAND AND SUPPLY ZONES — WHERE DECISIONS GET MADE`,
+    read: '8 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">BEYOND SUPPORT AND RESISTANCE</div>
+<p class="lm-text">Most traders learn about support and resistance early — price bounces off certain levels, breaks through others. This is real but incomplete. <strong>Supply and demand zones go deeper</strong> — they identify not just where price reacted, but why it reacted there, and whether that reason still exists.</p>
+<p class="lm-text">A demand zone is an area where institutional buyers placed large orders. When price left that area strongly and impulsively, those orders were filled — but not all of them. Remaining unfilled orders sit at that level, waiting for price to return. When it does, those orders absorb selling pressure and push price up again.</p>
+<div class="lm-section-title">IDENTIFYING VALID ZONES</div>
+<p class="lm-text">A valid demand zone has three characteristics:</p>
+<ul class="lm-list">
+    <li><strong>Strong departure:</strong> Price left the zone impulsively — big candle, clear direction, not a slow grind</li>
+    <li><strong>Fresh zone:</strong> Price hasn't returned to this area since the initial departure. Every visit weakens a zone — orders get filled, less buying pressure remains</li>
+    <li><strong>Higher timeframe context:</strong> A demand zone on the 1H that sits at a 4H support level is stronger than either alone</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// ZONE VS LINE</span>
+    Support and resistance are drawn as lines. Supply and demand are drawn as boxes — because the real order cluster exists across a range of prices, not at a single exact point. Your entry should be at the top of the demand zone. Your stop loss should be below the entire zone.
+</div>
+<div class="lm-section-title">GOLD-SPECIFIC BEHAVIOUR</div>
+<p class="lm-text">Gold (XAUUSD) respects supply and demand zones well — particularly on the 1H and 4H timeframes. The London session frequently starts with a sweep of an Asian session low (into a demand zone) before reversing up. This sweep-and-reverse pattern at a clean demand zone during London open is one of the highest-probability setups on gold.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Supply and demand zones work because institutional orders cluster at specific price areas. The more impulsive the departure, the stronger the zone. Fresh zones beat revisited ones every time.
+</div>
+`
+  },
+  'market-4': {
+    cat: 'MARKETS', catClass: 'cat-markets',
+    title: `LIQUIDITY SWEEPS — WHY PRICE HUNTS YOUR STOP LOSS`,
+    read: '8 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">IT'S NOT RANDOM. IT'S DELIBERATE.</div>
+<p class="lm-text">You've taken a long trade. Your stop loss is placed just below the recent swing low — exactly where every trading course tells you to put it. Price comes down, taps your stop loss by a few pips, then immediately reverses and goes exactly where you thought it would go. You got stopped out of a winning trade.</p>
+<p class="lm-text">This is not bad luck. This is a liquidity sweep — and once you understand it, <strong>you'll never place a stop loss the same way again.</strong></p>
+<div class="lm-section-title">WHY IT HAPPENS</div>
+<p class="lm-text">Institutional players need liquidity to fill large orders. They can't just buy millions of dollars of gold without moving the price against themselves. So they push price to areas where retail stop losses cluster — below swing lows, above swing highs — triggering those stops and creating the sell orders they need to buy into.</p>
+<p class="lm-text">The retail stop loss below a swing low is actually a sell order waiting to be triggered. When enough of those sell orders are sitting at the same level, institutions use them as liquidity to fill their buy positions. <strong>Your stop loss is literally their entry signal.</strong></p>
+<div class="lm-callout">
+    <span class="label">// THE SWEEP PATTERN</span>
+    1. Price consolidates above a swing low<br>
+    2. Retail traders place stops below the swing low<br>
+    3. Price dips below the swing low — stops get triggered<br>
+    4. Institutions buy into those sell orders<br>
+    5. Price reverses sharply upward<br><br>
+    This is one of the most common patterns on gold during London open.
+</div>
+<div class="lm-section-title">HOW TO USE THIS</div>
+<p class="lm-text">Instead of placing your stop loss at the obvious level, place it below the expected sweep zone — giving price room to do what it does, without stopping you out. Better yet, <strong>use the sweep itself as your entry signal.</strong> When price sweeps a swing low and immediately shows rejection (a strong close back above), that's your confirmation. The sweep happened, the liquidity was taken, now the real move begins.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Liquidity sweeps are not random — they're deliberate moves to collect stop losses before reversing. Understand them and you gain two advantages: better stop placement, and a high-probability entry signal when the sweep completes.
+</div>
+`
+  },
+  'market-5': {
+    cat: 'MARKETS', catClass: 'cat-markets',
+    title: `GOLD (XAUUSD) — WHY IT MOVES DIFFERENTLY`,
+    read: '8 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">GOLD IS NOT JUST ANOTHER PAIR</div>
+<p class="lm-text">Many traders approach gold the same way they approach EUR/USD or GBP/USD. This is a mistake. Gold has specific characteristics — driven by its role as a safe haven asset, its relationship with the US dollar, and its sensitivity to geopolitical events — that make it behave differently from currency pairs.</p>
+<p class="lm-text">Understanding these differences doesn't just make you a better gold trader. <strong>It explains why your forex strategy probably didn't work as well on XAUUSD as you expected.</strong></p>
+<div class="lm-section-title">KEY GOLD CHARACTERISTICS</div>
+<ul class="lm-list">
+    <li><strong>Inverse USD relationship:</strong> Gold generally moves opposite to the US Dollar Index (DXY). Strong dollar = weaker gold, weak dollar = stronger gold. Always check DXY bias before trading gold.</li>
+    <li><strong>Session behaviour:</strong> London open is where gold makes its most reliable directional moves. The Asian session sets the liquidity pools (highs and lows) that London hunts.</li>
+    <li><strong>News sensitivity:</strong> Gold reacts strongly to US economic data — NFP, CPI, FOMC decisions. These events can move gold hundreds of pips in minutes. Stay flat during these.</li>
+    <li><strong>Pip size:</strong> On MT5 with most brokers, gold is quoted with 2 decimal places. A 1.00 move = 100 pips for gold. Always verify your broker's pip calculation — OMEGA GS is specifically built for Tradequo's gold pip structure.</li>
+    <li><strong>Spread sensitivity:</strong> Gold spreads widen significantly during news and low-liquidity hours. A strategy backtested with 0.3 pip spreads will perform very differently with 3 pip spreads. Account for this.</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// THE LONDON GOLD OPEN PATTERN</span>
+    Asian session consolidates between a high and low. London open sweeps one side (usually the low — taking sell stops) then reverses in the true direction. This pattern is consistent enough that many professional gold traders trade nothing else.
+</div>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Gold rewards traders who understand its specific quirks — particularly the London open sweep pattern and the DXY relationship. Treat it like EUR/USD and you'll be confused by its moves. Understand its nature and those moves start to make sense.
+</div>
+`
+  },
+  'risk-1': {
+    cat: 'RISK MANAGEMENT', catClass: 'cat-risk',
+    title: `THE R MULTIPLE — THE ONLY NUMBER THAT MATTERS`,
+    read: '7 MIN READ · BEGINNER',
+    free: true,
+    content: `
+<div class="lm-section-title">STOP THINKING IN EUROS. START THINKING IN R.</div>
+<p class="lm-text">Most new traders track their performance in currency — "I made €50 today" or "I lost €30." This feels intuitive but it hides the most important information about your trading. <strong>€50 profit means nothing without knowing how much you risked to make it.</strong></p>
+<p class="lm-text">R is simple: it's the amount you risked on a trade. If you risked €20 and made €40, that's a 2R win. If you risked €20 and lost €20, that's a -1R loss. Every trade gets expressed as a multiple of your risk — and suddenly, your results start telling you something real.</p>
+<div class="lm-callout">
+    <span class="label">// THE FORMULA</span>
+    R = distance from entry to stop loss × lot size × pip value<br><br>
+    Result in R = profit or loss ÷ R<br><br>
+    Example: Entry 2340.00, Stop 2338.00 = 20 pip risk. At 0.01 lots on gold, that's roughly €2 risk = 1R.<br>
+    If trade closes at 2344.00, profit = 40 pips = €4 = +2R.
+</div>
+<div class="lm-section-title">WHY WIN RATE TELLS YOU ALMOST NOTHING</div>
+<p class="lm-text">A 70% win rate sounds impressive. But if your average winner is 0.5R and your average loser is -1R, you're losing money. The math: 7 wins × 0.5R = +3.5R, 3 losses × -1R = -3R. Net: +0.5R. Barely profitable despite "winning" 70% of the time.</p>
+<p class="lm-text">Flip it: a 40% win rate with an average winner of 2R and average loser of -1R. The math: 4 wins × 2R = +8R, 6 losses × -1R = -6R. Net: +2R. Profitable with a "bad" win rate.</p>
+<p class="lm-text"><strong>The ratio between your average win and average loss — your R:R ratio — matters far more than how often you win.</strong></p>
+<div class="lm-section-title">WHAT R:R TO AIM FOR</div>
+<p class="lm-text">A minimum of 1:2 R:R is a solid target — risking 1 to make 2. This means you can be wrong 60% of the time and still break even. At RawCore, most setups are structured around a minimum 1.5R target, with runners going to 2.5R or beyond. The 4-leg take profit structure in OMEGA GS is designed around this.</p>
+<p class="lm-text">Be realistic though — some valid setups are 1:1. A 1:0.5 setup (risking more than you make) needs an extremely high win rate to be viable and is generally not worth taking.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Before every trade, calculate your R. If your potential reward is less than your risk, the trade doesn't pass the most basic filter. R is not optional — it's the foundation of every profitable system.
+</div>
+`
+  },
+  'risk-2': {
+    cat: 'RISK MANAGEMENT', catClass: 'cat-risk',
+    title: `POSITION SIZING — HOW MUCH TO PUT ON EACH TRADE`,
+    read: '8 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">THE MOST IMPORTANT CALCULATION IN TRADING</div>
+<p class="lm-text">Position sizing answers one question: how many lots should I trade? Most beginners answer this with gut feel — "0.1 seems right" or "I'll try 0.5 this time." This is how small accounts become zero accounts.</p>
+<p class="lm-text"><strong>Position size should always be calculated from your risk percentage — never chosen arbitrarily.</strong></p>
+<div class="lm-callout">
+    <span class="label">// THE FORMULA</span>
+    Risk Amount = Account Balance × Risk %<br>
+    Lot Size = Risk Amount ÷ (Stop Loss in pips × Pip Value per lot)<br><br>
+    Example: €200 account, 1% risk = €2 risk per trade.<br>
+    Stop loss = 20 pips. Gold pip value at 0.01 lots ≈ €0.10 per pip.<br>
+    Lot size = €2 ÷ (20 × €0.10) = €2 ÷ €2 = 0.01 lots. Correct.
+</div>
+<div class="lm-section-title">STARTING OUT — KEEP IT SIMPLE</div>
+<p class="lm-text">When building a small account, 0.01 lots is almost always the right answer. At 0.01 lots on gold, a 20 pip stop loss costs you approximately €2. On a €100 account that's 2% risk — acceptable. On a €200 account that's 1% — ideal.</p>
+<p class="lm-text">The goal at this stage is not to make big money. The goal is to survive long enough to get good. You cannot learn from a blown account. 0.01 lots keeps you in the game while you build your edge.</p>
+<div class="lm-section-title">WHEN TO INCREASE SIZE</div>
+<p class="lm-text">Only increase lot size when your account has grown proportionally — not because you feel confident, not because you had a winning week. The rule is simple: <strong>keep your risk percentage constant, let the lot size increase naturally as your account grows.</strong></p>
+<ul class="lm-list">
+    <li>€100 account → 0.01 lots max</li>
+    <li>€200 account → 0.01-0.02 lots</li>
+    <li>€500 account → 0.02-0.05 lots</li>
+    <li>€1,000 account → 0.05-0.10 lots</li>
+</ul>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Never choose your lot size with your gut. Calculate it from your account size and your risk percentage. Keep that percentage between 1-2% per trade maximum until you have a proven track record of at least 3 months.
+</div>
+`
+  },
+  'risk-3': {
+    cat: 'RISK MANAGEMENT', catClass: 'cat-risk',
+    title: `STOP LOSS PLACEMENT — WHERE TO PUT IT AND WHY`,
+    read: '8 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">YOUR STOP LOSS IS YOUR TRADE INVALIDATION</div>
+<p class="lm-text">A stop loss is not just a risk limit. It's a statement about when your trade idea is wrong. <strong>The price you place your stop at should be the price at which the market is telling you your analysis was incorrect.</strong> If price reaches that level, the setup no longer exists — and you should no longer be in the trade.</p>
+<p class="lm-text">This sounds obvious but most traders place stops based on how much they're willing to lose, not on where the trade is actually invalidated. These are two completely different things.</p>
+<div class="lm-section-title">STRUCTURAL STOP PLACEMENT</div>
+<p class="lm-text">For a long trade on gold, your stop should go below the most recent swing low or below the demand zone you're trading from. For a short trade, above the most recent swing high or supply zone. The logic: if price goes below that swing low, the bullish structure is broken. Your reason for being long no longer exists.</p>
+<ul class="lm-list">
+    <li><strong>Long trade:</strong> Stop below the swing low or bottom of demand zone — add 3-5 pips buffer for spread</li>
+    <li><strong>Short trade:</strong> Stop above the swing high or top of supply zone — add 3-5 pips buffer</li>
+    <li><strong>FVG trade:</strong> Stop below the entire FVG — if price closes below the gap, the imbalance is negated</li>
+    <li><strong>London sweep trade:</strong> Stop below the sweep wick — if price goes below that, the sweep failed</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// THE BUFFER</span>
+    Always add a small buffer (3-5 pips on gold) beyond your structural level. Liquidity sweeps are common — price will often wick just beyond obvious levels before reversing. A stop placed exactly at the swing low will get hit by a sweep. A stop placed 5 pips below it usually won't.
+</div>
+<div class="lm-section-title">NEVER MOVE YOUR STOP AGAINST YOU</div>
+<p class="lm-text">Moving a stop loss further away because price is approaching it is one of the most destructive habits in trading. When you move your stop, you are changing the trade's invalidation point retroactively — based on fear, not on analysis. <strong>If you feel the urge to move your stop wider, that's a sign the original stop was wrong, not that it should be moved.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Place your stop where the trade is wrong — not where you can afford to lose. Then never move it against yourself. Structural stop placement is the difference between a controlled loss and an uncontrolled one.
+</div>
+`
+  },
+  'risk-4': {
+    cat: 'RISK MANAGEMENT', catClass: 'cat-risk',
+    title: `TAKING PROFITS — WHEN TO CLOSE AND WHEN TO HOLD`,
+    read: '9 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">THE TWO MISTAKES TRADERS MAKE WITH WINNERS</div>
+<p class="lm-text">The first mistake: closing too early. The trade hits +0.8R and you close it because you're afraid of giving back profit. Your strategy says 2R target but you couldn't hold. Over hundreds of trades, this destroys your expected value.</p>
+<p class="lm-text">The second mistake: giving it all back. The trade hits +2R, you don't close, it reverses, you close at breakeven or worse. You had the profit and let it disappear.</p>
+<p class="lm-text"><strong>The solution is a structured exit plan decided before the trade opens — not during it.</strong></p>
+<div class="lm-section-title">THE MULTI-STAGE EXIT</div>
+<p class="lm-text">OMEGA GS uses a 4-leg take profit system. This is the cleanest approach for most traders:</p>
+<ul class="lm-list">
+    <li><strong>TP1 (1.5R):</strong> Close 25% of position — locks in profit, reduces emotional pressure</li>
+    <li><strong>TP2 (2.5R):</strong> Close another 25% — meaningful profit secured</li>
+    <li><strong>TP3 (3.5R):</strong> Close another 25% — you're now well in profit regardless of what happens</li>
+    <li><strong>TP4 / Runner:</strong> Last 25% — trail the stop and let it run as far as it goes</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// MOVING TO BREAKEVEN</span>
+    Once TP1 is hit, move your stop loss to breakeven (your entry price). This means the worst case on the remaining position is zero — you can't lose money on this trade now. This single habit eliminates one of the most damaging emotional patterns in trading: the fear of a winner turning into a loser.
+</div>
+<div class="lm-section-title">WHEN TO CLOSE EARLY</div>
+<p class="lm-text">There are legitimate reasons to close before your target: a major news event is approaching, a strong opposing level has formed, price structure has changed. These are analytical reasons — not emotional ones. <strong>Closing because you're nervous is not the same as closing because the trade has changed.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Decide your exit plan before you enter. Use partial closes to reduce emotional pressure while keeping exposure to larger moves. Move to breakeven at TP1. Never close early out of fear — only out of analysis.
+</div>
+`
+  },
+  'risk-5': {
+    cat: 'RISK MANAGEMENT', catClass: 'cat-risk',
+    title: `DAILY LIMITS AND CIRCUIT BREAKERS`,
+    read: '7 MIN READ · BEGINNER',
+    free: false,
+    content: `
+<div class="lm-section-title">BAD DAYS ARE GUARANTEED. BLOWN ACCOUNTS ARE NOT.</div>
+<p class="lm-text">Every trader has bad days. Days where the first trade loses, the second loses, and the urge to "make it back" becomes overwhelming. What separates traders who survive from those who don't is not whether they have bad days — it's how much damage a bad day can do.</p>
+<p class="lm-text"><strong>Daily limits and circuit breakers are the rules you set when you're calm, specifically to protect you when you're not.</strong></p>
+<div class="lm-section-title">THE DAILY LOSS LIMIT</div>
+<p class="lm-text">Set a maximum daily loss before you start trading. A sensible rule for small accounts: if you lose 3% of your account in one day, trading is over for the day. Close the platform. Walk away. No exceptions.</p>
+<p class="lm-text">On a €200 account at 0.01 lots, 3% is €6. That's three -1R losses. If you've had three losing trades in a day, the market is either not behaving well for your setup, or your mental state has deteriorated enough that more trading will make things worse — usually both.</p>
+<div class="lm-callout">
+    <span class="label">// THE TRADE LIMIT</span>
+    Maximum 2 trades per day when starting out. This is not a suggestion — it's a rule. Two quality setups that meet all your criteria are enough. More trades means lower quality entries, more emotional decision-making, and more fees. The market will be there tomorrow.
+</div>
+<div class="lm-section-title">CIRCUIT BREAKERS IN AUTOMATED TRADING</div>
+<p class="lm-text">OMEGA GS and NOVA both have built-in daily circuit breakers. When the daily loss limit is hit, the bot stops trading for the rest of the day automatically. This removes the human element entirely from the worst moments — the bot cannot revenge trade, cannot override the limit, cannot "just try one more."</p>
+<p class="lm-text">This feature alone has saved more capital than any other aspect of the system. <strong>Automation doesn't just make you more efficient — it makes you more disciplined than you could be on your own.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Set your daily loss limit and trade limit before the trading day starts. Write them down. Honor them absolutely. On the days you most want to break these rules are exactly the days you need them most.
+</div>
+`
+  },
+  'systems-1': {
+    cat: 'SYSTEMS', catClass: 'cat-systems',
+    title: `WHY A CAR MECHANIC BUILT A TRADING BOT`,
+    read: '8 MIN READ · BEGINNER',
+    free: true,
+    content: `
+<div class="lm-section-title">THE PROBLEM WITH SIGNALS</div>
+<p class="lm-text">When I first got into trading I started where most people start — following signal channels. Someone with more experience posts an entry, a stop loss, a take profit, and you copy it. Simple enough in theory.</p>
+<p class="lm-text">The problem was real life. Working long hours as a car mechanic, I couldn't sit with my phone waiting for a signal to appear. And even when I did catch one, I'd have my hands covered in oil and miss the entry by the time I could open the app. The signals were good. My ability to act on them in real time wasn't.</p>
+<p class="lm-text"><strong>So I built a bot that did it for me.</strong></p>
+<div class="lm-section-title">ALPHA — THE SIGNAL EXECUTOR</div>
+<p class="lm-text">ALPHA was the first solution. It connects to a Telegram signal channel, reads the signal when it arrives, and automatically opens the trade on MetaTrader 5 with the correct stop loss and take profits applied. No manual entry. No waiting. No missed trades because my hands were dirty.</p>
+<p class="lm-text">When a signal says BUY XAUUSD at 2339.40, SL 2335.80, TP 2344.80 — ALPHA executes it instantly, sized correctly for the account, with all levels set. I get a notification that the trade is open. That's it.</p>
+<div class="lm-callout">
+    <span class="label">// WHAT ALPHA DOES</span>
+    Monitors Telegram signal channels → parses entry, SL, and TP from message → opens trade on MT5 → applies risk management automatically → sends confirmation notification.<br><br>
+    What it doesn't do: choose which signals to follow, evaluate signal quality, override your risk settings.
+</div>
+<div class="lm-section-title">THE NEXT PROBLEM</div>
+<p class="lm-text">ALPHA solved the execution problem. But it didn't solve the dependency problem. I was still relying on someone else's analysis, someone else's timing, someone else's edge. Eventually, I wanted to be independent — to have a system that didn't need anyone to post anything. A system with its own brain.</p>
+<p class="lm-text">That's where OMEGA and NOVA came from. Fully autonomous bots with their own strategy, their own entry logic, their own risk management. They don't wait for signals. <strong>They are the signal.</strong></p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    A trading bot is a solution to a real problem — whether that's missed entries, emotional decisions, or the inability to watch charts all day. The best bots aren't magic. They're well-defined rules that execute consistently when you can't or shouldn't.
+</div>
+`
+  },
+  'systems-2': {
+    cat: 'SYSTEMS', catClass: 'cat-systems',
+    title: `HOW OMEGA GS WORKS — THE GOLD BOT EXPLAINED`,
+    read: '10 MIN READ · BEGINNER — INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">NO BLACK BOX</div>
+<p class="lm-text">Most commercial trading bots are sold as black boxes. You don't know what they do, just that they supposedly make money. RawCore doesn't work that way. <strong>Every rule in OMEGA GS is documented, explained, and available to Core members in full source code.</strong></p>
+<p class="lm-text">This isn't just transparency for its own sake — it's because understanding what your bot does is the only way to trust it when it's going through a drawdown period. If you don't know why it's not trading, you'll turn it off at exactly the wrong time.</p>
+<div class="lm-section-title">THE STRATEGY</div>
+<p class="lm-text">OMEGA GS trades XAUUSD (gold) on the 5-minute chart. The entry logic uses a multi-layer confluence system:</p>
+<ul class="lm-list">
+    <li><strong>Session filter:</strong> Only trades during London and New York sessions. Asian session is ignored entirely.</li>
+    <li><strong>Trend filter:</strong> EMA9 and EMA21 cross on 5M confirms directional bias. Long trades only above both EMAs, short trades only below.</li>
+    <li><strong>ATR filter:</strong> Minimum ATR threshold ensures the market has sufficient volatility for a valid setup. No trades in dead, flat markets.</li>
+    <li><strong>Entry trigger:</strong> EMA cross with all filters confirmed = entry at next candle open.</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// RISK MANAGEMENT BUILT IN</span>
+    Fixed 40-pip stop loss on every trade.<br>
+    4-leg take profit structure: TP1, TP2, TP3, TP4 at increasing levels.<br>
+    Progressive trailing stop: SL moves to breakeven after TP1, follows price through subsequent TPs.<br>
+    Daily circuit breaker: stops trading after daily loss limit hit.<br>
+    Tradequo-specific pip calculation: XAUUSDs symbol, ORDER_FILLING_RETURN fill mode.
+</div>
+<div class="lm-section-title">WHAT IT DOESN'T DO</div>
+<ul class="lm-list">
+    <li>Trade during high-impact news — ATR filter handles most of this</li>
+    <li>Adapt to regime changes — if the market stops trending and starts ranging, performance drops</li>
+    <li>Guarantee profit — past results do not guarantee future performance</li>
+</ul>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    OMEGA GS is a trend-following system optimised for gold during active sessions. It works best in trending, session-driven conditions and underperforms in choppy, news-driven environments. Understanding this means you know when to trust it and when to turn it off.
+</div>
+`
+  },
+  'systems-3': {
+    cat: 'SYSTEMS', catClass: 'cat-systems',
+    title: `NOVA — THE CRYPTO BOT FAMILY`,
+    read: '9 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">FROM GOLD TO CRYPTO</div>
+<p class="lm-text">OMEGA GS was built for gold on MT5. NOVA was built for a different market entirely — cryptocurrency perpetual contracts on Bybit. Different asset, different exchange, different API, different psychology. But the same core philosophy: <strong>a clear strategy, executed consistently, without emotion.</strong></p>
+<div class="lm-section-title">WHAT NOVA TRADES</div>
+<p class="lm-text">NOVA trades BTC, ETH, and SOL USDT perpetual contracts on Bybit. Perpetuals are derivatives that track the spot price of the underlying asset without an expiry date. They use leverage, which amplifies both gains and losses. NOVA is designed with conservative leverage settings for this reason.</p>
+<div class="lm-section-title">THE STRATEGY</div>
+<p class="lm-text">NOVA uses a multi-timeframe confluence approach — the same principle as OMEGA GS but applied to crypto market structure:</p>
+<ul class="lm-list">
+    <li><strong>4H EMA bias:</strong> Determines the overall direction — long bias above EMA, short bias below</li>
+    <li><strong>1H Supply and Demand zones:</strong> Identifies key entry areas with institutional significance</li>
+    <li><strong>1H Fair Value Gaps:</strong> Confirms imbalances that price is likely to fill</li>
+    <li><strong>15M rejection entry:</strong> Specific confirmation candle pattern at the zone before entering</li>
+    <li><strong>RSI filter:</strong> Avoids entering in overbought/oversold conditions against the trade direction</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// RISK MANAGEMENT</span>
+    Partial TP at 1R — close 50%, move SL to breakeven.<br>
+    Full target at 2R — close remaining position.<br>
+    Daily circuit breaker — stops after daily loss limit.<br>
+    Correlation guard — avoids opening BTC and ETH simultaneously (they move together).<br>
+    Trailing equity stop — reduces leverage tier if equity drops below threshold.
+</div>
+<div class="lm-section-title">CRYPTO VS GOLD</div>
+<p class="lm-text">Crypto is more volatile than gold. Sessions are less defined — crypto trades 24/7. News impact is more unpredictable. For these reasons, NOVA uses tighter confluence requirements than OMEGA GS — it needs more conditions to align before entering. Fewer trades, but higher quality entries.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    NOVA applies the same disciplined, rule-based approach as OMEGA GS to crypto markets. The multi-timeframe confluence system is designed to filter out the noise that makes crypto so difficult to trade manually.
+</div>
+`
+  },
+  'systems-4': {
+    cat: 'SYSTEMS', catClass: 'cat-systems',
+    title: `READING BOT RESULTS — WHAT THE NUMBERS ACTUALLY MEAN`,
+    read: '9 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">MOST BOT SELLERS LIE WITH NUMBERS</div>
+<p class="lm-text">You've seen it everywhere — "97% win rate!", "3000% return in 6 months!", "Never a losing month!" These numbers are either cherry-picked, backtested on data the bot was optimised on, or outright fabricated. <strong>Knowing how to read real performance data is one of the most valuable skills in automated trading.</strong></p>
+<div class="lm-section-title">METRICS THAT ACTUALLY MATTER</div>
+<ul class="lm-list">
+    <li><strong>Expectancy:</strong> Average R per trade over a statistically significant sample (100+ trades). Positive expectancy = profitable system. This is the single most important metric.</li>
+    <li><strong>Maximum drawdown:</strong> The largest peak-to-trough loss in the testing period. If this is 40%, your account dropped 40% at some point. Can you handle that psychologically?</li>
+    <li><strong>Win rate in context:</strong> Only meaningful alongside average R:R. A 30% win rate with 3R average winners beats a 70% win rate with 0.5R average winners.</li>
+    <li><strong>Sample size:</strong> Fewer than 100 trades is not statistically meaningful. A bot that made money on 20 trades tells you almost nothing.</li>
+    <li><strong>Out-of-sample performance:</strong> Was the backtest on data the strategy was built on (in-sample) or on data it hasn't seen before (out-of-sample)? Out-of-sample results are far more meaningful.</li>
+</ul>
+<div class="lm-callout">
+    <span class="label">// RED FLAGS IN BOT MARKETING</span>
+    Equity curve with no drawdown — impossible in real trading.<br>
+    Win rate above 85% — either very short timeframe or overfitted.<br>
+    Backtests only — no live trading results.<br>
+    "Set and forget forever" — all strategies have regimes where they underperform.
+</div>
+<div class="lm-section-title">HOW TO READ OMEGA GS RESULTS</div>
+<p class="lm-text">When you access OMEGA GS trade logs as a Core member, you'll see every trade with entry, exit, R result, and session. The metrics to focus on: expectancy per trade, maximum consecutive losses, and drawdown percentage. A system with positive expectancy, manageable drawdown, and sufficient sample size is a system worth running.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Evaluate bots on expectancy, drawdown, and out-of-sample performance — not win rate or headline returns. Any bot that can't show you these metrics transparently is hiding something.
+</div>
+`
+  },
+  'systems-5': {
+    cat: 'SYSTEMS', catClass: 'cat-systems',
+    title: `BUILDING YOUR FIRST EA CONCEPT`,
+    read: '10 MIN READ · INTERMEDIATE',
+    free: false,
+    content: `
+<div class="lm-section-title">EVERY BOT STARTS AS AN IDEA</div>
+<p class="lm-text">Before a single line of code is written, a trading bot is just a set of rules. Rules that can be stated clearly, without ambiguity, in plain language. <strong>If you can write your strategy as a precise set of if/then statements, you can automate it.</strong> If you can't, you don't have a strategy — you have a feeling.</p>
+<div class="lm-section-title">STEP 1 — DEFINE YOUR RULES PRECISELY</div>
+<p class="lm-text">Take a strategy you trade manually and write out every condition required for an entry. Be specific — not "when it looks bullish" but "when EMA9 crosses above EMA21 on the 5M chart AND price is above the 1H EMA50 AND ATR is above 1.0 AND the time is between 08:00 and 16:00 UTC."</p>
+<p class="lm-text">If any condition is vague or relies on judgment, define it more precisely or remove it. Automation cannot exercise judgment. It can only check conditions.</p>
+<div class="lm-callout">
+    <span class="label">// EXAMPLE: TURNING A MANUAL RULE INTO EA LOGIC</span>
+    Manual rule: "I buy when it looks like London is starting a bullish move."<br><br>
+    EA rule: "Open BUY if: time &gt;= 08:00 UTC AND time &lt;= 12:00 UTC AND EMA9 &gt; EMA21 AND current candle closes above previous candle high AND ATR(14) &gt; 0.8."<br><br>
+    Same idea. One is tradeable. One is automatable.
+</div>
+<div class="lm-section-title">STEP 2 — DEFINE YOUR RISK RULES</div>
+<p class="lm-text">Before writing any entry logic, define the complete risk framework: stop loss placement rule, take profit levels, lot sizing formula, daily loss limit, maximum simultaneous trades. These are not optional — they are the most important part of the EA.</p>
+<div class="lm-section-title">STEP 3 — BACKTEST MANUALLY FIRST</div>
+<p class="lm-text">Before coding, go back through 3-6 months of historical charts and manually apply your rules. Count every valid signal. Record every result. Calculate expectancy. If it's not profitable in manual backtesting, coding it won't make it profitable.</p>
+<div class="lm-section-title">STEP 4 — CODE OR COLLABORATE</div>
+<p class="lm-text">If you can code MQL5, write it yourself. If you can't, the RawCore community includes traders who can. The bot marketplace allows members to share and collaborate on EA development — your strategy idea combined with someone else's coding ability is a legitimate path to a working bot.</p>
+<div class="lm-callout warn">
+    <span class="label">// KEY TAKEAWAY</span>
+    Automation starts with precision. Write your rules in plain language first. If they're precise enough to be unambiguous, they're precise enough to be coded. The strategy always comes before the technology.
+</div>
+`
+  }
 };
 
-function openLesson(id){
-  const l=lessons[id];if(!l)return;
-  document.getElementById('lessonBox').innerHTML=`<div class="lm-header"><div class="lm-header-left"><div class="lm-cat ${l.catClass}">${l.cat}</div><div class="lm-title">${l.title}</div><div class="lm-meta"><span>${l.read}</span><span style="color:var(--green)">FREE LESSON</span></div></div><button class="lm-close" onclick="closeLesson()">✕</button></div><div class="lm-body">${l.content}</div><div class="lm-footer"><span class="lm-footer-note">// Want all lessons in every topic? Join Core.</span><a href="login.html" class="lm-upgrade">UNLOCK ALL LESSONS →</a></div>`;
+function openLesson(id) {
+  const l = lessons[id];
+  if (!l) return;
+  const freeLabel = l.free ? '<span style="color:var(--green)">FREE LESSON</span>' : '<span style="color:var(--blue)">CORE LESSON</span>';
+  document.getElementById('lessonBox').innerHTML = `
+    <div class="lm-header">
+      <div>
+        <div class="lm-cat ${l.catClass}">${l.cat}</div>
+        <div class="lm-title">${l.title}</div>
+        <div class="lm-meta"><span>${l.read}</span>${freeLabel}</div>
+      </div>
+      <button class="lm-close" onclick="closeLesson()">✕</button>
+    </div>
+    <div class="lm-body">${l.content}</div>
+    <div class="lm-footer">
+      <span class="lm-footer-note">// Want all lessons? Join Core for full access.</span>
+      <a href="login.html" class="lm-upgrade">UNLOCK ALL LESSONS →</a>
+    </div>`;
   document.getElementById('lessonModal').classList.add('open');
-  document.body.style.overflow='hidden';
-  document.getElementById('lessonBox').scrollTop=0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('lessonBox').scrollTop = 0;
 }
 
-function openLocked(){
-  document.getElementById('lessonBox').innerHTML=`<div class="lm-header"><div><div class="lm-cat cat-brokers">BROKERS</div><div class="lm-title">CORE MEMBERS ONLY</div></div><button class="lm-close" onclick="closeLesson()">✕</button></div><div class="lm-body"><div class="locked-overlay"><div class="lo-icon">🔒</div><div class="lo-title">CORE CONTENT</div><div class="lo-sub">The full Brokers topic is available to Core members only.<br>Join free to access 5 free lessons across other topics, or go Core for everything.</div><a href="login.html" class="lo-btn">JOIN FREE OR CORE →</a></div></div>`;
+function openLocked() {
+  document.getElementById('lessonBox').innerHTML = `
+    <div class="lm-header">
+      <div><div class="lm-title">CORE MEMBERS ONLY</div></div>
+      <button class="lm-close" onclick="closeLesson()">✕</button>
+    </div>
+    <div class="lm-body">
+      <div class="locked-overlay">
+        <div class="lo-icon">🔒</div>
+        <div class="lo-title">CORE CONTENT</div>
+        <div class="lo-sub">This lesson is available to Core members only.<br>Join free to access 4 free lessons, or go Core for the full 20-lesson curriculum.</div>
+        <a href="login.html" class="lo-btn">JOIN FREE OR CORE →</a>
+      </div>
+    </div>`;
   document.getElementById('lessonModal').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
 
-function closeLesson(){
+function openComingSoon() {
+  document.getElementById('lessonBox').innerHTML = `
+    <div class="lm-header">
+      <div><div class="lm-cat cat-signals">SIGNALS</div><div class="lm-title">COMING SOON</div></div>
+      <button class="lm-close" onclick="closeLesson()">✕</button>
+    </div>
+    <div class="lm-body">
+      <div class="locked-overlay">
+        <div class="lo-icon">⏳</div>
+        <div class="lo-title">COMING SOON</div>
+        <div class="lo-sub">The Signals topic is being built with real signal providers and real accountability behind it.<br><br>We're not publishing it until it's done properly. No placeholders. No fake content.</div>
+        <a href="community.html" class="lo-btn">JOIN THE COMMUNITY →</a>
+      </div>
+    </div>`;
+  document.getElementById('lessonModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLesson() {
   document.getElementById('lessonModal').classList.remove('open');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
 }
 
-document.getElementById('lessonModal').addEventListener('click',function(e){if(e.target===this)closeLesson();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLesson();});
+document.getElementById('lessonModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLesson();
+});
 
-function toggleMobileMenu(){document.getElementById('mobileNav').classList.toggle('open');}
-document.querySelectorAll('.mobile-nav a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('mobileNav').classList.remove('open'));});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLesson();
+});
 
-const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+function toggleMobileMenu() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+document.querySelectorAll('.mobile-nav a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('mobileNav').classList.remove('open'));
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
