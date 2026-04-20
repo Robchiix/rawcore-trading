@@ -7,572 +7,203 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #050608;
-    --dark: #0a0c0f;
-    --card: #0e1114;
-    --border: #1a1f26;
-    --green: #00ff88;
-    --green-muted: #00ff8815;
-    --red: #ff3355;
-    --amber: #f59e0b;
-    --blue: #3b82f6;
-    --purple: #8b5cf6;
-    --text: #c8d4e0;
-    --text-dim: #5a6a7a;
-    --text-bright: #eaf2ff;
-    --mono: 'Share Tech Mono', monospace;
-    --display: 'Bebas Neue', sans-serif;
-    --body: 'Rajdhani', sans-serif;
+    --black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;
+    --green:#00ff88;--green-muted:#00ff8815;--red:#ff3355;
+    --amber:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;
+    --text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;
+    --mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: var(--body);
-    overflow-x: hidden;
-    cursor: crosshair;
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:crosshair;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9999;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}
+  .nav-logo span{color:var(--green);}
+  .nav-links{display:flex;gap:24px;list-style:none;}
+  .nav-links a{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--green);}
+  .nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}
+  .nav-cta:hover{background:var(--green);color:var(--black);}
+  .mobile-menu-btn{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:12px;}
+  .mobile-menu-btn span{display:block;width:22px;height:2px;background:var(--text-dim);}
+  .mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(5,6,8,0.98);border-bottom:1px solid var(--border);padding:16px 20px;flex-direction:column;z-index:99;}
+  .mobile-nav.open{display:flex;}
+  .mobile-nav a{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;padding:14px 0;border-bottom:1px solid var(--border);}
+  .mobile-nav a:last-child{border-bottom:none;}
+  .hero{padding:100px 80px 60px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+  .hero::before{content:'KNOWLEDGE';position:absolute;right:-60px;top:50%;transform:translateY(-50%);font-family:var(--display);font-size:180px;color:var(--green);opacity:0.02;pointer-events:none;white-space:nowrap;}
+  .hero-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;display:flex;align-items:center;gap:12px;opacity:0;animation:fadeUp 0.6s forwards 0.1s;}
+  .hero-tag::before{content:'';width:32px;height:1px;background:var(--green);}
+  .hero-title{font-family:var(--display);font-size:clamp(56px,7vw,96px);line-height:0.9;color:var(--text-bright);margin-bottom:20px;opacity:0;animation:fadeUp 0.6s forwards 0.2s;}
+  .hero-title .green{color:var(--green);}
+  .hero-sub{max-width:600px;font-size:16px;line-height:1.7;color:var(--text-dim);opacity:0;animation:fadeUp 0.6s forwards 0.3s;}
+  .hero-sub strong{color:var(--text);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .free-banner{background:var(--green-muted);border-bottom:1px solid rgba(0,255,136,0.15);padding:12px 80px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .fb-badge{font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:3px 10px;letter-spacing:0.15em;background:var(--green-muted);white-space:nowrap;}
+  .fb-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);flex:1;}
+  .fb-text span{color:var(--green);}
+  .fb-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;padding:7px 16px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity 0.2s;}
+  .fb-cta:hover{opacity:0.9;}
+  .topics-section{padding:60px 80px 80px;}
+  .section-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:32px;display:flex;align-items:center;gap:12px;}
+  .section-tag::before{content:'//';color:var(--text-dim);}
+  .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+  .topic-card{background:var(--dark);position:relative;overflow:hidden;transition:background 0.2s;}
+  .topic-card:hover{background:var(--card);}
+  .topic-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:opacity 0.2s;}
+  .topic-card.free-topic::before{background:var(--green);}
+  .topic-card.core-topic::before{background:var(--text-dim);opacity:0.4;}
+  .tc-header{padding:24px 24px 16px;border-bottom:1px solid var(--border);}
+  .tc-badges{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
+  .tc-cat{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:3px 8px;border:1px solid;}
+  .cat-psychology{border-color:rgba(139,92,246,0.4);color:var(--purple);}
+  .cat-markets{border-color:rgba(59,130,246,0.3);color:var(--blue);}
+  .cat-risk{border-color:rgba(255,51,85,0.3);color:var(--red);}
+  .cat-systems{border-color:rgba(0,255,136,0.3);color:var(--green);}
+  .cat-signals{border-color:rgba(245,158,11,0.3);color:var(--amber);}
+  .cat-brokers{border-color:var(--border);color:var(--text-dim);}
+  .tc-free-badge{font-family:var(--mono);font-size:8px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:2px 7px;letter-spacing:0.15em;background:var(--green-muted);}
+  .tc-core-badge{font-family:var(--mono);font-size:8px;color:var(--text-dim);border:1px solid var(--border);padding:2px 7px;letter-spacing:0.15em;}
+  .tc-title{font-family:var(--display);font-size:20px;color:var(--text-bright);letter-spacing:0.05em;margin-bottom:8px;line-height:1.1;}
+  .tc-desc{font-size:13px;color:var(--text-dim);line-height:1.6;}
+  .tc-meta{display:flex;gap:12px;margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--text-dim);flex-wrap:wrap;}
+  .tc-lessons{padding:0;}
+  .lesson-item{padding:14px 24px;border-bottom:1px solid rgba(26,31,38,0.5);display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;cursor:pointer;transition:background 0.15s;}
+  .lesson-item:last-child{border-bottom:none;}
+  .lesson-item:hover:not(.locked){background:rgba(14,17,20,0.8);}
+  .lesson-item.locked{cursor:not-allowed;opacity:0.45;}
+  .li-num{font-family:var(--mono);font-size:10px;color:var(--text-dim);padding-top:2px;}
+  .li-title{font-size:13px;color:var(--text);margin-bottom:3px;line-height:1.4;}
+  .li-sub{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+  .li-badge{font-family:var(--mono);font-size:8px;padding:2px 7px;border:1px solid;white-space:nowrap;}
+  .li-badge.free{border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted);}
+  .li-badge.core{border-color:var(--border);color:var(--text-dim);}
+  /* MODAL */
+  .lesson-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:80px 20px 20px;overflow-y:auto;}
+  .lesson-modal.open{display:flex;}
+  .lesson-box{background:var(--dark);border:1px solid var(--border);width:100%;max-width:760px;position:relative;}
+  .lm-header{padding:24px 28px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  .lm-cat{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;margin-bottom:8px;}
+  .lm-title{font-family:var(--display);font-size:clamp(22px,4vw,34px);color:var(--text-bright);line-height:1;}
+  .lm-meta{font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;}
+  .lm-close{font-family:var(--mono);font-size:18px;color:var(--text-dim);cursor:pointer;background:none;border:none;flex-shrink:0;transition:color 0.2s;padding:4px;}
+  .lm-close:hover{color:var(--red);}
+  .lm-body{padding:28px;}
+  .lm-text{font-size:15px;color:var(--text-dim);line-height:1.8;margin-bottom:16px;}
+  .lm-text strong{color:var(--text);}
+  .lm-section-title{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
+  .lm-section-title::before{content:'//';color:var(--text-dim);}
+  .lm-callout{background:var(--black);border-left:2px solid var(--green);padding:14px 16px;margin:16px 0;font-family:var(--mono);font-size:12px;color:var(--text-dim);line-height:1.7;}
+  .lm-callout .label{font-size:9px;color:var(--green);letter-spacing:0.2em;display:block;margin-bottom:6px;}
+  .lm-callout.warn{border-left-color:var(--amber);}
+  .lm-callout.warn .label{color:var(--amber);}
+  .lm-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+  .lm-list li{font-family:var(--mono);font-size:12px;color:var(--text-dim);display:flex;gap:10px;line-height:1.6;}
+  .lm-list li::before{content:'→';color:var(--green);flex-shrink:0;}
+  .lm-footer{padding:20px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .lm-footer-note{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+  .lm-upgrade{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}
+  .lm-upgrade:hover{opacity:0.9;}
+  .locked-overlay{padding:40px 28px;text-align:center;}
+  .lo-icon{font-family:var(--mono);font-size:32px;color:var(--text-dim);margin-bottom:16px;}
+  .lo-title{font-family:var(--display);font-size:28px;color:var(--text-bright);margin-bottom:10px;}
+  .lo-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:20px;line-height:1.7;}
+  .lo-btn{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:13px 28px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block;}
+  /* PATH */
+  .path-section{padding:60px 80px;background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .path-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);margin-top:32px;}
+  .path-card{background:var(--dark);padding:24px 16px;text-align:center;cursor:pointer;transition:background 0.2s;position:relative;}
+  .path-card:hover{background:var(--card);}
+  .path-card::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:12px;color:var(--border);z-index:1;}
+  .path-card:last-child::after{display:none;}
+  .path-step{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.2em;margin-bottom:10px;}
+  .path-icon{font-family:var(--mono);font-size:20px;color:var(--green);margin-bottom:8px;}
+  .path-title{font-family:var(--display);font-size:18px;color:var(--text-bright);margin-bottom:6px;}
+  .path-sub{font-size:11px;color:var(--text-dim);line-height:1.5;}
+  /* CTA */
+  .cta-section{padding:80px;text-align:center;position:relative;overflow:hidden;}
+  .cta-section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;border-radius:50%;border:1px solid rgba(0,255,136,0.05);pointer-events:none;}
+  .cta-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;position:relative;z-index:1;}
+  .cta-title{font-family:var(--display);font-size:clamp(36px,5vw,60px);color:var(--text-bright);line-height:0.95;margin-bottom:16px;position:relative;z-index:1;}
+  .cta-title .green{color:var(--green);}
+  .cta-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-bottom:32px;position:relative;z-index:1;line-height:1.8;}
+  .cta-btns{display:flex;gap:12px;justify-content:center;position:relative;z-index:1;flex-wrap:wrap;}
+  .btn-primary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;transition:opacity 0.2s;}
+  .btn-primary:hover{opacity:0.9;}
+  .btn-secondary{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:14px 28px;background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:pointer;text-decoration:none;transition:all 0.2s;}
+  .btn-secondary:hover{border-color:var(--text-dim);color:var(--text-bright);}
+  footer{padding:24px 80px;border-top:1px solid var(--border);}
+  .footer-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+  .footer-logo{font-family:var(--mono);font-size:14px;color:var(--text-bright);text-decoration:none;}
+  .footer-logo span{color:var(--green);}
+  .footer-links{display:flex;gap:18px;list-style:none;flex-wrap:wrap;}
+  .footer-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+  .footer-links a:hover{color:var(--green);}
+  .footer-social{display:flex;gap:8px;}
+  .social-icon{width:28px;height:28px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:all 0.2s;}
+  .social-icon:hover{border-color:var(--green);color:var(--green);}
+  .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .footer-copy{font-family:var(--mono);font-size:9px;color:var(--text-dim);}
+  .footer-legal{display:flex;gap:20px;}
+  .footer-legal a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+  .footer-legal a:hover{color:var(--green);}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  /* MOBILE */
+  @media(max-width:768px){
+    body{cursor:default;}
+    nav{padding:0 20px;height:56px;}
+    .nav-links{display:none;}
+    .nav-cta{font-size:9px;padding:7px 12px;}
+    .mobile-menu-btn{display:flex!important;}
+    .hero{padding:80px 20px 40px;}
+    .hero::before{display:none;}
+    .hero-title{font-size:clamp(44px,12vw,68px);}
+    .free-banner{padding:12px 20px;flex-direction:column;align-items:flex-start;gap:10px;}
+    .fb-cta{width:100%;text-align:center;display:block;padding:12px;}
+    .topics-section{padding:32px 16px 48px;}
+    .topics-grid{grid-template-columns:1fr;}
+    .tc-header{padding:20px 16px 14px;}
+    .tc-title{font-size:18px;}
+    .lesson-item{padding:12px 16px;}
+    .li-title{font-size:12px;}
+    .li-sub{font-size:9px;}
+    .path-section{padding:40px 16px;}
+    .path-grid{grid-template-columns:1fr 1fr;gap:1px;}
+    .path-card::after{display:none;}
+    .path-card:nth-child(5){grid-column:1/-1;}
+    .path-title{font-size:16px;}
+    .path-sub{font-size:10px;}
+    .cta-section{padding:48px 20px;}
+    .cta-btns{flex-direction:column;}
+    .btn-primary,.btn-secondary{width:100%;text-align:center;}
+    footer{padding:20px;}
+    .footer-top{flex-direction:column;gap:16px;}
+    .footer-links{flex-wrap:wrap;gap:12px;}
+    .footer-bottom{flex-direction:column;gap:8px;text-align:center;}
+    .footer-legal{justify-content:center;}
+    .lesson-modal{padding:56px 0 0;}
+    .lesson-box{min-height:100vh;border-radius:0;}
+    .lm-header{padding:20px;}
+    .lm-body{padding:20px;}
+    .lm-footer{padding:16px 20px;flex-direction:column;}
+    .lm-upgrade{width:100%;text-align:center;}
+    .section-tag{flex-wrap:wrap;}
   }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.012) 2px, rgba(0,255,136,0.012) 4px);
-    pointer-events: none;
-    z-index: 9999;
+  @media(max-width:480px){
+    .hero-title{font-size:clamp(38px,10vw,56px);}
+    .path-grid{grid-template-columns:1fr;}
+    .path-card:nth-child(5){grid-column:auto;}
   }
-
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    background: rgba(5,6,8,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
-  .nav-logo span { color: var(--green); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color: var(--green); }
-  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .nav-cta:hover { background: var(--green); color: var(--black); }
-
-  /* HERO */
-  .hero {
-    padding: 140px 80px 80px;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: 'KNOWLEDGE';
-    position: absolute;
-    right: -60px; top: 50%;
-    transform: translateY(-50%);
-    font-family: var(--display);
-    font-size: 180px;
-    color: var(--green);
-    opacity: 0.02;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  .hero-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.6s forwards 0.1s; }
-  .hero-tag::before { content: ''; width: 32px; height: 1px; background: var(--green); }
-  .hero-title { font-family: var(--display); font-size: clamp(60px, 8vw, 110px); line-height: 0.9; color: var(--text-bright); margin-bottom: 24px; opacity: 0; animation: fadeUp 0.6s forwards 0.2s; }
-  .hero-title .green { color: var(--green); }
-  .hero-sub { max-width: 640px; font-size: 17px; line-height: 1.7; color: var(--text-dim); opacity: 0; animation: fadeUp 0.6s forwards 0.3s; }
-  .hero-sub strong { color: var(--text); }
-
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* FILTER BAR */
-  .filter-bar {
-    padding: 24px 80px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--dark);
-    flex-wrap: wrap;
-  }
-
-  .filter-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-right: 8px; }
-
-  .filter-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    padding: 7px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-  }
-
-  .filter-btn:hover { border-color: var(--text-dim); color: var(--text); }
-  .filter-btn.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
-
-  .search-input {
-    margin-left: auto;
-    background: var(--black);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 8px 14px;
-    outline: none;
-    width: 220px;
-    transition: border-color 0.2s;
-  }
-
-  .search-input:focus { border-color: var(--green); }
-  .search-input::placeholder { color: var(--text-dim); opacity: 0.5; }
-
-  /* FEATURED */
-  .featured-section {
-    padding: 60px 80px 0;
-  }
-
-  .section-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
-  .section-tag::before { content: '//'; color: var(--text-dim); }
-
-  .featured-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .featured-main {
-    background: var(--dark);
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  .featured-main:hover { background: var(--card); }
-
-  .featured-main::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--green);
-  }
-
-  .featured-sub {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .featured-small {
-    background: var(--dark);
-    padding: 28px 32px;
-    cursor: pointer;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-    flex: 1;
-  }
-
-  .featured-small:hover { background: var(--card); }
-  .featured-small::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: transparent; transition: background 0.3s; }
-  .featured-small:hover::after { background: var(--green); }
-
-  .topic-cat {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    padding: 3px 8px;
-    border: 1px solid;
-    display: inline-block;
-    margin-bottom: 14px;
-    text-transform: uppercase;
-  }
-
-  .cat-psychology { border-color: rgba(139,92,246,0.4); color: var(--purple); background: rgba(139,92,246,0.08); }
-  .cat-systems { border-color: rgba(0,255,136,0.3); color: var(--green); background: var(--green-muted); }
-  .cat-markets { border-color: rgba(59,130,246,0.3); color: var(--blue); background: rgba(59,130,246,0.08); }
-  .cat-risk { border-color: rgba(255,51,85,0.3); color: var(--red); background: rgba(255,51,85,0.08); }
-  .cat-signals { border-color: rgba(245,158,11,0.3); color: var(--amber); background: rgba(245,158,11,0.08); }
-  .cat-brokers { border-color: rgba(200,212,224,0.2); color: var(--text-dim); background: rgba(200,212,224,0.04); }
-
-  .topic-title { font-family: var(--display); letter-spacing: 0.03em; color: var(--text-bright); line-height: 1; margin-bottom: 12px; }
-  .featured-main .topic-title { font-size: 36px; }
-  .featured-small .topic-title { font-size: 20px; }
-
-  .topic-desc { font-size: 13px; color: var(--text-dim); line-height: 1.65; margin-bottom: 16px; }
-  .featured-main .topic-desc { font-size: 15px; max-width: 500px; }
-
-  .topic-meta { display: flex; align-items: center; gap: 16px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-  .topic-level { display: flex; align-items: center; gap: 6px; }
-  .level-dots { display: flex; gap: 3px; }
-  .level-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
-  .level-dot.filled { background: var(--green); }
-  .topic-read { }
-  .topic-arrow { margin-left: auto; font-size: 14px; color: var(--green); opacity: 0; transition: opacity 0.2s; }
-  .featured-main:hover .topic-arrow, .featured-small:hover .topic-arrow { opacity: 1; }
-
-  /* TOPIC GRID */
-  .topics-section {
-    padding: 60px 80px 100px;
-  }
-
-  .topics-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .topic-card {
-    background: var(--dark);
-    padding: 32px 28px;
-    cursor: pointer;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .topic-card:hover { background: var(--card); }
-  .topic-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.3s; }
-  .topic-card:hover::before { background: var(--green); }
-
-  .topic-num { font-family: var(--display); font-size: 60px; color: var(--green); opacity: 0.05; line-height: 1; margin-bottom: -10px; }
-  .topic-card .topic-title { font-size: 22px; margin-bottom: 10px; }
-  .topic-card .topic-desc { font-size: 13px; margin-bottom: 16px; }
-
-  .topic-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-  .topic-tag { font-family: var(--mono); font-size: 9px; padding: 2px 7px; background: var(--black); border: 1px solid var(--border); color: var(--text-dim); }
-
-  /* EXPANDED CARD */
-  .topic-expanded {
-    display: none;
-    background: var(--black);
-    border: 1px solid var(--green);
-    padding: 32px;
-    margin-top: -1px;
-    position: relative;
-    grid-column: 1 / -1;
-  }
-
-  .topic-expanded.open { display: block; }
-
-  .expanded-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
-  .expanded-close { font-family: var(--mono); font-size: 18px; color: var(--text-dim); cursor: pointer; transition: color 0.2s; background: none; border: none; }
-  .expanded-close:hover { color: var(--red); }
-
-  .expanded-body { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; }
-
-  .expanded-content { }
-  .expanded-intro { font-size: 15px; color: var(--text); line-height: 1.75; margin-bottom: 24px; }
-
-  .lesson-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
-  .lesson-item { background: var(--dark); padding: 14px 18px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; cursor: pointer; transition: background 0.2s; }
-  .lesson-item:hover { background: var(--card); }
-  .lesson-num { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-  .lesson-title { font-size: 13px; color: var(--text); }
-  .lesson-title span { display: block; font-size: 11px; color: var(--text-dim); margin-top: 2px; font-family: var(--mono); }
-  .lesson-status { font-family: var(--mono); font-size: 9px; }
-  .lesson-status.free { color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; }
-  .lesson-status.core { color: var(--text-dim); border: 1px solid var(--border); padding: 2px 6px; }
-
-  .expanded-sidebar { }
-  .sidebar-box { background: var(--dark); border: 1px solid var(--border); padding: 20px; margin-bottom: 12px; }
-  .sidebar-label { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 12px; }
-  .sidebar-stat { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; padding: 6px 0; border-bottom: 1px solid var(--border); color: var(--text-dim); }
-  .sidebar-stat:last-child { border-bottom: none; }
-  .sidebar-stat span { color: var(--text-bright); }
-
-  /* BEGINNER PATH */
-  .path-section {
-    padding: 80px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--dark);
-  }
-
-  .path-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--border); margin-top: 0; position: relative; }
-
-  .path-card {
-    background: var(--dark);
-    padding: 24px 20px;
-    text-align: center;
-    position: relative;
-    transition: background 0.2s;
-    cursor: pointer;
-  }
-
-  .path-card:hover { background: var(--card); }
-  .path-card::after { content: '→'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 12px; color: var(--border); z-index: 1; }
-  .path-card:last-child::after { display: none; }
-
-  .path-step { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 12px; }
-  .path-icon { font-family: var(--mono); font-size: 18px; color: var(--green); margin-bottom: 10px; }
-  .path-title { font-family: var(--display); font-size: 18px; color: var(--text-bright); margin-bottom: 6px; letter-spacing: 0.05em; }
-  .path-sub { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
-
-  /* NEWSLETTER / TELEGRAM */
-  .join-section {
-    padding: 80px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .join-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 500px; height: 500px; border-radius: 50%; border: 1px solid rgba(0,255,136,0.05); pointer-events: none; }
-
-  .join-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 20px; position: relative; z-index: 1; }
-  .join-title { font-family: var(--display); font-size: clamp(36px, 4vw, 58px); color: var(--text-bright); line-height: 0.95; margin-bottom: 16px; position: relative; z-index: 1; }
-  .join-title .green { color: var(--green); }
-  .join-sub { font-size: 15px; color: var(--text-dim); max-width: 500px; margin: 0 auto 36px; line-height: 1.7; position: relative; z-index: 1; }
-  .join-btns { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; }
-  .btn-primary { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 28px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; transition: opacity 0.2s; }
-  .btn-primary:hover { opacity: 0.9; }
-  .btn-secondary { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 28px; background: transparent; color: var(--text-dim); border: 1px solid var(--border); cursor: pointer; text-decoration: none; transition: all 0.2s; }
-  .btn-secondary:hover { border-color: var(--text-dim); color: var(--text-bright); }
-
-  footer { padding: 32px 80px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-dim); border-top: 1px solid var(--border); }
-  .footer-logo { color: var(--text-bright); text-decoration: none; }
-  .footer-logo span { color: var(--green); }
-  .footer-links { display: flex; gap: 24px; list-style: none; }
-  .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--green); }
-
-  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ============================================
-     MOBILE RESPONSIVE — under 768px
-  ============================================ */
-  @media (max-width: 768px) {
-    body { cursor: default; }
-
-    nav {
-      padding: 0 20px;
-      height: 56px;
-    }
-
-    .nav-links { display: none; }
-    .nav-cta { font-size: 9px; padding: 7px 12px; }
-
-    .mobile-menu-btn {
-      display: flex !important;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-      margin-left: 12px;
-    }
-
-    .mobile-menu-btn span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--text-dim);
-    }
-
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 56px; left: 0; right: 0;
-      background: rgba(5,6,8,0.98);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
-      flex-direction: column;
-      gap: 0;
-      z-index: 99;
-    }
-
-    .mobile-nav.open { display: flex !important; }
-
-    .mobile-nav a {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text-dim);
-      text-decoration: none;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .mobile-nav a:last-child { border-bottom: none; }
-
-    /* HERO */
-    .hero, .about-hero, .shop-hero {
-      padding: 88px 24px 40px;
-    }
-
-    .hero-title, .about-title {
-      font-size: clamp(52px, 13vw, 80px);
-    }
-
-    .hero-stats {
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    /* 2 COL GRIDS → 1 COL */
-    .manifesto-grid, .story-grid, .nfe-grid,
-    .grid-2, .pot-grid, .credits-grid,
-    .contrib-grid, .how-grid, .tiers-grid,
-    .contact-section, .ungurued-strip,
-    .live-section, .bottom-grid,
-    .featured-section, .families-section,
-    .featured-bot, .contribute-section,
-    .promise-btns, .cta-btns, .join-btns,
-    .hero-buttons, .sub-actions {
-      grid-template-columns: 1fr !important;
-      flex-direction: column !important;
-      gap: 20px !important;
-    }
-
-    /* 3-4 COL GRIDS → 1 COL */
-    .features-grid, .how-grid.row-3,
-    .coming-grid, .community-grid,
-    .trust-grid, .faq-grid,
-    .achievements-grid, .actions-grid,
-    .overview-grid, .config-grid,
-    .products-grid, .stat-row,
-    .form-row, .pricing-grid,
-    .families-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1px !important;
-    }
-
-    /* BOTTOM GRID 3 COL */
-    .bottom-grid {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 12px !important;
-    }
-
-    /* PADDING */
-    .manifesto, .story-section, .nfe-section,
-    .promise-section, .features, .how-section,
-    .tiers-section, .pot-section, .credits-section,
-    .contrib-section, .contact-section, .faq-section,
-    .bottom-cta, .quote-section, .pricing-section,
-    .compare-section, .pot-mini, .trust-section,
-    .families-section, .featured-section,
-    .community-section, .coming-section,
-    .contribute-section, .cta-section,
-    .products-section, .join-section,
-    .telegram-section, .ungurued-strip {
-      padding: 40px 20px !important;
-    }
-
-    /* TYPOGRAPHY */
-    .big-statement, .manifesto-title, .story-title,
-    .about-title, .features-title, .pricing-title,
-    .contrib-title, .credits-title, .pot-title,
-    .ungurued-title, .tg-title, .cta-title,
-    .join-title, .promise-title {
-      font-size: clamp(32px, 9vw, 52px) !important;
-      line-height: 0.95 !important;
-    }
-
-    /* COMPARISON TABLE */
-    .compare-table { font-size: 9px; }
-    .compare-table td, .compare-table th { padding: 8px 6px; }
-
-    /* FOOTER */
-    footer {
-      padding: 24px 20px !important;
-      flex-direction: column !important;
-      gap: 16px !important;
-      text-align: center !important;
-    }
-
-    .footer-links {
-      flex-wrap: wrap !important;
-      justify-content: center !important;
-      gap: 12px !important;
-    }
-
-    .footer-right { justify-content: center !important; }
-
-    /* BUTTONS */
-    .btn-primary, .btn-secondary, .tg-btn,
-    .price-btn, .tier-btn, .form-submit,
-    .checkout-btn, .config-save, .save-btn {
-      width: 100% !important;
-      text-align: center !important;
-    }
-
-    /* PROFILE HERO */
-    .profile-hero {
-      grid-template-columns: 1fr !important;
-      gap: 20px !important;
-    }
-
-    .profile-stats {
-      flex-wrap: wrap !important;
-      gap: 16px !important;
-    }
-
-    /* PAGE TABS */
-    .page-tabs { overflow-x: auto; }
-    .page-tab { font-size: 9px; padding: 10px 12px; white-space: nowrap; }
-
-    /* FILTER BAR */
-    .filter-bar { flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
-    .sort-select { width: 100%; margin-left: 0 !important; }
-
-    /* MODAL */
-    .modal { grid-template-columns: 1fr !important; }
-    .modal-left { display: none; }
-
-    /* HERO DISCLAIMER */
-    .hero-disclaimer { font-size: 9px; }
-
-    /* TICKER - hide on mobile */
-    .ticker-wrap { display: none; }
-
-    /* SIGNAL CARD */
-    .sc-body { grid-template-columns: 1fr 1fr !important; }
-
-    /* OVERVIEW GRID 4 col */
-    .overview-grid { grid-template-columns: 1fr 1fr !important; }
-  }
-
-  @media (max-width: 480px) {
-    .hero-title, .about-title {
-      font-size: clamp(40px, 11vw, 60px) !important;
-    }
-    nav { padding: 0 16px; }
-  }
-
-  .mobile-menu-btn { display: none; }
-  .mobile-nav { display: none; }
-
 </style>
 </head>
 <body>
-
 <nav>
   <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
   <ul class="nav-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
+    <li><a href="index.html">Home</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="knowledge.html" class="active">Knowledge</a></li>
     <li><a href="systems.html">Systems</a></li>
@@ -581,481 +212,213 @@
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <a href="login.html" class="nav-cta">JOIN THE CORE →</a>
+  <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">HOME</a>
+  <a href="about.html">ABOUT</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a>
+  <a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="login.html" style="color:var(--green)">JOIN THE CORE →</a>
+</div>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-tag">// EDUCATION HUB</div>
   <h1 class="hero-title">LEARN THE<br><span class="green">REAL STUFF.</span></h1>
-  <p class="hero-sub">
-    No fluff. No filler. No recycled YouTube content dressed up as a premium course.
-    <strong>Just the fundamentals that actually matter</strong> — explained clearly for beginners,
-    with enough depth to keep experienced traders thinking.
-  </p>
+  <p class="hero-sub">No fluff. No filler. No recycled YouTube content. <strong>Just the fundamentals that actually matter</strong> — explained clearly for beginners, with enough depth for experienced traders.</p>
 </section>
 
-<!-- FILTER BAR -->
-<div class="filter-bar">
-  <span class="filter-label">// FILTER:</span>
-  <button class="filter-btn active" onclick="filterTopics('all', this)">ALL</button>
-  <button class="filter-btn" onclick="filterTopics('psychology', this)">PSYCHOLOGY</button>
-  <button class="filter-btn" onclick="filterTopics('markets', this)">MARKETS</button>
-  <button class="filter-btn" onclick="filterTopics('systems', this)">SYSTEMS</button>
-  <button class="filter-btn" onclick="filterTopics('risk', this)">RISK</button>
-  <button class="filter-btn" onclick="filterTopics('signals', this)">SIGNALS</button>
-  <button class="filter-btn" onclick="filterTopics('brokers', this)">BROKERS</button>
-  <input class="search-input" type="text" placeholder="// search topics..." oninput="searchTopics(this.value)" />
+<div class="free-banner">
+  <span class="fb-badge">// FREE ACCESS</span>
+  <span class="fb-text">5 free lessons — <span>one per topic</span> — no account needed. Real content, no strings attached.</span>
+  <a href="login.html" class="fb-cta">START FREE →</a>
 </div>
 
-<!-- FEATURED -->
-<section class="featured-section reveal">
-  <div class="section-tag">FEATURED TOPICS</div>
-  <div class="featured-grid">
-    <div class="featured-main" onclick="toggleExpand('psychology-expand')">
-      <div class="topic-cat cat-psychology">PSYCHOLOGY</div>
-      <div class="topic-title">WHY 90% OF TRADERS LOSE — AND IT'S NOT THE STRATEGY</div>
-      <div class="topic-desc">Most traders have a decent strategy. They lose anyway. The reason is almost never the entry — it's what happens after. Fear, greed, revenge trading, moving stop losses "just this once." Understanding the psychology of trading is the edge most people never develop.</div>
-      <div class="topic-meta">
-        <div class="topic-level">
-          <div class="level-dots">
-            <div class="level-dot filled"></div>
-            <div class="level-dot filled"></div>
-            <div class="level-dot"></div>
-          </div>
-          BEGINNER — INTERMEDIATE
-        </div>
-        <div class="topic-read">12 MIN READ</div>
-        <div class="topic-arrow">→</div>
-      </div>
-    </div>
-    <div class="featured-sub">
-      <div class="featured-small" onclick="toggleExpand('risk-expand')">
-        <div class="topic-cat cat-risk">RISK MANAGEMENT</div>
-        <div class="topic-title">THE R MULTIPLE — YOUR MOST IMPORTANT NUMBER</div>
-        <div class="topic-desc">One concept that separates profitable traders from everyone else.</div>
-        <div class="topic-meta">
-          <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot"></div><div class="level-dot"></div></div>BEGINNER</div>
-          <div class="topic-read">7 MIN</div>
-          <div class="topic-arrow">→</div>
-        </div>
-      </div>
-      <div class="featured-small" onclick="toggleExpand('systems-expand')">
-        <div class="topic-cat cat-systems">SYSTEMS</div>
-        <div class="topic-title">WHAT A TRADING BOT ACTUALLY DOES (AND WHAT IT CAN'T)</div>
-        <div class="topic-desc">Bots aren't magic. Here's exactly what they do, when they help, and when they don't.</div>
-        <div class="topic-meta">
-          <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot filled"></div><div class="level-dot"></div></div>BEGINNER — INTERMEDIATE</div>
-          <div class="topic-read">9 MIN</div>
-          <div class="topic-arrow">→</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TOPIC GRID -->
 <section class="topics-section reveal">
-  <div class="section-tag">ALL TOPICS</div>
-  <div class="topics-grid" id="topicsGrid">
+  <div class="section-tag">ALL TOPICS — 5 FREE LESSONS · REST CORE</div>
+  <div class="topics-grid">
 
-    <!-- PSYCHOLOGY -->
-    <div class="topic-card" data-cat="psychology" onclick="toggleExpand('psych-expand')">
-      <div class="topic-num">01</div>
-      <div class="topic-cat cat-psychology">PSYCHOLOGY</div>
-      <div class="topic-title">TRADING PSYCHOLOGY</div>
-      <div class="topic-desc">Why smart people make stupid trading decisions — and how to build a mindset that actually executes your plan when it matters most.</div>
-      <div class="topic-tags"><span class="topic-tag">DISCIPLINE</span><span class="topic-tag">EMOTIONS</span><span class="topic-tag">MINDSET</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot filled"></div><div class="level-dot"></div></div>ALL LEVELS</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card free-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-psychology">PSYCHOLOGY</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-title">TRADING PSYCHOLOGY</div>
+        <div class="tc-desc">Why smart people make stupid trading decisions — and how to build a mindset that actually executes your plan when it matters most.</div>
+        <div class="tc-meta"><span>5 LESSONS</span><span>ALL LEVELS</span><span>~45 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="psych-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-psychology" style="margin-bottom:12px">PSYCHOLOGY</div>
-          <div class="topic-title" style="font-size:28px">TRADING PSYCHOLOGY</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('psych-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">The market doesn't care about your feelings. It never has. Most traders lose not because they have a bad strategy — but because they can't follow it consistently. Fear makes you exit early. Greed makes you hold too long. A string of losses makes you revenge trade. Understanding these patterns is the first real edge.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">Why you override your stop loss<span>The psychology behind "just this once"</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">Fear vs greed — recognising both in real time<span>How market conditions trigger emotional responses</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">Revenge trading — the spiral and how to break it<span>Practical steps to stop digging deeper</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Building a pre-trade routine<span>How professional traders prepare mentally</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">05</span><div class="lesson-title">Using automation to remove emotion from execution<span>How EAs enforce your own rules</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner — Intermediate</span></div>
-            <div class="sidebar-stat">Lessons <span>5</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>45 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">The best strategy in the world is worthless if you can't execute it when your account is down 3 trades in a row. Discipline is a skill — and like every skill, it can be built.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item" onclick="openLesson('psych-1')"><span class="li-num">01</span><div><div class="li-title">Why you override your stop loss</div><div class="li-sub">The psychology behind "just this once"</div></div><span class="li-badge free">FREE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Fear vs greed — recognising both in real time</div><div class="li-sub">How market conditions trigger emotional responses</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Revenge trading — the spiral and how to break it</div><div class="li-sub">Practical steps to stop digging deeper</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Building a pre-trade routine</div><div class="li-sub">How professional traders prepare mentally</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Using automation to remove emotion from execution</div><div class="li-sub">How EAs enforce your own rules</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
-    <!-- MARKET STRUCTURE -->
-    <div class="topic-card" data-cat="markets" onclick="toggleExpand('market-expand')">
-      <div class="topic-num">02</div>
-      <div class="topic-cat cat-markets">MARKETS</div>
-      <div class="topic-title">MARKET STRUCTURE</div>
-      <div class="topic-desc">How price actually moves — sessions, liquidity, key levels. The foundation that everything else is built on. Skip this and nothing else makes sense.</div>
-      <div class="topic-tags"><span class="topic-tag">PRICE ACTION</span><span class="topic-tag">SESSIONS</span><span class="topic-tag">LIQUIDITY</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot"></div><div class="level-dot"></div></div>BEGINNER</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card free-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-markets">MARKETS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-title">MARKET STRUCTURE</div>
+        <div class="tc-desc">How price actually moves — sessions, liquidity, key levels. The foundation everything else is built on. Skip this and nothing else makes sense.</div>
+        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER</span><span>~50 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="market-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-markets" style="margin-bottom:12px">MARKETS</div>
-          <div class="topic-title" style="font-size:28px">MARKET STRUCTURE</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('market-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">Price doesn't move randomly. There are institutional players, session overlaps, and key liquidity zones that drive almost every significant move. Once you see the structure — the highs, lows, sweeps, and rejections — you can't unsee it. This is the foundation.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">What are trading sessions and why they matter<span>London, New York, Asian — when the money moves</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">Understanding support and resistance properly<span>Not lines on a chart — zones of decision</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">Liquidity sweeps — what they are and how to spot them<span>Why price hunts stops before reversing</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Higher timeframe vs lower timeframe bias<span>Reading the bigger picture before zooming in</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">05</span><div class="lesson-title">Gold (XAUUSD) specific market behaviour<span>Why gold moves differently and how to use it</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner</span></div>
-            <div class="sidebar-stat">Lessons <span>5</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>50 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">Price moves to liquidity. Institutions need volume to fill positions — and that volume sits above swing highs and below swing lows. Understanding this changes how you see every chart.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item" onclick="openLesson('market-1')"><span class="li-num">01</span><div><div class="li-title">Trading sessions and why they matter</div><div class="li-sub">London, New York, Asian — when the money moves</div></div><span class="li-badge free">FREE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Support and resistance properly explained</div><div class="li-sub">Not lines on a chart — zones of decision</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Liquidity sweeps — what they are and how to spot them</div><div class="li-sub">Why price hunts stops before reversing</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Higher vs lower timeframe bias</div><div class="li-sub">Reading the bigger picture before zooming in</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Gold (XAUUSD) specific market behaviour</div><div class="li-sub">Why gold moves differently and how to use it</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
-    <!-- RISK MANAGEMENT -->
-    <div class="topic-card" data-cat="risk" onclick="toggleExpand('risk2-expand')">
-      <div class="topic-num">03</div>
-      <div class="topic-cat cat-risk">RISK MANAGEMENT</div>
-      <div class="topic-title">RISK MANAGEMENT</div>
-      <div class="topic-desc">Position sizing, stop losses, take profits, R multiples. The boring stuff that keeps you in the game long enough to get good. Most traders skip this. Don't be most traders.</div>
-      <div class="topic-tags"><span class="topic-tag">POSITION SIZE</span><span class="topic-tag">SL/TP</span><span class="topic-tag">R MULTIPLE</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot"></div><div class="level-dot"></div></div>BEGINNER</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card free-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-risk">RISK MANAGEMENT</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-title">RISK MANAGEMENT</div>
+        <div class="tc-desc">Position sizing, stop losses, R multiples. The boring stuff that keeps you in the game long enough to get good. Most traders skip this. Don't.</div>
+        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER</span><span>~40 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="risk2-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-risk" style="margin-bottom:12px">RISK MANAGEMENT</div>
-          <div class="topic-title" style="font-size:28px">RISK MANAGEMENT</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('risk2-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">You can have a 40% win rate and still be profitable. You can have a 70% win rate and blow your account. It all comes down to how much you risk per trade relative to what you make. The R multiple is the single most important concept in trading — and most beginners have never heard of it.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">What is the R multiple and how to calculate it<span>Risk vs reward in plain English</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">How to size your position correctly<span>Never risk more than you should — the formula</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">Where to actually place your stop loss<span>Not random — structural, logical, defensible</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Partial take profits and breakeven stops<span>How to bank profit without killing your runners</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">05</span><div class="lesson-title">Trailing stop loss strategies<span>Locking in gains as the trade moves in your favour</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner</span></div>
-            <div class="sidebar-stat">Lessons <span>5</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>40 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">Survival is the first goal. You can't learn, improve, or profit if your account is blown. Risk management isn't the boring part — it's the only part that guarantees you're still trading next month.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item" onclick="openLesson('risk-1')"><span class="li-num">01</span><div><div class="li-title">The R multiple — your most important number</div><div class="li-sub">Risk vs reward in plain English</div></div><span class="li-badge free">FREE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">How to size your position correctly</div><div class="li-sub">Never risk more than you should — the formula</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">Where to actually place your stop loss</div><div class="li-sub">Not random — structural, logical, defensible</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Partial take profits and breakeven stops</div><div class="li-sub">Bank profit without killing your runners</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Trailing stop loss strategies</div><div class="li-sub">Locking in gains as the trade moves in your favour</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
-    <!-- TRADING BOTS -->
-    <div class="topic-card" data-cat="systems" onclick="toggleExpand('bots-expand')">
-      <div class="topic-num">04</div>
-      <div class="topic-cat cat-systems">SYSTEMS</div>
-      <div class="topic-title">TRADING BOTS EXPLAINED</div>
-      <div class="topic-desc">What automated trading actually is, how bots execute trades, what they're good at, and where they completely fall apart. No magic — just logic.</div>
-      <div class="topic-tags"><span class="topic-tag">AUTOMATION</span><span class="topic-tag">MT5</span><span class="topic-tag">ALGO TRADING</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot filled"></div><div class="level-dot"></div></div>BEGINNER — INTERMEDIATE</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card free-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-systems">SYSTEMS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-title">TRADING BOTS EXPLAINED</div>
+        <div class="tc-desc">What automated trading actually is, how bots execute trades, what they're good at, and where they fall apart. No magic — just logic.</div>
+        <div class="tc-meta"><span>5 LESSONS</span><span>BEGINNER — INTERMEDIATE</span><span>~55 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="bots-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-systems" style="margin-bottom:12px">SYSTEMS</div>
-          <div class="topic-title" style="font-size:28px">TRADING BOTS EXPLAINED</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('bots-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">A trading bot is just a set of rules that executes automatically. Nothing more, nothing less. It can remove emotion from entries and exits, manage multiple positions simultaneously, and react faster than any human. What it can't do is think, adapt to unexpected news, or replace a solid strategy.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">What is an EA and how does it work on MT5<span>Expert Advisors explained from scratch</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">The difference between signal bots and execution bots<span>What each type does and when to use which</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">How to read bot logic without knowing how to code<span>Understanding what your bot is doing</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Common bot mistakes and how to avoid them<span>The errors that blow accounts on autopilot</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">05</span><div class="lesson-title">Building your first simple EA concept<span>From idea to logic to live — step by step</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner — Intermediate</span></div>
-            <div class="sidebar-stat">Lessons <span>5</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>55 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">Automation doesn't make a bad strategy good. It makes a good strategy consistent. The bot is only as smart as the rules you give it — so understanding those rules is non-negotiable.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item" onclick="openLesson('systems-1')"><span class="li-num">01</span><div><div class="li-title">What is an EA and how does it work on MT5</div><div class="li-sub">Expert Advisors explained from scratch</div></div><span class="li-badge free">FREE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Signal bots vs execution bots</div><div class="li-sub">What each type does and when to use which</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">How to read bot logic without coding</div><div class="li-sub">Understanding what your bot is doing</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Common bot mistakes and how to avoid them</div><div class="li-sub">Errors that blow accounts on autopilot</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">05</span><div><div class="li-title">Building your first simple EA concept</div><div class="li-sub">From idea to logic to live — step by step</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
-    <!-- SIGNALS -->
-    <div class="topic-card" data-cat="signals" onclick="toggleExpand('signals-expand')">
-      <div class="topic-num">05</div>
-      <div class="topic-cat cat-signals">SIGNALS</div>
-      <div class="topic-title">FOLLOWING SIGNALS INTELLIGENTLY</div>
-      <div class="topic-desc">Signals are everywhere. Most are useless. How to evaluate a signal, understand the reasoning behind it, and decide whether it's worth following — or not.</div>
-      <div class="topic-tags"><span class="topic-tag">SIGNAL LOGIC</span><span class="topic-tag">ENTRY/EXIT</span><span class="topic-tag">EVALUATION</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot filled"></div><div class="level-dot"></div></div>BEGINNER — INTERMEDIATE</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card free-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-signals">SIGNALS</span><span class="tc-free-badge">1 FREE LESSON</span></div>
+        <div class="tc-title">FOLLOWING SIGNALS INTELLIGENTLY</div>
+        <div class="tc-desc">Signals are everywhere. Most are useless. How to evaluate one, understand the reasoning, and decide whether it's worth following — or not.</div>
+        <div class="tc-meta"><span>4 LESSONS</span><span>BEGINNER — INTERMEDIATE</span><span>~35 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="signals-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-signals" style="margin-bottom:12px">SIGNALS</div>
-          <div class="topic-title" style="font-size:28px">FOLLOWING SIGNALS INTELLIGENTLY</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('signals-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">A signal without an explanation is just a guess with authority. At RawCore, every signal comes with the why — the market structure, the timeframe bias, the entry logic. This topic teaches you how to read that reasoning and make an informed decision, not just copy a trade blindly.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">What a good signal looks like vs a bad one<span>The red flags that most people miss</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">Reading the reasoning behind a signal<span>Entry logic, bias, session context</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">When NOT to follow a signal<span>Context that invalidates even good setups</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Managing a signal trade yourself vs automating it<span>Pros and cons of both approaches</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner — Intermediate</span></div>
-            <div class="sidebar-stat">Lessons <span>4</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>35 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">Following signals without understanding them creates dependency. The goal is to eventually understand the logic well enough that you could have spotted the setup yourself.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item" onclick="openLesson('signals-1')"><span class="li-num">01</span><div><div class="li-title">What a good signal looks like vs a bad one</div><div class="li-sub">The red flags that most people miss</div></div><span class="li-badge free">FREE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Reading the reasoning behind a signal</div><div class="li-sub">Entry logic, bias, session context</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">When NOT to follow a signal</div><div class="li-sub">Context that invalidates even good setups</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Managing a signal trade vs automating it</div><div class="li-sub">Pros and cons of both approaches</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
-    <!-- BROKERS -->
-    <div class="topic-card" data-cat="brokers" onclick="toggleExpand('brokers-expand')">
-      <div class="topic-num">06</div>
-      <div class="topic-cat cat-brokers">BROKERS</div>
-      <div class="topic-title">CHOOSING THE RIGHT BROKER</div>
-      <div class="topic-desc">Spreads, execution, regulation, leverage, and the quirks that will break your bot if you don't know about them. The broker you pick matters more than most people realise.</div>
-      <div class="topic-tags"><span class="topic-tag">SPREADS</span><span class="topic-tag">EXECUTION</span><span class="topic-tag">REGULATION</span></div>
-      <div class="topic-meta">
-        <div class="topic-level"><div class="level-dots"><div class="level-dot filled"></div><div class="level-dot"></div><div class="level-dot"></div></div>BEGINNER</div>
-        <div class="topic-arrow">→</div>
+    <div class="topic-card core-topic">
+      <div class="tc-header">
+        <div class="tc-badges"><span class="tc-cat cat-brokers">BROKERS</span><span class="tc-core-badge">CORE ONLY</span></div>
+        <div class="tc-title">CHOOSING THE RIGHT BROKER</div>
+        <div class="tc-desc">Spreads, execution, regulation, and the quirks that will break your bot if you don't know about them. The broker you pick matters more than most realise.</div>
+        <div class="tc-meta"><span>4 LESSONS</span><span>BEGINNER</span><span>~30 MIN</span></div>
       </div>
-    </div>
-    <div class="topic-expanded" id="brokers-expand">
-      <div class="expanded-header">
-        <div>
-          <div class="topic-cat cat-brokers" style="margin-bottom:12px">BROKERS</div>
-          <div class="topic-title" style="font-size:28px">CHOOSING THE RIGHT BROKER</div>
-        </div>
-        <button class="expanded-close" onclick="closeExpand('brokers-expand')">✕</button>
-      </div>
-      <div class="expanded-body">
-        <div class="expanded-content">
-          <p class="expanded-intro">Your broker is your infrastructure. Bad infrastructure means slippage, requotes, unexpected execution behaviour, and in the worst case — a broker that doesn't pay out. Choosing correctly from the start saves a lot of pain later, especially if you're running automated systems.</p>
-          <div class="lesson-list">
-            <div class="lesson-item"><span class="lesson-num">01</span><div class="lesson-title">What to look for in a broker — the non-negotiables<span>Regulation, segregated funds, execution type</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">02</span><div class="lesson-title">Understanding spreads and how they affect your trades<span>Why a low spread broker isn't always better</span></div><span class="lesson-status free">FREE</span></div>
-            <div class="lesson-item"><span class="lesson-num">03</span><div class="lesson-title">MT5 broker quirks that break automated bots<span>Order filling modes, pip sizes, symbol names</span></div><span class="lesson-status core">CORE</span></div>
-            <div class="lesson-item"><span class="lesson-num">04</span><div class="lesson-title">Our recommended brokers — gold, forex, crypto<span>Honest breakdown with no hidden affiliate agenda</span></div><span class="lesson-status core">CORE</span></div>
-          </div>
-        </div>
-        <div class="expanded-sidebar">
-          <div class="sidebar-box">
-            <div class="sidebar-label">// TOPIC INFO</div>
-            <div class="sidebar-stat">Level <span>Beginner</span></div>
-            <div class="sidebar-stat">Lessons <span>4</span></div>
-            <div class="sidebar-stat">Free lessons <span>2</span></div>
-            <div class="sidebar-stat">Est. read time <span>30 min total</span></div>
-          </div>
-          <div class="sidebar-box">
-            <div class="sidebar-label">// KEY TAKEAWAY</div>
-            <p style="font-size:12px;color:var(--text-dim);line-height:1.65">A strategy that works on one broker can fail completely on another due to execution differences. Always test on a demo with your actual broker before going live.</p>
-          </div>
-        </div>
+      <div class="tc-lessons">
+        <div class="lesson-item locked" onclick="openLocked()"><span class="li-num">01</span><div><div class="li-title">What to look for in a broker — the non-negotiables</div><div class="li-sub">Regulation, segregated funds, execution type</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">02</span><div><div class="li-title">Understanding spreads and how they affect trades</div><div class="li-sub">Why low spread doesn't always mean better</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">03</span><div><div class="li-title">MT5 broker quirks that break automated bots</div><div class="li-sub">Order filling modes, pip sizes, symbol names</div></div><span class="li-badge core">CORE</span></div>
+        <div class="lesson-item locked"><span class="li-num">04</span><div><div class="li-title">Our recommended brokers — gold, forex, crypto</div><div class="li-sub">Honest breakdown with full transparency</div></div><span class="li-badge core">CORE</span></div>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- BEGINNER PATH -->
 <section class="path-section reveal">
   <div class="section-tag">NEW TO TRADING? START HERE</div>
   <div class="path-grid">
-    <div class="path-card">
-      <div class="path-step">// STEP 01</div>
-      <div class="path-icon">◎</div>
-      <div class="path-title">MARKET BASICS</div>
-      <div class="path-sub">What trading is, how markets work, what moves price</div>
-    </div>
-    <div class="path-card">
-      <div class="path-step">// STEP 02</div>
-      <div class="path-icon">⬡</div>
-      <div class="path-title">RISK FIRST</div>
-      <div class="path-sub">Learn risk management before your first live trade</div>
-    </div>
-    <div class="path-card">
-      <div class="path-step">// STEP 03</div>
-      <div class="path-icon">◈</div>
-      <div class="path-title">READ STRUCTURE</div>
-      <div class="path-sub">Sessions, key levels, liquidity — the real foundation</div>
-    </div>
-    <div class="path-card">
-      <div class="path-step">// STEP 04</div>
-      <div class="path-icon">▲</div>
-      <div class="path-title">PSYCHOLOGY</div>
-      <div class="path-sub">Build the mindset before the strategy matters</div>
-    </div>
-    <div class="path-card">
-      <div class="path-step">// STEP 05</div>
-      <div class="path-icon">&lt;/&gt;</div>
-      <div class="path-title">BUILD SYSTEMS</div>
-      <div class="path-sub">Automate your discipline with bots and EAs</div>
-    </div>
+    <div class="path-card" onclick="openLesson('risk-1')"><div class="path-step">// STEP 01</div><div class="path-icon">⬡</div><div class="path-title">RISK FIRST</div><div class="path-sub">Learn risk before your first live trade</div></div>
+    <div class="path-card" onclick="openLesson('market-1')"><div class="path-step">// STEP 02</div><div class="path-icon">◈</div><div class="path-title">MARKET BASICS</div><div class="path-sub">Sessions, levels, liquidity — the foundation</div></div>
+    <div class="path-card" onclick="openLesson('psych-1')"><div class="path-step">// STEP 03</div><div class="path-icon">◎</div><div class="path-title">PSYCHOLOGY</div><div class="path-sub">Build the mindset before strategy matters</div></div>
+    <div class="path-card" onclick="openLesson('signals-1')"><div class="path-step">// STEP 04</div><div class="path-icon">▲</div><div class="path-title">READ SIGNALS</div><div class="path-sub">Evaluate setups intelligently</div></div>
+    <div class="path-card" onclick="openLesson('systems-1')"><div class="path-step">// STEP 05</div><div class="path-icon">&lt;/&gt;</div><div class="path-title">BUILD SYSTEMS</div><div class="path-sub">Automate your discipline with bots</div></div>
   </div>
 </section>
 
-<!-- JOIN CTA -->
-<section class="join-section reveal">
-  <div class="join-tag">// WANT THE FULL CURRICULUM?</div>
-  <h2 class="join-title">FREE TIER GETS YOU<br><span class="green">STARTED.</span></h2>
-  <p class="join-sub">Two free lessons per topic, the full beginner path, and public Telegram access — no credit card needed. Upgrade to Core when you're ready for everything.</p>
-  <div class="join-btns">
-    <a href="pricing.html" class="btn-primary">JOIN FREE →</a>
+<section class="cta-section reveal">
+  <div class="cta-tag">// WANT THE FULL CURRICULUM?</div>
+  <h2 class="cta-title">FREE GETS YOU<br><span class="green">STARTED.</span></h2>
+  <p class="cta-sub">// 5 free lessons — one per topic — no card needed.<br>// Upgrade to Core when you're ready for everything.</p>
+  <div class="cta-btns">
+    <a href="login.html" class="btn-primary">JOIN FREE NOW →</a>
     <a href="community.html" class="btn-secondary">SEE WHAT'S INCLUDED</a>
   </div>
 </section>
 
 <footer>
-  <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="footer-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-  <span>© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</span>
+  <div class="footer-top">
+    <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
+    <ul class="footer-links">
+      <li><a href="index.html">HOME</a></li><li><a href="about.html">ABOUT</a></li><li><a href="knowledge.html">KNOWLEDGE</a></li>
+      <li><a href="systems.html">SYSTEMS</a></li><li><a href="community.html">COMMUNITY</a></li>
+      <li><a href="pricing.html">PRICING</a></li><li><a href="contact.html">CONTACT</a></li>
+    </ul>
+    <div class="footer-social">
+      <a href="https://t.me/rawcoretrading" target="_blank" class="social-icon">TG</a>
+      <a href="https://youtube.com/@rawcoretrading" target="_blank" class="social-icon">YT</a>
+      <a href="https://x.com/rawcoretrading" target="_blank" class="social-icon">X</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</span>
+    <div class="footer-legal"><a href="terms.html">TERMS OF SERVICE</a><a href="privacy.html">PRIVACY POLICY</a></div>
+  </div>
 </footer>
 
+<div class="lesson-modal" id="lessonModal">
+  <div class="lesson-box" id="lessonBox"></div>
+</div>
+
 <script>
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+const lessons={
+'psych-1':{cat:'PSYCHOLOGY',catClass:'cat-psychology',title:'WHY YOU OVERRIDE YOUR STOP LOSS',sub:'The psychology behind "just this once"',read:'8 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE MOST EXPENSIVE WORDS IN TRADING</div><p class="lm-text">You set a stop loss before the trade. You had a plan. Then price gets close to it and something happens — a voice says <strong>"it'll come back."</strong> So you move the stop. Or you watch, frozen, hoping.</p><p class="lm-text">This isn't weakness. It's human biology working against you. The pain of a realised loss is psychologically more intense than the comfort of avoiding it temporarily. Your brain is literally wired to make you do this.</p><div class="lm-callout"><span class="label">// THE SCIENCE</span>Loss aversion is one of the most well-documented findings in behavioural economics. A €100 loss produces roughly twice the psychological pain of a €100 gain produces pleasure. This is why automation exists — to override the human response when it counts most.</div><div class="lm-section-title">THE THREE REASONS IT HAPPENS</div><p class="lm-text"><strong>1. Hope bias.</strong> You believe the trade will recover because you want it to. The market doesn't care about your position.</p><p class="lm-text"><strong>2. Ego protection.</strong> Closing a losing trade makes the loss real. As long as it's open, you haven't "failed" yet. A loss at -2R that becomes -5R because you held is a much bigger failure.</p><p class="lm-text"><strong>3. Recency bias.</strong> If the last time you held through a loss it came back, you learned the wrong lesson.</p><div class="lm-section-title">HOW TO FIX IT</div><ul class="lm-list"><li><strong>Automate it.</strong> A stop loss in your broker or EA that executes without your input removes the decision entirely.</li><li><strong>Pre-commit in writing.</strong> Before every trade, write down your stop level and the rule: "I will not move this stop."</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Your stop loss is not a suggestion. It is the price at which your trade idea is proven wrong. Moving it doesn't protect you — it turns a controlled loss into an uncontrolled one.</div>`},
+'market-1':{cat:'MARKETS',catClass:'cat-markets',title:'TRADING SESSIONS AND WHY THEY MATTER',sub:'London, New York, Asian — when the money moves',read:'7 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE MARKET NEVER SLEEPS BUT IT DOES WAKE UP</div><p class="lm-text">The forex and gold markets trade 24/5. But not all hours are equal. <strong>Volume, volatility, and opportunity are concentrated in specific windows</strong> — understanding those windows is one of the fastest ways to improve your results.</p><div class="lm-section-title">THE THREE SESSIONS</div><p class="lm-text"><strong>Asian Session (00:00–09:00 UTC)</strong> — Generally the quietest. Lower volume, tighter ranges. Gold tends to consolidate. Good for planning, not usually for trading.</p><p class="lm-text"><strong>London Session (08:00–17:00 UTC)</strong> — Where the real action starts. London is the largest forex trading centre in the world. Volume spikes at the open, spreads tighten, and price often makes its first major directional move. For gold traders this is critical.</p><p class="lm-text"><strong>New York Session (13:00–22:00 UTC)</strong> — The second major session. Overlaps with London 13:00–17:00 — this overlap is the highest volume period of the entire day.</p><div class="lm-callout"><span class="label">// THE OVERLAP — WHERE THE MONEY IS</span>13:00–17:00 UTC is the London-New York overlap. Both major financial centres active simultaneously. Highest liquidity, most reliable price movements. Most professional traders focus heavily on this window.</div><div class="lm-section-title">WHAT THIS MEANS FOR YOU</div><ul class="lm-list"><li>Trading Asian hours increases exposure to false breakouts and choppy price action</li><li>The London open (08:00 UTC) often creates the first major setup of the day</li><li>OMEGA GS has session filters built in — this is exactly why</li><li>Economic news during NY can create extreme volatility — know the calendar</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Not all hours are worth trading. Focusing on London and the London-NY overlap immediately filters out most low-quality setups — even if your strategy stays the same.</div>`},
+'risk-1':{cat:'RISK MANAGEMENT',catClass:'cat-risk',title:'THE R MULTIPLE — YOUR MOST IMPORTANT NUMBER',sub:'Risk vs reward in plain English',read:'7 MIN READ · BEGINNER',content:`<div class="lm-section-title">THE NUMBER MOST TRADERS NEVER CALCULATE</div><p class="lm-text">Most new traders think in currency — "I made €200" or "I lost €80." This is the wrong way to think about it. <strong>The R multiple changes everything.</strong></p><p class="lm-text">R stands for Risk. Specifically, the amount you risked on a trade. If you risked €50 and made €100, your result was +2R. If you risked €50 and lost €50, it was -1R.</p><div class="lm-callout"><span class="label">// THE FORMULA</span>R = Amount risked per trade (distance from entry to stop × position size)<br><br>Result in R = Profit or Loss ÷ R<br><br>Example: Risked €40, made €80 → Result = +2R</div><div class="lm-section-title">WHY THIS CHANGES EVERYTHING</div><p class="lm-text">Once you think in R, a powerful truth emerges: <strong>you don't need a high win rate to be profitable.</strong></p><ul class="lm-list"><li>40% win rate with 2R average win = profitable</li><li>70% win rate with 0.5R average win = barely breaking even</li><li>The ratio between your average win and loss matters far more than how often you win</li></ul><div class="lm-section-title">PRACTICALLY</div><p class="lm-text">Before every trade, calculate your R. If your stop is 40 pips from entry and target is 60 pips, your R multiple is 1.5R. If it's less than 1R — risking more than you could make — <strong>the trade fails the most basic test before it opens.</strong></p><p class="lm-text">OMEGA GS targets a minimum of 1.5R per trade. The 4-leg take profit structure is built around this principle.</p><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Before any trade, ask: what is my R on this? If you can't answer instantly, you're not ready to take it. R is not optional — it is the foundation of every profitable system.</div>`},
+'systems-1':{cat:'SYSTEMS',catClass:'cat-systems',title:'WHAT IS AN EA AND HOW DOES IT WORK ON MT5',sub:'Expert Advisors explained from scratch',read:'9 MIN READ · BEGINNER',content:`<div class="lm-section-title">TAKING THE HUMAN OUT OF THE EQUATION</div><p class="lm-text">An Expert Advisor (EA) is a program that runs on MetaTrader 5 and executes trades automatically based on rules you define. No clicking. No watching charts at 3am. No emotional decisions. <strong>Just rules, executed precisely, every time.</strong></p><div class="lm-section-title">HOW AN EA ACTUALLY WORKS</div><p class="lm-text">At its core, an EA is just a series of if/then statements:</p><div class="lm-callout"><span class="label">// SIMPLIFIED EA LOGIC</span>IF EMA9 crosses above EMA21<br>AND ATR is above minimum threshold<br>AND current time is within London or NY session<br>THEN open a BUY trade<br>WITH stop loss at structure low<br>AND take profit at 1.5R</div><p class="lm-text">The EA checks these conditions on every new candle. When all true, it acts. When they're not, it waits. No second-guessing. No "maybe one more check."</p><div class="lm-section-title">WHAT EAs ARE GOOD AT</div><ul class="lm-list"><li><strong>Consistency</strong> — same rules every time, no emotional deviation</li><li><strong>Speed</strong> — reacts faster than any human</li><li><strong>Discipline</strong> — never skips a valid setup because it "doesn't feel right"</li><li><strong>Risk management</strong> — calculates position size and places SL/TP automatically</li></ul><div class="lm-section-title">WHAT EAs CANNOT DO</div><ul class="lm-list"><li>Think or adapt — only knows what you told it</li><li>Replace a bad strategy — automation makes a good strategy consistent, a bad strategy consistently loses</li><li>Guarantee profit — past performance does not guarantee future results</li></ul><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>An EA is a tool, not a magic box. The strategy inside it is everything. Understanding what your EA does — and why — is the difference between using it intelligently and hoping for the best.</div>`},
+'signals-1':{cat:'SIGNALS',catClass:'cat-signals',title:'WHAT A GOOD SIGNAL LOOKS LIKE VS A BAD ONE',sub:'The red flags that most people miss',read:'8 MIN READ · BEGINNER',content:`<div class="lm-section-title">MOST SIGNALS ARE NOISE</div><p class="lm-text">Open any trading Telegram group and you'll see signals constantly. "BUY GOLD NOW 🚀🔥" with an entry and zero explanation. <strong>This is not a signal. This is a guess with formatting.</strong></p><p class="lm-text">A real signal is a documented trade idea with a clear reason behind every number. If you can't explain why the entry is here and the stop is there, it's speculation.</p><div class="lm-section-title">RED FLAGS — BAD SIGNAL</div><ul class="lm-list"><li><strong>No stop loss</strong> — not defining risk upfront is gambling</li><li><strong>No explanation</strong> — "BUY NOW" with no reasoning is a guess you can't evaluate</li><li><strong>Only showing winners</strong> — every channel has losses, if you never see them they're hiding them</li><li><strong>Pressure to act fast</strong> — "ENTER NOW or miss it!" is manipulation, not analysis</li><li><strong>No context</strong> — what session? What's the higher timeframe bias? What invalidates the setup?</li></ul><div class="lm-section-title">WHAT A GOOD SIGNAL INCLUDES</div><div class="lm-callout"><span class="label">// RAWCORE SIGNAL FORMAT</span>Direction: LONG · Asset: XAUUSD · Timeframe: 5M<br>Entry: 2,339.40 · SL: 2,335.80 (structural low)<br>TP1: 2,344.80 (+1.5R) · TP2: 2,349.20 (+2.8R)<br><br>WHY: Liquidity sweep confirmed below 2338. EMA9×EMA21 cross on 5M. ATR elevated. London session bias bullish.</div><p class="lm-text">Notice what's included: entry, stop, targets, R multiple, and <strong>the reason</strong>. You can evaluate this. You can learn from it whether it wins or loses.</p><div class="lm-callout warn"><span class="label">// KEY TAKEAWAY</span>Never follow a signal you don't understand. If you can't explain the entry reason in one sentence, don't take the trade. Understanding protects you — blind following exposes you.</div>`}
+};
 
-function toggleExpand(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('open');
-  document.querySelectorAll('.topic-expanded').forEach(e => e.classList.remove('open'));
-  if (!isOpen) {
-    el.classList.add('open');
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
-  }
+function openLesson(id){
+  const l=lessons[id];if(!l)return;
+  document.getElementById('lessonBox').innerHTML=`<div class="lm-header"><div class="lm-header-left"><div class="lm-cat ${l.catClass}">${l.cat}</div><div class="lm-title">${l.title}</div><div class="lm-meta"><span>${l.read}</span><span style="color:var(--green)">FREE LESSON</span></div></div><button class="lm-close" onclick="closeLesson()">✕</button></div><div class="lm-body">${l.content}</div><div class="lm-footer"><span class="lm-footer-note">// Want all lessons in every topic? Join Core.</span><a href="login.html" class="lm-upgrade">UNLOCK ALL LESSONS →</a></div>`;
+  document.getElementById('lessonModal').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('lessonBox').scrollTop=0;
 }
 
-function closeExpand(id) {
-  document.getElementById(id).classList.remove('open');
+function openLocked(){
+  document.getElementById('lessonBox').innerHTML=`<div class="lm-header"><div><div class="lm-cat cat-brokers">BROKERS</div><div class="lm-title">CORE MEMBERS ONLY</div></div><button class="lm-close" onclick="closeLesson()">✕</button></div><div class="lm-body"><div class="locked-overlay"><div class="lo-icon">🔒</div><div class="lo-title">CORE CONTENT</div><div class="lo-sub">The full Brokers topic is available to Core members only.<br>Join free to access 5 free lessons across other topics, or go Core for everything.</div><a href="login.html" class="lo-btn">JOIN FREE OR CORE →</a></div></div>`;
+  document.getElementById('lessonModal').classList.add('open');
+  document.body.style.overflow='hidden';
 }
 
-function filterTopics(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.topic-card').forEach(card => {
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-      const expandId = card.getAttribute('onclick').match(/'([^']+)'/)[1];
-      const expandEl = document.getElementById(expandId);
-      if (expandEl) expandEl.classList.remove('open');
-    }
-  });
+function closeLesson(){
+  document.getElementById('lessonModal').classList.remove('open');
+  document.body.style.overflow='';
 }
 
-function searchTopics(val) {
-  const q = val.toLowerCase();
-  document.querySelectorAll('.topic-card').forEach(card => {
-    const text = card.textContent.toLowerCase();
-    card.style.display = text.includes(q) ? 'block' : 'none';
-  });
-}
+document.getElementById('lessonModal').addEventListener('click',function(e){if(e.target===this)closeLesson();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLesson();});
 
-function toggleMobileMenu() {
-  const nav = document.getElementById('mobileNav');
-  nav.classList.toggle('open');
-}
-document.querySelectorAll('.mobile-nav a').forEach(a => {
-  a.addEventListener('click', () => {
-    document.getElementById('mobileNav').classList.remove('open');
-  });
-});
+function toggleMobileMenu(){document.getElementById('mobileNav').classList.toggle('open');}
+document.querySelectorAll('.mobile-nav a').forEach(a=>{a.addEventListener('click',()=>document.getElementById('mobileNav').classList.remove('open'));});
 
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 </script>
 </body>
 </html>
