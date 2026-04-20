@@ -505,7 +505,7 @@
   <div class="topics-sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">LEARN</div>
-      <div class="sidebar-sub">// 6 TOPICS · 28 LESSONS · 14 TASKS</div>
+      <div class="sidebar-sub">// 6 TOPICS · 20 LESSONS</div>
     </div>
 
     <div class="streak-bar">
@@ -525,76 +525,96 @@
       </div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item active" onclick="openTopic('psychology')">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--purple)">◎</span>
-          <span class="ti-name">Psychology</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--green)">80%</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:80%;background:var(--purple)"></div></div>
-        <div class="ti-meta"><span>4/5 lessons</span><span>2 tasks done</span></div>
+    <!-- PSYCHOLOGY -->
+    <div id="topic-psychology" class="topic-item" onclick="openTopic('psychology')">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--purple)">◎</span>
+        <span class="ti-name">Psychology</span>
+        <span class="ti-pct" id="pct-psychology" style="font-family:var(--mono);font-size:9px;color:var(--purple)">0%</span>
       </div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-psychology" style="width:0%;background:var(--purple)"></div></div>
+      <div class="ti-meta"><span id="done-psychology">0/5 lessons</span><span id="tasks-psychology">0 tasks</span></div>
+    </div>
+    <div id="list-psychology" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-psych-1" onclick="openLesson('psych-1')"><span class="ll-num">01</span><span class="ll-title">The dopamine trap</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-psych-2" onclick="openLesson('psych-2')"><span class="ll-num">02</span><span class="ll-title">When to trade and when to walk away</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-psych-3" onclick="openLesson('psych-3')"><span class="ll-num">03</span><span class="ll-title">Volatility is not your friend</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-psych-4" onclick="openLesson('psych-4')"><span class="ll-num">04</span><span class="ll-title">Building a system you can follow</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-psych-5" onclick="openLesson('psych-5')"><span class="ll-num">05</span><span class="ll-title">The independence goal</span><span class="ll-badge core">CORE</span></div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item" onclick="openTopic('markets')">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--blue)">⬡</span>
-          <span class="ti-name">Market Structure</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--blue)">60%</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:60%;background:var(--blue)"></div></div>
-        <div class="ti-meta"><span>3/5 lessons</span><span>1 task done</span></div>
+    <!-- MARKET STRUCTURE -->
+    <div id="topic-markets" class="topic-item" onclick="openTopic('markets')">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--blue)">⬡</span>
+        <span class="ti-name">Market Structure</span>
+        <span class="ti-pct" id="pct-markets" style="font-family:var(--mono);font-size:9px;color:var(--blue)">0%</span>
       </div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-markets" style="width:0%;background:var(--blue)"></div></div>
+      <div class="ti-meta"><span id="done-markets">0/5 lessons</span><span id="tasks-markets">0 tasks</span></div>
+    </div>
+    <div id="list-markets" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-market-1" onclick="openLesson('market-1')"><span class="ll-num">01</span><span class="ll-title">Trading sessions</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-market-2" onclick="openLesson('market-2')"><span class="ll-num">02</span><span class="ll-title">Fair value gaps</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-market-3" onclick="openLesson('market-3')"><span class="ll-num">03</span><span class="ll-title">Demand and supply zones</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-market-4" onclick="openLesson('market-4')"><span class="ll-num">04</span><span class="ll-title">Liquidity sweeps</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-market-5" onclick="openLesson('market-5')"><span class="ll-num">05</span><span class="ll-title">Gold — XAUUSD behaviour</span><span class="ll-badge core">CORE</span></div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item" onclick="openTopic('risk')">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--red)">▲</span>
-          <span class="ti-name">Risk Management</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--amber)">40%</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:40%;background:var(--red)"></div></div>
-        <div class="ti-meta"><span>2/5 lessons</span><span>1 task done</span></div>
+    <!-- RISK MANAGEMENT -->
+    <div id="topic-risk" class="topic-item" onclick="openTopic('risk')">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--red)">▲</span>
+        <span class="ti-name">Risk Management</span>
+        <span class="ti-pct" id="pct-risk" style="font-family:var(--mono);font-size:9px;color:var(--red)">0%</span>
       </div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-risk" style="width:0%;background:var(--red)"></div></div>
+      <div class="ti-meta"><span id="done-risk">0/5 lessons</span><span id="tasks-risk">0 tasks</span></div>
+    </div>
+    <div id="list-risk" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-risk-1" onclick="openLesson('risk-1')"><span class="ll-num">01</span><span class="ll-title">The R multiple</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-risk-2" onclick="openLesson('risk-2')"><span class="ll-num">02</span><span class="ll-title">Position sizing</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-risk-3" onclick="openLesson('risk-3')"><span class="ll-num">03</span><span class="ll-title">Stop loss placement</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-risk-4" onclick="openLesson('risk-4')"><span class="ll-num">04</span><span class="ll-title">Taking profits</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-risk-5" onclick="openLesson('risk-5')"><span class="ll-num">05</span><span class="ll-title">Daily limits</span><span class="ll-badge core">CORE</span></div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item" onclick="openTopic('bots')">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--green)">&lt;/&gt;</span>
-          <span class="ti-name">Trading Bots</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--green)">100%</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:100%;background:var(--green)"></div></div>
-        <div class="ti-meta"><span>5/5 lessons</span><span>✓ Complete</span></div>
+    <!-- TRADING BOTS -->
+    <div id="topic-systems" class="topic-item" onclick="openTopic('systems')">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--green)">&lt;/&gt;</span>
+        <span class="ti-name">Trading Bots</span>
+        <span class="ti-pct" id="pct-systems" style="font-family:var(--mono);font-size:9px;color:var(--green)">0%</span>
       </div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-systems" style="width:0%;background:var(--green)"></div></div>
+      <div class="ti-meta"><span id="done-systems">0/5 lessons</span><span id="tasks-systems">0 tasks</span></div>
+    </div>
+    <div id="list-systems" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-systems-1" onclick="openLesson('systems-1')"><span class="ll-num">01</span><span class="ll-title">Why a mechanic built a bot</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-systems-2" onclick="openLesson('systems-2')"><span class="ll-num">02</span><span class="ll-title">How OMEGA GS works</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-systems-3" onclick="openLesson('systems-3')"><span class="ll-num">03</span><span class="ll-title">NOVA — the crypto bot</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-systems-4" onclick="openLesson('systems-4')"><span class="ll-num">04</span><span class="ll-title">Reading bot results</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-systems-5" onclick="openLesson('systems-5')"><span class="ll-num">05</span><span class="ll-title">Building your first EA</span><span class="ll-badge core">CORE</span></div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item" onclick="openTopic('signals')">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--amber)">◈</span>
-          <span class="ti-name">Signals</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--amber)">20%</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:20%;background:var(--amber)"></div></div>
-        <div class="ti-meta"><span>1/4 lessons</span><span>0 tasks done</span></div>
+    <!-- SIGNALS (LOCKED) -->
+    <div class="topic-item locked">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--amber)">◈</span>
+        <span class="ti-name">Signals</span>
+        <span style="font-family:var(--mono);font-size:8px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:1px 5px">SOON</span>
       </div>
+      <div class="ti-meta"><span>Coming soon</span></div>
     </div>
 
-    <div class="topic-group">
-      <div class="topic-item locked">
-        <div class="ti-header">
-          <span class="ti-icon" style="color:var(--text-dim)">⊕</span>
-          <span class="ti-name">Brokers</span>
-          <span class="ti-lock">🔒</span>
-        </div>
-        <div class="ti-progress-wrap"><div class="ti-progress-fill" style="width:0%;background:var(--text-dim)"></div></div>
-        <div class="ti-meta"><span>Complete Signals first</span></div>
+    <!-- BROKERS (LOCKED) -->
+    <div class="topic-item locked">
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--text-dim)">⊕</span>
+        <span class="ti-name">Brokers</span>
+        <span style="font-family:var(--mono);font-size:12px">🔒</span>
       </div>
+      <div class="ti-meta"><span>Complete Signals first</span></div>
     </div>
 
   </div>
@@ -915,116 +935,7 @@ Total:   -8R  (Account down 8% in one session)</div>
   </div>
 </div>
 
-<script>
-let totalCredits = 1240;
-let todayCredits = 0;
-let tasksCompleted = 0;
 
-function selectMC(option, groupId, isCorrect) {
-  const group = document.getElementById(groupId);
-  if (group.querySelector('.correct, .wrong')) return;
-  const options = group.querySelectorAll('.mc-option');
-  options.forEach(o => o.classList.add('disabled'));
-  const feedback = document.getElementById(groupId + '-feedback');
-  const credits = document.getElementById(groupId + '-credits');
-  const community = document.getElementById(groupId + '-community');
-
-  if (isCorrect) {
-    option.classList.add('correct');
-    feedback.innerHTML = '✓ Correct — Revenge trading is defined by the emotional motivation behind the trade, not just the position size. The combination of immediate timing after a loss and doubled size with no clear setup are the key red flags.';
-    feedback.className = 'task-feedback correct show';
-    earnCredits(10);
-    credits.classList.add('show');
-  } else {
-    option.classList.add('wrong');
-    group.querySelectorAll('.mc-option')[2].classList.add('correct');
-    feedback.innerHTML = '✕ Not quite — the answer is C. Revenge trading is specifically about trading to emotionally recover from a loss rather than acting on a valid setup. The timing (3 minutes after loss) and increased size are clear indicators.';
-    feedback.className = 'task-feedback wrong show';
-    earnCredits(2);
-    credits.innerHTML = '<span>+2 Core Credits for participating ✓</span>';
-    credits.classList.add('show');
-  }
-  community.classList.add('show');
-}
-
-function submitTask2() {
-  const input = document.getElementById('task2Input');
-  const btn = document.getElementById('task2Btn');
-  const feedback = document.getElementById('task2-feedback');
-  const credits = document.getElementById('task2-credits');
-  const community = document.getElementById('task2-community');
-
-  if (input.value.trim().length < 20) {
-    feedback.innerHTML = '// Please write a more detailed answer — be specific about your rule.';
-    feedback.className = 'task-feedback wrong show';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'SUBMITTED ✓';
-  input.disabled = true;
-
-  feedback.innerHTML = '✓ Answer submitted — your response has been added to the community answers. Other members can upvote it. Keep building your systems!';
-  feedback.className = 'task-feedback correct show';
-  earnCredits(20);
-  credits.innerHTML = '<span>+20 Core Credits earned ✓</span>';
-  credits.classList.add('show');
-  community.classList.add('show');
-}
-
-function earnCredits(amount) {
-  totalCredits += amount;
-  todayCredits += amount;
-  tasksCompleted++;
-  document.getElementById('creditsDisplay').textContent = totalCredits.toLocaleString() + ' pts';
-  document.getElementById('creditsToday').textContent = '+' + todayCredits;
-  document.getElementById('tasksCompleted').textContent = tasksCompleted;
-  document.getElementById('learnPts').textContent = 240 + todayCredits;
-}
-
-function upvote(btn) {
-  btn.classList.toggle('voted');
-  const countEl = btn.nextElementSibling;
-  countEl.textContent = parseInt(countEl.textContent) + (btn.classList.contains('voted') ? 1 : -1);
-}
-
-function openChallenge() {
-  document.getElementById('challengeModal').classList.add('open');
-}
-
-function closeChallenge() {
-  document.getElementById('challengeModal').classList.remove('open');
-}
-
-function answerChallenge(option, isCorrect) {
-  const options = document.getElementById('challengeOptions').querySelectorAll('.cb-option');
-  options.forEach(o => o.style.pointerEvents = 'none');
-  if (isCorrect) {
-    option.className = 'cb-option correct';
-    earnCredits(25);
-    setTimeout(() => {
-      closeChallenge();
-      alert('🔥 Correct! +25 Core Credits earned. Streak maintained!');
-    }, 800);
-  } else {
-    option.className = 'cb-option wrong';
-    options[1].className = 'cb-option correct';
-    setTimeout(() => {
-      alert('Not quite — the correct answer is B. A liquidity sweep below the swing low triggers stop losses and provides the fuel for the reversal. +5 pts for participating.');
-      earnCredits(5);
-      closeChallenge();
-    }, 800);
-  }
-}
-
-function openTopic(topic) {
-  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-}
-
-function prevLesson() { alert('Previous lesson — navigation coming with full backend integration.'); }
-function nextLesson() { alert('Next lesson — navigation coming with full backend integration.'); }
-</script>
 
 <script>
 
