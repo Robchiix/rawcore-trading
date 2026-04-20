@@ -1027,34 +1027,669 @@ function nextLesson() { alert('Next lesson — navigation coming with full backe
 </script>
 
 <script>
-// ============================================
-// SUPABASE AUTH CHECK — MEMBER AREA
-// ============================================
-const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Check session on load
-(async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
+const lessonData = {
+  'psych-1': {
+    topic:'psychology', num:1, title:"THE DOPAMINE TRAP", sub:"Why you blow up when you're winning", read:"8 MIN", free:true,
+    content:`<p class="lv-text">You deposit €100. Start with 0.01 lots. Patient, disciplined. The account grows. You double it. Then something changes — not the strategy, not the market. <strong>Your brain.</strong> Dopamine tells you to push harder. Lots double. Entries increase. You feel like you've figured it out.</p>
+<p class="lv-text">And that's when it falls apart.</p>
+<div class="lv-callout"><span class="label">// THE PATTERN</span>Small fund → small lots → discipline → account grows → dopamine rises → lots increase → risks increase → account shrinks → repeat. Most traders live in this loop for years without naming it.</div>
+<div class="lv-section">THE MATH NOBODY DOES</div>
+<p class="lv-text">Doubling your account does not mean doubling your lot size. 1% risk on €100 = €1. 1% risk on €200 = €2. Not €4. Not €10. The percentage stays the same. <strong>When you double lots because the account doubled, that's a dopamine decision — not a trading decision.</strong></p>
+<div class="lv-section">WIN STREAKS DON'T LAST</div>
+<p class="lv-text">The market repeats itself but each day, week, year it has to be found differently. The traders who survive are not the ones who win most — they're the ones who lose least when their edge temporarily disappears.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>You can't throw a dice without knowing how many sides it has and yell "ten!" Keep lots proportional. Keep ego out. The account size changes. The rules don't.</div>`,
+    task: {
+      q: "A trader starts with €100 and 0.01 lots. Account doubles to €200. What should they do with lot size?",
+      options: [
+        { text: "A — Double it to 0.02 lots. Account doubled so lots should too.", correct: false, feedback: "The dopamine trap in action. Doubling lots because the account doubled is emotional — not mathematical. Risk percentage must stay constant." },
+        { text: "B — Keep the same risk percentage. 1% of €200 = €2 risk. Maybe 0.01–0.02 max.", correct: true, feedback: "Correct. €200 x 1% = €2 risk. At 0.01 lots with 20 pip stop that's roughly €2 — still within 1%. Let the euro amount increase naturally as account grows." },
+        { text: "C — Withdraw profit and restart at 0.01. Reset to €100.", correct: false, feedback: "Withdrawing and resetting defeats compounding. Keep the account growing — just maintain the same risk percentage." }
+      ]
+    }
+  },
+  'psych-2': {
+    topic:'psychology', num:2, title:"WHEN TO TRADE AND WHEN TO WALK AWAY", sub:"Reading your mental state before the chart", read:"7 MIN", free:false,
+    content:`<div class="lv-section">THE CHART IS NOT THE PROBLEM</div>
+<p class="lv-text">Most traders analyse the market constantly but almost never analyse themselves. The same setup will be traded completely differently depending on your mental state. After losses you see revenge opportunities. After wins every setup looks valid. After waiting too long, impatience looks like conviction.</p>
+<div class="lv-section">PRE-TRADE MENTAL CHECKLIST</div>
+<ul class="lv-list">
+  <li>Am I trading this because it's valid — or because I'm bored?</li>
+  <li>Am I still thinking about the last trade?</li>
+  <li>Have I hit my daily trade limit?</li>
+  <li>Would I take this trade if I hadn't already made money today?</li>
+</ul>
+<p class="lv-text">If you can't answer yes to the last question, don't take the trade.</p>
+<div class="lv-callout"><span class="label">// DAILY TRADE LIMIT</span>Maximum 2 trades per day when starting. Two quality setups are enough. More entries means more emotional decision-making. The market will be there tomorrow.</div>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Your mental state is part of your trading system. A good strategy in a bad mental state produces bad results. Check yourself before you check the chart.</div>`,
+    task: {
+      q: "After two losing trades, a great setup appears. What should you do first?",
+      options: [
+        { text: "A — Enter immediately. A good setup is a good setup regardless of previous trades.", correct: false, feedback: "After two losses, judgment is compromised by loss aversion. The setup might be valid but your ability to manage it objectively is not." },
+        { text: "B — Ask: would I take this if I hadn't lost today? If yes, check all criteria. If still valid, take it at normal size.", correct: true, feedback: "Correct. The mental checklist separates emotional reaction from valid decisions. The key question is whether the trade stands on its own merits." },
+        { text: "C — Stop trading for the day. Two losses means bad conditions.", correct: false, feedback: "Two losses doesn't automatically mean bad conditions. If you haven't hit your daily limit and the setup is genuinely valid, trading is still appropriate." }
+      ]
+    }
+  },
+  'psych-3': {
+    topic:'psychology', num:3, title:"VOLATILITY IS NOT YOUR FRIEND", sub:"Why chasing crazy wicks costs most retail traders", read:"8 MIN", free:false,
+    content:`<div class="lv-section">THE VOLATILITY TRAP</div>
+<p class="lv-text">Big, fast-moving candles pull traders in. The bigger the wick, the more exciting it looks. <strong>This instinct is almost always wrong.</strong> High volatility = fast price movement, widening spreads, stop hunting, unpredictable behaviour. For retail traders, this is a minefield.</p>
+<p class="lv-text">The most reliable setups happen in steady markets — clear structure, clean levels, predictable session behaviour. London open is the prime example. That first directional move when it aligns with your bias and levels is worth more than any volatile spike.</p>
+<div class="lv-callout"><span class="label">// WHEN TO STAY OUT</span>Major news (NFP, FOMC, CPI) — 30 min either side.<br>Abnormally large candles with no clear direction — noise.<br>When spreads are 3x normal — your broker is telling you something.<br>US session without a pre-identified clear bias.</div>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Your job is not to trade all volatility — it's to identify when the market is predictable enough for your edge to work. Patience in high volatility is not missing out. It's staying solvent.</div>`,
+    task: {
+      q: "NFP is being released in 20 minutes. XAUUSD is moving 15 pips per candle. What's the right move?",
+      options: [
+        { text: "A — Enter now. The big move is coming and you want to be positioned before it.", correct: false, feedback: "Being positioned before a major news release means your stop can be hit by the initial spike in either direction before the real move begins. This is how news events blow accounts." },
+        { text: "B — Stay flat. Wait at least 30 minutes after the release for the spike to resolve before looking for setups.", correct: true, feedback: "Correct. The 30-minute buffer after major news allows initial volatility to resolve and proper structure to form. The best news-related setups come after the spike, not during it." },
+        { text: "C — Set a very wide stop loss — give the trade room to breathe through the news.", correct: false, feedback: "A wider stop during news events means a larger potential loss. It doesn't make the trade safer — it just increases exposure to unpredictable price movement." }
+      ]
+    }
+  },
+  'psych-4': {
+    topic:'psychology', num:4, title:"BUILDING A SYSTEM YOU CAN ACTUALLY FOLLOW", sub:"Discipline is a design problem, not a willpower problem", read:"9 MIN", free:false,
+    content:`<div class="lv-section">WILLPOWER IS FINITE. SYSTEMS ARE NOT.</div>
+<p class="lv-text">Every trader starts with good intentions. Almost every trader breaks their rules eventually. The common explanation is lack of discipline — but that's the wrong diagnosis. <strong>The real problem is a system designed to require constant willpower.</strong> Willpower depletes. After a long shift, three losses, a stressful day — you have less of it.</p>
+<div class="lv-section">DESIGN FOR YOUR WORST DAY</div>
+<ul class="lv-list">
+  <li><strong>Maximum 2 trades per day.</strong> Not because you can't take more — because you shouldn't.</li>
+  <li><strong>Fixed lot sizes until account doubles cleanly.</strong> Exactly the same. Not roughly.</li>
+  <li><strong>Stop loss is untouchable.</strong> Set before entry. Never move it against you.</li>
+  <li><strong>Close the platform after daily limit.</strong> Not minimise. Close.</li>
+</ul>
+<div class="lv-callout"><span class="label">// THE AUTOMATION ANSWER</span>The cleanest solution is removing the decision entirely. An EA cannot be overridden by your emotional state. This is one of the most underrated benefits of trading automation.</div>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Build rules that don't require you to be a perfect human to follow them — then automate as much as possible. Start small. Stay small longer than you think you should.</div>`,
+    task: {
+      q: "Which is the best example of 'designing for your worst day'?",
+      options: [
+        { text: "A — Deciding in the moment whether to move your stop based on how the trade looks.", correct: false, feedback: "In-the-moment decisions are exactly where emotional reasoning takes over. The point of designing for your worst day is to make these decisions in advance when you're calm." },
+        { text: "B — Setting a pre-market rule: max 2 trades, max 3% daily loss. If either limit is hit, platform closes — no exceptions.", correct: true, feedback: "This is the correct approach. Rules set when calm, with no flexibility for in-the-moment override. The 'no exceptions' part is what makes it a real system rather than a guideline." },
+        { text: "C — Writing 'be more disciplined' in your trading journal each evening.", correct: false, feedback: "Intentions without systems don't work. 'Be more disciplined' is a goal, not a rule. It doesn't tell you what to do in the specific moments when discipline breaks down." }
+      ]
+    }
+  },
+  'psych-5': {
+    topic:'psychology', num:5, title:"THE INDEPENDENCE GOAL", sub:"Why signals are training wheels, not a destination", read:"7 MIN", free:false,
+    content:`<div class="lv-section">SIGNALS ARE TRAINING WHEELS</div>
+<p class="lv-text">Following signals is a legitimate way to start. You learn what setups look like in real time. Used correctly, signal following is education — not dependency. The problem is when it stops there. When the signal provider disappears and your trading disappears with them. <strong>That's outsourcing your thinking.</strong></p>
+<div class="lv-section">THE REAL GOAL</div>
+<p class="lv-text">Eventually — to rely on yourself. To make money without anyone telling you how and when. Every lesson here is written with that goal in mind — not to make you dependent on RawCore, but to give you the foundation to eventually not need us.</p>
+<div class="lv-callout"><span class="label">// THE PROGRESSION</span>Follow signals with understanding → recognise setups yourself → build your own rules → automate your rules → refine independently. Each stage builds on the last.</div>
+<p class="lv-text">You're ready to trade independently when you can look at a chart before a signal is posted and say — with a reason — whether there's a valid setup. Not a guess. A reason. <strong>The signal is not the lesson. The explanation behind it is.</strong></p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Use signals to learn, not to avoid learning. The goal of every trade you follow should be to eventually make you capable of spotting it yourself.</div>`,
+    task: {
+      q: "What's the key difference between using signals correctly vs creating dependency?",
+      options: [
+        { text: "A — Using signals correctly means following every trade. Dependency means being selective.", correct: false, feedback: "Backwards. Being selective and understanding reasoning is correct. Blindly following every trade regardless of understanding is the dependency trap." },
+        { text: "B — Using signals correctly means understanding WHY each signal was posted. Dependency means copying trades without understanding them.", correct: true, feedback: "Exactly. The key metric is understanding. If you can explain why a signal was valid, you're learning. If you can't explain it after it's posted, you're just copying." },
+        { text: "C — Dependency only becomes a problem when you pay for signals. Free signals are always fine.", correct: false, feedback: "The cost of the signal has nothing to do with dependency. The issue is whether you're building understanding. This applies equally to free and paid signals." }
+      ]
+    }
+  },
+  'market-1': {
+    topic:'markets', num:1, title:"TRADING SESSIONS — WHEN THE REAL MONEY MOVES", sub:"London, New York, Asian — not all hours are equal", read:"7 MIN", free:true,
+    content:`<p class="lv-text">The forex and gold markets trade 24/5. But not all hours are equal. <strong>Volume, volatility, and opportunity concentrate in specific windows.</strong></p>
+<p class="lv-text"><strong>Asian Session (00:00–09:00 UTC)</strong> — The quiet session. Lower volume, tight ranges. Gold consolidates. Good for planning. The Asian session sets the liquidity pools — highs and lows — that London will hunt.</p>
+<p class="lv-text"><strong>London Session (08:00–17:00 UTC)</strong> — Where the real action starts. Volume spikes at open, spreads tighten. The FVGs, demand and supply zones, and liquidity sweeps are most reliable here. This is the preferred session for gold trading.</p>
+<p class="lv-text"><strong>New York Session (13:00–22:00 UTC)</strong> — Second major session. Overlaps with London 13:00–17:00 — the highest volume period of the entire day. US session alone can be aggressive and unpredictable.</p>
+<div class="lv-callout"><span class="label">// THE LONDON OPEN PATTERN</span>Asian session consolidates. Liquidity builds above and below the range. London opens — institutional players step in, often sweeping Asian liquidity first before making the real directional move. One of the most consistent patterns in the market.</div>
+<div class="lv-section">PRACTICAL RULES</div>
+<ul class="lv-list">
+  <li>Focus entries on London open (08:00–11:00 UTC) for cleanest setups</li>
+  <li>London-NY overlap (13:00–17:00 UTC) for continuation trades</li>
+  <li>Avoid major news — stay flat 30 min either side</li>
+  <li>Asian session is for analysis and planning, not entries</li>
+</ul>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>The session you trade in matters as much as the setup. The same entry on a clean London structure is a very different trade to the same entry during choppy US afternoon.</div>`,
+    task: {
+      q: "It's 09:30 UTC. XAUUSD swept the Asian session low and is showing a strong bullish rejection candle. What session is this and is this a valid time for entries?",
+      options: [
+        { text: "A — Asian session. Too quiet for valid entries, wait for London.", correct: false, feedback: "09:30 UTC is well into the London session (opens 08:00 UTC). The Asian session closes around 09:00 UTC. You're in the prime London trading window." },
+        { text: "B — London session. 09:30 UTC is in the optimal window (08:00–11:00 UTC). The Asian low sweep then rejection is a high-quality setup.", correct: true, feedback: "Correct on both. 09:30 UTC is prime London time, and the pattern — Asian low swept then rejected — is the London liquidity sweep pattern, one of the most consistent setups on gold." },
+        { text: "C — New York session. The overlap has begun and conditions are too volatile.", correct: false, feedback: "The London-NY overlap doesn't begin until 13:00 UTC. At 09:30 UTC you're in London session only — actually the ideal environment for this type of setup." }
+      ]
+    }
+  },
+  'market-2': {
+    topic:'markets', num:2, title:"FAIR VALUE GAPS — WHAT THEY ARE AND WHY THEY FILL", sub:"The imbalance price always wants to return to", read:"9 MIN", free:false,
+    content:`<div class="lv-section">WHEN PRICE MOVES TOO FAST</div>
+<p class="lv-text">A Fair Value Gap (FVG) is created when price moves so quickly that it leaves a gap between three consecutive candles. The middle candle moves so aggressively that the wicks before and after don't overlap. This imbalance represents unfilled orders. <strong>Institutional players who didn't get filled still want to be filled there.</strong> The market has a strong tendency to return.</p>
+<div class="lv-callout"><span class="label">// HOW TO IDENTIFY AN FVG</span>Candle 1: closes at X<br>Candle 2: large aggressive move<br>Candle 3: opens but doesn't overlap candle 1's wick<br><br>The space between candle 1's high and candle 3's low (bullish FVG) = your zone.</div>
+<div class="lv-section">QUALITY FILTERS</div>
+<ul class="lv-list">
+  <li>5M and 15M FVGs during London open — high reliability</li>
+  <li>1M FVGs — noise, avoid</li>
+  <li>1H FVGs — strong, use for bias confirmation</li>
+  <li>Always check higher timeframe bias before entering</li>
+  <li>Session context matters as much as the FVG itself</li>
+</ul>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>FVGs work because institutional imbalances get filled. Not all FVGs are equal — session timing and timeframe determine quality. A good FVG in the wrong session is a losing trade waiting to happen.</div>`,
+    task: {
+      q: "You spot an FVG on the 1-minute chart during the Asian session. Price is slowly retracing into it. Is this a high-quality setup?",
+      options: [
+        { text: "A — Yes. An FVG is an FVG regardless of timeframe or session.", correct: false, feedback: "Timeframe and session are critical FVG quality filters. A 1M FVG during Asian session combines two worst conditions — low timeframe (noise-level) and low-volume session (less reliable institutional behaviour)." },
+        { text: "B — No. 1M FVGs are noise, and Asian session lacks the institutional volume for reliable FVG fills.", correct: true, feedback: "Correct. Two red flags: 1M is too low for reliable FVGs, and Asian session lacks the institutional participation that makes FVGs fill predictably. Wait for London open on 5M or higher." },
+        { text: "C — Partially. The FVG is valid but use a tighter stop loss to compensate for lower quality.", correct: false, feedback: "A tighter stop doesn't fix a low-quality setup — it just means you get stopped out faster. The solution is not to trade low-quality setups, not to adjust position management to compensate." }
+      ]
+    }
+  },
+  'market-3': {
+    topic:'markets', num:3, title:"DEMAND AND SUPPLY ZONES — WHERE DECISIONS GET MADE", sub:"Not lines on a chart — where institutions placed orders", read:"8 MIN", free:false,
+    content:`<div class="lv-section">BEYOND SUPPORT AND RESISTANCE</div>
+<p class="lv-text">Supply and demand zones identify not just where price reacted, but why — and whether that reason still exists. A demand zone is where institutional buyers placed large orders. When price left strongly, orders were filled but not all of them. Remaining unfilled orders sit at that level waiting for price to return.</p>
+<div class="lv-section">IDENTIFYING VALID ZONES</div>
+<ul class="lv-list">
+  <li><strong>Strong departure:</strong> Price left impulsively — big candle, clear direction</li>
+  <li><strong>Fresh zone:</strong> Price hasn't returned since. Every visit weakens a zone.</li>
+  <li><strong>Higher timeframe context:</strong> A 1H demand zone at a 4H support is stronger than either alone</li>
+</ul>
+<div class="lv-callout"><span class="label">// ZONE VS LINE</span>Draw zones as boxes — the order cluster exists across a range of prices. Entry at top of demand zone. Stop loss below the entire zone.</div>
+<div class="lv-section">GOLD — LONDON SWEEP PATTERN</div>
+<p class="lv-text">London frequently starts with a sweep of the Asian low into a demand zone, then reversal. Sweep-and-reverse at a clean demand zone during London open is one of the highest-probability setups on XAUUSD.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>The more impulsive the departure, the stronger the zone. Fresh zones beat revisited ones every time.</div>`,
+    task: {
+      q: "Price has visited a demand zone three times and bounced each time. The fourth time it returns, what should you expect?",
+      options: [
+        { text: "A — Stronger bounce. The zone has proven itself three times so it's more reliable.", correct: false, feedback: "The opposite is true. Each visit fills more orders. After three bounces, significantly fewer unfilled buy orders remain. The zone is weaker, not stronger." },
+        { text: "B — Weaker reaction or a break through. Repeated visits deplete the remaining orders.", correct: true, feedback: "Exactly. Three bounces = three rounds of order filling. The remaining order flow is a fraction of what it was. Expect a weaker bounce, a breakout, or a liquidity sweep through the zone." },
+        { text: "C — No change. Zone quality doesn't change with visits.", correct: false, feedback: "Zone quality absolutely changes with visits. Supply and demand works because of unfilled orders — each visit fills more of them. A multiply-visited zone is a diminishing asset." }
+      ]
+    }
+  },
+  'market-4': {
+    topic:'markets', num:4, title:"LIQUIDITY SWEEPS — WHY PRICE HUNTS YOUR STOP LOSS", sub:"The most frustrating pattern — explained", read:"8 MIN", free:false,
+    content:`<div class="lv-section">IT'S NOT RANDOM. IT'S DELIBERATE.</div>
+<p class="lv-text">Stop placed below swing low — exactly where every course tells you. Price taps your stop by a few pips then immediately reverses and goes exactly where you thought. You got stopped out of a winning trade.</p>
+<p class="lv-text">This is not bad luck. <strong>Once you understand it, you'll never place a stop the same way again.</strong></p>
+<div class="lv-section">WHY IT HAPPENS</div>
+<p class="lv-text">Institutions need liquidity to fill large orders. They push price to where retail stops cluster — below swing lows, above swing highs — triggering those stops and creating the orders they need. <strong>Your stop loss is literally their entry signal.</strong></p>
+<div class="lv-callout"><span class="label">// THE SWEEP PATTERN</span>1. Price consolidates above swing low<br>2. Retail stops cluster below it<br>3. Price dips below — stops triggered<br>4. Institutions buy into the sell orders<br>5. Price reverses sharply upward</div>
+<div class="lv-section">HOW TO USE THIS</div>
+<p class="lv-text">Place your stop beyond the expected sweep zone. Better yet — use the sweep as your entry signal. When price sweeps a swing low and closes back above it with a strong candle, that's your confirmation. Liquidity taken. Real move begins.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Liquidity sweeps are deliberate. Better stop placement + using sweeps as entry signals gives you two advantages from understanding one pattern.</div>`,
+    task: {
+      q: "Price sweeps 6 pips below a key swing low, immediately forms a strong bullish engulfing candle, and closes back above the swing low. What does this indicate?",
+      options: [
+        { text: "A — A failed breakout. The move below was an attempt to break lower that failed. Bearish signal.", correct: false, feedback: "A sweep followed by immediate strong reversal is a bullish signal, not bearish. The fact that price couldn't sustain below is the confirmation — not a concern." },
+        { text: "B — A liquidity sweep. Stop losses below the low were triggered providing buy-side liquidity. The strong close back above is entry confirmation.", correct: true, feedback: "Correct. Textbook liquidity sweep pattern. Sweep below the low, immediate reversal, strong close back above the level. This is the highest-quality confirmation of a genuine sweep setup." },
+        { text: "C — Random noise. 6 pips is within normal spread variation.", correct: false, feedback: "While spread variation is real, a deliberate sweep combined with a strong engulfing reversal candle is not random. The pattern — sweep then strong close back above — is the key signal." }
+      ]
+    }
+  },
+  'market-5': {
+    topic:'markets', num:5, title:"GOLD (XAUUSD) — WHY IT MOVES DIFFERENTLY", sub:"Specific behaviours every gold trader needs to know", read:"8 MIN", free:false,
+    content:`<div class="lv-section">GOLD IS NOT JUST ANOTHER PAIR</div>
+<p class="lv-text">Gold has specific characteristics — safe haven role, inverse USD relationship, sensitivity to geopolitical events — that make it behave differently. Approaching it like EUR/USD will confuse you.</p>
+<div class="lv-section">KEY GOLD CHARACTERISTICS</div>
+<ul class="lv-list">
+  <li><strong>Inverse USD relationship:</strong> Gold moves opposite to DXY generally. Strong dollar = weaker gold. Always check DXY bias first.</li>
+  <li><strong>Session behaviour:</strong> London open = most reliable directional moves. Asian session sets the liquidity pools London hunts.</li>
+  <li><strong>News sensitivity:</strong> Reacts strongly to NFP, CPI, FOMC. Can move hundreds of pips in minutes. Stay flat.</li>
+  <li><strong>MT5 pip size:</strong> Gold quoted with 2 decimal places. A 1.00 move = 100 pips. OMEGA GS is built for Tradequo's specific gold pip structure.</li>
+  <li><strong>Spread sensitivity:</strong> Spreads widen significantly during news and low-liquidity hours.</li>
+</ul>
+<div class="lv-callout"><span class="label">// THE LONDON GOLD PATTERN</span>Asian session consolidates. London sweeps the Asian low (taking sell stops) then reverses in the true direction. This pattern is consistent enough that many professional gold traders trade nothing else.</div>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Gold rewards understanding of its specific quirks — especially the London open sweep pattern and the DXY relationship. Treat it like EUR/USD and its moves will constantly confuse you.</div>`,
+    task: {
+      q: "DXY (US Dollar Index) is showing a strong uptrend today. What bias should you have on XAUUSD?",
+      options: [
+        { text: "A — Bullish on gold. Strong dollar means more trading activity which pushes gold higher.", correct: false, feedback: "Trading activity doesn't directly push gold in either direction. The relationship is inverse — a strong dollar makes gold more expensive in other currencies, reducing demand and pushing price lower." },
+        { text: "B — Bearish bias on gold. Gold and DXY typically move inversely. Strong dollar = weaker gold.", correct: true, feedback: "Correct. The inverse correlation between DXY and XAUUSD is one of the most consistent relationships in financial markets. When the dollar strengthens, gold typically weakens." },
+        { text: "C — No bias. DXY and gold are unrelated and should be analysed independently.", correct: false, feedback: "They are very much related. The DXY-gold inverse relationship is one of the first things gold traders learn. Ignoring DXY when trading gold means missing one of the most significant directional filters available." }
+      ]
+    }
+  },
+  'risk-1': {
+    topic:'risk', num:1, title:"THE R MULTIPLE — THE ONLY NUMBER THAT MATTERS", sub:"Why win rate is irrelevant without understanding R", read:"7 MIN", free:true,
+    content:`<div class="lv-section">STOP THINKING IN EUROS. START THINKING IN R.</div>
+<p class="lv-text">Most new traders track performance in currency. <strong>€50 profit means nothing without knowing how much you risked to make it.</strong> R is simple: the amount you risked on a trade. Risked €20, made €40 = +2R. Risked €20, lost €20 = -1R.</p>
+<div class="lv-callout"><span class="label">// THE FORMULA</span>R = distance from entry to stop × lot size × pip value<br><br>Result = profit or loss ÷ R<br><br>Example: Entry 2340, Stop 2338 = 20 pip risk. At 0.01 lots ≈ €2 = 1R.<br>Close at 2344 = 40 pips = €4 = +2R.</div>
+<div class="lv-section">WIN RATE TELLS YOU ALMOST NOTHING</div>
+<p class="lv-text">40% win rate, 2R avg winner, -1R avg loser: 4×2R = +8R, 6×(-1R) = -6R. Net: +2R. Profitable with a "bad" win rate.</p>
+<p class="lv-text">70% win rate, 0.5R avg winner, -1R avg loser: 7×0.5R = +3.5R, 3×(-1R) = -3R. Net: +0.5R. Barely profitable despite "winning" constantly.</p>
+<p class="lv-text"><strong>The ratio between your average win and average loss matters far more than win rate.</strong></p>
+<div class="lv-section">WHAT R:R TO AIM FOR</div>
+<p class="lv-text">Minimum 1:2 — risking 1 to make 2. OMEGA GS targets minimum 1.5R with runners going to 2.5R+. A 1:0.5 setup (risking more than you make) needs an extremely high win rate — generally not worth taking.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Before every trade, calculate your R. If potential reward is less than risk, the trade fails the most basic filter. R is not optional — it's the foundation of every profitable system.</div>`,
+    task: {
+      q: "Trader A wins 70% but averages 0.5R winner and -1R loser. Trader B wins 40% but averages 2R winner and -1R loser. Over 10 trades each, who's more profitable?",
+      options: [
+        { text: "A — Trader A. Higher win rate means more consistent profits.", correct: false, feedback: "Trader A: 7×0.5R = +3.5R, 3×(-1R) = -3R. Net: +0.5R. Barely makes money. Win rate without R:R context is meaningless." },
+        { text: "B — Trader B. Despite losing 60% of trades, 2R winners produce significantly better net results.", correct: true, feedback: "Correct. Trader B: 4×2R = +8R, 6×(-1R) = -6R. Net: +2R. Trader B makes 4x more than Trader A despite a worse win rate. This is exactly why R:R matters more than win rate." },
+        { text: "C — Equal. What matters is total trades not ratios.", correct: false, feedback: "Total trades are the same (10 each). The difference is entirely in the R:R ratio — which is exactly what this example is designed to illustrate." }
+      ]
+    }
+  },
+  'risk-2': {
+    topic:'risk', num:2, title:"POSITION SIZING — HOW MUCH TO PUT ON EACH TRADE", sub:"The calculation that keeps you in the game", read:"8 MIN", free:false,
+    content:`<div class="lv-section">NEVER CHOOSE LOTS WITH YOUR GUT</div>
+<p class="lv-text">Position sizing answers: how many lots to trade? Most beginners answer with gut feel. <strong>This is how small accounts become zero accounts.</strong> Position size must always be calculated from your risk percentage — never chosen arbitrarily.</p>
+<div class="lv-callout"><span class="label">// THE FORMULA</span>Risk Amount = Account Balance × Risk %<br>Lot Size = Risk Amount ÷ (Stop Loss pips × Pip Value per lot)<br><br>Example: €200 account, 1% risk = €2.<br>20 pip stop. Gold pip value at 0.01 lots ≈ €0.10/pip.<br>Lot size = €2 ÷ (20 × €0.10) = €2 ÷ €2 = 0.01 lots.</div>
+<div class="lv-section">STARTING LOT SIZE GUIDE</div>
+<ul class="lv-list">
+  <li>€100 account → 0.01 lots max</li>
+  <li>€200 account → 0.01–0.02 lots</li>
+  <li>€500 account → 0.02–0.05 lots</li>
+  <li>€1,000 account → 0.05–0.10 lots</li>
+</ul>
+<p class="lv-text">At 0.01 lots on gold with a 20 pip stop: ~€2 risk. On €100 that's 2% — acceptable. On €200 that's 1% — ideal. The goal is to survive long enough to get good.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Never choose lot size with your gut. Calculate from account size and risk percentage. Keep 1–2% per trade maximum until you have a 3-month proven track record.</div>`,
+    task: {
+      q: "Account: €300. Risk: 1%. Stop loss: 25 pips. Gold pip value at 0.01 lots: ~€0.10. What's the correct lot size?",
+      options: [
+        { text: "A — 0.05 lots. €300 account can handle bigger positions.", correct: false, feedback: "Calculate: 1% of €300 = €3 risk. At 0.05 lots with 25 pips: 25 × €0.50 = €12.50 risk. That's 4.2% of account — more than double the intended risk. Always calculate, never guess." },
+        { text: "B — 0.01 lots. €300 × 1% = €3. At 0.01 lots: 25 × €0.10 = €2.50. €3 ÷ €2.50 ≈ 0.01 lots (rounded to nearest available).", correct: true, feedback: "Correct. €3 risk ÷ (25 pips × €0.10) = 1.2 in the formula. 0.01 lots is the correct base unit here — going to 0.02 would give €5 risk = 1.67% of account, slightly above target." },
+        { text: "C — 0.10 lots. Larger account justifies larger positions.", correct: false, feedback: "0.10 lots with 25 pip stop = 25 × €1.00 = €25 risk. That's 8.3% of account on a single trade — catastrophically high. A few losses at this size would destroy the account." }
+      ]
+    }
+  },
+  'risk-3': {
+    topic:'risk', num:3, title:"STOP LOSS PLACEMENT — WHERE TO PUT IT AND WHY", sub:"Structural stops vs arbitrary stops", read:"8 MIN", free:false,
+    content:`<div class="lv-section">YOUR STOP IS YOUR TRADE INVALIDATION</div>
+<p class="lv-text">A stop loss is not just a risk limit — it's a statement about when your trade idea is wrong. <strong>The stop price should be where the market is telling you your analysis was incorrect.</strong> Most traders place stops based on how much they're willing to lose, not where the trade is actually invalidated. Completely different things.</p>
+<div class="lv-section">STRUCTURAL STOP PLACEMENT</div>
+<ul class="lv-list">
+  <li><strong>Long:</strong> Stop below swing low or demand zone bottom + 3–5 pip buffer</li>
+  <li><strong>Short:</strong> Stop above swing high or supply zone top + 3–5 pip buffer</li>
+  <li><strong>FVG trade:</strong> Stop below entire FVG — if price closes below, the imbalance is negated</li>
+  <li><strong>Sweep trade:</strong> Stop below the sweep wick — if price goes below, sweep failed</li>
+</ul>
+<div class="lv-callout"><span class="label">// THE BUFFER</span>Always add 3–5 pips beyond your structural level. Liquidity sweeps wick just beyond obvious levels before reversing. Stop exactly at the swing low gets hit. Stop 5 pips below usually won't.</div>
+<div class="lv-section">NEVER MOVE YOUR STOP AGAINST YOU</div>
+<p class="lv-text">When you move a stop wider because price is approaching, you're changing the invalidation point based on fear — not analysis. <strong>The urge to move your stop wider is a sign the original stop was wrong, not that it should be moved.</strong></p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Place your stop where the trade is wrong — not where you can afford to lose. Structural stop placement is the difference between a controlled loss and an uncontrolled one.</div>`,
+    task: {
+      q: "You're long on XAUUSD. The recent swing low is at 2338.00. Where should your stop loss be?",
+      options: [
+        { text: "A — Exactly at 2338.00. That's the swing low so that's where structure breaks.", correct: false, feedback: "Placing stop exactly at the swing low makes it vulnerable to a liquidity sweep. Institutions often push price just below the obvious level to trigger stops before reversing." },
+        { text: "B — Below 2338.00 — approximately 2333.00 to 2335.00, giving 3–5 pip buffer beyond the swing low.", correct: true, feedback: "Correct. 2333–2335 gives 3–5 pips below the obvious swing low. This buffer absorbs the typical liquidity sweep while still being below the level where your trade thesis is genuinely broken." },
+        { text: "C — 50 pips below entry regardless of structure. Consistent stop distance is more important.", correct: false, feedback: "Arbitrary stops disconnected from structure have no logical basis. Sometimes 50 pips is too close (gets swept), sometimes too far (ruins R:R). Structure-based stops are always preferable." }
+      ]
+    }
+  },
+  'risk-4': {
+    topic:'risk', num:4, title:"TAKING PROFITS — WHEN TO CLOSE AND WHEN TO HOLD", sub:"Partial exits, breakeven stops, letting winners run", read:"9 MIN", free:false,
+    content:`<div class="lv-section">TWO MISTAKES WITH WINNERS</div>
+<p class="lv-text"><strong>Closing too early:</strong> Trade hits +0.8R, you close out of fear. Your strategy says 2R. Over hundreds of trades this destroys expected value.</p>
+<p class="lv-text"><strong>Giving it all back:</strong> Trade hits +2R, you hold, it reverses, you close flat. You had the profit and let it disappear.</p>
+<p class="lv-text">Solution: structured exit plan decided before entry — not during the trade.</p>
+<div class="lv-section">THE 4-LEG EXIT (OMEGA GS METHOD)</div>
+<ul class="lv-list">
+  <li><strong>TP1 (1.5R):</strong> Close 25% — locks in profit, reduces emotional pressure</li>
+  <li><strong>TP2 (2.5R):</strong> Close another 25% — meaningful profit secured</li>
+  <li><strong>TP3 (3.5R):</strong> Close another 25% — well in profit regardless of what follows</li>
+  <li><strong>TP4 / Runner:</strong> Last 25% — trail the stop and let it run</li>
+</ul>
+<div class="lv-callout"><span class="label">// MOVE TO BREAKEVEN AT TP1</span>Once TP1 hits, move stop to entry price. Worst case on remaining position is now zero. You can't lose money on this trade. This single habit eliminates one of the most damaging emotional patterns in trading.</div>
+<div class="lv-section">WHEN TO CLOSE EARLY</div>
+<p class="lv-text">Legitimate reasons: major news approaching, strong opposing level formed, structure changed. These are analytical reasons. <strong>Closing because you're nervous is not the same as closing because the trade has changed.</strong></p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Decide exit plan before entry. Use partial closes to reduce pressure while keeping exposure to larger moves. Move to breakeven at TP1. Close early out of analysis, never out of fear.</div>`,
+    task: {
+      q: "Your trade has hit TP1 at +1.5R. You've closed 25% of the position. What should you do with your stop loss on the remaining 75%?",
+      options: [
+        { text: "A — Leave the stop where it originally was. You've taken partial profit so risk is now acceptable.", correct: false, feedback: "Leaving the original stop means you could still give back your TP1 profit and more on the remaining 75%. Once TP1 hits, the standard practice is to move stop to breakeven." },
+        { text: "B — Move stop to breakeven (entry price). The remaining 75% can only make money or close flat.", correct: true, feedback: "Correct. This is the breakeven stop rule. After TP1, move stop to entry price. The remaining position is now risk-free — worst case it closes at entry and you keep your TP1 profit." },
+        { text: "C — Move stop to TP1 level (+1.5R from entry). Lock in more profit.", correct: false, feedback: "Moving stop to TP1 level is too tight — normal price fluctuations will likely hit it before the trade reaches TP2. Breakeven is the standard after TP1, not the first TP level itself." }
+      ]
+    }
+  },
+  'risk-5': {
+    topic:'risk', num:5, title:"DAILY LIMITS AND CIRCUIT BREAKERS", sub:"The rules that save your account on bad days", read:"7 MIN", free:false,
+    content:`<div class="lv-section">BAD DAYS ARE GUARANTEED. BLOWN ACCOUNTS ARE NOT.</div>
+<p class="lv-text">What separates survivors from those who don't is not whether they have bad days — it's how much damage a bad day can do. <strong>Daily limits are the rules you set when you're calm, specifically to protect you when you're not.</strong></p>
+<div class="lv-section">THE DAILY LOSS LIMIT</div>
+<p class="lv-text">Set a maximum daily loss before you start. Sensible rule: if you lose 3% in one day, trading is over. Close the platform. No exceptions. On €200 at 0.01 lots, 3% = €6. That's three -1R losses. Three losses means either the market isn't behaving well for your setup, or your mental state has deteriorated — usually both.</p>
+<div class="lv-callout"><span class="label">// THE TRADE LIMIT</span>Maximum 2 trades per day when starting. Two quality setups are enough. More trades = lower quality entries + more emotional decision-making + more fees.</div>
+<div class="lv-section">CIRCUIT BREAKERS IN AUTOMATION</div>
+<p class="lv-text">OMEGA GS and NOVA both have built-in daily circuit breakers. When the daily loss limit is hit, the bot stops automatically. The bot cannot revenge trade, cannot override the limit, cannot "just try one more."</p>
+<p class="lv-text"><strong>Automation doesn't just make you efficient — it makes you more disciplined than you could be on your own.</strong></p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Set your daily loss limit and trade limit before the trading day. Honor them absolutely. The days you most want to break these rules are exactly the days you need them most.</div>`,
+    task: {
+      q: "It's 11:30 AM London time. You've had 2 losing trades and hit your 3% daily loss limit. A textbook setup appears. What do you do?",
+      options: [
+        { text: "A — Take the trade. The setup is valid and skipping it means missing a genuine opportunity.", correct: false, feedback: "The daily limit exists precisely for this moment. Mental state after two losses is compromised. The rule is set when you're calm to protect you when you're not. Breaking it for a 'good setup' is how 3% days become 10% days." },
+        { text: "B — Close the platform. The daily limit is a rule with no exceptions — including 'the setup is really good'.", correct: true, feedback: "Correct. No exceptions is what makes it a rule rather than a guideline. The moment you make exceptions for 'really good setups' the rule loses all effectiveness. The market has good setups tomorrow. Your capital needs to be there to trade them." },
+        { text: "C — Take it at half size. Reduced risk means the daily limit still applies in spirit.", correct: false, feedback: "'In spirit' is not the same as in practice. Half size still means additional exposure and emotional decision-making after a bad session. The daily limit is binary — you've hit it, you stop." }
+      ]
+    }
+  },
+  'systems-1': {
+    topic:'systems', num:1, title:"WHY A CAR MECHANIC BUILT A TRADING BOT", sub:"The real story behind ALPHA, OMEGA, and NOVA", read:"8 MIN", free:true,
+    content:`<div class="lv-section">THE PROBLEM WITH SIGNALS</div>
+<p class="lv-text">When I first got into trading I started where most people start — following signal channels. The problem was real life. Working long hours as a car mechanic, I couldn't sit with my phone waiting for signals. I'd miss entries. I'd have hands covered in oil and miss the window entirely. The signals were good. My ability to act on them in real time wasn't.</p>
+<p class="lv-text"><strong>So I built a bot that did it for me.</strong></p>
+<div class="lv-section">ALPHA — THE SIGNAL EXECUTOR</div>
+<p class="lv-text">ALPHA was the first solution. It connects to a Telegram signal channel, reads the signal when it arrives, and automatically opens the trade on MetaTrader 5 with the correct stop loss and take profits applied. No manual entry. No missed trades.</p>
+<div class="lv-callout"><span class="label">// WHAT ALPHA DOES</span>Monitors Telegram signal channels → parses entry, SL, and TP → opens trade on MT5 → applies risk management → sends confirmation notification.<br><br>What it doesn't do: choose which signals to follow, evaluate quality, override your risk settings.</div>
+<div class="lv-section">THE NEXT PROBLEM</div>
+<p class="lv-text">ALPHA solved execution but not dependency. I was still relying on someone else's analysis. Eventually I wanted to be independent — a system with its own brain, its own strategy, its own edge. That's where OMEGA and NOVA came from. Fully autonomous. They don't wait for signals. <strong>They are the signal.</strong></p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>A trading bot is a solution to a real problem — missed entries, emotional decisions, inability to watch charts all day. The best bots aren't magic. They're well-defined rules that execute consistently when you can't or shouldn't.</div>`,
+    task: {
+      q: "What's the key difference between ALPHA and OMEGA GS?",
+      options: [
+        { text: "A — ALPHA is for crypto, OMEGA GS is for gold.", correct: false, feedback: "ALPHA is not asset-specific — it's a signal executor. OMEGA GS is gold-specific, yes, but the key distinction between the two bots is not which asset they trade." },
+        { text: "B — ALPHA executes signals from an external source (Telegram). OMEGA GS generates its own signals based on its own strategy rules — no external input needed.", correct: true, feedback: "Correct. ALPHA is dependent on someone else posting signals — it's an executor, not a strategist. OMEGA GS is fully autonomous — it analyses the market using its own rules and makes its own decisions. This represents the move from signal dependency to independent automation." },
+        { text: "C — ALPHA is more advanced. OMEGA GS is the older, simpler version.", correct: false, feedback: "ALPHA came first chronologically but is conceptually simpler — it just reads and executes. OMEGA GS is the more sophisticated system with its own market analysis, session filters, ATR filters, and risk management." }
+      ]
+    }
+  },
+  'systems-2': {
+    topic:'systems', num:2, title:"HOW OMEGA GS WORKS", sub:"Every rule, every filter — transparent", read:"10 MIN", free:false,
+    content:`<div class="lv-section">NO BLACK BOX</div>
+<p class="lv-text">Most commercial bots are sold as black boxes. RawCore doesn't work that way. <strong>Every rule in OMEGA GS is documented, explained, and available to Core members in full source code.</strong> Understanding what your bot does is the only way to trust it during drawdown.</p>
+<div class="lv-section">THE STRATEGY</div>
+<ul class="lv-list">
+  <li><strong>Asset:</strong> XAUUSD on 5M chart</li>
+  <li><strong>Session filter:</strong> London and NY only. Asian session ignored entirely.</li>
+  <li><strong>Trend filter:</strong> EMA9 and EMA21 cross. Long above both EMAs, short below.</li>
+  <li><strong>ATR filter:</strong> Minimum ATR threshold — no trades in flat markets</li>
+  <li><strong>Entry:</strong> EMA cross with all filters confirmed = entry at next candle open</li>
+</ul>
+<div class="lv-callout"><span class="label">// RISK MANAGEMENT BUILT IN</span>Fixed 40-pip stop loss on every trade.<br>4-leg take profit: TP1, TP2, TP3, TP4 at increasing R levels.<br>Progressive trailing stop: SL moves to breakeven after TP1.<br>Daily circuit breaker: stops after daily loss limit hit.<br>Tradequo-specific: XAUUSDs symbol, ORDER_FILLING_RETURN mode.</div>
+<div class="lv-section">LIMITATIONS</div>
+<ul class="lv-list">
+  <li>Performs best in trending, session-driven conditions</li>
+  <li>Underperforms in choppy, sideways, news-driven environments</li>
+  <li>Does not adapt to regime changes — knowing when to pause it is part of using it correctly</li>
+</ul>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>OMEGA GS is a trend-following system for gold during active sessions. Its limitations mean you know when to trust it and when to pause it.</div>`,
+    task: {
+      q: "OMEGA GS has a session filter stopping it from trading Asian hours. Why is this rule in the bot?",
+      options: [
+        { text: "A — To save server resources. Running 24 hours uses unnecessary electricity.", correct: false, feedback: "Server resources are not a meaningful consideration here. The session filter exists for trading reasons, not infrastructure reasons." },
+        { text: "B — Asian session has lower volume, less institutional participation, and less reliable trend behaviour. OMEGA GS's EMA cross strategy works better in high-volume, directional sessions.", correct: true, feedback: "Correct. OMEGA GS is a trend-following system. Trends require institutional volume. Asian session is characterised by consolidation and range-bound behaviour — exactly the conditions where trend-following systems produce false signals and losses." },
+        { text: "C — Gold doesn't trade during Asian hours.", correct: false, feedback: "Gold trades 24/5 across all sessions. The Asian session filter is a strategic choice — not because trading is unavailable, but because the strategy performs poorly in Asian session conditions." }
+      ]
+    }
+  },
+  'systems-3': {
+    topic:'systems', num:3, title:"NOVA — THE CRYPTO BOT FAMILY", sub:"BTC, ETH, SOL perpetuals on Bybit", read:"9 MIN", free:false,
+    content:`<div class="lv-section">FROM GOLD TO CRYPTO</div>
+<p class="lv-text">NOVA trades cryptocurrency perpetual contracts on Bybit. Different asset, different exchange — same philosophy: <strong>clear strategy, executed consistently, without emotion.</strong></p>
+<div class="lv-section">WHAT NOVA TRADES</div>
+<p class="lv-text">BTC, ETH, and SOL USDT perpetuals on Bybit. Perpetuals track spot price without an expiry date. They use leverage — NOVA uses conservative leverage settings as a result.</p>
+<div class="lv-section">MULTI-TIMEFRAME CONFLUENCE</div>
+<ul class="lv-list">
+  <li><strong>4H EMA bias:</strong> Overall direction</li>
+  <li><strong>1H Supply and Demand zones:</strong> Key entry areas</li>
+  <li><strong>1H Fair Value Gaps:</strong> Confirms imbalances</li>
+  <li><strong>15M rejection entry:</strong> Confirmation candle at the zone</li>
+  <li><strong>RSI filter:</strong> Avoids overbought/oversold entries against direction</li>
+</ul>
+<div class="lv-callout"><span class="label">// RISK MANAGEMENT</span>Partial TP at 1R — close 50%, move SL to breakeven.<br>Full target at 2R.<br>Daily circuit breaker.<br>Correlation guard — avoids BTC and ETH simultaneously.<br>Trailing equity stop — reduces leverage if equity drops.</div>
+<div class="lv-section">CRYPTO VS GOLD</div>
+<p class="lv-text">Crypto is more volatile, sessions less defined (trades 24/7), news more unpredictable. NOVA therefore requires tighter confluence requirements — fewer trades, higher quality entries.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>NOVA applies the same disciplined approach as OMEGA GS to crypto. The multi-timeframe confluence system filters the noise that makes crypto so difficult to trade manually.</div>`,
+    task: {
+      q: "NOVA has a 'correlation guard' preventing simultaneous BTC and ETH positions. Why?",
+      options: [
+        { text: "A — To reduce API call frequency and avoid Bybit rate limiting.", correct: false, feedback: "API rate limits are not the reason. The correlation guard is a risk management rule, not a technical limitation." },
+        { text: "B — BTC and ETH are highly correlated — they move in the same direction. Opening both doubles effective risk on a single market move, not two independent trades.", correct: true, feedback: "Correct. When you're long BTC and long ETH, you haven't diversified — you've doubled your exposure to the same crypto market movement. If the market drops, both positions lose simultaneously. The correlation guard treats them as the same risk asset." },
+        { text: "C — Bybit doesn't allow simultaneous BTC and ETH positions.", correct: false, feedback: "Bybit absolutely allows simultaneous positions across different pairs. This is a strategy-level rule built into NOVA for risk management, not a platform restriction." }
+      ]
+    }
+  },
+  'systems-4': {
+    topic:'systems', num:4, title:"READING BOT RESULTS — WHAT THE NUMBERS ACTUALLY MEAN", sub:"Evaluate performance without being fooled", read:"9 MIN", free:false,
+    content:`<div class="lv-section">MOST BOT SELLERS LIE WITH NUMBERS</div>
+<p class="lv-text">You've seen it: "97% win rate!", "3000% in 6 months!" These are cherry-picked, backtested on optimised data, or fabricated. <strong>Knowing how to read real performance data is one of the most valuable skills in automated trading.</strong></p>
+<div class="lv-section">METRICS THAT ACTUALLY MATTER</div>
+<ul class="lv-list">
+  <li><strong>Expectancy:</strong> Average R per trade over 100+ trades. The single most important metric. Positive = profitable system.</li>
+  <li><strong>Maximum drawdown:</strong> Largest peak-to-trough loss. Can you psychologically handle a 40% drop?</li>
+  <li><strong>Win rate in context:</strong> Only meaningful alongside average R:R.</li>
+  <li><strong>Sample size:</strong> Under 100 trades is statistically meaningless.</li>
+  <li><strong>Out-of-sample performance:</strong> Results on data the strategy wasn't built on. Far more meaningful than in-sample backtests.</li>
+</ul>
+<div class="lv-callout"><span class="label">// RED FLAGS IN BOT MARKETING</span>Equity curve with no drawdown — impossible in real trading.<br>Win rate above 85% — usually overfitted.<br>Backtests only — no live trading results.<br>"Set and forget forever" — all strategies have regime changes.</div>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Evaluate bots on expectancy, drawdown, and out-of-sample performance. Any bot that can't show these metrics transparently is hiding something. A 3-month live track record beats a 3-year backtest every time.</div>`,
+    task: {
+      q: "A bot is advertised with '89% win rate, 400% return in 3 months, based on backtesting from 2020–2023.' What's the most important red flag?",
+      options: [
+        { text: "A — The 89% win rate is suspiciously high and suggests overfitting.", correct: false, feedback: "While an 89% win rate is suspicious, this isn't the most critical red flag. There's a more fundamental issue with the evidence presented." },
+        { text: "B — Results are based entirely on backtesting. No live trading results. Backtests on historical data can be optimised to show almost any performance.", correct: true, feedback: "Correct. The most critical issue is zero live trading results. Backtests can be curve-fitted to historical data. Only live trading results — real money, real slippage, real spreads — can validate a strategy." },
+        { text: "C — 3 months is too short to evaluate any trading system.", correct: false, feedback: "While 3 months is short, it's not the most critical issue. The fundamental problem is backtesting only — even 3 years of backtesting is less valuable than 3 months of real live results." }
+      ]
+    }
+  },
+  'systems-5': {
+    topic:'systems', num:5, title:"BUILDING YOUR FIRST EA CONCEPT", sub:"From trading idea to automated logic", read:"10 MIN", free:false,
+    content:`<div class="lv-section">EVERY BOT STARTS AS AN IDEA</div>
+<p class="lv-text">Before a single line of code, a bot is just a set of rules. Rules that can be stated clearly, without ambiguity. <strong>If you can write your strategy as precise if/then statements, you can automate it.</strong> If you can't, you don't have a strategy — you have a feeling.</p>
+<div class="lv-section">STEP 1 — DEFINE YOUR RULES PRECISELY</div>
+<div class="lv-callout"><span class="label">// MANUAL RULE → EA LOGIC</span>Manual: "I buy when it looks like London is starting a bullish move."<br><br>EA rule: "Open BUY if: time >= 08:00 UTC AND time <= 12:00 UTC AND EMA9 > EMA21 AND current candle closes above previous high AND ATR(14) > 0.8."<br><br>Same idea. One is tradeable. One is automatable.</div>
+<div class="lv-section">STEP 2 — DEFINE RISK RULES FIRST</div>
+<p class="lv-text">Before entry logic, define the complete risk framework: stop loss placement rule, take profit levels, lot sizing formula, daily loss limit, maximum simultaneous trades. <strong>These are the most important part of the EA.</strong></p>
+<div class="lv-section">STEP 3 — BACKTEST MANUALLY</div>
+<p class="lv-text">Go back through 3–6 months of historical charts and manually apply your rules. Count every valid signal. Record every result. Calculate expectancy. If it's not profitable in manual backtesting, coding it won't make it profitable.</p>
+<div class="lv-section">STEP 4 — CODE OR COLLABORATE</div>
+<p class="lv-text">If you can code MQL5, write it yourself. If you can't, the RawCore community includes traders who can code. Your strategy idea + someone else's coding ability is a legitimate path to a working bot.</p>
+<div class="lv-callout warn"><span class="label">// KEY TAKEAWAY</span>Automation starts with precision. Write rules in plain language first. If they're precise enough to be unambiguous, they're precise enough to be coded. The strategy always comes before the technology.</div>`,
+    task: {
+      q: "Before coding an EA, what is the most important first step?",
+      options: [
+        { text: "A — Learn MQL5 programming. You can't build a bot without coding skills.", correct: false, feedback: "Coding skills are useful but not the first step and not strictly necessary (you can collaborate). The most important first step is defining strategy rules precisely. Without clear rules, coding ability is useless." },
+        { text: "B — Define your strategy rules precisely in plain language — every entry condition, every risk rule, without ambiguity. If you can't write it clearly, you can't code it.", correct: true, feedback: "Correct. Strategy definition comes before everything else. 'I buy when it looks bullish' cannot be coded. 'I buy when EMA9 > EMA21 AND time is London session AND ATR > 0.8' can be coded exactly." },
+        { text: "C — Backtest historical data first to see if the idea has merit.", correct: false, feedback: "You can't backtest without defined rules — what would you be testing? The sequence is: define rules → manual backtest → code → automated backtest → live test. Skipping the first step makes all subsequent steps impossible." }
+      ]
+    }
   }
-  // Update UI with user info
-  const user = session.user;
-  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
-  const nameEl = document.querySelector('.nav-user span');
-  if (nameEl) nameEl.textContent = username;
-})();
+};
 
-// Logout function
-async function logout() {
-  await sb.auth.signOut();
-  window.location.href = 'index.html';
+
+const topicData = {
+  psychology: { title:'TRADING PSYCHOLOGY', color:'var(--purple)', desc:"Why smart traders make emotional decisions — and how to build a mindset that executes your plan when it matters most. Written from real experience of the dopamine trap.", lessons:['psych-1','psych-2','psych-3','psych-4','psych-5'] },
+  markets: { title:'MARKET STRUCTURE', color:'var(--blue)', desc:"Sessions, FVGs, supply and demand, liquidity sweeps, and gold-specific behaviour. The foundation everything else is built on.", lessons:['market-1','market-2','market-3','market-4','market-5'] },
+  risk: { title:'RISK MANAGEMENT', color:'var(--red)', desc:"R multiples, position sizing, stop loss placement, profit taking, and daily circuit breakers. The boring stuff that keeps you in the game.", lessons:['risk-1','risk-2','risk-3','risk-4','risk-5'] },
+  systems: { title:'TRADING BOTS EXPLAINED', color:'var(--green)', desc:"The real story behind ALPHA, OMEGA GS, and NOVA. How they were built, what rules they follow, and how to build your own EA concept.", lessons:['systems-1','systems-2','systems-3','systems-4','systems-5'] }
+};
+
+let credits = 1240, todayLessons = 0, todayTasks = 0, todayCredits = 0;
+let completedLessons = new Set(), completedTasks = new Set();
+let currentTopic = null;
+
+function openTopic(topicId) {
+  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('topic-' + topicId)?.classList.add('active');
+  ['psychology','markets','risk','systems'].forEach(t => {
+    const list = document.getElementById('list-' + t);
+    if (list) list.style.display = (t === topicId) ? 'block' : 'none';
+  });
+  currentTopic = topicId;
+  const topic = topicData[topicId];
+  const done = topic.lessons.filter(l => completedLessons.has(l)).length;
+  document.getElementById('contentArea').innerHTML = `
+    <div style="padding:28px;flex:1">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:14px;cursor:pointer;width:fit-content" onclick="showHome()" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">← ALL TOPICS</div>
+      <div style="font-family:var(--display);font-size:clamp(28px,4vw,48px);color:var(--text-bright);line-height:0.9;margin-bottom:10px">${topic.title}</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;max-width:580px;margin-bottom:20px">${topic.desc}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);border:1px solid var(--border);padding:5px 10px">${topic.lessons.length} LESSONS</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:5px 10px;background:var(--green-muted)">1 FREE</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);border:1px solid var(--border);padding:5px 10px">${done}/${topic.lessons.length} COMPLETE</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">
+        ${topic.lessons.map((lid, i) => {
+          const l = lessonData[lid];
+          const isDone = completedLessons.has(lid);
+          return `<div style="background:var(--dark);padding:14px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;transition:background 0.15s" 
+            onclick="openLesson('${lid}')"
+            onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--display);font-size:24px;color:var(--border);line-height:1;width:32px">0${i+1}</div>
+            <div>
+              <div style="font-size:13px;color:var(--text-bright);margin-bottom:3px">${l.title}</div>
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">${l.sub} · ${l.read}</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:8px;padding:3px 8px;border:1px solid;${isDone ? 'border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted)' : l.free ? 'border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted)' : 'border-color:var(--border);color:var(--text-dim)'}">
+              ${isDone ? '✓ DONE' : l.free ? 'FREE' : 'CORE'}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  document.getElementById('mainContent').scrollTop = 0;
 }
-</script>
 
+function openLesson(lessonId) {
+  const l = lessonData[lessonId];
+  if (!l) return;
+  currentTopic = l.topic;
+  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('topic-' + l.topic)?.classList.add('active');
+  ['psychology','markets','risk','systems'].forEach(t => {
+    const list = document.getElementById('list-' + t);
+    if (list) list.style.display = (t === l.topic) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.ll-item').forEach(i => i.classList.remove('active-lesson'));
+  document.getElementById('ll-' + lessonId)?.classList.add('active-lesson');
+
+  const taskDone = completedTasks.has(lessonId);
+  const topicLessons = topicData[l.topic].lessons;
+  const lessonIdx = topicLessons.indexOf(lessonId);
+  const prevId = lessonIdx > 0 ? topicLessons[lessonIdx - 1] : null;
+  const nextId = lessonIdx < topicLessons.length - 1 ? topicLessons[lessonIdx + 1] : null;
+
+  const taskHtml = `
+    <div style="background:var(--dark);border:1px solid var(--border);border-top:2px solid var(--green);padding:20px;margin:28px 0" id="taskBox">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">QUICK CHECK</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:3px 8px;background:var(--green-muted)">+10 PTS</div>
+      </div>
+      <div style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:16px">${l.task.q}</div>
+      <div id="taskOpts" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+        ${l.task.options.map((opt, i) => `
+          <div class="task-option${taskDone ? ' disabled' : ''}" id="taskOpt${i}" onclick="${taskDone ? '' : `answerTask('${lessonId}', ${i}, ${opt.correct})`}">
+            <div class="opt-letter">${String.fromCharCode(65+i)}</div>
+            <span>${opt.text}</span>
+          </div>`).join('')}
+      </div>
+      <div class="task-feedback${taskDone ? ' correct show' : ''}" id="taskFeedback">${taskDone ? '✓ You already completed this task.' : ''}</div>
+      <div class="credits-pop${taskDone ? ' show' : ''}" id="creditsPop"><span>+10 Core Credits earned ✓</span></div>
+    </div>`;
+
+  document.getElementById('contentArea').innerHTML = `
+    <div style="display:flex;flex-direction:column;min-height:100%">
+      <div style="flex:1;padding:28px;max-width:720px">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:12px;cursor:pointer;width:fit-content" onclick="openTopic('${l.topic}')" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">← ${topicData[l.topic].title}</div>
+        <div style="font-family:var(--display);font-size:clamp(22px,3.5vw,38px);color:var(--text-bright);line-height:0.95;margin-bottom:10px">${l.title}</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:22px">
+          <span>${l.read} READ</span>
+          <span style="padding:2px 8px;border:1px solid;${l.free ? 'border-color:rgba(0,255,136,0.3);color:var(--green)' : 'border-color:rgba(59,130,246,0.3);color:var(--blue)'}">${l.free ? 'FREE' : 'CORE'}</span>
+          <span>Lesson ${l.num} of ${topicLessons.length}</span>
+          <span style="color:var(--green)">+10 pts</span>
+        </div>
+        <div class="lv-body">${l.content}</div>
+        ${taskHtml}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-top:1px solid var(--border);background:var(--dark);flex-shrink:0">
+        <button style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;background:transparent;transition:all 0.2s" onclick="${prevId ? `openLesson('${prevId}')` : `openTopic('${l.topic}')`}" onmouseover="this.style.borderColor='var(--green)';this.style.color='var(--green)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">← ${prevId ? 'PREV' : 'BACK TO TOPIC'}</button>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">${l.num} / ${topicLessons.length}</div>
+        <button style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;padding:9px 18px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700" onclick="${nextId ? `openLesson('${nextId}')` : `openTopic('${l.topic}')`}">${nextId ? 'NEXT →' : 'TOPIC DONE ✓'}</button>
+      </div>
+    </div>`;
+
+  document.getElementById('mainContent').scrollTop = 0;
+  if (!completedLessons.has(lessonId)) {
+    completedLessons.add(lessonId);
+    todayLessons++;
+    earnCredits(10);
+    updateProgress();
+  }
+}
+
+function answerTask(lessonId, optIdx, isCorrect) {
+  if (completedTasks.has(lessonId)) return;
+  completedTasks.add(lessonId);
+  const l = lessonData[lessonId];
+  const opts = document.querySelectorAll('.task-option');
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[optIdx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) l.task.options.forEach((opt, i) => { if (opt.correct) opts[i].classList.add('correct'); });
+  const fb = document.getElementById('taskFeedback');
+  fb.textContent = l.task.options[optIdx].feedback;
+  fb.className = 'task-feedback show ' + (isCorrect ? 'correct' : 'wrong');
+  const pts = isCorrect ? 10 : 3;
+  earnCredits(pts);
+  const cp = document.getElementById('creditsPop');
+  cp.innerHTML = `<span>${isCorrect ? '+10 Core Credits earned ✓' : '+3 pts for participating'}</span>`;
+  cp.classList.add('show');
+  todayTasks++;
+  updateProgress();
+}
+
+function earnCredits(amount) {
+  credits += amount;
+  todayCredits += amount;
+  document.getElementById('creditsDisplay').textContent = credits.toLocaleString() + ' pts';
+  document.getElementById('rsCredits').textContent = '+' + todayCredits;
+  document.getElementById('rsLessons').textContent = todayLessons;
+  document.getElementById('rsTasks').textContent = todayTasks;
+  document.getElementById('lbPts').textContent = 240 + todayCredits;
+}
+
+function updateProgress() {
+  ['psychology','markets','risk','systems'].forEach(t => {
+    const tl = topicData[t].lessons;
+    const done = tl.filter(l => completedLessons.has(l)).length;
+    const pct = Math.round((done/tl.length)*100);
+    const el = document.getElementById('pct-'+t);
+    const bar = document.getElementById('bar-'+t);
+    const doneEl = document.getElementById('done-'+t);
+    const ktEl = document.getElementById('kt-'+t);
+    if (el) el.textContent = pct+'%';
+    if (bar) bar.style.width = pct+'%';
+    if (doneEl) doneEl.textContent = done+'/'+tl.length+' lessons';
+    if (ktEl) ktEl.textContent = pct+'%';
+  });
+}
+
+function showHome() {
+  currentTopic = null;
+  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+  ['psychology','markets','risk','systems'].forEach(t => {
+    const list = document.getElementById('list-'+t);
+    if (list) list.style.display = 'none';
+  });
+  document.getElementById('contentArea').innerHTML = `
+    <div style="padding:32px">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px">// SELECT A TOPIC TO BEGIN</div>
+      <div style="font-family:var(--display);font-size:48px;color:var(--text-bright);line-height:0.9;margin-bottom:16px">CHOOSE YOUR<br><span style="color:var(--green)">LESSON.</span></div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);max-width:560px;margin-top:24px">
+        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('psychology')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--purple);margin-bottom:6px">PSYCHOLOGY</div>
+          <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Mindset, discipline, dopamine</div>
+        </div>
+        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('markets')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--blue);margin-bottom:6px">MARKETS</div>
+          <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Sessions, FVGs, liquidity, gold</div>
+        </div>
+        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('risk')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--red);margin-bottom:6px">RISK MANAGEMENT</div>
+          <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">R multiple, sizing, stops, limits</div>
+        </div>
+        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('systems')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">TRADING BOTS</div>
+          <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">ALPHA, OMEGA, NOVA explained</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function openChallenge() { document.getElementById('challengeModal').classList.add('open'); }
+function closeChallenge() { document.getElementById('challengeModal').classList.remove('open'); }
+function answerChallenge(opt, isCorrect) {
+  document.querySelectorAll('.cb-option').forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  opt.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) document.querySelectorAll('.cb-option')[1].classList.add('correct');
+  earnCredits(isCorrect ? 25 : 5);
+  setTimeout(closeChallenge, 1200);
+}
+document.getElementById('challengeModal').addEventListener('click', function(e) { if (e.target===this) closeChallenge(); });
+</script>
 </body>
 </html>
