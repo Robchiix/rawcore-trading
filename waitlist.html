@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RawCore Trading — Join The Waitlist</title>
+<meta name="description" content="No fake gurus. No rented lambos. No selling courses. Just real trading, real systems, real community. Join the waitlist.">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #030405;
+  --green: #00ff88;
+  --green-dim: rgba(0,255,136,0.08);
+  --green-mid: rgba(0,255,136,0.15);
+  --red: #ff3355;
+  --text: #c8d4e0;
+  --text-dim: #3a4a5a;
+  --text-bright: #eaf2ff;
+  --mono: 'Share Tech Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'Rajdhani', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* SCANLINES */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,255,136,0.012) 2px,
+    rgba(0,255,136,0.012) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* NOISE OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.4;
+}
+
+/* GREEN GLOW TOP */
+.glow-top {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(0,255,136,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  animation: glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* CORNER MARKS */
+.corner {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-color: rgba(0,255,136,0.3);
+  border-style: solid;
+  z-index: 100;
+}
+.corner.tl { top: 20px; left: 20px; border-width: 1px 0 0 1px; }
+.corner.tr { top: 20px; right: 20px; border-width: 1px 1px 0 0; }
+.corner.bl { bottom: 20px; left: 20px; border-width: 0 0 1px 1px; }
+.corner.br { bottom: 20px; right: 20px; border-width: 0 1px 1px 0; }
+
+/* MAIN LAYOUT */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  position: relative;
+  z-index: 10;
+}
+
+/* TOP BAR */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(3,4,5,0.9);
+  border-bottom: 1px solid rgba(0,255,136,0.08);
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-bright);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+.logo span { color: var(--green); }
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* HERO CONTENT */
+.hero { max-width: 780px; width: 100%; text-align: center; }
+
+/* GLITCH TEXT */
+.glitch-wrap {
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.glitch-line {
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.5vw, 14px);
+  letter-spacing: 0.25em;
+  margin-bottom: 10px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.glitch-line.red { color: var(--red); }
+.glitch-line .strike {
+  position: relative;
+  color: var(--text-dim);
+}
+.glitch-line .strike::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.7;
+}
+.gl-label {
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+.gl-val { color: var(--text); }
+
+/* MAIN HEADLINE */
+.headline-wrap {
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+.headline {
+  font-family: var(--display);
+  font-size: clamp(64px, 12vw, 140px);
+  line-height: 0.88;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+}
+.headline .green { color: var(--green); }
+.headline-sub {
+  font-family: var(--display);
+  font-size: clamp(18px, 4vw, 40px);
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-top: 8px;
+}
+
+/* DIVIDER */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,0.3), transparent);
+  margin: 32px 0;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.9s forwards;
+}
+
+/* COUNTER */
+.counter-wrap {
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+.counter-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.25em;
+  margin-bottom: 12px;
+}
+.counter-num {
+  font-family: var(--display);
+  font-size: clamp(48px, 8vw, 80px);
+  color: var(--green);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  position: relative;
+  display: inline-block;
+}
+.counter-num::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0; right: 0;
+  height: 2px;
+  background: var(--green);
+  opacity: 0.3;
+}
+.counter-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-top: 10px;
+}
+
+/* FORM */
+.form-wrap {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 32px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.2s forwards;
+}
+.form-row {
+  display: flex;
+  gap: 1px;
+  background: rgba(0,255,136,0.15);
+  padding: 1px;
+}
+.form-input {
+  flex: 1;
+  background: var(--black);
+  border: none;
+  outline: none;
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+}
+.form-input::placeholder { color: var(--text-dim); }
+.form-input:focus { background: rgba(0,255,136,0.04); }
+.form-btn {
+  background: var(--green);
+  border: none;
+  padding: 16px 28px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--black);
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.form-btn:hover { opacity: 0.88; }
+.form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.form-note {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* SUCCESS STATE */
+.success-box {
+  display: none;
+  background: var(--green-dim);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-left: 2px solid var(--green);
+  padding: 20px 24px;
+  text-align: left;
+}
+.success-box.show { display: block; animation: fadeUp 0.4s ease forwards; }
+.success-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: 0.25em;
+  margin-bottom: 8px;
+}
+.success-num {
+  font-family: var(--display);
+  font-size: 36px;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.success-msg {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* MANIFESTO LINES */
+.manifesto {
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.4s forwards;
+}
+.manifesto-line {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.manifesto-line::before { content: '//'; color: rgba(0,255,136,0.3); }
+.manifesto-line span { color: var(--text); }
+
+/* BOTTOM */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(3,4,5,0.9);
+  border-top: 1px solid rgba(0,255,136,0.06);
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+.bottom-link {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  transition: color 0.2s;
+}
+.bottom-link:hover { color: var(--green); }
+.bottom-socials { display: flex; gap: 16px; align-items: center; }
+.social-link {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+.social-link:hover { color: var(--green); }
+
+/* FLOATING PARTICLES */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: float linear infinite;
+  opacity: 0;
+}
+@keyframes float {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.2; }
+  100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+}
+
+/* VERTICAL TEXT */
+.vert-text {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-family: var(--mono);
+  font-size: 8px;
+  color: rgba(0,255,136,0.2);
+  letter-spacing: 0.3em;
+  white-space: nowrap;
+  z-index: 50;
+}
+.vert-text-left {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  font-family: var(--mono);
+  font-size: 8px;
+  color: rgba(0,255,136,0.2);
+  letter-spacing: 0.3em;
+  white-space: nowrap;
+  z-index: 50;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* GLITCH ANIMATION ON HEADLINE */
+@keyframes glitch1 {
+  0%, 90%, 100% { clip-path: none; transform: none; }
+  92% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translateX(-4px); }
+  94% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translateX(4px); }
+  96% { clip-path: none; transform: none; }
+}
+.headline-glitch {
+  position: relative;
+  display: inline-block;
+}
+.headline-glitch::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: var(--green);
+  animation: glitch1 6s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .top-bar { padding: 0 16px; }
+  .page { padding: 80px 20px 80px; }
+  .form-row { flex-direction: column; }
+  .form-btn { padding: 14px; }
+  .vert-text, .vert-text-left { display: none; }
+  .bottom-bar { padding: 10px 16px; }
+  .corner { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CORNERS -->
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<!-- GLOW -->
+<div class="glow-top"></div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- VERTICAL TEXT -->
+<div class="vert-text">RAWCORETRADING.COM // 2026</div>
+<div class="vert-text-left">// NO GURUS · NO LAMBOS · JUST THE CORE</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a href="index.html" class="logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="status-pill">
+    <div class="status-dot"></div>
+    WAITLIST OPEN
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page">
+  <div class="hero">
+
+    <!-- GLITCH INTRO LINES -->
+    <div class="glitch-wrap">
+      <div class="glitch-line red">
+        <span class="gl-label">THE SYSTEM</span>
+        <span class="gl-val">IS RIGGED.</span>
+      </div>
+      <div class="glitch-line">
+        <span class="gl-label">PEOPLE YOU SEE?</span>
+        <span class="strike">REAL</span>
+        <span style="color:var(--red);font-size:10px">FAKE.</span>
+      </div>
+      <div class="glitch-line">
+        <span class="gl-label">LAMBOS THEY DRIVE?</span>
+        <span class="strike">THEIRS</span>
+        <span style="color:var(--red);font-size:10px">RENTED.</span>
+      </div>
+      <div class="glitch-line">
+        <span class="gl-label">LIFESTYLE THEY LIVE?</span>
+        <span style="color:var(--red);font-size:10px">SELLING COURSES.</span>
+      </div>
+      <div class="glitch-line" style="margin-top:16px;color:var(--green);font-size:clamp(10px,1.5vw,13px)">
+        <span>THAT'S ENOUGH.</span>
+      </div>
+    </div>
+
+    <!-- HEADLINE -->
+    <div class="headline-wrap">
+      <div class="headline">
+        <span class="headline-glitch" data-text="IT'S TIME">IT'S TIME</span><br>
+        FOR THE <span class="green">TRUTH.</span>
+      </div>
+      <div class="headline-sub">// RAWCORE STYLE</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- COUNTER -->
+    <div class="counter-wrap">
+      <div class="counter-label">// TRADERS ALREADY ON THE LIST</div>
+      <div class="counter-num" id="counterNum">0</div>
+      <div class="counter-sub">// FOUNDING MEMBER SPOTS · LIMITED</div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-wrap">
+      <div class="form-row" id="formRow">
+        <input
+          type="email"
+          class="form-input"
+          id="emailInput"
+          placeholder="your@email.com"
+          autocomplete="email"
+        />
+        <button class="form-btn" id="submitBtn" onclick="joinWaitlist()">
+          JOIN NOW →
+        </button>
+      </div>
+      <div class="form-note">// No spam. No courses. Just the launch notification when we open doors.</div>
+
+      <!-- SUCCESS -->
+      <div class="success-box" id="successBox">
+        <div class="success-tag">// YOU'RE IN</div>
+        <div class="success-num" id="yourNumber">#247</div>
+        <div class="success-msg">
+          You're on the list. When the doors open — you'll be first to know.<br>
+          Founding member price locked. <span style="color:var(--green)">Stay raw.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANIFESTO -->
+    <div class="manifesto">
+      <div class="manifesto-line"><span>Real trading knowledge — free for everyone</span></div>
+      <div class="manifesto-line"><span>Automated bots built in a garage, not a boardroom</span></div>
+      <div class="manifesto-line"><span>Transparent even when the bots lose</span></div>
+      <div class="manifesto-line"><span>No gurus. No lambos. Just the core.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div style="display:flex;gap:24px">
+    <a href="index.html" class="bottom-link">HOME</a>
+    <a href="knowledge.html" class="bottom-link">KNOWLEDGE</a>
+    <a href="pricing.html" class="bottom-link">PRICING</a>
+  </div>
+  <div class="bottom-socials">
+    <a href="https://t.me/rawcoretrading" target="_blank" class="social-link" title="Telegram">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.67l-2.945-.92c-.64-.203-.654-.64.136-.954l11.498-4.43c.533-.194 1.001.131.835.855z"/></svg>
+    </a>
+    <a href="https://www.tiktok.com/@rawcoretrading" target="_blank" class="social-link" title="TikTok">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/rawcoretrading" target="_blank" class="social-link" title="Instagram">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    </a>
+    <a href="https://x.com/rawcoretrading" target="_blank" class="social-link" title="X">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+  </div>
+</div>
+
+<script>
+// ── PARTICLES ──
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.cssText = `
+    left: ${Math.random() * 100}%;
+    width: ${Math.random() > 0.7 ? 2 : 1}px;
+    height: ${Math.random() > 0.7 ? 2 : 1}px;
+    animation-duration: ${8 + Math.random() * 16}s;
+    animation-delay: ${Math.random() * 8}s;
+  `;
+  particlesEl.appendChild(p);
+}
+
+// ── COUNTER ANIMATION ──
+// Stored in localStorage so it persists and feels real
+let count = parseInt(localStorage.getItem('rc_waitlist_count') || '0');
+if (count === 0) {
+  // Seed with a realistic starting number
+  count = Math.floor(Math.random() * 40) + 180; // 180-220
+  localStorage.setItem('rc_waitlist_count', count);
+}
+
+function animateCounter(target) {
+  const el = document.getElementById('counterNum');
+  let current = 0;
+  const step = Math.ceil(target / 60);
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current.toLocaleString();
+    if (current >= target) clearInterval(timer);
+  }, 25);
+}
+
+// Start counter after page loads
+setTimeout(() => animateCounter(count), 1400);
+
+// ── WAITLIST FORM ──
+async function joinWaitlist() {
+  const email = document.getElementById('emailInput').value.trim();
+  const btn = document.getElementById('submitBtn');
+
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.borderBottom = '1px solid var(--red)';
+    document.getElementById('emailInput').placeholder = 'enter a valid email';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'JOINING...';
+
+  // Simulate API call — replace with real Supabase insert later
+  await new Promise(r => setTimeout(r, 800));
+
+  // Increment counter
+  count++;
+  localStorage.setItem('rc_waitlist_count', count);
+  document.getElementById('counterNum').textContent = count.toLocaleString();
+
+  // Show success
+  document.getElementById('formRow').style.display = 'none';
+  document.getElementById('yourNumber').textContent = '#' + count;
+  document.getElementById('successBox').classList.add('show');
+
+  // Hide form note
+  document.querySelector('.form-note').style.display = 'none';
+}
+
+// Enter key support
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') joinWaitlist();
+});
+
+// ── RANDOM GLITCH EFFECT ON HEADLINE ──
+setInterval(() => {
+  const h = document.querySelector('.headline-glitch');
+  if (h && Math.random() > 0.7) {
+    h.style.textShadow = `${Math.random()*6-3}px 0 rgba(0,255,136,0.5)`;
+    setTimeout(() => { if(h) h.style.textShadow = 'none'; }, 100);
+  }
+}, 2000);
+</script>
+</body>
+</html>
