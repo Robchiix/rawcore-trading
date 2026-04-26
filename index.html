@@ -1525,10 +1525,10 @@
       <button class="price-btn">START FREE</button>
     </div>
     <div class="price-card featured">
-      <div class="price-tier featured-label">// MOST POPULAR</div>
+      <div class="price-tier featured-label">// FOUNDING MEMBER — FIRST 500</div>
       <div class="price-tier">CORE MEMBER</div>
       <div class="price-amount"><span>€</span>28</div>
-      <div class="price-period">// PER MONTH · CANCEL ANYTIME</div>
+      <div class="price-period">// PER MONTH · CANCEL ANYTIME · <span style="color:var(--amber)">PRICE LOCKS IN FOREVER</span></div>
       <ul class="price-features">
         <li>Everything in Free</li>
         <li>Full bot library + source code</li>
@@ -1538,7 +1538,8 @@
         <li>Broker setup walkthroughs</li>
         <li>Early access to new systems</li>
       </ul>
-      <button class="price-btn featured-btn">JOIN THE CORE</button>
+      <button class="price-btn featured-btn">JOIN THE CORE — €28/MO</button>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:10px;text-align:center">// After 500 members price rises to €33/mo. You lock in €28 forever.</div>
     </div>
     <div class="price-card">
       <div class="price-tier">WEEKLY ACCESS</div>
@@ -1564,7 +1565,7 @@
   <div class="shop-header">
     <div class="section-tag">// THE DROP</div>
     <h2 class="shop-title">WEAR THE <span class="green">CORE.</span></h2>
-    <p class="shop-sub">No lambos. No fake flex. Real trader energy on quality kit. <strong>Founding member prices — limited time.</strong></p>
+    <p class="shop-sub">Merch is coming. Designs are in progress — quality kit, no fast fashion. <strong>Get notified when it drops.</strong></p>
   </div>
   <div class="shop-grid">
 
@@ -1644,7 +1645,10 @@
 </footer>
 
 <script>
-// CANDLE CHART
+// ============================================================
+// LIVE PRICE + CHART — weekdays = XAUUSD, weekends = BTC
+// ============================================================
+
 const canvas = document.getElementById('candleChart');
 const ctx = canvas.getContext('2d');
 
@@ -1653,75 +1657,67 @@ function resizeCanvas() {
   canvas.width = wrap.clientWidth - 32;
   canvas.height = wrap.clientHeight - 32;
 }
-
 resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
 
+// Determine if weekend (crypto chart) or weekday (gold chart)
+const dow = new Date().getDay(); // 0=Sun, 6=Sat
+const isWeekend = dow === 0 || dow === 6;
+
+// Update chart title label
+const chartTitleEl = document.querySelector('.chart-title');
+if (chartTitleEl) chartTitleEl.textContent = isWeekend ? 'BTCUSD // 1H' : 'XAUUSD // 5M';
+
+// ── CANDLE ENGINE ──
 let candles = [];
-let basePrice = 2341.84;
+let livePrice = isWeekend ? 71240 : 2341.84;
+let prevFetchPrice = livePrice;
 
-function generateCandle(prev) {
-  const open = prev ? prev.close : basePrice;
-  const change = (Math.random() - 0.48) * 3.5;
+function generateCandle(prev, volatility) {
+  const open = prev ? prev.close : livePrice;
+  const change = (Math.random() - 0.48) * volatility;
   const close = open + change;
-  const high = Math.max(open, close) + Math.random() * 1.2;
-  const low = Math.min(open, close) - Math.random() * 1.2;
+  const high = Math.max(open, close) + Math.random() * volatility * 0.4;
+  const low  = Math.min(open, close) - Math.random() * volatility * 0.4;
   return { open, close, high, low };
 }
 
-for (let i = 0; i < 60; i++) {
-  candles.push(generateCandle(candles[candles.length - 1]));
-}
+const vol = isWeekend ? 180 : 3.5;
+for (let i = 0; i < 60; i++) candles.push(generateCandle(candles[candles.length - 1], vol));
 
 function drawChart() {
-  const w = canvas.width;
-  const h = canvas.height;
+  const w = canvas.width, h = canvas.height;
   ctx.clearRect(0, 0, w, h);
-
   const prices = candles.flatMap(c => [c.high, c.low]);
-  const minP = Math.min(...prices);
-  const maxP = Math.max(...prices);
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
   const range = maxP - minP || 1;
   const pad = 10;
-
   const toY = p => pad + (1 - (p - minP) / range) * (h - 2 * pad);
 
-  // Grid lines
-  ctx.strokeStyle = 'rgba(26,31,38,0.8)';
-  ctx.lineWidth = 1;
+  // Grid
+  ctx.strokeStyle = 'rgba(26,31,38,0.8)'; ctx.lineWidth = 1;
   for (let i = 0; i <= 4; i++) {
     const y = pad + (i / 4) * (h - 2 * pad);
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(90,106,122,0.5)';
+    ctx.font = '9px Share Tech Mono';
+    ctx.fillText((maxP - (i / 4) * range).toFixed(isWeekend ? 0 : 2), 4, y - 3);
   }
 
   const cw = (w - 20) / candles.length;
-  const body = cw * 0.6;
-
   candles.forEach((c, i) => {
     const x = 10 + i * cw + cw / 2;
     const bull = c.close >= c.open;
-    const color = bull ? '#00ff88' : '#ff3355';
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(x, toY(c.high));
-    ctx.lineTo(x, toY(c.low));
-    ctx.stroke();
-
-    const bodyTop = toY(Math.max(c.open, c.close));
-    const bodyBot = toY(Math.min(c.open, c.close));
-    const bodyH = Math.max(bodyBot - bodyTop, 1);
-
+    ctx.strokeStyle = bull ? '#00ff88' : '#ff3355'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, toY(c.high)); ctx.lineTo(x, toY(c.low)); ctx.stroke();
+    const bTop = toY(Math.max(c.open, c.close));
+    const bBot = toY(Math.min(c.open, c.close));
     ctx.fillStyle = bull ? 'rgba(0,255,136,0.85)' : 'rgba(255,51,85,0.85)';
-    ctx.fillRect(x - body / 2, bodyTop, body, bodyH);
+    ctx.fillRect(x - cw * 0.3, bTop, cw * 0.6, Math.max(bBot - bTop, 1));
   });
 
-  // EMA line (simplified visual)
-  ctx.strokeStyle = 'rgba(0,255,136,0.4)';
-  ctx.lineWidth = 1.5;
+  // EMA line
+  ctx.strokeStyle = 'rgba(0,255,136,0.35)'; ctx.lineWidth = 1.5;
   ctx.beginPath();
   candles.forEach((c, i) => {
     const x = 10 + i * cw + cw / 2;
@@ -1733,18 +1729,98 @@ function drawChart() {
 
 drawChart();
 
-// Live update
-setInterval(() => {
-  candles.push(generateCandle(candles[candles.length - 1]));
-  if (candles.length > 70) candles.shift();
-  
-  const last = candles[candles.length - 1];
+// ── LIVE PRICE FETCH ──
+async function fetchLivePrice() {
+  try {
+    if (isWeekend) {
+      // BTC price from CoinGecko (free, no key)
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', { cache: 'no-store' });
+      const data = await res.json();
+      return data?.bitcoin?.usd || null;
+    } else {
+      // Gold price from metals.live (free, no key needed)
+      const res = await fetch('https://api.metals.live/v1/spot/gold', { cache: 'no-store' });
+      const data = await res.json();
+      return data?.[0]?.price || null;
+    }
+  } catch (e) {
+    return null; // silently fall back to simulated
+  }
+}
+
+function updatePriceDisplay(price, prevPrice) {
   const priceEl = document.getElementById('livePrice');
-  priceEl.textContent = last.close.toFixed(2);
-  priceEl.className = 'chart-price' + (last.close >= last.open ? '' : ' down');
-  
+  if (!priceEl) return;
+  const fmt = isWeekend ? price.toLocaleString('en-US', { maximumFractionDigits: 0 }) : price.toFixed(2);
+  priceEl.textContent = fmt;
+  priceEl.className = 'chart-price' + (price >= prevPrice ? '' : ' down');
+}
+
+// Update chart ticker + footer session
+function updateSession() {
+  const now = new Date();
+  const utcH = now.getUTCHours();
+  const utcMin = now.getUTCMinutes();
+  const utcTotal = utcH * 60 + utcMin;
+
+  const sessions = [
+    { name: 'SYDNEY',   start: 21*60, end: 6*60,  next: 'TOKYO' },
+    { name: 'TOKYO',    start: 0,     end: 9*60,   next: 'LONDON' },
+    { name: 'LONDON',   start: 7*60,  end: 16*60,  next: 'NEW YORK' },
+    { name: 'NEW YORK', start: 12*60, end: 21*60,  next: 'SYDNEY' },
+  ];
+
+  // Simple session detection
+  let active = 'ASIAN';
+  if (utcTotal >= 7*60 && utcTotal < 16*60) active = 'LONDON';
+  else if (utcTotal >= 12*60 && utcTotal < 21*60) active = 'NEW YORK';
+  else if (utcTotal >= 21*60 || utcTotal < 6*60) active = 'SYDNEY';
+
+  const sessionEls = document.querySelectorAll('[id^="sessionLabel"]');
+  sessionEls.forEach(el => { el.textContent = active; el.style.color = 'var(--green)'; });
+
+  // Footer session in chart
+  const footerSession = document.getElementById('chartSession');
+  if (footerSession) footerSession.innerHTML = `<span style="color:var(--green)">● ${active}</span>`;
+
+  // Weekend notice
+  if (isWeekend) {
+    const footerSession2 = document.getElementById('chartSession');
+    if (footerSession2) footerSession2.innerHTML += ' <span style="color:var(--amber);font-size:8px">// FOREX CLOSED · CRYPTO 24/7</span>';
+  }
+}
+
+// ── MAIN UPDATE LOOP ──
+let simPrice = livePrice;
+let fetchedOnce = false;
+
+async function mainLoop() {
+  // Fetch real price every 30s
+  const fetched = await fetchLivePrice();
+  if (fetched) {
+    prevFetchPrice = simPrice;
+    simPrice = fetched;
+    livePrice = fetched;
+    fetchedOnce = true;
+  }
+
+  // Drift candles toward real price
+  const drift = fetchedOnce ? (simPrice - candles[candles.length-1].close) * 0.05 : 0;
+  candles.push(generateCandle({ close: candles[candles.length-1].close + drift }, vol * 0.3));
+  if (candles.length > 70) candles.shift();
+
+  updatePriceDisplay(candles[candles.length-1].close, candles[candles.length-2]?.close || livePrice);
   drawChart();
-}, 1200);
+  updateSession();
+}
+
+mainLoop();
+setInterval(mainLoop, 5000);
+// Full price refresh every 30s
+setInterval(async () => {
+  const fetched = await fetchLivePrice();
+  if (fetched) { simPrice = fetched; livePrice = fetched; }
+}, 30000);
 
 // SCROLL REVEALS
 const observer = new IntersectionObserver(entries => {

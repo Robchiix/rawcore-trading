@@ -581,79 +581,26 @@
   <!-- ── CORE POT ── -->
   <div class="panel">
     <div class="panel-head">
-      <span class="panel-title">// CORE POT — MAY 2026</span>
-      <span class="panel-action" style="color:var(--green)">✓ YOU'RE ENTERED</span>
+      <span class="panel-title">// CORE POT — LOCKED</span>
+      <span class="panel-action" style="color:var(--amber)">⚠ UNLOCKS AT 100 MEMBERS</span>
     </div>
-    <div class="pot-wrap">
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-        <div>
-          <div class="pot-amount-big">€0</div>
-          <div class="pot-sub">// BUILDING · DRAW END OF MONTH</div>
-          <div class="pot-bar-track"><div class="pot-bar-fill" id="potBar" style="width:2%"></div></div>
-          <div class="pot-bar-labels"><span>€0 so far</span><span>Est. €134 by draw</span></div>
-          <div class="pot-stats">
-            <div class="pot-stat">
-              <div class="pot-stat-label">MEMBERS</div>
-              <div class="pot-stat-val">67</div>
-            </div>
-            <div class="pot-stat">
-              <div class="pot-stat-label">DAYS LEFT</div>
-              <div class="pot-stat-val amber" id="daysLeft">12</div>
-            </div>
-            <div class="pot-stat">
-              <div class="pot-stat-label">YOUR ENTRY</div>
-              <div class="pot-stat-val green">✓</div>
-            </div>
-          </div>
-          <div class="pot-section-title">// IF YOU WIN, CHOOSE YOUR REWARD</div>
-          <div class="pot-choices">
-            <div class="pot-choice active" onclick="choosePot(this)">Trading Funds</div>
-            <div class="pot-choice" onclick="choosePot(this)">Cash</div>
-            <div class="pot-choice" onclick="choosePot(this)">Merch</div>
-            <div class="pot-choice" onclick="choosePot(this)">Donate</div>
-          </div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);line-height:1.7;padding:12px;background:var(--dark);border:1px solid var(--border)">
-            Every Core member contributes €2/month to the pot. One member wins it all at month end. Draw is random — no way to buy extra entries. Winning is just luck, staying in the top is skill.
-          </div>
-        </div>
-
-        <div>
-          <div class="pot-section-title">// PAST WINNERS</div>
-          <div class="pot-history">
-            <div class="pot-hist-item">
-              <span class="pot-hist-winner">USR_041</span>
-              <span class="pot-hist-choice">Trading Funds</span>
-              <span class="pot-hist-prize">+€118</span>
-              <span class="pot-hist-date">Apr 2026</span>
-            </div>
-            <div class="pot-hist-item">
-              <span class="pot-hist-winner">GoldFox</span>
-              <span class="pot-hist-choice">Cash</span>
-              <span class="pot-hist-prize">+€96</span>
-              <span class="pot-hist-date">Mar 2026</span>
-            </div>
-            <div class="pot-hist-item">
-              <span class="pot-hist-winner">MarketKing</span>
-              <span class="pot-hist-choice">Donate</span>
-              <span class="pot-hist-prize">+€84</span>
-              <span class="pot-hist-date">Feb 2026</span>
-            </div>
-            <div class="pot-hist-item">
-              <span class="pot-hist-winner">SteadyTrade</span>
-              <span class="pot-hist-choice">Merch</span>
-              <span class="pot-hist-prize">+€72</span>
-              <span class="pot-hist-date">Jan 2026</span>
-            </div>
-          </div>
-          <div style="margin-top:16px;font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.8">
-            // All draws are verified and announced in #general. Past winners are shown publicly. No manipulation — ever. If you want to see the draw happen live, join the build session on draw day.
-          </div>
-        </div>
+    <div style="padding:40px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
+      <div style="font-size:48px">🔒</div>
+      <div style="font-family:var(--display);font-size:36px;color:var(--text-bright)">COMING SOON</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);max-width:480px;line-height:1.8">
+        The Core Pot activates when we hit <span style="color:var(--amber)">100 members</span>. Every Core member contributes €2/month. One member wins it all at month end — random draw, no manipulation, verified publicly.<br><br>
+        <span style="color:var(--green)">// Current members: 67 · Target: 100 · Gap: 33</span>
+      </div>
+      <div style="width:100%;max-width:360px">
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:6px"><span>67 members</span><span>100 members</span></div>
+        <div style="height:6px;background:var(--border);width:100%"><div style="height:100%;width:67%;background:var(--amber);transition:width 1s ease"></div></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:6px;text-align:center">67% there · 33 members to go</div>
       </div>
     </div>
-  </div>
 
+</div><!-- end panel -->
+
+</div><!-- end page-body -->
 </div><!-- end page-body -->
 
 <script>

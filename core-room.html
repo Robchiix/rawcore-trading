@@ -435,9 +435,9 @@
         <span class="channel-prefix">#</span> general
         <span class="channel-dot live"></span>
       </div>
-      <div class="channel-item" onclick="switchChannel('signals', this)">
+      <div class="channel-item" onclick="switchChannel('signals', this)" style="opacity:0.4;cursor:not-allowed" title="Signals locked — enabled when bots are consistently profitable">
         <span class="channel-prefix">#</span> signals
-        <span class="channel-unread">2</span>
+        <span style="font-family:var(--mono);font-size:8px;color:var(--amber);margin-left:auto;border:1px solid rgba(245,158,11,0.3);padding:1px 5px">LOCKED</span>
       </div>
       <div class="channel-item" onclick="switchChannel('systems', this)">
         <span class="channel-prefix">#</span> systems
@@ -510,195 +510,23 @@
 
     <div class="messages-area" id="messagesArea">
 
-      <div class="date-divider"><span class="date-label">TODAY — APR 26</span></div>
+      <div class="date-divider"><span class="date-label" id="todayLabel">TODAY</span></div>
 
-      <!-- CORE SYSTEM MESSAGE -->
-      <div class="msg-row with-header">
+      <!-- WELCOME MESSAGE — changes per channel -->
+      <div class="msg-row with-header" id="welcomeMsg">
         <div class="msg-av-col"><div class="msg-av core">RC</div></div>
         <div class="msg-content">
           <div class="msg-header">
             <span class="msg-author core">RawCore</span>
             <span class="msg-role core">CORE</span>
-            <span class="msg-time">08:00</span>
+            <span class="msg-time" id="welcomeTime">—</span>
           </div>
-          <div class="msg-text">Good morning. London session active. XAUUSD holding above <span class="hi">2,338</span> — bias remains <span class="hi">bullish</span> while above that level. OMEGA is running. NOVA scanning. Keep it clean.</div>
+          <div class="msg-text" id="welcomeText">Welcome to <span class="hi">#general</span> — the main room. Talk trading, share setups, ask questions. Keep it real and keep it clean. No spam, no ego.</div>
         </div>
       </div>
 
-      <!-- SIGNAL POST -->
-      <div class="msg-row with-header" style="margin-top:4px">
-        <div class="msg-av-col"><div class="msg-av signal-av">⚡</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author signal-auth">OMEGA</span>
-            <span class="msg-role" style="background:rgba(0,255,136,0.08);color:var(--green);border-color:rgba(0,255,136,0.2)">BOT</span>
-            <span class="msg-time">08:42</span>
-          </div>
-          <div class="msg-text">Signal triggered — XAUUSD</div>
-          <div class="signal-card">
-            <div class="signal-card-header">
-              <span class="signal-card-title">XAUUSD · BUY</span>
-              <span class="signal-card-dir buy">BUY</span>
-            </div>
-            <div class="signal-levels">
-              <div class="signal-level-item"><span class="signal-level-key">ENTRY</span><span class="signal-level-val">2,338.40</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">SL</span><span class="signal-level-val red">2,334.40</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">TP1</span><span class="signal-level-val green">2,342.40</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">TP2</span><span class="signal-level-val green">2,346.40</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">TP3</span><span class="signal-level-val green">2,350.40</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">RR</span><span class="signal-level-val">1:1 · 1:2 · 1:3</span></div>
-            </div>
-            <div class="signal-card-footer">
-              <span>EMA9×EMA21 cross · ATR OK · London session</span>
-              <span style="color:var(--green)">+2.4R CLOSED ✓</span>
-            </div>
-          </div>
-          <div class="msg-reactions">
-            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🔥</span><span class="reaction-count">14</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">✅</span><span class="reaction-count">9</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MEMBER MESSAGE -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av">GF</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author member">GoldFox</span>
-            <span class="msg-time">08:55</span>
-          </div>
-          <div class="msg-text">TP1 hit. Moving SL to breakeven. Running to TP2 🎯</div>
-          <div class="msg-reactions">
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💪</span><span class="reaction-count">6</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="msg-row">
-        <div class="msg-av-col"><div class="msg-av">GF</div></div>
-        <div class="msg-content">
-          <div class="msg-text"><span class="hi">TP2 hit</span> — <span class="hi">+2.0R</span> locked. Letting TP3 run with no risk now. This is how OMEGA is supposed to work.</div>
-        </div>
-      </div>
-
-      <!-- ANOTHER MEMBER -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av">AX</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author member">AlgoX</span>
-            <span class="msg-time">09:02</span>
-          </div>
-          <div class="msg-text">Anyone else notice the ATR Rider fork from yesterday is holding better SL distances on gold? Tested it on 3 weeks of data. <span class="amber">Will post results in #systems.</span></div>
-        </div>
-      </div>
-
-      <!-- MODERATOR -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);color:var(--amber)">MK</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author" style="color:var(--amber)">MarketKing</span>
-            <span class="msg-role mod">MOD</span>
-            <span class="msg-time">09:06</span>
-          </div>
-          <div class="msg-text">Good call. Post it with the backtest parameters and R-results. If the logic holds up we'll look at merging it. Use <span class="code">#systems</span> thread format.</div>
-        </div>
-      </div>
-
-      <!-- MEMBER WITH CHART -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av">ST</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author member">SteadyTrade</span>
-            <span class="msg-time">09:14</span>
-          </div>
-          <div class="msg-text">XAUUSD 5M structure — clean higher highs forming above 2,340. EMA9 holding as dynamic support after the cross.</div>
-          <div class="msg-attachment">
-            <span class="attachment-icon">📊</span>
-            <div>
-              <div style="color:var(--text-bright);margin-bottom:3px">XAUUSD_5M_structure.png</div>
-              <div>Chart screenshot · 09:14</div>
-            </div>
-          </div>
-          <div class="msg-reactions">
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">👀</span><span class="reaction-count">4</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">✅</span><span class="reaction-count">3</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CORE SYSTEM CLOSE MESSAGE -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av core">RC</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author core">RawCore</span>
-            <span class="msg-role core">CORE</span>
-            <span class="msg-time">09:42</span>
-          </div>
-          <div class="msg-text">OMEGA signal closed — <span class="hi">+2.4R</span>. All 4 TPs hit. TP3 caught the full move. Textbook. Full trade breakdown posted in <span class="code">#signals</span>.</div>
-          <div class="msg-reactions">
-            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🔥</span><span class="reaction-count">21</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">🎯</span><span class="reaction-count">15</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💚</span><span class="reaction-count">8</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- UNGURUED POST -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av expose-av">UG</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author expose-auth">UNGURUED</span>
-            <span class="msg-role" style="background:rgba(245,158,11,0.08);color:var(--amber);border-color:rgba(245,158,11,0.2)">EXPOSE</span>
-            <span class="msg-time">10:15</span>
-          </div>
-          <div class="msg-text">New drop — "$1,500 ICT course vs what's actually in it." 4-part thread. Short version: 80% is YouTube content resold. The 20% that's real? We cover it free in <span class="code">#knowledge</span>. Full breakdown in <span class="code">#ungurued</span>.</div>
-          <div class="msg-reactions">
-            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🫡</span><span class="reaction-count">33</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💀</span><span class="reaction-count">18</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- NOVA SIGNAL -->
-      <div class="msg-row with-header">
-        <div class="msg-av-col"><div class="msg-av" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);color:var(--blue)">⚡</div></div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-author" style="color:var(--blue)">NOVA</span>
-            <span class="msg-role" style="background:rgba(59,130,246,0.08);color:var(--blue);border-color:rgba(59,130,246,0.2)">BOT</span>
-            <span class="msg-time">10:28</span>
-          </div>
-          <div class="msg-text">Signal triggered — BTCUSDT</div>
-          <div class="signal-card" style="border-left-color:var(--blue)">
-            <div class="signal-card-header">
-              <span class="signal-card-title">BTCUSDT · LONG</span>
-              <span class="signal-card-dir buy">LONG</span>
-            </div>
-            <div class="signal-levels">
-              <div class="signal-level-item"><span class="signal-level-key">ENTRY</span><span class="signal-level-val">70,840</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">SL</span><span class="signal-level-val red">69,900</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">TP</span><span class="signal-level-val green">73,200</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">LEVERAGE</span><span class="signal-level-val amber">20×</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">CONF</span><span class="signal-level-val">FVG + 4H demand</span></div>
-              <div class="signal-level-item"><span class="signal-level-key">STATUS</span><span class="signal-level-val amber">● RUNNING +1.4R</span></div>
-            </div>
-            <div class="signal-card-footer">
-              <span>4H bias bullish · 1H demand zone · 15M FVG fill</span>
-              <span style="color:var(--amber)">● OPEN</span>
-            </div>
-          </div>
-          <div class="msg-reactions">
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">🚀</span><span class="reaction-count">11</span></div>
-            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">👀</span><span class="reaction-count">7</span></div>
-          </div>
-        </div>
-      </div>
+      <!-- SPACER -->
+      <div style="height:8px;flex-shrink:0"></div>
 
       <!-- SPACER so messages don't hide behind compose -->
       <div style="height:8px;flex-shrink:0"></div>
@@ -725,24 +553,31 @@
   <!-- ── RIGHT PANEL ── -->
   <div class="right-panel">
 
-    <div class="rp-section">
-      <div class="rp-title">// TODAY'S ACTIVITY</div>
-      <div class="rp-stat"><span class="rp-stat-key">MESSAGES</span><span class="rp-stat-val">47</span></div>
-      <div class="rp-stat"><span class="rp-stat-key">SIGNALS</span><span class="rp-stat-val amber">2</span></div>
-      <div class="rp-stat"><span class="rp-stat-key">OMEGA P&L</span><span class="rp-stat-val green">+2.4R</span></div>
-      <div class="rp-stat"><span class="rp-stat-key">NOVA P&L</span><span class="rp-stat-val amber">+1.4R ●</span></div>
-      <div class="rp-stat"><span class="rp-stat-key">MEMBERS</span><span class="rp-stat-val">67 total</span></div>
+    <!-- RAWCORE AI -->
+    <div class="rp-section" style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0">
+      <div class="rp-title">// RAWCORE AI</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:10px;line-height:1.6">Knows trading, bots, RawCore. Nothing else.</div>
+      <div id="aiMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;padding-right:4px">
+        <div style="background:var(--card);border:1px solid var(--border);border-left:2px solid var(--green);padding:10px 12px;">
+          <div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:5px">RAWCORE AI</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.6">Hey. Ask me anything about trading, bots, market structure, or how RawCore works. That's my lane — I don't do anything else.</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0">
+        <textarea id="aiInput" rows="2" placeholder="Ask about trading, bots, RawCore..." style="background:var(--card);border:1px solid var(--border);padding:8px 10px;font-family:var(--mono);font-size:10px;color:var(--text);outline:none;resize:none;transition:border-color 0.2s;width:100%" onfocus="this.style.borderColor='rgba(0,255,136,0.4)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();askAI()}"></textarea>
+        <button onclick="askAI()" style="background:var(--green);color:var(--black);border:none;font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:7px;cursor:pointer;font-weight:700;transition:opacity 0.2s;width:100%" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1" id="aiBtn">ASK →</button>
+      </div>
     </div>
 
     <div class="rp-section">
       <div class="rp-title">// PINNED</div>
-      <div class="rp-pin">
-        <div class="rp-pin-label">// SIGNAL FORMAT</div>
-        Post signals with PAIR, DIR, ENTRY, SL, TP. No track record = no credibility.
-      </div>
       <div class="rp-pin" style="border-left-color:var(--amber)">
-        <div class="rp-pin-label" style="color:var(--amber)">// NEXT BUILD SESSION</div>
-        Tue Apr 29 · 20:00 UTC — OMEGA deep dive with live code walk.
+        <div class="rp-pin-label" style="color:var(--amber)">// SIGNALS LOCKED</div>
+        No signals until bots are consistently profitable. When they are — signals come from the data, not from opinions.
+      </div>
+      <div class="rp-pin">
+        <div class="rp-pin-label">// NEXT BUILD SESSION</div>
+        TBA — watch #general for announcements.
       </div>
     </div>
 
@@ -797,24 +632,32 @@ async function logout() {
 
 // ── CHANNEL SWITCHING ──
 const channelData = {
-  general: { desc: '· Main room — trading, bots, market talk' },
-  signals:  { desc: '· Verified signals only — with context and track record' },
-  systems:  { desc: '· Bot builds, forks, strategy sharing' },
-  gold:     { desc: '· XAUUSD specific — analysis, setups, results' },
-  crypto:   { desc: '· BTC/ETH/SOL — NOVA discussion' },
-  knowledge:{ desc: '· Questions, lessons, learning discussion' },
-  ungurued: { desc: '· Guru exposure — no fluff, just facts' },
+  general:  { desc: '· Main room — trading, bots, market talk', welcome: 'Welcome to <span class="hi">#general</span> — the main room. Talk trading, share setups, ask questions. Keep it real and keep it clean. No spam, no ego.' },
+  signals:  { desc: '· LOCKED — enabled when bots are profitable', welcome: '<span style="color:var(--amber)">⚠ #signals is locked.</span> Signals will be published here when the bots are consistently profitable. No opinions masking as signals. When the data says go — it goes.', locked: true },
+  systems:  { desc: '· Bot builds, forks, strategy sharing', welcome: 'Welcome to <span class="hi">#systems</span> — share your bot builds, strategy variations, backtests. If you fork OMEGA or NOVA, post the diff and the results. Show your work.' },
+  gold:     { desc: '· XAUUSD analysis, setups, results', welcome: 'Welcome to <span class="hi">#gold-xauusd</span> — XAUUSD specific. Setups, session analysis, trade results. Gold only. Keep it structured.' },
+  crypto:   { desc: '· BTC/ETH/SOL — NOVA discussion', welcome: 'Welcome to <span class="hi">#crypto</span> — BTC, ETH, SOL. Market conditions, NOVA trades, on-chain context. No shitcoin spam.' },
+  knowledge:{ desc: '· Questions, lessons, learning discussion', welcome: 'Welcome to <span class="hi">#knowledge</span> — ask questions about lessons, request explanations, share things you learned. No stupid questions. We were all beginners.' },
+  ungurued: { desc: '· Guru exposure — no fluff, just facts', welcome: 'Welcome to <span class="hi">#ungurued</span> — we break down the trading guru industry. Expose the tactics, show what\'s real vs what\'s theatre. Evidence only.' },
 };
 
 function switchChannel(name, el) {
+  const ch = channelData[name];
+  if (ch?.locked) return; // don't switch to locked channels
   document.querySelectorAll('.channel-item').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('channelName').textContent = name;
-  document.getElementById('channelDesc').textContent = channelData[name]?.desc || '';
+  document.getElementById('channelDesc').textContent = ch?.desc || '';
   document.querySelector('.compose-input').placeholder = `Message #${name}...`;
-  // remove unread badge from clicked channel
+  // Update welcome message
+  const welcomeText = document.getElementById('welcomeText');
+  if (welcomeText && ch?.welcome) welcomeText.innerHTML = ch.welcome;
+  // remove unread badge
   const badge = el.querySelector('.channel-unread');
   if (badge) badge.remove();
+  // scroll to top so welcome is visible
+  const area = document.getElementById('messagesArea');
+  if (area) area.scrollTop = 0;
 }
 
 // ── REACTIONS ──
@@ -910,6 +753,88 @@ window.addEventListener('load', () => {
   const area = document.getElementById('messagesArea');
   if (area) area.scrollTop = area.scrollHeight;
 });
+
+// ── TODAY LABEL ──
+const todayEl = document.getElementById('todayLabel');
+if (todayEl) {
+  const d = new Date();
+  todayEl.textContent = 'TODAY — ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+}
+
+// ── SET WELCOME TIME ──
+const welcomeTimeEl = document.getElementById('welcomeTime');
+if (welcomeTimeEl) {
+  const now = new Date();
+  welcomeTimeEl.textContent = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ── RAWCORE AI ──
+const AI_SYSTEM = `You are RawCore AI — the in-platform assistant for RawCore Trading. You are embedded inside a trading education and community platform.
+
+Your knowledge is strictly limited to:
+- Trading: technical analysis, market structure, price action, supply & demand zones, fair value gaps, liquidity sweeps, EMA strategies, risk management, R multiples, position sizing, stop loss placement, take profit strategies, trading psychology, session timing (London/NY/Asian)
+- Algorithmic trading and bot development: Python, MetaTrader 5, MT5 APIs, Bybit API, order types, automated strategies, backtesting
+- RawCore Trading platform: OMEGA bot (XAUUSD gold scalping, EMA9×EMA21, ATR filter, 4-leg TP, 40-pip SL, Tradequo), NOVA bot (crypto multi-timeframe, BTC/ETH/SOL, 4H bias, 1H S&D zones, FVG confirmation, 15M rejection entry, Bybit, 20x leverage), ALPHA bot (Telegram signal executor, MT5, any pair), the Core Room, Knowledge Hub, Core Credits, Core Pot, leaderboard
+- RawCore brand values: no fake gurus, no signals without data, real systems, real code, real results
+
+If someone asks about anything outside these topics — celebrities, general coding unrelated to trading, news, sports, cooking, anything — respond with: "That's outside my lane. I only know trading, bots, and RawCore. Ask me something in that world."
+
+Be direct, concise, and honest. Don't pad responses. If you don't know something specific, say so. Never make up trade results or performance data.`;
+
+async function askAI() {
+  const input = document.getElementById('aiInput');
+  const btn = document.getElementById('aiBtn');
+  const messagesEl = document.getElementById('aiMessages');
+  const question = input.value.trim();
+  if (!question) return;
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.style.cssText = 'background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-right:2px solid var(--blue);padding:10px 12px;font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.6;text-align:right';
+  userMsg.textContent = question;
+  messagesEl.appendChild(userMsg);
+
+  input.value = '';
+  btn.textContent = 'THINKING…';
+  btn.disabled = true;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // Add loading indicator
+  const loadingMsg = document.createElement('div');
+  loadingMsg.id = 'aiLoading';
+  loadingMsg.style.cssText = 'background:var(--card);border:1px solid var(--border);border-left:2px solid var(--green);padding:10px 12px;font-family:var(--mono);font-size:10px;color:var(--text-dim)';
+  loadingMsg.innerHTML = '<span style="color:var(--green);font-size:8px;letter-spacing:0.2em">RAWCORE AI</span><br>// Processing...';
+  messagesEl.appendChild(loadingMsg);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: AI_SYSTEM,
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+
+    const data = await response.json();
+    const answer = data.content?.[0]?.text || 'No response received.';
+
+    loadingMsg.remove();
+    const aiMsg = document.createElement('div');
+    aiMsg.style.cssText = 'background:var(--card);border:1px solid var(--border);border-left:2px solid var(--green);padding:10px 12px;';
+    aiMsg.innerHTML = `<div style="font-family:var(--mono);font-size:8px;color:var(--green);margin-bottom:5px;letter-spacing:0.2em">RAWCORE AI</div><div style="font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.7;white-space:pre-wrap">${answer}</div>`;
+    messagesEl.appendChild(aiMsg);
+  } catch(e) {
+    loadingMsg.innerHTML = '<span style="color:var(--red);font-family:var(--mono);font-size:10px">// Error connecting to AI. Try again.</span>';
+  }
+
+  btn.textContent = 'ASK →';
+  btn.disabled = false;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
 
 // ── FADE IN ANIMATION ──
 const style = document.createElement('style');
