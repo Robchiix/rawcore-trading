@@ -280,11 +280,12 @@
 
   .chart-canvas-wrap {
     position: relative;
-    height: 260px;
-    padding: 16px;
+    height: 280px;
+    padding: 12px 0 12px 12px;
   }
 
   canvas#candleChart {
+    display: block;
     width: 100%;
     height: 100%;
   }
@@ -1210,7 +1211,7 @@
     <li><a href="community.html">COMMUNITY</a></li>
     <li><a href="pricing.html">PRICING</a></li>
     <li><a href="contact.html">CONTACT</a></li>
-    <li><a href="member-shop.html">SHOP</a></li>
+    <li><a href="#" onclick="document.querySelector('.shop-section').scrollIntoView({behavior:'smooth'});return false" style="color:var(--amber)">SHOP — SOON</a></li>
   </ul>
   <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
   <div class="mobile-menu-btn" onclick="toggleMobileMenu()" id="menuBtn"><span></span><span></span><span></span></div>
@@ -1225,7 +1226,7 @@
   <a href="community.html">COMMUNITY</a>
   <a href="pricing.html">PRICING</a>
   <a href="contact.html">CONTACT</a>
-  <a href="member-shop.html">SHOP 🛒</a>
+  <a href="#" onclick="document.querySelector('.shop-section').scrollIntoView({behavior:'smooth'});document.getElementById('mobileNav').classList.remove('open');return false" style="color:var(--amber)">SHOP — COMING SOON</a>
   <a href="login.html" style="color:var(--green)">ENTER THE CORE →</a>
 </div>
 
@@ -1251,7 +1252,7 @@
     <div class="hero-buttons">
       <a href="login.html" class="btn-primary">ACCESS THE CORE &gt;</a>
       <a href="systems.html" class="btn-secondary">EXPLORE BOTS</a>
-      <a href="member-shop.html" class="btn-secondary" style="border-color:rgba(245,158,11,0.4);color:var(--amber)" onmouseover="this.style.borderColor='var(--amber)';this.style.background='rgba(245,158,11,0.08)'" onmouseout="this.style.borderColor='rgba(245,158,11,0.4)';this.style.background='transparent'">SHOP 🛒</a>
+      <a href="member-shop.html" class="btn-secondary" style="border-color:rgba(245,158,11,0.3);color:var(--amber);opacity:0.7;cursor:default;pointer-events:none">SHOP — COMING SOON</a>
     </div>
     <p class="hero-disclaimer">// This is not for everyone. Good.</p>
   </div>
@@ -1260,17 +1261,15 @@
     <div class="chart-container">
       <div class="chart-header">
         <span class="chart-title">XAUUSD // 5M</span>
-        <span class="chart-price" id="livePrice">2,341.84</span>
+        <span class="chart-price" id="livePrice" style="color:var(--text-dim)">—</span>
       </div>
       <div class="chart-canvas-wrap">
         <canvas id="candleChart"></canvas>
       </div>
       <div class="chart-footer">
-        <span>VOL: <span class="stat-up">HIGH</span></span>
-        <span>ATR: <span class="stat-up">1.24</span></span>
-        <span>EMA9: <span class="stat-up">▲</span></span>
-        <span>EMA21: <span class="stat-up">▲</span></span>
-        <span>SESSION: <span style="color:var(--text)">LONDON</span></span>
+        <span>EMA9 <span class="stat-up">●</span></span>
+        <span style="color:rgba(59,130,246,0.7)">EMA21 ●</span>
+        <span>SESSION: <span id="sessionLabel" style="color:var(--green)">—</span></span>
       </div>
     </div>
   </div>
@@ -1565,47 +1564,57 @@
   <div class="shop-header">
     <div class="section-tag">// THE DROP</div>
     <h2 class="shop-title">WEAR THE <span class="green">CORE.</span></h2>
-    <p class="shop-sub">Merch is coming. Designs are in progress — quality kit, no fast fashion. <strong>Get notified when it drops.</strong></p>
+    <p class="shop-sub">Merch is coming. Designs are being finalised — quality kit, no fast fashion. <strong>Core members get 20% off when it drops.</strong></p>
   </div>
-  <div class="shop-grid">
 
-    <a href="shop.html" class="shop-card">
-      <div class="shop-img">
+  <!-- COMING SOON GRID -->
+  <div class="shop-grid">
+    <div class="shop-card" style="cursor:default;pointer-events:none">
+      <div class="shop-img" style="filter:grayscale(0.4)">
         <img src="rc-cap.png" alt="RC Snapback Cap">
-        <div class="shop-badge founding">FOUNDING €32</div>
+        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
+        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
+        </div>
       </div>
       <div class="shop-card-info">
         <div class="shop-name">RC SNAPBACK CAP</div>
-        <div class="shop-desc">Black cap, green underbrim, embroidered RC logo</div>
+        <div class="shop-desc" style="color:var(--amber)">// From €32 · Available soon</div>
       </div>
-    </a>
+    </div>
 
-    <a href="shop.html" class="shop-card">
-      <div class="shop-img">
+    <div class="shop-card" style="cursor:default;pointer-events:none">
+      <div class="shop-img" style="filter:grayscale(0.4)">
         <img src="rc-hoodie.png" alt="Buy Low Think High Hoodie">
-        <div class="shop-badge founding">FOUNDING €42</div>
+        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
+        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
+        </div>
       </div>
       <div class="shop-card-info">
         <div class="shop-name">BUY LOW THINK HIGH</div>
-        <div class="shop-desc">Heavy black hoodie, brush-stroke print</div>
+        <div class="shop-desc" style="color:var(--amber)">// From €42 · Available soon</div>
       </div>
-    </a>
+    </div>
 
-    <a href="shop.html" class="shop-card">
-      <div class="shop-img">
+    <div class="shop-card" style="cursor:default;pointer-events:none">
+      <div class="shop-img" style="filter:grayscale(0.4)">
         <img src="rc-tee.png" alt="Bro Just Wait Tee">
-        <div class="shop-badge founding">FOUNDING €26</div>
+        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
+        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
+        </div>
       </div>
       <div class="shop-card-info">
         <div class="shop-name">BRO... JUST WAIT</div>
-        <div class="shop-desc">The most important lesson in trading. On a tee.</div>
+        <div class="shop-desc" style="color:var(--amber)">// From €26 · Available soon</div>
       </div>
-    </a>
-
+    </div>
   </div>
+
   <div class="shop-footer-bar">
-    <span>// Core members get <strong style="color:var(--green)">20% off everything</strong> — forever</span>
-    <a href="shop.html" class="shop-cta">VIEW FULL SHOP →</a>
+    <span>// Shop opens when Printful is set up. Core members get <strong style="color:var(--green)">20% off everything</strong> — forever.</span>
+    <span style="font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:6px 16px;letter-spacing:0.15em">COMING SOON</span>
   </div>
 </section>
 
@@ -1646,181 +1655,332 @@
 
 <script>
 // ============================================================
-// LIVE PRICE + CHART — weekdays = XAUUSD, weekends = BTC
+// CHART ENGINE — Proper candlestick chart with real price feed
+// Weekdays: XAUUSD 5M | Weekends: BTCUSD 1H
 // ============================================================
 
 const canvas = document.getElementById('candleChart');
 const ctx = canvas.getContext('2d');
 
+// ── RETINA / DPI AWARE CANVAS ──
 function resizeCanvas() {
   const wrap = canvas.parentElement;
-  canvas.width = wrap.clientWidth - 32;
-  canvas.height = wrap.clientHeight - 32;
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = wrap.clientWidth;
+  const cssH = wrap.clientHeight;
+  canvas.width  = cssW * dpr;
+  canvas.height = cssH * dpr;
+  canvas.style.width  = cssW + 'px';
+  canvas.style.height = cssH + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 resizeCanvas();
 window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
 
-// Determine if weekend (crypto chart) or weekday (gold chart)
-const dow = new Date().getDay(); // 0=Sun, 6=Sat
-const isWeekend = dow === 0 || dow === 6;
+// ── TIMEFRAME DETECTION ──
+const dow = new Date().getUTCDay(); // 0=Sun, 6=Sat
+const isWeekend = (dow === 0 || dow === 6);
+const SYM   = isWeekend ? 'BTCUSD' : 'XAUUSD';
+const TF    = isWeekend ? '1H' : '5M';
+// Candle interval: 5M = 300s, 1H = 3600s
+const CANDLE_SECS = isWeekend ? 3600 : 300;
+const CANDLE_COUNT = 60;
+const PRICE_AXIS_W = 54; // px reserved for price labels on right
 
-// Update chart title label
+// Update chart title
 const chartTitleEl = document.querySelector('.chart-title');
-if (chartTitleEl) chartTitleEl.textContent = isWeekend ? 'BTCUSD // 1H' : 'XAUUSD // 5M';
+if (chartTitleEl) chartTitleEl.textContent = `${SYM} // ${TF}`;
 
-// ── CANDLE ENGINE ──
+// ── CANDLE STORE ──
+// Each candle: { open, high, low, close, ts }
+// ts = unix seconds of candle open (snapped to candle interval)
 let candles = [];
-let livePrice = isWeekend ? 71240 : 2341.84;
-let prevFetchPrice = livePrice;
+let realPrice = 0;
+let openPrice = 0;
 
-function generateCandle(prev, volatility) {
-  const open = prev ? prev.close : livePrice;
-  const change = (Math.random() - 0.48) * volatility;
-  const close = open + change;
-  const high = Math.max(open, close) + Math.random() * volatility * 0.4;
-  const low  = Math.min(open, close) - Math.random() * volatility * 0.4;
-  return { open, close, high, low };
+function snapTs(ts) {
+  return Math.floor(ts / CANDLE_SECS) * CANDLE_SECS;
 }
 
-const vol = isWeekend ? 180 : 3.5;
-for (let i = 0; i < 60; i++) candles.push(generateCandle(candles[candles.length - 1], vol));
+function currentCandleTs() {
+  return snapTs(Math.floor(Date.now() / 1000));
+}
 
+// Seed initial candles from a known real price — called once on first fetch
+function seedCandles(basePrice) {
+  const volatility = isWeekend ? basePrice * 0.0005 : basePrice * 0.0006;
+  candles = [];
+  const nowTs = currentCandleTs();
+  let p = basePrice;
+  for (let i = CANDLE_COUNT - 1; i >= 0; i--) {
+    const ts = nowTs - i * CANDLE_SECS;
+    const open = p;
+    // Realistic drift: slight mean reversion + random walk
+    const trend = (Math.random() - 0.49) * volatility;
+    const close = open + trend;
+    const wick  = volatility * (0.2 + Math.random() * 0.5);
+    const high  = Math.max(open, close) + wick * Math.random();
+    const low   = Math.min(open, close) - wick * Math.random();
+    candles.push({ open, high, low, close, ts });
+    p = close;
+  }
+  openPrice = basePrice;
+}
+
+// Update or append tick to current candle
+function tickCandle(price) {
+  const ts = currentCandleTs();
+  const last = candles[candles.length - 1];
+  if (last && last.ts === ts) {
+    // Update current candle
+    last.close = price;
+    last.high  = Math.max(last.high, price);
+    last.low   = Math.min(last.low,  price);
+  } else {
+    // New candle
+    const open = last ? last.close : price;
+    candles.push({ open, high: Math.max(open, price), low: Math.min(open, price), close: price, ts });
+    if (candles.length > CANDLE_COUNT + 5) candles.shift();
+  }
+}
+
+// ── DRAW CHART ──
 function drawChart() {
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-  const prices = candles.flatMap(c => [c.high, c.low]);
-  const minP = Math.min(...prices), maxP = Math.max(...prices);
-  const range = maxP - minP || 1;
-  const pad = 10;
-  const toY = p => pad + (1 - (p - minP) / range) * (h - 2 * pad);
+  if (!candles.length) return;
+  const wrap = canvas.parentElement;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
 
-  // Grid
-  ctx.strokeStyle = 'rgba(26,31,38,0.8)'; ctx.lineWidth = 1;
-  for (let i = 0; i <= 4; i++) {
-    const y = pad + (i / 4) * (h - 2 * pad);
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-    ctx.fillStyle = 'rgba(90,106,122,0.5)';
-    ctx.font = '9px Share Tech Mono';
-    ctx.fillText((maxP - (i / 4) * range).toFixed(isWeekend ? 0 : 2), 4, y - 3);
+  ctx.clearRect(0, 0, W, H);
+
+  const drawW = W - PRICE_AXIS_W;
+  const PAD_TOP = 16, PAD_BOT = 8;
+  const chartH = H - PAD_TOP - PAD_BOT;
+
+  // Price range across visible candles
+  const visible = candles.slice(-CANDLE_COUNT);
+  const prices  = visible.flatMap(c => [c.high, c.low]);
+  const minP    = Math.min(...prices);
+  const maxP    = Math.max(...prices);
+  const range   = maxP - minP || 1;
+  // Add 8% breathing room top and bottom
+  const padPct  = 0.08;
+  const lo = minP - range * padPct;
+  const hi = maxP + range * padPct;
+  const span = hi - lo;
+
+  const toY = p => PAD_TOP + (1 - (p - lo) / span) * chartH;
+
+  // ── GRID LINES + PRICE AXIS ──
+  const GRID_LINES = 5;
+  ctx.font = '9px Share Tech Mono, monospace';
+  ctx.textAlign = 'left';
+  for (let i = 0; i <= GRID_LINES; i++) {
+    const price = hi - (i / GRID_LINES) * span;
+    const y = toY(price);
+    // Grid line
+    ctx.strokeStyle = 'rgba(26,31,38,0.7)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 6]);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(drawW - 2, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Price label in axis area
+    const label = isWeekend
+      ? price.toLocaleString('en', { maximumFractionDigits: 0 })
+      : price.toFixed(2);
+    ctx.fillStyle = 'rgba(90,106,122,0.8)';
+    ctx.fillText(label, drawW + 4, y + 3);
   }
 
-  const cw = (w - 20) / candles.length;
-  candles.forEach((c, i) => {
-    const x = 10 + i * cw + cw / 2;
+  // ── CURRENT PRICE LINE ──
+  if (realPrice > 0) {
+    const cy = toY(realPrice);
+    ctx.strokeStyle = 'rgba(0,255,136,0.4)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(drawW - 2, cy); ctx.stroke();
+    ctx.setLineDash([]);
+    // Price label highlight
+    ctx.fillStyle = 'rgba(0,255,136,0.15)';
+    ctx.fillRect(drawW, cy - 8, PRICE_AXIS_W, 16);
+    ctx.fillStyle = 'var(--green, #00ff88)';
+    ctx.fillStyle = '#00ff88';
+    const lbl = isWeekend ? realPrice.toLocaleString('en', { maximumFractionDigits: 0 }) : realPrice.toFixed(2);
+    ctx.fillText(lbl, drawW + 4, cy + 3);
+  }
+
+  // ── CANDLES ──
+  const cw  = (drawW - 10) / visible.length;
+  const gap = Math.max(cw * 0.15, 1);
+  const bw  = Math.max(cw - gap * 2, 1);
+
+  visible.forEach((c, i) => {
+    const x    = 5 + i * cw + cw / 2;
     const bull = c.close >= c.open;
-    ctx.strokeStyle = bull ? '#00ff88' : '#ff3355'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(x, toY(c.high)); ctx.lineTo(x, toY(c.low)); ctx.stroke();
-    const bTop = toY(Math.max(c.open, c.close));
-    const bBot = toY(Math.min(c.open, c.close));
-    ctx.fillStyle = bull ? 'rgba(0,255,136,0.85)' : 'rgba(255,51,85,0.85)';
-    ctx.fillRect(x - cw * 0.3, bTop, cw * 0.6, Math.max(bBot - bTop, 1));
+    const col  = bull ? '#00ff88' : '#ff3355';
+
+    // Wick
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, toY(c.high));
+    ctx.lineTo(x, toY(c.low));
+    ctx.stroke();
+
+    // Body
+    const bodyTop = toY(Math.max(c.open, c.close));
+    const bodyBot = toY(Math.min(c.open, c.close));
+    const bodyH   = Math.max(bodyBot - bodyTop, 1.5);
+    ctx.fillStyle = bull ? 'rgba(0,255,136,0.88)' : 'rgba(255,51,85,0.88)';
+    ctx.fillRect(x - bw / 2, bodyTop, bw, bodyH);
   });
 
-  // EMA line
-  ctx.strokeStyle = 'rgba(0,255,136,0.35)'; ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  candles.forEach((c, i) => {
-    const x = 10 + i * cw + cw / 2;
-    const y = toY((c.open + c.close) / 2);
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  // ── EMA 9 (fast) ──
+  const ema9 = [], k9 = 2 / 10;
+  visible.forEach((c, i) => {
+    const v = (c.open + c.close) / 2;
+    ema9.push(i === 0 ? v : v * k9 + ema9[i-1] * (1 - k9));
   });
+  ctx.strokeStyle = 'rgba(0,255,136,0.55)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ema9.forEach((v, i) => {
+    const x = 5 + i * cw + cw / 2;
+    i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v));
+  });
+  ctx.stroke();
+
+  // ── EMA 21 (slow) ──
+  const ema21 = [], k21 = 2 / 22;
+  visible.forEach((c, i) => {
+    const v = (c.open + c.close) / 2;
+    ema21.push(i === 0 ? v : v * k21 + ema21[i-1] * (1 - k21));
+  });
+  ctx.strokeStyle = 'rgba(59,130,246,0.45)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ema21.forEach((v, i) => {
+    const x = 5 + i * cw + cw / 2;
+    i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v));
+  });
+  ctx.stroke();
+
+  // ── AXIS SEPARATOR ──
+  ctx.strokeStyle = 'rgba(26,31,38,0.9)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(drawW, 0);
+  ctx.lineTo(drawW, H);
   ctx.stroke();
 }
 
-drawChart();
+// ── PRICE DISPLAY ──
+function updatePriceDisplay(price, prevPrice) {
+  const el = document.getElementById('livePrice');
+  if (!el) return;
+  const fmt = isWeekend
+    ? price.toLocaleString('en-US', { maximumFractionDigits: 0 })
+    : price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  el.textContent = fmt;
+  el.className = 'chart-price' + (price >= prevPrice ? '' : ' down');
+}
 
-// ── LIVE PRICE FETCH ──
-async function fetchLivePrice() {
+// ── REAL PRICE FETCH ──
+async function fetchRealPrice() {
   try {
     if (isWeekend) {
-      // BTC price from CoinGecko (free, no key)
-      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd', { cache: 'no-store' });
-      const data = await res.json();
-      return data?.bitcoin?.usd || null;
+      const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+      if (r.ok) { const d = await r.json(); return parseFloat(d.price); }
     } else {
-      // Gold price from metals.live (free, no key needed)
-      const res = await fetch('https://api.metals.live/v1/spot/gold', { cache: 'no-store' });
-      const data = await res.json();
-      return data?.[0]?.price || null;
+      const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
+      if (r.ok) { const d = await r.json(); return d.rates?.USD || null; }
     }
-  } catch (e) {
-    return null; // silently fall back to simulated
-  }
+  } catch(e) {}
+  return null;
 }
 
-function updatePriceDisplay(price, prevPrice) {
-  const priceEl = document.getElementById('livePrice');
-  if (!priceEl) return;
-  const fmt = isWeekend ? price.toLocaleString('en-US', { maximumFractionDigits: 0 }) : price.toFixed(2);
-  priceEl.textContent = fmt;
-  priceEl.className = 'chart-price' + (price >= prevPrice ? '' : ' down');
-}
+// ── SESSION DISPLAY ──
+function updateSessionDisplay() {
+  const h = new Date().getUTCHours(), m = new Date().getUTCMinutes();
+  const t = h * 60 + m;
+  const day = new Date().getUTCDay();
 
-// Update chart ticker + footer session
-function updateSession() {
-  const now = new Date();
-  const utcH = now.getUTCHours();
-  const utcMin = now.getUTCMinutes();
-  const utcTotal = utcH * 60 + utcMin;
-
-  const sessions = [
-    { name: 'SYDNEY',   start: 21*60, end: 6*60,  next: 'TOKYO' },
-    { name: 'TOKYO',    start: 0,     end: 9*60,   next: 'LONDON' },
-    { name: 'LONDON',   start: 7*60,  end: 16*60,  next: 'NEW YORK' },
-    { name: 'NEW YORK', start: 12*60, end: 21*60,  next: 'SYDNEY' },
-  ];
-
-  // Simple session detection
-  let active = 'ASIAN';
-  if (utcTotal >= 7*60 && utcTotal < 16*60) active = 'LONDON';
-  else if (utcTotal >= 12*60 && utcTotal < 21*60) active = 'NEW YORK';
-  else if (utcTotal >= 21*60 || utcTotal < 6*60) active = 'SYDNEY';
-
-  const sessionEls = document.querySelectorAll('[id^="sessionLabel"]');
-  sessionEls.forEach(el => { el.textContent = active; el.style.color = 'var(--green)'; });
-
-  // Footer session in chart
-  const footerSession = document.getElementById('chartSession');
-  if (footerSession) footerSession.innerHTML = `<span style="color:var(--green)">● ${active}</span>`;
-
-  // Weekend notice
-  if (isWeekend) {
-    const footerSession2 = document.getElementById('chartSession');
-    if (footerSession2) footerSession2.innerHTML += ' <span style="color:var(--amber);font-size:8px">// FOREX CLOSED · CRYPTO 24/7</span>';
-  }
-}
-
-// ── MAIN UPDATE LOOP ──
-let simPrice = livePrice;
-let fetchedOnce = false;
-
-async function mainLoop() {
-  // Fetch real price every 30s
-  const fetched = await fetchLivePrice();
-  if (fetched) {
-    prevFetchPrice = simPrice;
-    simPrice = fetched;
-    livePrice = fetched;
-    fetchedOnce = true;
+  let sessionText = 'ASIAN';
+  let sessionColor = 'var(--text-dim)';
+  if (day === 0 || day === 6) {
+    sessionText = 'FOREX CLOSED · CRYPTO 24/7';
+    sessionColor = 'var(--amber)';
+  } else if (t >= 7*60 && t < 16*60) {
+    sessionText = 'LONDON';
+    sessionColor = 'var(--green)';
+  } else if (t >= 12*60 && t < 21*60) {
+    sessionText = 'NEW YORK';
+    sessionColor = 'var(--green)';
+  } else if (t >= 21*60 || t < 6*60) {
+    sessionText = 'SYDNEY';
+    sessionColor = 'var(--text-dim)';
   }
 
-  // Drift candles toward real price
-  const drift = fetchedOnce ? (simPrice - candles[candles.length-1].close) * 0.05 : 0;
-  candles.push(generateCandle({ close: candles[candles.length-1].close + drift }, vol * 0.3));
-  if (candles.length > 70) candles.shift();
+  const el = document.getElementById('sessionLabel');
+  if (el) { el.textContent = sessionText; el.style.color = sessionColor; }
+}
 
-  updatePriceDisplay(candles[candles.length-1].close, candles[candles.length-2]?.close || livePrice);
+// ── MAIN LOOP ──
+let seeded = false;
+let prevDisplayPrice = 0;
+let tickerInterval = null;
+
+// Simulate micro ticks between real fetches
+function simulateTick() {
+  if (!seeded || !realPrice) return;
+  const last = candles[candles.length - 1];
+  const vol  = isWeekend ? realPrice * 0.0001 : realPrice * 0.00015;
+  // Pull toward real price with small random noise
+  const pull = (realPrice - last.close) * 0.1;
+  const noise = (Math.random() - 0.5) * vol;
+  const newPrice = last.close + pull + noise;
+  tickCandle(newPrice);
+  updatePriceDisplay(newPrice, prevDisplayPrice);
+  prevDisplayPrice = newPrice;
   drawChart();
-  updateSession();
 }
 
-mainLoop();
-setInterval(mainLoop, 5000);
-// Full price refresh every 30s
-setInterval(async () => {
-  const fetched = await fetchLivePrice();
-  if (fetched) { simPrice = fetched; livePrice = fetched; }
-}, 30000);
+async function fetchAndUpdate() {
+  const fetched = await fetchRealPrice();
+  if (!fetched) return;
+
+  prevDisplayPrice = realPrice || fetched;
+  realPrice = fetched;
+
+  if (!seeded) {
+    seedCandles(fetched);
+    seeded = true;
+  }
+
+  tickCandle(fetched);
+  updatePriceDisplay(fetched, prevDisplayPrice);
+  drawChart();
+  updateSessionDisplay();
+}
+
+// First fetch immediately on load
+fetchAndUpdate();
+
+// Fetch real price every 30 seconds
+setInterval(fetchAndUpdate, 30000);
+
+// Simulate tick every 5 seconds (realistic candle movement, NOT new candles every tick)
+setInterval(simulateTick, 5000);
+
+// Session update every minute
+setInterval(updateSessionDisplay, 60000);
+
+// Initial session display
+updateSessionDisplay();
 
 // SCROLL REVEALS
 const observer = new IntersectionObserver(entries => {
