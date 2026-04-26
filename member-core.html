@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Core — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --black: #050608;
@@ -35,6 +36,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   body::before {
@@ -46,285 +48,220 @@
     z-index: 9999;
   }
 
-  .member-nav {
-    height: 56px;
-    background: rgba(5,6,8,0.98);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    flex-shrink: 0;
-    z-index: 100;
-    position: sticky;
-    top: 0;
-  }
-
+  /* ── NAV ── */
+  .member-nav { height: 56px; background: rgba(5,6,8,0.98); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; flex-shrink: 0; z-index: 100; position: sticky; top: 0; }
   .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
   .nav-logo span { color: var(--green); }
   .nav-items { display: flex; gap: 0; flex: 1; }
-  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; gap: 7px; cursor: pointer; }
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; gap: 7px; }
   .nav-item:hover { color: var(--text); }
   .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
-  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; }
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center; }
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
   .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
   .nav-credits::before { content: '◈'; }
-  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
-  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); overflow: hidden; }
+  .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
+  .logout-btn { font-family: var(--mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); padding: 4px 10px; cursor: pointer; transition: all 0.2s; background: none; letter-spacing: 0.1em; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
-  .page-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  /* ── MARKET BAR ── */
+  .market-bar { padding: 8px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; background: var(--black); flex-shrink: 0; overflow-x: auto; }
+  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+  .market-sym { color: var(--text-bright); }
+  .market-change.up { color: var(--green); }
+  .market-change.dn { color: var(--red); }
 
-  /* PROFILE HERO */
-  .profile-hero {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--green);
-    padding: 32px;
+  /* ── PAGE ── */
+  .page-body { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* ── MY STATS BANNER ── */
+  .my-banner {
     display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 32px;
-    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .banner-cell {
+    background: var(--card);
+    padding: 20px 22px;
     position: relative;
     overflow: hidden;
   }
+  .banner-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .banner-cell.green::before { background: var(--green); }
+  .banner-cell.blue::before { background: var(--blue); }
+  .banner-cell.amber::before { background: var(--amber); }
+  .banner-cell.purple::before { background: var(--purple); }
+  .banner-cell.red::before { background: var(--red); }
+  .bc-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 8px; }
+  .bc-val { font-family: var(--display); font-size: 36px; line-height: 1; color: var(--text-bright); }
+  .bc-val.green { color: var(--green); }
+  .bc-val.blue { color: var(--blue); }
+  .bc-val.amber { color: var(--amber); }
+  .bc-val.purple { color: var(--purple); }
+  .bc-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 5px; }
+  .bc-sub.up { color: var(--green); }
 
-  .profile-hero::before {
-    content: 'RC';
-    position: absolute;
-    right: -20px; top: -20px;
-    font-family: var(--display);
-    font-size: 200px;
-    color: var(--green);
-    opacity: 0.025;
-    pointer-events: none;
-    line-height: 1;
-  }
+  /* ── MAIN GRID ── */
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .side-col { display: flex; flex-direction: column; gap: 16px; }
 
-  .profile-avatar-wrap { position: relative; }
-  .profile-avatar {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: var(--green-muted);
-    border: 2px solid rgba(0,255,136,0.3);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--display);
-    font-size: 32px;
-    color: var(--green);
-  }
-
-  .profile-online {
-    position: absolute;
-    bottom: 4px; right: 4px;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: var(--green);
-    border: 2px solid var(--dark);
-  }
-
-  .profile-edit-btn {
-    position: absolute;
-    bottom: -4px; right: -4px;
-    width: 24px; height: 24px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .profile-edit-btn:hover { border-color: var(--green); color: var(--green); }
-
-  .profile-info { }
-  .profile-handle { font-family: var(--display); font-size: 40px; color: var(--text-bright); line-height: 1; letter-spacing: 0.05em; margin-bottom: 6px; }
-  .profile-handle span { color: var(--green); }
-  .profile-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-  .profile-badge { font-family: var(--mono); font-size: 9px; padding: 3px 10px; border: 1px solid; letter-spacing: 0.15em; }
-  .badge-founder { border-color: rgba(0,255,136,0.4); color: var(--green); background: var(--green-muted); }
-  .badge-core { border-color: rgba(59,130,246,0.3); color: var(--blue); background: rgba(59,130,246,0.08); }
-  .badge-builder { border-color: rgba(139,92,246,0.3); color: var(--purple); background: rgba(139,92,246,0.08); }
-  .profile-joined { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-
-  .profile-stats { display: flex; gap: 24px; }
-  .ps-item { text-align: center; }
-  .ps-val { font-family: var(--display); font-size: 32px; color: var(--text-bright); line-height: 1; }
-  .ps-val.green { color: var(--green); }
-  .ps-val.amber { color: var(--amber); }
-  .ps-val.blue { color: var(--blue); }
-  .ps-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-top: 4px; }
-  .ps-divider { width: 1px; background: var(--border); align-self: stretch; }
-
-  /* TABS */
-  .page-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--dark); }
-  .page-tab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 20px; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .page-tab:hover { color: var(--text); }
-  .page-tab.active { color: var(--green); border-bottom-color: var(--green); }
-
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* PANEL */
+  /* ── PANEL ── */
   .panel { background: var(--card); border: 1px solid var(--border); overflow: hidden; }
   .panel-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .panel-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; }
-  .panel-action { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s; background: none; border: none; }
+  .panel-action { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; letter-spacing: 0.1em; transition: color 0.2s; text-decoration: none; }
   .panel-action:hover { color: var(--green); }
-  .panel-body { padding: 16px; }
+  .panel-body { padding: 0; }
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  /* ── LEADERBOARD ── */
+  .lb-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .lb-tab { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em; padding: 8px 16px; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .lb-tab:hover { color: var(--text); }
+  .lb-tab.active { color: var(--green); border-bottom-color: var(--green); }
 
-  /* CREDITS ACTIVITY */
-  .activity-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
-  .activity-row { background: var(--dark); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto auto; gap: 14px; align-items: center; }
-  .activity-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; flex-shrink: 0; }
-  .activity-icon.earn { color: var(--green); background: var(--green-muted); border: 1px solid rgba(0,255,136,0.15); }
-  .activity-icon.spend { color: var(--amber); background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15); }
-  .activity-info { }
-  .activity-name { font-family: var(--mono); font-size: 11px; color: var(--text); }
-  .activity-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 2px; }
-  .activity-pts { font-family: var(--display); font-size: 20px; }
-  .activity-pts.earn { color: var(--green); }
-  .activity-pts.spend { color: var(--amber); }
-  .activity-total { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-
-  /* CREDITS BREAKDOWN */
-  .credits-big { font-family: var(--display); font-size: 64px; color: var(--green); line-height: 1; margin-bottom: 4px; }
-  .credits-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 20px; }
-  .credits-breakdown { display: flex; flex-direction: column; gap: 10px; }
-  .cb-item { display: flex; align-items: center; gap: 12px; }
-  .cb-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); width: 140px; flex-shrink: 0; }
-  .cb-bar-wrap { flex: 1; height: 3px; background: var(--border); }
-  .cb-bar { height: 3px; }
-  .cb-val { font-family: var(--mono); font-size: 10px; color: var(--text-bright); width: 40px; text-align: right; flex-shrink: 0; }
-
-  /* SUBSCRIPTION */
-  .sub-card { background: var(--black); border: 1px solid var(--border); border-left: 2px solid var(--green); padding: 20px; margin-bottom: 12px; }
-  .sub-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .sub-name { font-family: var(--display); font-size: 28px; color: var(--text-bright); }
-  .sub-status { font-family: var(--mono); font-size: 9px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 3px 8px; letter-spacing: 0.15em; background: var(--green-muted); }
-  .sub-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .sub-detail { }
-  .sub-detail-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 4px; }
-  .sub-detail-val { font-family: var(--mono); font-size: 12px; color: var(--text-bright); }
-  .sub-detail-val.green { color: var(--green); }
-
-  .sub-actions { display: flex; gap: 8px; margin-top: 16px; }
-  .sub-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 16px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.2s; background: transparent; }
-  .sub-btn:hover { border-color: var(--green); color: var(--green); }
-  .sub-btn.danger:hover { border-color: var(--red); color: var(--red); }
-
-  /* ACHIEVEMENTS */
-  .achievements-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .achievement { background: var(--dark); border: 1px solid var(--border); padding: 16px 12px; text-align: center; position: relative; transition: border-color 0.2s; }
-  .achievement.earned { border-color: rgba(0,255,136,0.2); }
-  .achievement.locked { opacity: 0.4; }
-  .achievement:hover { border-color: var(--green); }
-  .ach-icon { font-family: var(--mono); font-size: 24px; margin-bottom: 8px; }
-  .ach-icon.earned-icon { color: var(--green); }
-  .ach-icon.locked-icon { color: var(--text-dim); }
-  .ach-name { font-family: var(--mono); font-size: 10px; color: var(--text-bright); letter-spacing: 0.1em; margin-bottom: 4px; }
-  .ach-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
-  .ach-earned-badge { position: absolute; top: 8px; right: 8px; font-family: var(--mono); font-size: 8px; color: var(--green); }
-
-  /* SETTINGS */
-  .settings-section { margin-bottom: 24px; }
-  .settings-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(26,31,38,0.4); }
-  .setting-row:last-child { border-bottom: none; }
-  .setting-info { }
-  .setting-name { font-family: var(--mono); font-size: 11px; color: var(--text); margin-bottom: 3px; }
-  .setting-desc { font-size: 12px; color: var(--text-dim); }
-  .setting-input { background: var(--black); border: 1px solid var(--border); color: var(--text); font-family: var(--mono); font-size: 11px; padding: 8px 12px; outline: none; width: 200px; transition: border-color 0.2s; }
-  .setting-input:focus { border-color: var(--green); }
-
-  /* TOGGLE */
-  .toggle { width: 40px; height: 20px; background: var(--border); position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
-  .toggle.on { background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); }
-  .toggle-knob { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: var(--text-dim); transition: all 0.2s; }
-  .toggle.on .toggle-knob { left: 23px; background: var(--green); }
-
-  .save-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 24px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; transition: opacity 0.2s; margin-top: 8px; }
-  .save-btn:hover { opacity: 0.9; }
-
-  /* NOTIFICATIONS */
-  .notif-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
-  .notif-item { background: var(--dark); padding: 12px 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
-  .notif-item.unread { background: var(--card); border-left: 2px solid var(--green); }
-  .notif-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .notif-dot.unread { background: var(--green); }
-  .notif-dot.read { background: var(--border); }
-  .notif-text { font-family: var(--mono); font-size: 11px; color: var(--text-dim); line-height: 1.5; }
-  .notif-text.unread { color: var(--text); }
-  .notif-text span { color: var(--green); }
-  .notif-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); white-space: nowrap; }
-
-  /* DANGER ZONE */
-  .danger-zone { background: rgba(255,51,85,0.04); border: 1px solid rgba(255,51,85,0.15); padding: 20px; }
-  .danger-title { font-family: var(--mono); font-size: 10px; color: var(--red); letter-spacing: 0.2em; margin-bottom: 14px; }
-  .danger-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,51,85,0.1); }
-  .danger-row:last-child { border-bottom: none; }
-  .danger-info { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .danger-btn { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; padding: 7px 14px; border: 1px solid rgba(255,51,85,0.3); color: var(--red); cursor: pointer; background: transparent; transition: all 0.2s; }
-  .danger-btn:hover { background: rgba(255,51,85,0.08); }
-
-  @media (max-width: 768px) {
-    body { cursor: default; }
-    .mobile-banner { display: flex !important; }
-    .member-nav { padding: 0 16px; overflow-x: auto; }
-    .nav-items { gap: 0; }
-    .nav-item { padding: 0 12px; font-size: 9px; }
-    .nav-credits { display: none; }
-    .nav-user span { display: none; }
-    .market-bar { padding: 6px 12px; gap: 14px; }
-    .market-item { font-size: 9px; }
+  .lb-list { display: flex; flex-direction: column; }
+  .lb-row {
+    display: grid;
+    grid-template-columns: 36px 38px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(26,31,38,0.5);
+    transition: background 0.15s;
   }
-  .mobile-banner { display: none; }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: rgba(255,255,255,0.015); }
+  .lb-row.you { background: rgba(59,130,246,0.04); border-left: 2px solid var(--blue); }
 
+  .lb-rank { font-family: var(--display); font-size: 22px; color: var(--text-dim); text-align: center; line-height: 1; }
+  .lb-rank.gold { color: var(--amber); }
+  .lb-rank.silver { color: #9ca3af; }
+  .lb-rank.bronze { color: #b45309; }
+
+  .lb-av { width: 32px; height: 32px; border-radius: 50%; background: var(--dark); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .lb-av.you { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); color: var(--blue); }
+
+  .lb-info { overflow: hidden; }
+  .lb-name { font-family: var(--mono); font-size: 10px; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lb-name.you { color: var(--blue); }
+  .lb-bar-wrap { height: 3px; background: var(--border); }
+  .lb-bar-fill { height: 100%; background: var(--green); transition: width 1s ease; }
+
+  .lb-right { text-align: right; }
+  .lb-score { font-family: var(--display); font-size: 20px; color: var(--text-bright); line-height: 1; }
+  .lb-score.you { color: var(--blue); }
+  .lb-delta { font-family: var(--mono); font-size: 8px; color: var(--text-dim); margin-top: 2px; }
+  .lb-delta.up { color: var(--green); }
+  .lb-delta.dn { color: var(--red); }
+
+  /* ── CREDITS HISTORY ── */
+  .credit-list { display: flex; flex-direction: column; }
+  .credit-item { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 16px; border-bottom: 1px solid rgba(26,31,38,0.5); }
+  .credit-item:last-child { border-bottom: none; }
+  .credit-icon { width: 28px; height: 28px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .credit-icon.earn { background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.15); }
+  .credit-icon.spend { background: rgba(255,51,85,0.08); border: 1px solid rgba(255,51,85,0.15); }
+  .credit-info { overflow: hidden; }
+  .credit-reason { font-family: var(--mono); font-size: 10px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .credit-date { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+  .credit-amount { font-family: var(--display); font-size: 20px; line-height: 1; text-align: right; }
+  .credit-amount.earn { color: var(--green); }
+  .credit-amount.spend { color: var(--red); }
+
+  /* ── HOW TO EARN ── */
+  .earn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+  .earn-item { background: var(--dark); padding: 12px 14px; }
+  .earn-action { font-family: var(--mono); font-size: 9px; color: var(--text); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .earn-pts { font-family: var(--display); font-size: 20px; color: var(--green); line-height: 1; }
+  .earn-pts.blue { color: var(--blue); }
+  .earn-pts.amber { color: var(--amber); }
+  .earn-pts.purple { color: var(--purple); }
+  .earn-label { font-family: var(--mono); font-size: 8px; color: var(--text-dim); }
+
+  /* ── ACHIEVEMENTS ── */
+  .achievement-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+  .ach-item { background: var(--dark); padding: 14px; display: flex; gap: 12px; align-items: flex-start; transition: background 0.15s; }
+  .ach-item:hover { background: var(--card); }
+  .ach-item.locked { opacity: 0.4; }
+  .ach-icon { font-size: 22px; flex-shrink: 0; width: 36px; text-align: center; }
+  .ach-info { }
+  .ach-name { font-family: var(--mono); font-size: 10px; color: var(--text-bright); margin-bottom: 3px; }
+  .ach-name.locked { color: var(--text-dim); }
+  .ach-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; margin-bottom: 5px; }
+  .ach-reward { font-family: var(--mono); font-size: 9px; }
+  .ach-reward.earned { color: var(--green); }
+  .ach-reward.locked { color: var(--text-dim); }
+  .ach-date { font-family: var(--mono); font-size: 8px; color: var(--text-dim); margin-top: 2px; }
+
+  /* ── CORE POT ── */
+  .pot-wrap { padding: 20px; }
+  .pot-amount-big { font-family: var(--display); font-size: 72px; color: var(--green); line-height: 1; margin-bottom: 4px; }
+  .pot-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 16px; }
+  .pot-bar-track { height: 4px; background: var(--border); margin-bottom: 6px; }
+  .pot-bar-fill { height: 100%; background: var(--green); transition: width 1.5s ease; }
+  .pot-bar-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-bottom: 20px; }
+
+  .pot-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .pot-stat { background: var(--dark); border: 1px solid var(--border); padding: 10px 12px; }
+  .pot-stat-label { font-family: var(--mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 5px; }
+  .pot-stat-val { font-family: var(--display); font-size: 22px; color: var(--text-bright); line-height: 1; }
+  .pot-stat-val.green { color: var(--green); }
+  .pot-stat-val.amber { color: var(--amber); }
+
+  .pot-section-title { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 10px; }
+  .pot-choices { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .pot-choice { font-family: var(--mono); font-size: 10px; padding: 8px 16px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
+  .pot-choice:hover { border-color: var(--text-dim); color: var(--text); }
+  .pot-choice.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
+
+  .pot-history { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .pot-hist-item { background: var(--dark); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 10px; }
+  .pot-hist-winner { color: var(--text-bright); }
+  .pot-hist-prize { color: var(--green); }
+  .pot-hist-choice { color: var(--text-dim); font-size: 9px; }
+  .pot-hist-date { color: var(--text-dim); font-size: 9px; }
+
+  /* ── PROGRESS ── */
+  .progress-list { display: flex; flex-direction: column; gap: 0; }
+  .progress-item { padding: 12px 16px; border-bottom: 1px solid rgba(26,31,38,0.5); }
+  .progress-item:last-child { border-bottom: none; }
+  .progress-header { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; margin-bottom: 6px; }
+  .progress-name { color: var(--text); }
+  .progress-pct { color: var(--text-dim); }
+  .progress-bar-wrap { height: 3px; background: var(--border); }
+  .progress-bar-fill { height: 100%; transition: width 1s ease; }
+
+  /* ── NEXT RANK ── */
+  .rank-up-box { padding: 16px; background: var(--dark); border: 1px solid var(--border); border-left: 2px solid var(--blue); }
+  .rank-up-label { font-family: var(--mono); font-size: 9px; color: var(--blue); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .rank-up-title { font-family: var(--display); font-size: 24px; color: var(--text-bright); margin-bottom: 4px; }
+  .rank-up-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-bottom: 12px; }
+  .rank-gap-bar { height: 4px; background: var(--border); margin-bottom: 6px; }
+  .rank-gap-fill { height: 100%; background: var(--blue); }
+  .rank-gap-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .my-banner { grid-template-columns: 1fr 1fr; }
+    .nav-items { display: none; }
+    .achievement-grid { grid-template-columns: 1fr; }
+    .earn-grid { grid-template-columns: 1fr; }
+  }
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- SUPABASE AUTH GUARD -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  (async () => {
-    const sb = supabase.createClient(
-      'https://mlzxnrmctblfpijtihvm.supabase.co',
-      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
-    );
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) {
-      window.location.href = 'login.html';
-      return;
-    }
-    // Set user info in nav if elements exist
-    const user = session.user;
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
-    const avatar = user.user_metadata?.avatar_url || null;
-    const nameEl = document.getElementById('navUsername');
-    const avatarEl = document.getElementById('navAvatar');
-    if (nameEl) nameEl.textContent = name;
-    if (avatarEl && avatar) {
-      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
-    }
-
-    // Sign out function
-    window.signOut = async () => {
-      await sb.auth.signOut();
-      window.location.href = 'index.html';
-    };
-  })();
-  </script>
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="member-nav">
   <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
   <div class="nav-items">
-    <a href="member-dashboard.html" class="nav-item"data-fixed>Home</a>
+    <a href="member-dashboard.html" class="nav-item">Home</a>
     <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
     <a href="member-bots.html" class="nav-item">Bots</a>
     <a href="member-knowledge.html" class="nav-item">Learn</a>
@@ -335,477 +272,537 @@
     <div class="nav-credits">1,240 pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
-      <span id="navUsername">Robchiix</span>
-      <div class="nav-tier">CORE</div>
+      <span id="navUsername">—</span>
+      <span class="nav-tier">CORE</span>
     </div>
+    <button class="logout-btn" onclick="logout()">LOGOUT</button>
   </div>
 </nav>
 
-<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
-  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
+<!-- MARKET BAR -->
+<div class="market-bar">
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
+  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
+  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
+  <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName">LONDON</span><span class="market-change up">● ACTIVE</span></div>
 </div>
 
+<!-- PAGE -->
 <div class="page-body">
 
-  <!-- PROFILE HERO -->
-  <div class="profile-hero">
-    <div class="profile-avatar-wrap">
-      <div class="profile-avatar">RC</div>
-      <div class="profile-online"></div>
-      <div class="profile-edit-btn" title="Edit avatar">✎</div>
+  <!-- ── MY STATS BANNER ── -->
+  <div class="my-banner">
+    <div class="banner-cell green">
+      <div class="bc-label">// CORE CREDITS</div>
+      <div class="bc-val green">1,240</div>
+      <div class="bc-sub up">↑ +180 this week</div>
     </div>
-    <div class="profile-info">
-      <div class="profile-handle">ROB<span>CHIIX</span></div>
-      <div class="profile-badges">
-        <span class="profile-badge badge-founder">FOUNDER</span>
-        <span class="profile-badge badge-core">CORE MEMBER</span>
-        <span class="profile-badge badge-builder">BUILDER</span>
-      </div>
-      <div class="profile-joined">// Member since April 2026 · rawcoretrading.com</div>
+    <div class="banner-cell amber">
+      <div class="bc-label">// LEADERBOARD RANK</div>
+      <div class="bc-val amber">#7</div>
+      <div class="bc-sub up">↑ +2 positions</div>
     </div>
-    <div class="profile-stats">
-      <div class="ps-item">
-        <div class="ps-val green">1,240</div>
-        <div class="ps-label">CREDITS</div>
-      </div>
-      <div class="ps-divider"></div>
-      <div class="ps-item">
-        <div class="ps-val amber">#7</div>
-        <div class="ps-label">RANK</div>
-      </div>
-      <div class="ps-divider"></div>
-      <div class="ps-item">
-        <div class="ps-val">3</div>
-        <div class="ps-label">BOTS</div>
-      </div>
-      <div class="ps-divider"></div>
-      <div class="ps-item">
-        <div class="ps-val blue">12</div>
-        <div class="ps-label">LESSONS</div>
-      </div>
+    <div class="banner-cell blue">
+      <div class="bc-label">// SUBSCRIPTION</div>
+      <div class="bc-val blue">CORE</div>
+      <div class="bc-sub">Active · monthly</div>
+    </div>
+    <div class="banner-cell purple">
+      <div class="bc-label">// ACHIEVEMENTS</div>
+      <div class="bc-val purple">6</div>
+      <div class="bc-sub">of 18 unlocked</div>
+    </div>
+    <div class="banner-cell green">
+      <div class="bc-label">// CORE POT ENTRY</div>
+      <div class="bc-val green">✓</div>
+      <div class="bc-sub">Draw: May 31</div>
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="page-tabs">
-    <div class="page-tab active" onclick="switchTab('credits')">CREDITS</div>
-    <div class="page-tab" onclick="switchTab('subscription')">SUBSCRIPTION</div>
-    <div class="page-tab" onclick="switchTab('achievements')">ACHIEVEMENTS</div>
-    <div class="page-tab" onclick="switchTab('notifications')">NOTIFICATIONS <span class="nav-badge" style="background:var(--red)">4</span></div>
-    <div class="page-tab" onclick="switchTab('settings')">SETTINGS</div>
-  </div>
+  <!-- ── MAIN GRID ── -->
+  <div class="main-grid">
 
-  <!-- CREDITS TAB -->
-  <div class="tab-content active" id="tab-credits">
-    <div class="grid-2" style="margin-top:16px">
+    <!-- LEFT COL -->
+    <div class="side-col">
 
+      <!-- LEADERBOARD -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">// CREDITS BREAKDOWN</span>
+          <span class="panel-title">// LEADERBOARD</span>
+        </div>
+        <div class="lb-tabs">
+          <div class="lb-tab active" onclick="switchLb('monthly', this)">THIS MONTH</div>
+          <div class="lb-tab" onclick="switchLb('alltime', this)">ALL TIME</div>
+          <div class="lb-tab" onclick="switchLb('weekly', this)">THIS WEEK</div>
         </div>
         <div class="panel-body">
-          <div class="credits-big">1,240</div>
-          <div class="credits-sub">// TOTAL CORE CREDITS THIS MONTH</div>
-          <div class="credits-breakdown">
-            <div class="cb-item">
-              <span class="cb-label">Messages posted</span>
-              <div class="cb-bar-wrap"><div class="cb-bar" style="width:60%;background:var(--blue)"></div></div>
-              <span class="cb-val">240</span>
-            </div>
-            <div class="cb-item">
-              <span class="cb-label">Trade breakdowns</span>
-              <div class="cb-bar-wrap"><div class="cb-bar" style="width:40%;background:var(--green)"></div></div>
-              <span class="cb-val">400</span>
-            </div>
-            <div class="cb-item">
-              <span class="cb-label">Bot forks shared</span>
-              <div class="cb-bar-wrap"><div class="cb-bar" style="width:30%;background:var(--purple)"></div></div>
-              <span class="cb-val">300</span>
-            </div>
-            <div class="cb-item">
-              <span class="cb-label">Lesson completions</span>
-              <div class="cb-bar-wrap"><div class="cb-bar" style="width:30%;background:var(--amber)"></div></div>
-              <span class="cb-val">300</span>
-            </div>
-          </div>
-          <div style="margin-top:20px;padding:12px;background:var(--black);border:1px solid var(--border)">
-            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:8px">// HOW TO EARN MORE</div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Post a message</span><span style="color:var(--green)">+2 pts</span></div>
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Share trade breakdown</span><span style="color:var(--green)">+20 pts</span></div>
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Fork a bot</span><span style="color:var(--green)">+50 pts</span></div>
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Publish original bot</span><span style="color:var(--green)">+200 pts</span></div>
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim)"><span>Bot accepted to marketplace</span><span style="color:var(--green)">+500 pts</span></div>
-            </div>
+          <div class="lb-list" id="lbList">
+            <!-- filled by JS -->
           </div>
         </div>
       </div>
 
+      <!-- HOW TO EARN CREDITS -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">// RECENT ACTIVITY</span>
-          <button class="panel-action">VIEW ALL</button>
+          <span class="panel-title">// HOW TO EARN CREDITS</span>
         </div>
-        <div class="panel-body" style="padding:0">
-          <div class="activity-list">
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Posted in #general</div><div class="activity-time">Today · 09:14</div></div>
-              <div class="activity-pts earn">+2</div>
-              <div class="activity-total">1,240</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Shared trade breakdown — XAUUSD</div><div class="activity-time">Today · 08:44</div></div>
-              <div class="activity-pts earn">+20</div>
-              <div class="activity-total">1,238</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Completed lesson — Bot Logic</div><div class="activity-time">Yesterday · 21:12</div></div>
-              <div class="activity-pts earn">+10</div>
-              <div class="activity-total">1,218</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Forked ATR Rider bot</div><div class="activity-time">Apr 18 · 14:30</div></div>
-              <div class="activity-pts earn">+50</div>
-              <div class="activity-total">1,208</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon spend">→</div>
-              <div class="activity-info"><div class="activity-name">Redeemed — Shop discount 10%</div><div class="activity-time">Apr 17 · 11:00</div></div>
-              <div class="activity-pts spend">-100</div>
-              <div class="activity-total">1,158</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Quiz completed — Psychology 100%</div><div class="activity-time">Apr 16 · 19:45</div></div>
-              <div class="activity-pts earn">+50</div>
-              <div class="activity-total">1,258</div>
-            </div>
-            <div class="activity-row">
-              <div class="activity-icon earn">↑</div>
-              <div class="activity-info"><div class="activity-name">Account created — welcome bonus</div><div class="activity-time">Apr 16 · 10:00</div></div>
-              <div class="activity-pts earn">+100</div>
-              <div class="activity-total">100</div>
-            </div>
+        <div class="earn-grid">
+          <div class="earn-item">
+            <div class="earn-action">Complete a lesson</div>
+            <div class="earn-pts">+50</div>
+            <div class="earn-label">pts per lesson</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Pass lesson quiz</div>
+            <div class="earn-pts blue">+75</div>
+            <div class="earn-label">pts per quiz</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Post a signal</div>
+            <div class="earn-pts amber">+100</div>
+            <div class="earn-label">verified calls only</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Signal hits TP</div>
+            <div class="earn-pts">+200</div>
+            <div class="earn-label">per closed win</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Daily login</div>
+            <div class="earn-pts blue">+10</div>
+            <div class="earn-label">per day</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Share a system fork</div>
+            <div class="earn-pts purple">+150</div>
+            <div class="earn-label">reviewed by team</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">7-day streak</div>
+            <div class="earn-pts amber">+250</div>
+            <div class="earn-label">bonus on streak</div>
+          </div>
+          <div class="earn-item">
+            <div class="earn-action">Monthly sub active</div>
+            <div class="earn-pts">+500</div>
+            <div class="earn-label">per billing cycle</div>
           </div>
         </div>
       </div>
 
     </div>
-  </div>
 
-  <!-- SUBSCRIPTION TAB -->
-  <div class="tab-content" id="tab-subscription">
-    <div style="margin-top:16px;max-width:700px">
+    <!-- RIGHT COL -->
+    <div class="side-col">
 
-      <div class="sub-card">
-        <div class="sub-header">
-          <div class="sub-name">CORE MONTHLY</div>
-          <div class="sub-status">● ACTIVE</div>
-        </div>
-        <div class="sub-details">
-          <div class="sub-detail">
-            <div class="sub-detail-label">// AMOUNT</div>
-            <div class="sub-detail-val green">€20 / month</div>
-          </div>
-          <div class="sub-detail">
-            <div class="sub-detail-label">// NEXT BILLING</div>
-            <div class="sub-detail-val">May 16, 2026</div>
-          </div>
-          <div class="sub-detail">
-            <div class="sub-detail-label">// MEMBER SINCE</div>
-            <div class="sub-detail-val">April 16, 2026</div>
-          </div>
-          <div class="sub-detail">
-            <div class="sub-detail-label">// FOUNDING RATE</div>
-            <div class="sub-detail-val green">LOCKED FOREVER ✓</div>
-          </div>
-          <div class="sub-detail">
-            <div class="sub-detail-label">// CORE POT</div>
-            <div class="sub-detail-val">€2/month contributed</div>
-          </div>
-          <div class="sub-detail">
-            <div class="sub-detail-label">// PAYMENT</div>
-            <div class="sub-detail-val">•••• 4411</div>
-          </div>
-        </div>
-        <div class="sub-actions">
-          <button class="sub-btn">CHANGE PLAN</button>
-          <button class="sub-btn">UPDATE PAYMENT</button>
-          <button class="sub-btn">BILLING HISTORY</button>
-          <button class="sub-btn danger" onclick="confirmCancel()">CANCEL SUBSCRIPTION</button>
-        </div>
-      </div>
-
-      <div style="background:var(--green-muted);border:1px solid rgba(0,255,136,0.15);padding:16px;font-family:var(--mono);font-size:11px;color:var(--green);line-height:1.7">
-        // FOUNDING MEMBER LOCK ACTIVE<br>
-        <span style="color:var(--text-dim)">You joined during the founding period. Your €20/month rate is locked permanently — even if pricing increases to €28, €58 or beyond, you always pay €20. This is our promise to early members.</span>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ACHIEVEMENTS TAB -->
-  <div class="tab-content" id="tab-achievements">
-    <div style="margin-top:16px">
-      <div class="achievements-grid">
-        <div class="achievement earned">
-          <div class="ach-earned-badge">✓</div>
-          <div class="ach-icon earned-icon">⚡</div>
-          <div class="ach-name">FIRST TRADE</div>
-          <div class="ach-desc">Logged your first trade breakdown</div>
-        </div>
-        <div class="achievement earned">
-          <div class="ach-earned-badge">✓</div>
-          <div class="ach-icon earned-icon">◎</div>
-          <div class="ach-name">PSYCHOLOGIST</div>
-          <div class="ach-desc">Completed psychology module 100%</div>
-        </div>
-        <div class="achievement earned">
-          <div class="ach-earned-badge">✓</div>
-          <div class="ach-icon earned-icon">&lt;/&gt;</div>
-          <div class="ach-name">BOT BUILDER</div>
-          <div class="ach-desc">Forked and shared your first bot</div>
-        </div>
-        <div class="achievement earned">
-          <div class="ach-earned-badge">✓</div>
-          <div class="ach-icon earned-icon">▲</div>
-          <div class="ach-name">FOUNDER</div>
-          <div class="ach-desc">Joined during founding month</div>
-        </div>
-        <div class="achievement">
-          <div class="ach-icon locked-icon">◈</div>
-          <div class="ach-name">1K CREDITS</div>
-          <div class="ach-desc">Reach 1,000 Core Credits — 1,240 ✓</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">⬡</div>
-          <div class="ach-name">SIGNAL MASTER</div>
-          <div class="ach-desc">Follow 10 signals with documented results</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">★</div>
-          <div class="ach-name">TOP 5</div>
-          <div class="ach-desc">Reach top 5 on the leaderboard</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">∞</div>
-          <div class="ach-name">MARKETPLACE</div>
-          <div class="ach-desc">Get a bot accepted into Core marketplace</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">◑</div>
-          <div class="ach-name">POT WINNER</div>
-          <div class="ach-desc">Win the monthly Core Pot</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">✦</div>
-          <div class="ach-name">CONTRIBUTOR</div>
-          <div class="ach-desc">Become a verified Core Contributor</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">⊕</div>
-          <div class="ach-name">COMPLETIONIST</div>
-          <div class="ach-desc">Complete all knowledge topics</div>
-        </div>
-        <div class="achievement locked">
-          <div class="ach-icon locked-icon">▣</div>
-          <div class="ach-name">100 FORKS</div>
-          <div class="ach-desc">Your bot reaches 100 community forks</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOTIFICATIONS TAB -->
-  <div class="tab-content" id="tab-notifications">
-    <div style="margin-top:16px">
+      <!-- MY CREDIT HISTORY -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">// NOTIFICATIONS</span>
-          <button class="panel-action" onclick="markAllRead()">MARK ALL READ</button>
+          <span class="panel-title">// CREDIT HISTORY</span>
+          <span class="panel-action" style="color:var(--green)">◈ 1,240 total</span>
         </div>
-        <div class="notif-list">
-          <div class="notif-item unread">
-            <div class="notif-dot unread"></div>
-            <div class="notif-text unread"><span>CORE SIGNAL</span> — XAUUSD long posted. Entry 2,339.40 · TP1 hit at 2,344.80 +1.5R</div>
-            <div class="notif-time">09:14 today</div>
+        <div class="panel-body">
+          <div class="credit-list">
+            <div class="credit-item">
+              <div class="credit-icon earn">📘</div>
+              <div class="credit-info"><div class="credit-reason">Completed: Risk Management L4</div><div class="credit-date">Today · 08:41</div></div>
+              <div class="credit-amount earn">+75</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">🔥</div>
+              <div class="credit-reason">7-day login streak bonus</div>
+              <div class="credit-amount earn">+250</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">📘</div>
+              <div class="credit-info"><div class="credit-reason">Completed: Risk Management L3</div><div class="credit-date">Yesterday · 14:22</div></div>
+              <div class="credit-amount earn">+50</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">📗</div>
+              <div class="credit-info"><div class="credit-reason">Daily login</div><div class="credit-date">Yesterday</div></div>
+              <div class="credit-amount earn">+10</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">📘</div>
+              <div class="credit-info"><div class="credit-reason">Completed: Market Structure L5</div><div class="credit-date">Apr 24 · 11:05</div></div>
+              <div class="credit-amount earn">+75</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">💳</div>
+              <div class="credit-info"><div class="credit-reason">Monthly subscription active</div><div class="credit-date">Apr 23</div></div>
+              <div class="credit-amount earn">+500</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">📗</div>
+              <div class="credit-info"><div class="credit-reason">Daily login streak (×5)</div><div class="credit-date">Apr 19–23</div></div>
+              <div class="credit-amount earn">+50</div>
+            </div>
+            <div class="credit-item">
+              <div class="credit-icon earn">📘</div>
+              <div class="credit-info"><div class="credit-reason">Completed: Psychology L2 quiz</div><div class="credit-date">Apr 18</div></div>
+              <div class="credit-amount earn">+75</div>
+            </div>
           </div>
-          <div class="notif-item unread">
-            <div class="notif-dot unread"></div>
-            <div class="notif-text unread"><span>LEADERBOARD</span> — You moved up 2 positions to #7 this week 🔥</div>
-            <div class="notif-time">08:00 today</div>
+        </div>
+      </div>
+
+      <!-- NEXT RANK -->
+      <div class="rank-up-box">
+        <div class="rank-up-label">// NEXT RANK TARGET</div>
+        <div class="rank-up-title">RANK #6 — PIPRIDER</div>
+        <div class="rank-up-sub">1,560 pts needed · you have 1,240 · gap: 320 pts</div>
+        <div class="rank-gap-bar"><div class="rank-gap-fill" style="width:79%"></div></div>
+        <div class="rank-gap-labels"><span>1,240 pts</span><span>1,560 pts</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── ACHIEVEMENTS ── -->
+  <div class="panel">
+    <div class="panel-head">
+      <span class="panel-title">// ACHIEVEMENTS</span>
+      <span class="panel-action" style="color:var(--purple)">6 / 18 unlocked</span>
+    </div>
+    <div class="achievement-grid">
+
+      <!-- UNLOCKED -->
+      <div class="ach-item">
+        <div class="ach-icon">🎯</div>
+        <div class="ach-info">
+          <div class="ach-name">FIRST LESSON</div>
+          <div class="ach-desc">Completed your first lesson in the Knowledge Hub.</div>
+          <div class="ach-reward earned">+50 pts earned</div>
+          <div class="ach-date">Unlocked Apr 18</div>
+        </div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-icon">🔥</div>
+        <div class="ach-info">
+          <div class="ach-name">7-DAY STREAK</div>
+          <div class="ach-desc">Logged in 7 days in a row. Consistency is the edge.</div>
+          <div class="ach-reward earned">+250 pts earned</div>
+          <div class="ach-date">Unlocked Apr 25</div>
+        </div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-icon">📊</div>
+        <div class="ach-info">
+          <div class="ach-name">RISK AWARE</div>
+          <div class="ach-desc">Passed the Risk Management module quiz.</div>
+          <div class="ach-reward earned">+75 pts earned</div>
+          <div class="ach-date">Unlocked Apr 24</div>
+        </div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-icon">⚡</div>
+        <div class="ach-info">
+          <div class="ach-name">BOT ACTIVATED</div>
+          <div class="ach-desc">Downloaded and ran your first RawCore bot.</div>
+          <div class="ach-reward earned">+100 pts earned</div>
+          <div class="ach-date">Unlocked Apr 20</div>
+        </div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-icon">💬</div>
+        <div class="ach-info">
+          <div class="ach-name">FIRST POST</div>
+          <div class="ach-desc">Sent your first message in the Core Room.</div>
+          <div class="ach-reward earned">+25 pts earned</div>
+          <div class="ach-date">Unlocked Apr 19</div>
+        </div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-icon">🏅</div>
+        <div class="ach-info">
+          <div class="ach-name">CORE MEMBER</div>
+          <div class="ach-desc">Activated your first Core subscription.</div>
+          <div class="ach-reward earned">+500 pts earned</div>
+          <div class="ach-date">Unlocked Apr 18</div>
+        </div>
+      </div>
+
+      <!-- LOCKED -->
+      <div class="ach-item locked">
+        <div class="ach-icon">🧠</div>
+        <div class="ach-info">
+          <div class="ach-name locked">KNOWLEDGE COMPLETE</div>
+          <div class="ach-desc">Finish all 20 lessons in the Knowledge Hub.</div>
+          <div class="ach-reward locked">+500 pts · 14/20 done</div>
+        </div>
+      </div>
+      <div class="ach-item locked">
+        <div class="ach-icon">📡</div>
+        <div class="ach-info">
+          <div class="ach-name locked">SIGNAL CALLER</div>
+          <div class="ach-desc">Post a verified signal that hits TP1 in the Core Room.</div>
+          <div class="ach-reward locked">+300 pts · not yet</div>
+        </div>
+      </div>
+      <div class="ach-item locked">
+        <div class="ach-icon">🥇</div>
+        <div class="ach-info">
+          <div class="ach-name locked">TOP 5</div>
+          <div class="ach-desc">Reach top 5 on the monthly leaderboard.</div>
+          <div class="ach-reward locked">+1,000 pts · currently #7</div>
+        </div>
+      </div>
+      <div class="ach-item locked">
+        <div class="ach-icon">🛠️</div>
+        <div class="ach-info">
+          <div class="ach-name locked">SYSTEM BUILDER</div>
+          <div class="ach-desc">Share a bot fork or system variant in #systems.</div>
+          <div class="ach-reward locked">+250 pts · not yet</div>
+        </div>
+      </div>
+      <div class="ach-item locked">
+        <div class="ach-icon">🔁</div>
+        <div class="ach-info">
+          <div class="ach-name locked">30-DAY STREAK</div>
+          <div class="ach-desc">Log in every day for a full month. No days off.</div>
+          <div class="ach-reward locked">+1,000 pts · 7/30</div>
+        </div>
+      </div>
+      <div class="ach-item locked">
+        <div class="ach-icon">🏆</div>
+        <div class="ach-info">
+          <div class="ach-name locked">POT WINNER</div>
+          <div class="ach-desc">Win the monthly Core Pot draw.</div>
+          <div class="ach-reward locked">+2,000 pts + prize</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CORE POT ── -->
+  <div class="panel">
+    <div class="panel-head">
+      <span class="panel-title">// CORE POT — MAY 2026</span>
+      <span class="panel-action" style="color:var(--green)">✓ YOU'RE ENTERED</span>
+    </div>
+    <div class="pot-wrap">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div>
+          <div class="pot-amount-big">€0</div>
+          <div class="pot-sub">// BUILDING · DRAW END OF MONTH</div>
+          <div class="pot-bar-track"><div class="pot-bar-fill" id="potBar" style="width:2%"></div></div>
+          <div class="pot-bar-labels"><span>€0 so far</span><span>Est. €134 by draw</span></div>
+          <div class="pot-stats">
+            <div class="pot-stat">
+              <div class="pot-stat-label">MEMBERS</div>
+              <div class="pot-stat-val">67</div>
+            </div>
+            <div class="pot-stat">
+              <div class="pot-stat-label">DAYS LEFT</div>
+              <div class="pot-stat-val amber" id="daysLeft">12</div>
+            </div>
+            <div class="pot-stat">
+              <div class="pot-stat-label">YOUR ENTRY</div>
+              <div class="pot-stat-val green">✓</div>
+            </div>
           </div>
-          <div class="notif-item unread">
-            <div class="notif-dot unread"></div>
-            <div class="notif-text unread"><span>CORE POT</span> — May pot is now €134. Draw in 12 days. You're entered.</div>
-            <div class="notif-time">Yesterday</div>
+          <div class="pot-section-title">// IF YOU WIN, CHOOSE YOUR REWARD</div>
+          <div class="pot-choices">
+            <div class="pot-choice active" onclick="choosePot(this)">Trading Funds</div>
+            <div class="pot-choice" onclick="choosePot(this)">Cash</div>
+            <div class="pot-choice" onclick="choosePot(this)">Merch</div>
+            <div class="pot-choice" onclick="choosePot(this)">Donate</div>
           </div>
-          <div class="notif-item unread">
-            <div class="notif-dot unread"></div>
-            <div class="notif-text unread"><span>ACHIEVEMENT</span> — You unlocked "1K Credits" badge 🎯</div>
-            <div class="notif-time">Apr 18</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);line-height:1.7;padding:12px;background:var(--dark);border:1px solid var(--border)">
+            Every Core member contributes €2/month to the pot. One member wins it all at month end. Draw is random — no way to buy extra entries. Winning is just luck, staying in the top is skill.
           </div>
-          <div class="notif-item">
-            <div class="notif-dot read"></div>
-            <div class="notif-text"><span>NEW BOT</span> — Community bot "SESSION SCALP" published by MarketKing</div>
-            <div class="notif-time">Apr 17</div>
+        </div>
+
+        <div>
+          <div class="pot-section-title">// PAST WINNERS</div>
+          <div class="pot-history">
+            <div class="pot-hist-item">
+              <span class="pot-hist-winner">USR_041</span>
+              <span class="pot-hist-choice">Trading Funds</span>
+              <span class="pot-hist-prize">+€118</span>
+              <span class="pot-hist-date">Apr 2026</span>
+            </div>
+            <div class="pot-hist-item">
+              <span class="pot-hist-winner">GoldFox</span>
+              <span class="pot-hist-choice">Cash</span>
+              <span class="pot-hist-prize">+€96</span>
+              <span class="pot-hist-date">Mar 2026</span>
+            </div>
+            <div class="pot-hist-item">
+              <span class="pot-hist-winner">MarketKing</span>
+              <span class="pot-hist-choice">Donate</span>
+              <span class="pot-hist-prize">+€84</span>
+              <span class="pot-hist-date">Feb 2026</span>
+            </div>
+            <div class="pot-hist-item">
+              <span class="pot-hist-winner">SteadyTrade</span>
+              <span class="pot-hist-choice">Merch</span>
+              <span class="pot-hist-prize">+€72</span>
+              <span class="pot-hist-date">Jan 2026</span>
+            </div>
           </div>
-          <div class="notif-item">
-            <div class="notif-dot read"></div>
-            <div class="notif-text"><span>UNGURUED</span> — New episode: ICT $1,500 course breakdown</div>
-            <div class="notif-time">Apr 17</div>
-          </div>
-          <div class="notif-item">
-            <div class="notif-dot read"></div>
-            <div class="notif-text">Welcome to RawCore Trading. Your founding member rate is locked forever.</div>
-            <div class="notif-time">Apr 16</div>
+          <div style="margin-top:16px;font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.8">
+            // All draws are verified and announced in #general. Past winners are shown publicly. No manipulation — ever. If you want to see the draw happen live, join the build session on draw day.
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS TAB -->
-  <div class="tab-content" id="tab-settings">
-    <div style="margin-top:16px;max-width:700px;display:flex;flex-direction:column;gap:16px">
-
-      <div class="panel">
-        <div class="panel-head"><span class="panel-title">// PROFILE SETTINGS</span></div>
-        <div class="panel-body">
-          <div class="settings-section">
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Username</div><div class="setting-desc">Your public handle across the platform</div></div>
-              <input class="setting-input" type="text" value="Robchiix" />
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Email</div><div class="setting-desc">Used for billing and notifications</div></div>
-              <input class="setting-input" type="email" value="hello@rawcoretrading.com" />
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Display name</div><div class="setting-desc">Shown in community chat</div></div>
-              <input class="setting-input" type="text" value="Robchiix" />
-            </div>
-          </div>
-          <button class="save-btn" onclick="saveSettings(this)">SAVE CHANGES →</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head"><span class="panel-title">// NOTIFICATIONS</span></div>
-        <div class="panel-body">
-          <div class="settings-section">
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Signal alerts</div><div class="setting-desc">Get notified when a new signal is posted</div></div>
-              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Community mentions</div><div class="setting-desc">When someone tags you in chat</div></div>
-              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">Core Pot updates</div><div class="setting-desc">Monthly pot announcements and draw results</div></div>
-              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">New bot releases</div><div class="setting-desc">When a new system is published</div></div>
-              <div class="toggle" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="setting-row">
-              <div class="setting-info"><div class="setting-name">UnguruED episodes</div><div class="setting-desc">New content drops</div></div>
-              <div class="toggle on" onclick="toggleSwitch(this)"><div class="toggle-knob"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="danger-zone">
-        <div class="danger-title">// DANGER ZONE</div>
-        <div class="danger-row">
-          <div class="danger-info">Cancel subscription — you keep access until billing period ends</div>
-          <button class="danger-btn" onclick="confirmCancel()">CANCEL SUB</button>
-        </div>
-        <div class="danger-row">
-          <div class="danger-info">Delete account — permanently removes all data</div>
-          <button class="danger-btn">DELETE ACCOUNT</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</div>
+</div><!-- end page-body -->
 
 <script>
-function switchTab(tab) {
-  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-}
-
-function toggleSwitch(el) {
-  el.classList.toggle('on');
-}
-
-function saveSettings(btn) {
-  btn.textContent = 'SAVED ✓';
-  btn.style.background = 'var(--border)';
-  btn.style.color = 'var(--green)';
-  setTimeout(() => {
-    btn.textContent = 'SAVE CHANGES →';
-    btn.style.background = 'var(--green)';
-    btn.style.color = 'var(--black)';
-  }, 2000);
-}
-
-function markAllRead() {
-  document.querySelectorAll('.notif-item').forEach(n => {
-    n.classList.remove('unread');
-    n.querySelector('.notif-dot').classList.remove('unread');
-    n.querySelector('.notif-dot').classList.add('read');
-    const text = n.querySelector('.notif-text');
-    if (text) { text.classList.remove('unread'); }
-  });
-}
-
-function confirmCancel() {
-  const confirmed = confirm('Are you sure? You keep access until May 16, 2026. Your founding member rate will be lost permanently.');
-  if (confirmed) alert('Subscription cancelled. Access continues until May 16, 2026.');
-}
-</script>
-
-<script>
-// ============================================
-// SUPABASE AUTH CHECK — MEMBER AREA
-// ============================================
+// ── AUTH ──
 const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Check session on load
+let currentUsername = 'Robchiix';
+
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
-  }
-  // Update UI with user info
+  if (!session) { window.location.href = 'login.html'; return; }
   const user = session.user;
-  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
-  const nameEl = document.querySelector('.nav-user span');
-  if (nameEl) nameEl.textContent = username;
+  currentUsername = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  const usernameEl = document.getElementById('navUsername');
+  if (usernameEl) usernameEl.textContent = currentUsername;
+  const avatarEl = document.getElementById('navAvatar');
+  if (avatarEl) {
+    if (user.user_metadata?.avatar_url) {
+      avatarEl.innerHTML = `<img src="${user.user_metadata.avatar_url}" alt="avatar">`;
+    } else {
+      avatarEl.textContent = currentUsername.substring(0, 2).toUpperCase();
+    }
+  }
+  renderLeaderboard('monthly');
 })();
 
-// Logout function
 async function logout() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
 }
+
+// ── LEADERBOARD DATA ──
+const lbData = {
+  monthly: [
+    { rank: 1, init: 'MK', name: 'MarketKing', score: 4820, delta: '+340', up: true, barPct: 100, barColor: 'var(--amber)' },
+    { rank: 2, init: 'AX', name: 'AlgoX',      score: 3760, delta: '+210', up: true, barPct: 78,  barColor: 'var(--green)' },
+    { rank: 3, init: 'ST', name: 'SteadyTrade', score: 2990, delta: '+180', up: true, barPct: 62,  barColor: 'var(--green)' },
+    { rank: 4, init: 'GF', name: 'GoldFox',    score: 2440, delta: '+90',  up: true, barPct: 51,  barColor: 'var(--green)' },
+    { rank: 5, init: 'TR', name: 'TrendRider', score: 1980, delta: '-40',  up: false, barPct: 41, barColor: 'var(--green)' },
+    { rank: 6, init: 'PX', name: 'PipX',       score: 1560, delta: '+20',  up: true, barPct: 32,  barColor: 'var(--text-dim)' },
+    { rank: 7, init: null, name: null,          score: 1240, delta: '+180', up: true, barPct: 26,  barColor: 'var(--blue)', isYou: true },
+    { rank: 8, init: 'SR', name: 'SRLevel',    score: 1010, delta: '+60',  up: true, barPct: 21,  barColor: 'var(--text-dim)' },
+    { rank: 9, init: 'NB', name: 'NightBot',   score: 870,  delta: '-20',  up: false, barPct: 18, barColor: 'var(--text-dim)' },
+    { rank: 10,init: 'QT', name: 'QuietTP',    score: 720,  delta: '+10',  up: true, barPct: 15,  barColor: 'var(--text-dim)' },
+  ],
+  alltime: [
+    { rank: 1, init: 'MK', name: 'MarketKing', score: 24800, delta: '', barPct: 100, barColor: 'var(--amber)' },
+    { rank: 2, init: 'GF', name: 'GoldFox',    score: 19200, delta: '', barPct: 77,  barColor: 'var(--green)' },
+    { rank: 3, init: 'AX', name: 'AlgoX',      score: 14400, delta: '', barPct: 58,  barColor: 'var(--green)' },
+    { rank: 4, init: 'ST', name: 'SteadyTrade',score: 11200, delta: '', barPct: 45,  barColor: 'var(--green)' },
+    { rank: 5, init: 'TR', name: 'TrendRider', score: 8800,  delta: '', barPct: 35,  barColor: 'var(--green)' },
+    { rank: 6, init: 'PX', name: 'PipX',       score: 6400,  delta: '', barPct: 26,  barColor: 'var(--text-dim)' },
+    { rank: 7, init: null, name: null,          score: 1240,  delta: '', barPct: 5,   barColor: 'var(--blue)', isYou: true },
+  ],
+  weekly: [
+    { rank: 1, init: 'AX', name: 'AlgoX',      score: 480, delta: '', barPct: 100, barColor: 'var(--amber)' },
+    { rank: 2, init: null, name: null,          score: 180, delta: '', barPct: 37,  barColor: 'var(--blue)', isYou: true },
+    { rank: 3, init: 'ST', name: 'SteadyTrade', score: 170, delta: '', barPct: 35,  barColor: 'var(--green)' },
+    { rank: 4, init: 'MK', name: 'MarketKing', score: 140, delta: '', barPct: 29,  barColor: 'var(--green)' },
+    { rank: 5, init: 'GF', name: 'GoldFox',    score: 90,  delta: '', barPct: 19,  barColor: 'var(--text-dim)' },
+  ],
+};
+
+function renderLeaderboard(period) {
+  const list = document.getElementById('lbList');
+  const data = lbData[period];
+  const rankClasses = { 1: 'gold', 2: 'silver', 3: 'bronze' };
+  list.innerHTML = data.map(r => {
+    const isYou = r.isYou;
+    const name = isYou ? currentUsername + ' (you)' : r.name;
+    const init = isYou ? currentUsername.substring(0, 2).toUpperCase() : r.init;
+    const deltaHtml = r.delta ? `<div class="lb-delta ${r.up ? 'up' : 'dn'}">${r.delta} this period</div>` : '';
+    return `
+      <div class="lb-row ${isYou ? 'you' : ''}">
+        <div class="lb-rank ${rankClasses[r.rank] || ''}">${r.rank}</div>
+        <div class="lb-av ${isYou ? 'you' : ''}">${init}</div>
+        <div class="lb-info">
+          <div class="lb-name ${isYou ? 'you' : ''}">${name}</div>
+          <div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:${r.barPct}%;background:${r.barColor}"></div></div>
+        </div>
+        <div class="lb-right">
+          <div class="lb-score ${isYou ? 'you' : ''}">${r.score.toLocaleString()}</div>
+          ${deltaHtml}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function switchLb(period, tabEl) {
+  document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+  renderLeaderboard(period);
+}
+
+// ── CORE POT ──
+function choosePot(el) {
+  document.querySelectorAll('.pot-choice').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── DAYS LEFT IN MONTH ──
+function calcDaysLeft() {
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return lastDay.getDate() - now.getDate();
+}
+const daysEl = document.getElementById('daysLeft');
+if (daysEl) daysEl.textContent = calcDaysLeft();
+
+// ── GOLD TICKER ──
+let goldBase = 2341.84;
+setInterval(() => {
+  goldBase += (Math.random() - 0.48) * 0.8;
+  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
+  const el = document.getElementById('goldPrice');
+  const chEl = document.getElementById('goldChange');
+  if (el) el.textContent = goldBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (chEl) {
+    const up = parseFloat(change) >= 0;
+    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
+    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
+  }
+}, 2000);
+
+// ── SESSION ──
+function updateSession() {
+  const hour = new Date().getUTCHours();
+  let s = 'ASIAN';
+  if (hour >= 7 && hour < 16) s = 'LONDON';
+  else if (hour >= 13 && hour < 21) s = 'NEW YORK';
+  const el = document.getElementById('sessionName');
+  if (el) el.textContent = s;
+}
+updateSession();
+setInterval(updateSession, 60000);
+
+// ── ANIMATE BARS ON LOAD ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.lb-bar-fill, .rank-gap-fill, .pot-bar-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0';
+      setTimeout(() => el.style.width = w, 50);
+    });
+  }, 100);
+});
 </script>
 
 </body>
