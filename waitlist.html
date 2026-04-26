@@ -615,7 +615,13 @@ body::after {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const sb = supabase.createClient(
+  'https://mlzxnrmctblfpijtihvm.supabase.co',
+  'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+);
+
 // ── PARTICLES ──
 const particlesEl = document.getElementById('particles');
 for (let i = 0; i < 25; i++) {
@@ -632,18 +638,12 @@ for (let i = 0; i < 25; i++) {
 }
 
 // ── COUNTER ANIMATION ──
-// Stored in localStorage so it persists and feels real
-let count = parseInt(localStorage.getItem('rc_waitlist_count') || '0');
-if (count === 0) {
-  // Seed with a realistic starting number
-  count = Math.floor(Math.random() * 40) + 180; // 180-220
-  localStorage.setItem('rc_waitlist_count', count);
-}
+let count = 0;
 
 function animateCounter(target) {
   const el = document.getElementById('counterNum');
   let current = 0;
-  const step = Math.ceil(target / 60);
+  const step = Math.max(1, Math.ceil(target / 60));
   const timer = setInterval(() => {
     current = Math.min(current + step, target);
     el.textContent = current.toLocaleString();
@@ -651,38 +651,71 @@ function animateCounter(target) {
   }, 25);
 }
 
-// Start counter after page loads
-setTimeout(() => animateCounter(count), 1400);
+// Load real count from Supabase
+async function loadCount() {
+  try {
+    const { count: realCount } = await sb.from('waitlist').select('*', { count: 'exact', head: true });
+    count = realCount || 0;
+  } catch(e) {
+    count = parseInt(localStorage.getItem('rc_waitlist_count') || '0');
+  }
+  setTimeout(() => animateCounter(count), 400);
+}
+
+loadCount();
 
 // ── WAITLIST FORM ──
 async function joinWaitlist() {
   const email = document.getElementById('emailInput').value.trim();
   const btn = document.getElementById('submitBtn');
+  const input = document.getElementById('emailInput');
 
-  if (!email || !email.includes('@')) {
-    document.getElementById('emailInput').style.borderBottom = '1px solid var(--red)';
-    document.getElementById('emailInput').placeholder = 'enter a valid email';
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    input.style.outline = '1px solid var(--red)';
+    input.placeholder = 'enter a valid email...';
     return;
   }
 
   btn.disabled = true;
   btn.textContent = 'JOINING...';
+  input.disabled = true;
 
-  // Simulate API call — replace with real Supabase insert later
-  await new Promise(r => setTimeout(r, 800));
+  try {
+    // Insert into Supabase
+    const { error } = await sb.from('waitlist').insert({ email, source: 'waitlist_page' });
 
-  // Increment counter
-  count++;
-  localStorage.setItem('rc_waitlist_count', count);
-  document.getElementById('counterNum').textContent = count.toLocaleString();
+    if (error && error.code === '23505') {
+      // Already on the list
+      btn.disabled = false;
+      btn.textContent = 'JOIN NOW →';
+      input.disabled = false;
+      input.style.outline = '1px solid var(--green)';
+      input.value = '';
+      input.placeholder = 'you are already on the list!';
+      return;
+    }
 
-  // Show success
-  document.getElementById('formRow').style.display = 'none';
-  document.getElementById('yourNumber').textContent = '#' + count;
-  document.getElementById('successBox').classList.add('show');
+    if (error) throw error;
 
-  // Hide form note
-  document.querySelector('.form-note').style.display = 'none';
+    // Get real count from Supabase
+    const { count: realCount } = await sb.from('waitlist').select('*', { count: 'exact', head: true });
+    count = realCount || count + 1;
+    localStorage.setItem('rc_waitlist_count', count);
+    document.getElementById('counterNum').textContent = count.toLocaleString();
+
+    // Show success
+    document.getElementById('formRow').style.display = 'none';
+    document.getElementById('yourNumber').textContent = '#' + count;
+    document.getElementById('successBox').classList.add('show');
+    document.querySelector('.form-note').style.display = 'none';
+
+  } catch (err) {
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = 'TRY AGAIN →';
+    input.disabled = false;
+    input.style.outline = '1px solid var(--red)';
+  }
 }
 
 // Enter key support
