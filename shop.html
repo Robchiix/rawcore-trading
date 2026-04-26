@@ -6,312 +6,969 @@
 <title>Shop — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;--green:#00ff88;--green-muted:#00ff8815;--red:#ff3355;--amber:#f59e0b;--blue:#3b82f6;--text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;--mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
-body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.008) 2px,rgba(0,255,136,0.008) 4px);pointer-events:none;z-index:9999;}
+  :root {
+    --black: #050608;
+    --dark: #0a0c0f;
+    --card: #0e1114;
+    --border: #1a1f26;
+    --green: #00ff88;
+    --green-muted: #00ff8815;
+    --red: #ff3355;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --text: #c8d4e0;
+    --text-dim: #5a6a7a;
+    --text-bright: #eaf2ff;
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}
-.nav-logo span{color:var(--green);}
-.nav-links{display:flex;gap:32px;list-style:none;}
-.nav-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
-.nav-links a:hover,.nav-links a.active{color:var(--green);}
-.nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}
-.nav-cta:hover{background:var(--green);color:var(--black);}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
 
-/* HERO */
-.shop-hero{padding:100px 80px 60px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-.hero-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
-.hero-tag::before{content:'//';color:var(--text-dim);}
-.hero-title{font-family:var(--display);font-size:clamp(52px,7vw,90px);color:var(--text-bright);line-height:0.9;margin-bottom:16px;}
-.hero-title span{color:var(--green);}
-.hero-sub{font-size:15px;color:var(--text-dim);line-height:1.75;max-width:480px;margin-bottom:28px;}
-.hero-sub strong{color:var(--text);}
-.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;}
-.h-badge{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:6px 12px;border:1px solid;}
-.h-badge.green{border-color:rgba(0,255,136,0.3);color:var(--green);background:var(--green-muted);}
-.h-badge.amber{border-color:rgba(245,158,11,0.3);color:var(--amber);background:rgba(245,158,11,0.06);}
-.hero-img-wrap{position:relative;}
-.hero-img-wrap img{width:100%;display:block;border:1px solid var(--border);}
-.img-label{position:absolute;bottom:0;left:0;right:0;background:rgba(5,6,8,0.85);padding:12px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:9px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center;}
-.img-label span{color:var(--green);}
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: var(--body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
-/* MEMBER PERK BAR */
-.perk-bar{background:var(--dark);border-bottom:1px solid var(--border);padding:16px 80px;display:flex;align-items:center;gap:40px;flex-wrap:wrap;}
-.perk-item{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;color:var(--text-dim);}
-.perk-icon{color:var(--green);font-size:14px;}
-.perk-item strong{color:var(--text-bright);}
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
 
-/* PRODUCTS */
-.products-section{padding:60px 80px;}
-.section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:32px;}
-.section-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;display:flex;align-items:center;gap:8px;}
-.section-tag::before{content:'//';color:var(--text-dim);}
-.section-note{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+  .member-nav {
+    height: 56px;
+    background: rgba(5,6,8,0.98);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+  }
 
-.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);}
+  .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
+  .nav-logo span { color: var(--green); }
+  .nav-items { display: flex; gap: 0; flex: 1; }
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: 56px; display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; cursor: pointer; }
+  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; margin-left: 6px; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s; }
+  .nav-credits::before { content: '◈'; }
+  .nav-credits:hover { border-color: var(--blue); background: rgba(59,130,246,0.08); }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
 
-.product-card{background:var(--dark);transition:background 0.2s;position:relative;}
-.product-card:hover{background:var(--card);}
+  /* CART ICON */
+  .cart-icon { font-family: var(--mono); font-size: 10px; color: var(--text-dim); border: 1px solid var(--border); padding: 4px 12px; cursor: pointer; transition: all 0.2s; position: relative; display: flex; align-items: center; gap: 8px; }
+  .cart-icon:hover { border-color: var(--green); color: var(--green); }
+  .cart-count { background: var(--green); color: var(--black); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
 
-.product-img{width:100%;aspect-ratio:1;background:var(--black);overflow:hidden;border-bottom:1px solid var(--border);position:relative;display:flex;align-items:center;justify-content:center;}
-.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
-.product-card:hover .product-img img{transform:scale(1.03);}
+  /* PAGE BODY */
+  .page-body { flex: 1; overflow-y: auto; }
 
-.product-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
-.placeholder-icon{font-family:var(--display);font-size:48px;color:var(--border);}
-.placeholder-text{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;}
+  /* SHOP HERO */
+  .shop-hero {
+    padding: 32px 32px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
 
-.prod-badges{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:4px;}
-.prod-badge{font-family:var(--mono);font-size:8px;padding:3px 7px;letter-spacing:0.1em;}
-.prod-badge.founding{background:var(--amber);color:var(--black);font-weight:700;}
-.prod-badge.new{background:var(--green);color:var(--black);font-weight:700;}
-.prod-badge.coming{background:var(--border);color:var(--text-dim);}
+  .hero-left { }
+  .hero-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 8px; }
+  .hero-title { font-family: var(--display); font-size: 48px; color: var(--text-bright); line-height: 0.9; letter-spacing: 0.05em; }
+  .hero-title span { color: var(--green); }
+  .hero-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-top: 8px; }
 
-.product-info{padding:16px 18px;}
-.product-name{font-family:var(--display);font-size:20px;color:var(--text-bright);letter-spacing:0.05em;margin-bottom:4px;}
-.product-desc{font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:12px;}
-.product-pricing{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;}
-.product-price{font-family:var(--display);font-size:26px;color:var(--green);}
-.product-original{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-decoration:line-through;}
-.product-save{font-family:var(--mono);font-size:8px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:2px 6px;}
-.product-price.dim{color:var(--text-dim);}
+  .hero-discount-box {
+    background: var(--green-muted);
+    border: 1px solid rgba(0,255,136,0.2);
+    padding: 20px 28px;
+    text-align: center;
+    flex-shrink: 0;
+  }
 
-.btn-add{width:100%;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;padding:10px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;transition:opacity 0.2s;text-transform:uppercase;}
-.btn-add:hover{opacity:0.9;}
-.btn-add.coming{background:transparent;color:var(--text-dim);border:1px solid var(--border);cursor:not-allowed;}
-.btn-add.notify{background:transparent;color:var(--amber);border:1px solid rgba(245,158,11,0.3);cursor:pointer;}
-.btn-add.notify:hover{background:rgba(245,158,11,0.08);}
+  .discount-val { font-family: var(--display); font-size: 56px; color: var(--green); line-height: 1; }
+  .discount-label { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.15em; margin-top: 4px; }
+  .discount-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 6px; }
 
-/* CORE MEMBER CTA */
-.member-cta{margin:1px 0;background:var(--dark);border:1px solid var(--border);border-left:2px solid var(--green);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:32px;}
-.mc-left{}
-.mc-tag{font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.2em;margin-bottom:8px;}
-.mc-title{font-family:var(--display);font-size:28px;color:var(--text-bright);margin-bottom:6px;}
-.mc-sub{font-family:var(--mono);font-size:11px;color:var(--text-dim);}
-.mc-right{display:flex;gap:12px;align-items:center;flex-shrink:0;}
-.mc-perks{display:flex;flex-direction:column;gap:6px;}
-.mc-perk{font-family:var(--mono);font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
-.mc-perk::before{content:'→';color:var(--green);}
-.btn-join{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;padding:12px 24px;background:var(--green);color:var(--black);border:none;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block;white-space:nowrap;transition:opacity 0.2s;}
-.btn-join:hover{opacity:0.9;}
+  .credits-redeem {
+    background: var(--card);
+    border: 1px solid rgba(59,130,246,0.2);
+    padding: 16px 20px;
+    flex-shrink: 0;
+  }
 
-/* PRINTFUL NOTE */
-.printful-note{padding:40px 80px;border-top:1px solid var(--border);background:var(--dark);}
-.pn-inner{display:flex;align-items:center;gap:24px;max-width:700px;}
-.pn-icon{font-family:var(--mono);font-size:24px;color:var(--text-dim);}
-.pn-text{font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8;}
-.pn-text strong{color:var(--text);}
+  .cr-title { font-family: var(--mono); font-size: 9px; color: var(--blue); letter-spacing: 0.2em; margin-bottom: 10px; }
+  .cr-balance { font-family: var(--display); font-size: 36px; color: var(--blue); line-height: 1; margin-bottom: 4px; }
+  .cr-sub { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-bottom: 10px; }
+  .cr-options { display: flex; flex-direction: column; gap: 4px; }
+  .cr-option { font-family: var(--mono); font-size: 9px; color: var(--text-dim); display: flex; justify-content: space-between; gap: 16px; }
+  .cr-option span { color: var(--blue); }
 
-/* FOOTER */
-footer{padding:32px 80px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--text-dim);border-top:1px solid var(--border);}
-.footer-logo{color:var(--text-bright);text-decoration:none;font-family:var(--mono);font-size:14px;}
-.footer-logo span{color:var(--green);}
-.footer-links{display:flex;gap:24px;list-style:none;}
-.footer-links a{color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:var(--green);}
-.footer-socials{display:flex;gap:10px;}
-.social-icon{width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;transition:all 0.2s;text-decoration:none;flex-shrink:0;}
-.social-icon:hover{border-color:var(--green);color:var(--green);}
-.social-icon svg{display:block;}
+  /* FILTER BAR */
+  .filter-bar {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--black);
+  }
 
-.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
+  .filter-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em; margin-right: 4px; }
+  .filter-btn { font-family: var(--mono); font-size: 9px; padding: 5px 12px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s; background: transparent; letter-spacing: 0.1em; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
 
-/* MOBILE */
-@media(max-width:768px){
-  nav{padding:0 20px;height:56px;}
-  .nav-links{display:none;}
-  .shop-hero{padding:80px 20px 40px;grid-template-columns:1fr;gap:32px;}
-  .perk-bar{padding:14px 20px;gap:20px;}
-  .products-section{padding:40px 20px;}
-  .products-grid{grid-template-columns:1fr;}
-  .member-cta{flex-direction:column;padding:24px 20px;}
-  .printful-note{padding:32px 20px;}
-  footer{padding:24px 20px;flex-direction:column;gap:20px;text-align:center;}
-}
+  .sort-select { margin-left: auto; background: var(--black); border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 10px; padding: 6px 12px; outline: none; cursor: pointer; appearance: none; }
+
+  /* PRODUCTS GRID */
+  .products-section { padding: 24px 32px; }
+  .section-label { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-label::before { content: '//'; color: var(--text-dim); }
+
+  .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 1px; }
+
+  .product-card {
+    background: var(--dark);
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-card:hover { background: var(--card); }
+  .product-card:hover .product-overlay { opacity: 1; }
+
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .product-hoodie-preview {
+    width: 80%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: clamp(10px, 2vw, 18px);
+    text-align: center;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    padding: 12px;
+    position: relative;
+  }
+
+  .hoodie-bg {
+    position: absolute;
+    inset: 0;
+    background: #111;
+    border-radius: 40% 40% 20% 20% / 30% 30% 10% 10%;
+    opacity: 0.8;
+  }
+
+  .hoodie-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .product-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .overlay-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 10px 20px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+
+  .overlay-btn:hover { opacity: 0.9; }
+
+  .product-badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .prod-badge {
+    font-family: var(--mono);
+    font-size: 8px;
+    padding: 3px 7px;
+    letter-spacing: 0.1em;
+  }
+
+  .prod-badge.new { background: var(--green); color: var(--black); }
+  .prod-badge.hot { background: var(--red); color: white; }
+  .prod-badge.member { background: rgba(59,130,246,0.9); color: white; }
+
+  .product-info { padding: 14px 16px; }
+  .product-name { font-family: var(--display); font-size: 18px; color: var(--text-bright); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .product-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; margin-bottom: 10px; }
+  .product-pricing { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .product-price { font-family: var(--display); font-size: 24px; color: var(--green); }
+  .product-original { font-family: var(--mono); font-size: 11px; color: var(--text-dim); text-decoration: line-through; }
+  .product-save { font-family: var(--mono); font-size: 9px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 2px 6px; }
+  .product-sizes { display: flex; gap: 4px; flex-wrap: wrap; }
+  .size-btn { font-family: var(--mono); font-size: 9px; padding: 4px 8px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s; background: transparent; }
+  .size-btn:hover, .size-btn.selected { border-color: var(--green); color: var(--green); background: var(--green-muted); }
+  .size-btn.sold-out { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+  /* PRODUCT MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modal-left {
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    border-right: 1px solid var(--border);
+    min-height: 400px;
+  }
+
+  .modal-preview {
+    font-family: var(--display);
+    font-size: 28px;
+    color: var(--green);
+    text-align: center;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+  }
+
+  .modal-right { padding: 32px; }
+  .modal-close { float: right; font-family: var(--mono); font-size: 16px; color: var(--text-dim); cursor: pointer; background: none; border: none; transition: color 0.2s; }
+  .modal-close:hover { color: var(--red); }
+  .modal-name { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 4px; clear: both; }
+  .modal-tagline { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 16px; }
+  .modal-pricing { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  .modal-price { font-family: var(--display); font-size: 40px; color: var(--green); }
+  .modal-original { font-family: var(--mono); font-size: 13px; color: var(--text-dim); text-decoration: line-through; }
+  .modal-save { font-family: var(--mono); font-size: 10px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 3px 8px; }
+
+  .modal-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 8px; }
+  .modal-sizes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .modal-size { font-family: var(--mono); font-size: 11px; padding: 8px 14px; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.15s; background: transparent; }
+  .modal-size:hover, .modal-size.selected { border-color: var(--green); color: var(--green); background: var(--green-muted); }
+
+  .modal-add-btn {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: opacity 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .modal-add-btn:hover { opacity: 0.9; }
+  .modal-add-btn.added { background: var(--border); color: var(--green); cursor: default; }
+
+  .modal-credits-note { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-align: center; padding: 10px; background: var(--black); border: 1px solid var(--border); margin-bottom: 12px; }
+  .modal-credits-note span { color: var(--blue); }
+
+  .modal-details { font-family: var(--mono); font-size: 10px; color: var(--text-dim); display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .modal-detail-row { display: flex; justify-content: space-between; }
+  .modal-detail-row span:last-child { color: var(--text); }
+
+  /* CART SIDEBAR */
+  .cart-sidebar {
+    position: fixed;
+    top: 0; right: -400px;
+    width: 380px;
+    height: 100vh;
+    background: var(--dark);
+    border-left: 1px solid var(--border);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+  }
+
+  .cart-sidebar.open { right: 0; }
+
+  .cart-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .cart-title { font-family: var(--display); font-size: 28px; color: var(--text-bright); }
+  .cart-close { font-family: var(--mono); font-size: 14px; color: var(--text-dim); cursor: pointer; background: none; border: none; }
+  .cart-close:hover { color: var(--red); }
+
+  .cart-items { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  .cart-item { background: var(--black); border: 1px solid var(--border); padding: 14px; display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+  .ci-name { font-family: var(--mono); font-size: 11px; color: var(--text-bright); margin-bottom: 4px; }
+  .ci-detail { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+  .ci-price { font-family: var(--display); font-size: 22px; color: var(--green); }
+  .ci-remove { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; background: none; border: none; margin-top: 6px; transition: color 0.15s; display: block; text-align: right; }
+  .ci-remove:hover { color: var(--red); }
+
+  .cart-footer { padding: 16px 20px; border-top: 1px solid var(--border); }
+  .cart-summary { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .cart-row { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .cart-row.total { color: var(--text-bright); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; }
+  .cart-row.total span:last-child { color: var(--green); font-family: var(--display); font-size: 24px; }
+  .checkout-btn { width: 100%; font-family: var(--mono); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; transition: opacity 0.2s; }
+  .checkout-btn:hover { opacity: 0.9; }
+  .cart-note { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-align: center; margin-top: 10px; }
+
+  .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .cart-empty-icon { font-family: var(--display); font-size: 48px; color: var(--border); }
+
+  @media (max-width: 768px) {
+    body { cursor: default; }
+    .mobile-banner { display: flex !important; }
+    .member-nav { padding: 0 16px; overflow-x: auto; }
+    .nav-items { gap: 0; }
+    .nav-item { padding: 0 12px; font-size: 9px; }
+    .nav-credits { display: none; }
+    .nav-user span { display: none; }
+    .market-bar { padding: 6px 12px; gap: 14px; }
+    .market-item { font-size: 9px; }
+  }
+  .mobile-banner { display: none; }
+
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- SUPABASE AUTH GUARD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async () => {
+    const sb = supabase.createClient(
+      'https://mlzxnrmctblfpijtihvm.supabase.co',
+      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+    );
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
+    // Set user info in nav if elements exist
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const avatar = user.user_metadata?.avatar_url || null;
+    const nameEl = document.getElementById('navUsername');
+    const avatarEl = document.getElementById('navAvatar');
+    if (nameEl) nameEl.textContent = name;
+    if (avatarEl && avatar) {
+      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
+    }
+
+    // Sign out function
+    window.signOut = async () => {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    };
+  })();
+  </script>
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="shop.html" class="active">Shop</a></li>
-  </ul>
-  <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
+<nav class="member-nav">
+  <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
+  <div class="nav-items">
+    <a href="member-dashboard.html" class="nav-item"data-fixed>Home</a>
+    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
+    <a href="member-bots.html" class="nav-item">Bots</a>
+    <a href="member-knowledge.html" class="nav-item">Learn</a>
+    <a href="member-core.html" class="nav-item">My Core</a>
+    <a href="member-shop.html" class="nav-item active">Shop</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-credits">1,240 pts</div>
+    <div class="cart-icon" onclick="toggleCart()">
+      <span>CART</span>
+      <div class="cart-count" id="cartCount">0</div>
+    </div>
+    <div class="nav-user">
+      <div class="nav-avatar" id="navAvatar">RC</div>
+      <span id="navUsername">Robchiix</span>
+      <div class="nav-tier">CORE</div>
+    </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="shop-hero">
-  <div>
-    <div class="hero-tag">RAWCORE MERCH</div>
-    <h1 class="hero-title">WEAR THE<br><span>CORE.</span></h1>
-    <p class="hero-sub">No lambos. No fake flex. <strong>Real trader energy on quality kit.</strong> Every piece ships via Printful — print on demand, no dead stock.</p>
-    <div class="hero-badges">
-      <div class="h-badge green">// FREE WORLDWIDE SHIPPING ON ORDERS €60+</div>
-      <div class="h-badge amber">// CORE MEMBERS GET 20% OFF EVERYTHING</div>
-    </div>
-    <a href="login.html" class="nav-cta" style="display:inline-block">JOIN CORE FOR 20% OFF →</a>
-  </div>
-  <div class="hero-img-wrap reveal">
-    <img src="rc-cap.png" alt="RawCore Snapback Cap">
-    <div class="img-label">
-      <span>RC SNAPBACK CAP</span>
-      <span>// FOUNDING MEMBER PRICE — €32</span>
-    </div>
-  </div>
-</section>
-
-<!-- PERK BAR -->
-<div class="perk-bar">
-  <div class="perk-item"><span class="perk-icon">◈</span><span>Print on demand via <strong>Printful</strong> — ships worldwide</span></div>
-  <div class="perk-item"><span class="perk-icon">◈</span><span>Core members get <strong>20% off everything</strong></span></div>
-  <div class="perk-item"><span class="perk-icon">◈</span><span>Redeem <strong>Core Credits</strong> for extra discounts</span></div>
-  <div class="perk-item"><span class="perk-icon">◈</span><span><strong>Free shipping</strong> on orders over €60</span></div>
+<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
+  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
 </div>
 
-<!-- PRODUCTS -->
-<section class="products-section reveal">
-  <div class="section-header">
-    <div class="section-tag">ALL PRODUCTS</div>
-    <div class="section-note">// 3 products · More drops coming</div>
+<div class="page-body">
+
+  <!-- SHOP HERO -->
+  <div class="shop-hero">
+    <div class="hero-left">
+      <div class="hero-tag">// RAWCORE MERCH</div>
+      <div class="hero-title">WEAR THE<br><span>CORE.</span></div>
+      <div class="hero-sub">// No lambos. No fake flex. Just real trader energy on quality kit.</div>
+    </div>
+
+    <div class="hero-discount-box">
+      <div class="discount-val">20%</div>
+      <div class="discount-label">// CORE MEMBER DISCOUNT</div>
+      <div class="discount-sub">Applied automatically at checkout</div>
+    </div>
+
+    <div class="credits-redeem">
+      <div class="cr-title">// CORE CREDITS REDEMPTION</div>
+      <div class="cr-balance">1,240</div>
+      <div class="cr-sub">// YOUR AVAILABLE CREDITS</div>
+      <div class="cr-options">
+        <div class="cr-option">500 credits <span>→ 10% extra off</span></div>
+        <div class="cr-option">1,000 credits <span>→ free shipping</span></div>
+        <div class="cr-option">2,000 credits <span>→ free item</span></div>
+      </div>
+    </div>
   </div>
 
-  <div class="products-grid">
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <span class="filter-label">// FILTER:</span>
+    <button class="filter-btn active" onclick="filterProducts('all',this)">ALL</button>
+    <button class="filter-btn" onclick="filterProducts('hoodies',this)">HOODIES</button>
+    <button class="filter-btn" onclick="filterProducts('tees',this)">TEES</button>
+    <button class="filter-btn" onclick="filterProducts('accessories',this)">ACCESSORIES</button>
+    <button class="filter-btn" onclick="filterProducts('bundles',this)">BUNDLES</button>
+    <select class="sort-select">
+      <option>// SORT: FEATURED</option>
+      <option>PRICE: LOW TO HIGH</option>
+      <option>PRICE: HIGH TO LOW</option>
+      <option>NEWEST</option>
+    </select>
+  </div>
 
-    <!-- CAP -->
-    <div class="product-card">
-      <div class="product-img">
-        <img src="rc-cap.png" alt="RC Snapback Cap">
-        <div class="prod-badges">
-          <span class="prod-badge founding">FOUNDING PRICE</span>
-          <span class="prod-badge new">NEW</span>
+  <!-- PRODUCTS -->
+  <div class="products-section">
+    <div class="section-label">FEATURED DROP — FOUNDING COLLECTION</div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <!-- PRODUCT 1 -->
+      <div class="product-card" data-cat="hoodies" onclick="openModal('stay-raw')">
+        <div class="product-img">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg"></div>
+            <div class="hoodie-text" style="color:var(--green)">KEEP<br>BUILDING.<br>STAY<br><span style="color:white">RAW.</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge hot">HOT</span><span class="prod-badge member">MEMBER -20%</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">STAY RAW HOODIE</div>
+          <div class="product-desc">The flagship piece. RawCore identity in 4 words.</div>
+          <div class="product-pricing">
+            <span class="product-price">€36</span>
+            <span class="product-original">€45</span>
+            <span class="product-save">SAVE €9</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+            <button class="size-btn sold-out" disabled>XXL</button>
+          </div>
         </div>
       </div>
-      <div class="product-info">
-        <div class="product-name">RC SNAPBACK CAP</div>
-        <div class="product-desc">Black snapback, green underbrim, embroidered RC logo. The secret handshake for people who actually trade.</div>
-        <div class="product-pricing">
-          <span class="product-price">€32</span>
-          <span class="product-original">€40</span>
-          <span class="product-save">FOUNDING PRICE</span>
+
+      <!-- PRODUCT 2 -->
+      <div class="product-card" data-cat="hoodies" onclick="openModal('emotions-off')">
+        <div class="product-img">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg"></div>
+            <div class="hoodie-text"><span style="color:white;font-size:0.9em">EMOTIONS</span><br><span style="color:var(--green);font-size:1.2em">OFF ●</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge new">NEW</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
         </div>
-        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+        <div class="product-info">
+          <div class="product-name">EMOTIONS OFF HOODIE</div>
+          <div class="product-desc">For traders who execute without hesitation.</div>
+          <div class="product-pricing">
+            <span class="product-price">€36</span>
+            <span class="product-original">€45</span>
+            <span class="product-save">SAVE €9</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XXL</button>
+          </div>
+        </div>
       </div>
+
+      <!-- PRODUCT 3 -->
+      <div class="product-card" data-cat="hoodies" onclick="openModal('backtest')">
+        <div class="product-img">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg"></div>
+            <div class="hoodie-text" style="font-size:0.85em"><span style="color:white">I DON'T</span><br><span style="color:var(--green)">GAMBLE.</span><br><span style="color:white;font-size:0.8em">I BACKTEST.</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge hot">HOT</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">I BACKTEST HOODIE</div>
+          <div class="product-desc">For the ones who put in the work before risking a cent.</div>
+          <div class="product-pricing">
+            <span class="product-price">€36</span>
+            <span class="product-original">€45</span>
+            <span class="product-save">SAVE €9</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XXL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 4 -->
+      <div class="product-card" data-cat="hoodies" onclick="openModal('trust-process')">
+        <div class="product-img">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg"></div>
+            <div class="hoodie-text"><span style="color:white;font-size:0.8em">TRUST</span><br><span style="color:white;font-size:0.8em">THE</span><br><span style="color:var(--green);font-size:1.1em">PROCESS.</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge new">NEW</span><span class="prod-badge member">MEMBER -20%</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">TRUST THE PROCESS HOODIE</div>
+          <div class="product-desc">Timeless. Clean. The mindset in three words.</div>
+          <div class="product-pricing">
+            <span class="product-price">€36</span>
+            <span class="product-original">€45</span>
+            <span class="product-save">SAVE €9</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XXL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 5 — TEE -->
+      <div class="product-card" data-cat="tees" onclick="openModal('bro-wait')">
+        <div class="product-img" style="background:#0a0a0a">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg" style="border-radius:10px 10px 5px 5px / 8px 8px 3px 3px"></div>
+            <div class="hoodie-text" style="font-size:0.9em"><span style="color:white">BRO...</span><br><span style="color:white">JUST</span><br><span style="color:var(--green);font-size:1.2em">WAIT</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge new">NEW</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">BRO JUST WAIT TEE</div>
+          <div class="product-desc">Patience is a position. Wear the reminder.</div>
+          <div class="product-pricing">
+            <span class="product-price">€24</span>
+            <span class="product-original">€30</span>
+            <span class="product-save">SAVE €6</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 6 — TEE -->
+      <div class="product-card" data-cat="tees" onclick="openModal('green-day')">
+        <div class="product-img" style="background:#0a0a0a">
+          <div class="product-hoodie-preview">
+            <div class="hoodie-bg" style="border-radius:10px 10px 5px 5px / 8px 8px 3px 3px"></div>
+            <div class="hoodie-text"><span style="color:var(--green)">GREEN</span><br><span style="color:var(--green)">DAY</span><br><span style="color:white;font-size:0.7em">LOADING...</span></div>
+          </div>
+          <div class="product-badges"><span class="prod-badge hot">HOT</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">GREEN DAY LOADING TEE</div>
+          <div class="product-desc">Every trader knows this feeling. Now wear it.</div>
+          <div class="product-pricing">
+            <span class="product-price">€24</span>
+            <span class="product-original">€30</span>
+            <span class="product-save">SAVE €6</span>
+          </div>
+          <div class="product-sizes">
+            <button class="size-btn" onclick="selectSize(event,this)">S</button>
+            <button class="size-btn" onclick="selectSize(event,this)">M</button>
+            <button class="size-btn" onclick="selectSize(event,this)">L</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XL</button>
+            <button class="size-btn" onclick="selectSize(event,this)">XXL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 7 — ACCESSORY -->
+      <div class="product-card" data-cat="accessories" onclick="openModal('mug')">
+        <div class="product-img">
+          <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">
+            <div style="text-align:center">
+              <div style="font-family:var(--display);font-size:48px;color:var(--text-dim)">☕</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--green);margin-top:8px">CHARTS.<br>COFFEE.<br>REPEAT.</div>
+            </div>
+          </div>
+          <div class="product-badges"><span class="prod-badge new">NEW</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">CHARTS COFFEE MUG</div>
+          <div class="product-desc">The only trading indicator you need before market open.</div>
+          <div class="product-pricing">
+            <span class="product-price">€16</span>
+            <span class="product-original">€20</span>
+            <span class="product-save">SAVE €4</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:4px">// One size · 350ml ceramic</div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 8 — BUNDLE -->
+      <div class="product-card" data-cat="bundles" onclick="openModal('bundle')">
+        <div class="product-img">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:8px">
+            <div style="font-family:var(--display);font-size:28px;color:var(--green)">CORE BUNDLE</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-align:center">HOODIE + TEE<br>+ MUG</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--amber)">BEST VALUE</div>
+          </div>
+          <div class="product-badges"><span class="prod-badge hot">BEST VALUE</span><span class="prod-badge member">MEMBER -20%</span></div>
+          <div class="product-overlay"><button class="overlay-btn">QUICK ADD</button></div>
+        </div>
+        <div class="product-info">
+          <div class="product-name">THE CORE BUNDLE</div>
+          <div class="product-desc">Hoodie + Tee + Mug. The full starter kit.</div>
+          <div class="product-pricing">
+            <span class="product-price">€72</span>
+            <span class="product-original">€110</span>
+            <span class="product-save">SAVE €38</span>
+          </div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:4px">// Choose sizes at checkout</div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- HOODIE PLACEHOLDER -->
-    <div class="product-card">
-      <div class="product-img">
-        <img src="rc-hoodie.png" alt="Buy Low Think High Hoodie">
-        <div class="prod-badges">
-          <span class="prod-badge founding">FOUNDING PRICE</span>
-          <span class="prod-badge new">NEW</span>
-        </div>
+    <!-- COMING SOON ROW -->
+    <div class="section-label" style="margin-top:24px">COMING SOON</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
+      <div style="background:var(--dark);padding:24px;text-align:center;opacity:0.5">
+        <div style="font-family:var(--display);font-size:18px;color:var(--text-dim);margin-bottom:6px">SNAPBACK CAP</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// COMING Q3 2026</div>
       </div>
-      <div class="product-info">
-        <div class="product-name">BUY LOW THINK HIGH HOODIE</div>
-        <div class="product-desc">The flagship piece. Heavy black cotton, brush-stroke print. Wear the mindset.</div>
-        <div class="product-pricing">
-          <span class="product-price">€42</span>
-          <span class="product-original">€52</span>
-          <span class="product-save">FOUNDING PRICE</span>
-        </div>
-        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+      <div style="background:var(--dark);padding:24px;text-align:center;opacity:0.5">
+        <div style="font-family:var(--display);font-size:18px;color:var(--text-dim);margin-bottom:6px">STICKER PACK</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// COMING Q2 2026</div>
       </div>
-    </div>
-
-    <!-- TEE PLACEHOLDER -->
-    <div class="product-card">
-      <div class="product-img">
-        <img src="rc-tee.png" alt="Bro Just Wait Tee">
-        <div class="prod-badges">
-          <span class="prod-badge founding">FOUNDING PRICE</span>
-          <span class="prod-badge new">NEW</span>
-        </div>
+      <div style="background:var(--dark);padding:24px;text-align:center;opacity:0.5">
+        <div style="font-family:var(--display);font-size:18px;color:var(--text-dim);margin-bottom:6px">DESK MAT</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// COMING Q3 2026</div>
       </div>
-      <div class="product-info">
-        <div class="product-name">BRO... JUST WAIT TEE</div>
-        <div class="product-desc">The most important lesson in trading. On a t-shirt. Premium black cotton, brush-stroke print.</div>
-        <div class="product-pricing">
-          <span class="product-price">€26</span>
-          <span class="product-original">€32</span>
-          <span class="product-save">FOUNDING PRICE</span>
-        </div>
-        <button class="btn-add" onclick="window.location.href='login.html'">BUY NOW — LOGIN TO ORDER →</button>
+      <div style="background:var(--dark);padding:24px;text-align:center;opacity:0.5">
+        <div style="font-family:var(--display);font-size:18px;color:var(--text-dim);margin-bottom:6px">HOODIE V2</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim)">// COMING Q4 2026</div>
       </div>
     </div>
 
   </div>
-</section>
+</div>
 
-<!-- MEMBER CTA -->
-<div class="products-section" style="padding-top:0">
-  <div class="member-cta reveal">
-    <div class="mc-left">
-      <div class="mc-tag">// CORE MEMBERS GET MORE</div>
-      <div class="mc-title">JOIN CORE. SAVE 20%.</div>
-      <div class="mc-sub">// Plus redeem your learning credits for extra discounts and free items</div>
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-left">
+      <div class="modal-preview" id="modalPreview">KEEP<br>BUILDING.<br>STAY RAW.</div>
     </div>
-    <div class="mc-right">
-      <div class="mc-perks">
-        <div class="mc-perk">20% off all merch, forever</div>
-        <div class="mc-perk">Core Credits redeemable in shop</div>
-        <div class="mc-perk">Early access to new drops</div>
-        <div class="mc-perk">Full bot access + knowledge</div>
+    <div class="modal-right">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-name" id="modalName">STAY RAW HOODIE</div>
+      <div class="modal-tagline" id="modalTagline">// The flagship piece. RawCore identity in 4 words.</div>
+      <div class="modal-pricing">
+        <span class="modal-price" id="modalPrice">€36</span>
+        <span class="modal-original" id="modalOriginal">€45</span>
+        <span class="modal-save" id="modalSave">SAVE €9</span>
       </div>
-      <a href="pricing.html" class="btn-join">JOIN CORE — €28/MO →</a>
+      <div class="modal-label">// SELECT SIZE</div>
+      <div class="modal-sizes">
+        <button class="modal-size" onclick="selectModalSize(this)">S</button>
+        <button class="modal-size" onclick="selectModalSize(this)">M</button>
+        <button class="modal-size" onclick="selectModalSize(this)">L</button>
+        <button class="modal-size" onclick="selectModalSize(this)">XL</button>
+        <button class="modal-size" onclick="selectModalSize(this)">XXL</button>
+      </div>
+      <button class="modal-add-btn" id="modalAddBtn" onclick="addToCart()">ADD TO CART →</button>
+      <div class="modal-credits-note">// Use <span>500 Core Credits</span> for an extra 10% off at checkout</div>
+      <div class="modal-details">
+        <div class="modal-detail-row"><span>Material</span><span>350gsm heavyweight cotton blend</span></div>
+        <div class="modal-detail-row"><span>Print</span><span>Screen printed — built to last</span></div>
+        <div class="modal-detail-row"><span>Shipping</span><span>5-7 days · Free over €60</span></div>
+        <div class="modal-detail-row"><span>Fulfilled by</span><span>Printful · No inventory risk</span></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- PRINTFUL NOTE -->
-<div class="printful-note reveal">
-  <div class="pn-inner">
-    <div class="pn-icon">◈</div>
-    <div class="pn-text">
-      <strong>How orders work:</strong> All RawCore merch is printed and shipped on demand via Printful. No warehouse, no dead stock. Your order goes straight to production when placed — typical delivery is 5–10 business days worldwide. Quality guaranteed or we reprint.
+<!-- CART SIDEBAR -->
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <div class="cart-title">YOUR CART</div>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon">◻</div>
+      <div>// Cart is empty</div>
+      <div style="opacity:0.5">Add something raw 😄</div>
     </div>
   </div>
-</div>
-
-<footer>
-  <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="footer-links">
-    <li><a href="index.html">HOME</a></li>
-    <li><a href="knowledge.html">KNOWLEDGE</a></li>
-    <li><a href="systems.html">SYSTEMS</a></li>
-    <li><a href="pricing.html">PRICING</a></li>
-    <li><a href="shop.html">SHOP</a></li>
-    <li><a href="terms.html">TERMS</a></li>
-    <li><a href="privacy.html">PRIVACY</a></li>
-  </ul>
-  <div class="footer-socials">
-    <a href="https://t.me/rawcoretrading" target="_blank" class="social-icon" title="Telegram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.67l-2.945-.92c-.64-.203-.654-.64.136-.954l11.498-4.43c.533-.194 1.001.131.835.855z"/></svg></a>
-    <a href="https://www.tiktok.com/@rawcoretrading" target="_blank" class="social-icon" title="TikTok"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>
-    <a href="https://www.instagram.com/rawcoretrading" target="_blank" class="social-icon" title="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-    <a href="https://x.com/rawcoretrading" target="_blank" class="social-icon" title="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+  <div class="cart-footer">
+    <div class="cart-summary" id="cartSummary" style="display:none">
+      <div class="cart-row"><span>Subtotal</span><span id="cartSubtotal">€0</span></div>
+      <div class="cart-row"><span>Member discount (20%)</span><span style="color:var(--green)" id="cartDiscount">-€0</span></div>
+      <div class="cart-row"><span>Shipping</span><span>Calculated at checkout</span></div>
+      <div class="cart-row total"><span>TOTAL</span><span id="cartTotal">€0</span></div>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">PROCEED TO CHECKOUT →</button>
+    <div class="cart-note">// Billing info collected at checkout only</div>
   </div>
-</footer>
+</div>
 
 <script>
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+let cart = [];
+let currentProduct = null;
 
-function notifyMe(item) {
-  const names = { hoodie: 'Stay Raw Hoodie', tee: 'Emotions Off Tee' };
-  alert(`We'll let you know when the ${names[item]} drops!\n\nFor now — follow @rawcoretrading on Telegram and Instagram to be first to know.`);
+const products = {
+  'stay-raw': { name: 'STAY RAW HOODIE', tagline: '// The flagship piece. RawCore identity in 4 words.', price: 36, original: 45, preview: 'KEEP\nBUILDING.\nSTAY RAW.' },
+  'emotions-off': { name: 'EMOTIONS OFF HOODIE', tagline: '// For traders who execute without hesitation.', price: 36, original: 45, preview: 'EMOTIONS\nOFF ●' },
+  'backtest': { name: 'I BACKTEST HOODIE', tagline: '// For the ones who put in work before risking a cent.', price: 36, original: 45, preview: "I DON'T\nGAMBLE.\nI BACKTEST." },
+  'trust-process': { name: 'TRUST THE PROCESS HOODIE', tagline: '// Timeless. Clean. The mindset in three words.', price: 36, original: 45, preview: 'TRUST\nTHE\nPROCESS.' },
+  'bro-wait': { name: 'BRO JUST WAIT TEE', tagline: '// Patience is a position. Wear the reminder.', price: 24, original: 30, preview: 'BRO...\nJUST\nWAIT' },
+  'green-day': { name: 'GREEN DAY LOADING TEE', tagline: '// Every trader knows this feeling.', price: 24, original: 30, preview: 'GREEN\nDAY\nLOADING...' },
+  'mug': { name: 'CHARTS COFFEE MUG', tagline: '// The only indicator you need before market open.', price: 16, original: 20, preview: 'CHARTS.\nCOFFEE.\nREPEAT.' },
+  'bundle': { name: 'THE CORE BUNDLE', tagline: '// Hoodie + Tee + Mug. The full starter kit.', price: 72, original: 110, preview: 'CORE\nBUNDLE\nBEST VALUE' },
+};
+
+function openModal(id) {
+  currentProduct = { id, ...products[id] };
+  const p = products[id];
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalTagline').textContent = p.tagline;
+  document.getElementById('modalPrice').textContent = '€' + p.price;
+  document.getElementById('modalOriginal').textContent = '€' + p.original;
+  document.getElementById('modalSave').textContent = 'SAVE €' + (p.original - p.price);
+  document.getElementById('modalPreview').innerHTML = p.preview.replace(/\n/g, '<br>');
+  document.getElementById('modalAddBtn').textContent = 'ADD TO CART →';
+  document.getElementById('modalAddBtn').className = 'modal-add-btn';
+  document.querySelectorAll('.modal-size').forEach(s => s.classList.remove('selected'));
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function selectModalSize(btn) {
+  document.querySelectorAll('.modal-size').forEach(s => s.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function addToCart() {
+  if (!currentProduct) return;
+  const selectedSize = document.querySelector('.modal-size.selected');
+  const size = selectedSize ? selectedSize.textContent : 'M';
+  cart.push({ ...currentProduct, size });
+  updateCart();
+  const btn = document.getElementById('modalAddBtn');
+  btn.textContent = 'ADDED TO CART ✓';
+  btn.className = 'modal-add-btn added';
+  setTimeout(closeModal, 800);
+}
+
+function updateCart() {
+  const count = cart.length;
+  document.getElementById('cartCount').textContent = count;
+  const items = document.getElementById('cartItems');
+  const empty = document.getElementById('cartEmpty');
+  const summary = document.getElementById('cartSummary');
+
+  if (count === 0) {
+    empty.style.display = 'flex';
+    summary.style.display = 'none';
+    items.innerHTML = '';
+    items.appendChild(empty);
+    return;
+  }
+
+  empty.style.display = 'none';
+  summary.style.display = 'flex';
+  items.innerHTML = '';
+
+  let subtotal = 0;
+  cart.forEach((item, i) => {
+    subtotal += item.price;
+    const el = document.createElement('div');
+    el.className = 'cart-item';
+    el.innerHTML = `
+      <div>
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-detail">Size: ${item.size} · Qty: 1</div>
+      </div>
+      <div>
+        <div class="ci-price">€${item.price}</div>
+        <button class="ci-remove" onclick="removeFromCart(${i})">REMOVE ×</button>
+      </div>`;
+    items.appendChild(el);
+  });
+
+  const discount = Math.round(subtotal * 0.2);
+  const total = subtotal - discount;
+  document.getElementById('cartSubtotal').textContent = '€' + subtotal;
+  document.getElementById('cartDiscount').textContent = '-€' + discount;
+  document.getElementById('cartTotal').textContent = '€' + total;
+}
+
+function removeFromCart(i) {
+  cart.splice(i, 1);
+  updateCart();
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+}
+
+function checkout() {
+  if (cart.length === 0) { alert('Your cart is empty!'); return; }
+  alert('Checkout coming soon! Payment via Stripe will be connected shortly. Your cart has been saved.');
+}
+
+function selectSize(e, btn) {
+  e.stopPropagation();
+  const siblings = btn.parentElement.querySelectorAll('.size-btn');
+  siblings.forEach(s => s.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+  });
 }
 </script>
+
+<script>
+// ============================================
+// SUPABASE AUTH CHECK — MEMBER AREA
+// ============================================
+const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Check session on load
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+  // Update UI with user info
+  const user = session.user;
+  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  const nameEl = document.querySelector('.nav-user span');
+  if (nameEl) nameEl.textContent = username;
+})();
+
+// Logout function
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+</script>
+
 </body>
 </html>

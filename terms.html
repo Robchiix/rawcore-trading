@@ -6,203 +6,91 @@
 <title>Terms of Service — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #050608; --dark: #0a0c0f; --card: #0e1114; --border: #1a1f26;
-    --green: #00ff88; --green-muted: #00ff8815; --red: #ff3355;
-    --text: #c8d4e0; --text-dim: #5a6a7a; --text-bright: #eaf2ff;
-    --mono: 'Share Tech Mono', monospace; --display: 'Bebas Neue', sans-serif; --body: 'Rajdhani', sans-serif;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--black); color: var(--text); font-family: var(--body); overflow-x: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px); pointer-events: none; z-index: 9999; }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; background: rgba(5,6,8,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-  .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
-  .nav-logo span { color: var(--green); }
-  .nav-back { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; transition: color 0.2s; }
-  .nav-back:hover { color: var(--green); }
-  .page-wrap { max-width: 760px; margin: 0 auto; padding: 100px 40px 80px; }
-  .page-hero { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
-  .page-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 16px; }
-  .page-title { font-family: var(--display); font-size: clamp(48px, 7vw, 72px); color: var(--text-bright); line-height: 0.9; margin-bottom: 16px; }
-  .page-date { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .toc { background: var(--dark); border: 1px solid var(--border); border-left: 2px solid var(--green); padding: 20px 24px; margin-bottom: 40px; }
-  .toc-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 12px; }
-  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .toc-list a { font-family: var(--mono); font-size: 11px; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
-  .toc-list a:hover { color: var(--green); }
-  .toc-list a::before { content: '→ '; color: var(--green); }
-  .section { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(26,31,38,0.5); }
-  .section:last-child { border-bottom: none; }
-  .section-num { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 10px; }
-  .section-title { font-family: var(--display); font-size: 28px; color: var(--text-bright); letter-spacing: 0.05em; margin-bottom: 16px; }
-  .section-text { font-size: 14px; color: var(--text-dim); line-height: 1.8; margin-bottom: 14px; }
-  .section-text strong { color: var(--text); }
-  .section-text a { color: var(--green); text-decoration: none; }
-  .highlight-box { background: var(--dark); border: 1px solid var(--border); border-left: 2px solid var(--green); padding: 14px 18px; margin: 16px 0; font-family: var(--mono); font-size: 12px; color: var(--text-dim); line-height: 1.7; }
-  .highlight-box.warning { border-left-color: var(--red); }
-  .highlight-box .label { font-size: 9px; color: var(--green); letter-spacing: 0.2em; display: block; margin-bottom: 6px; }
-  .highlight-box.warning .label { color: var(--red); }
-  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
-  .bullet-list li { font-family: var(--mono); font-size: 12px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 10px; line-height: 1.6; }
-  .bullet-list li::before { content: '→'; color: var(--green); flex-shrink: 0; margin-top: 1px; }
-  footer { padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text-dim); border-top: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
-  .footer-logo { color: var(--text-bright); text-decoration: none; }
-  .footer-logo span { color: var(--green); }
-  .footer-links { display: flex; gap: 20px; list-style: none; flex-wrap: wrap; }
-  .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--green); }
-  @media (max-width: 768px) { nav { padding: 0 20px; } .page-wrap { padding: 80px 20px 60px; } footer { padding: 24px 20px; flex-direction: column; } }
+:root{--black:#050608;--dark:#0a0c0f;--card:#0e1114;--border:#1a1f26;--green:#00ff88;--green-muted:#00ff8815;--text:#c8d4e0;--text-dim:#5a6a7a;--text-bright:#eaf2ff;--mono:'Share Tech Mono',monospace;--display:'Bebas Neue',sans-serif;--body:'Rajdhani',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--text);font-family:var(--body);padding-top:64px;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.008) 2px,rgba(0,255,136,0.008) 4px);pointer-events:none;z-index:9999;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.97);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;} .nav-logo span{color:var(--green);}
+.nav-links{display:flex;gap:28px;list-style:none;} .nav-links a{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;transition:color 0.2s;} .nav-links a:hover{color:var(--green);}
+.nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;} .nav-cta:hover{background:var(--green);color:var(--black);}
+.legal-hero{padding:60px 80px 40px;border-bottom:1px solid var(--border);}
+.legal-tag{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.25em;margin-bottom:12px;}
+.legal-title{font-family:var(--display);font-size:clamp(40px,6vw,72px);color:var(--text-bright);line-height:0.9;margin-bottom:12px;}
+.legal-meta{font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+.legal-body{max-width:780px;margin:0 auto;padding:60px 80px;}
+.legal-section{margin-bottom:40px;}
+.legal-h{font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:12px;display:flex;align-items:center;gap:8px;} .legal-h::before{content:'//';color:var(--text-dim);}
+.legal-p{font-size:14px;color:var(--text-dim);line-height:1.85;margin-bottom:12px;}
+.legal-p strong{color:var(--text);}
+.legal-p a{color:var(--green);text-decoration:none;}
+footer{padding:32px 80px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--text-dim);}
+.footer-logo{color:var(--text-bright);text-decoration:none;font-family:var(--mono);font-size:14px;} .footer-logo span{color:var(--green);}
+@media(max-width:768px){nav{padding:0 20px;}.nav-links{display:none;}.legal-hero,.legal-body{padding:40px 20px;}footer{padding:24px 20px;flex-direction:column;gap:12px;}}
 </style>
 </head>
 <body>
 <nav>
   <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <a href="index.html" class="nav-back">← BACK TO SITE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="knowledge.html">Knowledge</a></li>
+    <li><a href="systems.html">Systems</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
 </nav>
-<div class="page-wrap">
-  <div class="page-hero">
-    <div class="page-tag">// LEGAL</div>
-    <h1 class="page-title">TERMS OF<br>SERVICE</h1>
-    <div class="page-date">Last updated: April 19, 2026 · hello@rawcoretrading.com</div>
+<div class="legal-hero">
+  <div class="legal-tag">// LEGAL</div>
+  <h1 class="legal-title">TERMS OF<br>SERVICE.</h1>
+  <div class="legal-meta">// Last updated: April 2026 · Governing law: Republic of Ireland</div>
+</div>
+<div class="legal-body">
+  <div class="legal-section">
+    <div class="legal-h">ACCEPTANCE OF TERMS</div>
+    <p class="legal-p">By accessing or using RawCore Trading ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Platform.</p>
+    <p class="legal-p">RawCore Trading is operated as an educational and community platform. We are not a regulated financial advisor, broker, or investment service.</p>
   </div>
-  <div class="toc">
-    <div class="toc-title">// CONTENTS</div>
-    <ul class="toc-list">
-      <li><a href="#acceptance">1. Acceptance of Terms</a></li>
-      <li><a href="#not-advice">2. Not Financial Advice</a></li>
-      <li><a href="#services">3. What We Provide</a></li>
-      <li><a href="#accounts">4. Accounts and Membership</a></li>
-      <li><a href="#payments">5. Payments and Cancellation</a></li>
-      <li><a href="#conduct">6. Community Conduct</a></li>
-      <li><a href="#content">7. User Content</a></li>
-      <li><a href="#ip">8. Intellectual Property</a></li>
-      <li><a href="#liability">9. Limitation of Liability</a></li>
-      <li><a href="#termination">10. Termination</a></li>
-      <li><a href="#contact">11. Contact</a></li>
-    </ul>
+  <div class="legal-section">
+    <div class="legal-h">NOT FINANCIAL ADVICE</div>
+    <p class="legal-p"><strong>Everything on RawCore Trading is for educational and informational purposes only.</strong> Nothing on this platform constitutes financial advice, investment advice, or a recommendation to buy or sell any financial instrument.</p>
+    <p class="legal-p">Trading financial instruments involves significant risk of loss. Past performance of any bot, signal, or strategy is not indicative of future results. You should consult a qualified financial advisor before making any trading decisions.</p>
+    <p class="legal-p">You trade at your own risk. RawCore Trading accepts no liability for any losses incurred as a result of information, tools, or bots accessed through this platform.</p>
   </div>
-  <div class="highlight-box warning">
-    <span class="label">// IMPORTANT — PLEASE READ</span>
-    By using RawCore Trading you agree to these terms. Most importantly: nothing on this platform is financial advice. Trading involves significant risk of loss. You are solely responsible for your own trading decisions.
+  <div class="legal-section">
+    <div class="legal-h">MEMBERSHIP & SUBSCRIPTIONS</div>
+    <p class="legal-p">Core membership is billed monthly (€28/month) or weekly (€9/week). Subscriptions renew automatically unless cancelled. You may cancel at any time through your account settings.</p>
+    <p class="legal-p">Founding member rates are locked for the duration of your continuous membership. If you cancel and resubscribe, standard rates apply.</p>
+    <p class="legal-p">Refunds are issued at our discretion. If you experience a technical issue preventing access to paid content, contact us at <a href="mailto:hello@rawcoretrading.com">hello@rawcoretrading.com</a>.</p>
   </div>
-  <div class="section" id="acceptance">
-    <div class="section-num">// 01</div>
-    <div class="section-title">ACCEPTANCE OF TERMS</div>
-    <p class="section-text">By accessing or using rawcoretrading.com (the "Platform"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Platform.</p>
-    <p class="section-text">These terms apply to all visitors, registered users, and paying members. We may update these terms — continued use after changes constitutes acceptance of the new terms.</p>
+  <div class="legal-section">
+    <div class="legal-h">AUTOMATED TRADING BOTS</div>
+    <p class="legal-p">Bot source code and configurations shared with Core members are provided as-is for educational purposes. We make no guarantee of profitability. Running automated trading bots involves substantial financial risk.</p>
+    <p class="legal-p">You are solely responsible for any trades executed by bots you operate, including any losses. RawCore Trading is not liable for losses resulting from bot usage.</p>
   </div>
-  <div class="section" id="not-advice">
-    <div class="section-num">// 02</div>
-    <div class="section-title">NOT FINANCIAL ADVICE</div>
-    <div class="highlight-box warning">
-      <span class="label">// CRITICAL DISCLAIMER</span>
-      Nothing on RawCore Trading — including signals, bot code, educational content, community posts, or any other material — constitutes financial advice, investment advice, or trading recommendations. All content is for educational and informational purposes only.
-    </div>
-    <p class="section-text">Trading financial instruments including forex, commodities (including gold), and cryptocurrencies involves <strong>substantial risk of loss</strong> and is not appropriate for all investors. Past performance is not indicative of future results.</p>
-    <p class="section-text">You acknowledge that:</p>
-    <ul class="bullet-list">
-      <li>You trade entirely at your own risk</li>
-      <li>RawCore Trading is not a licensed financial advisor or broker</li>
-      <li>Any signals or setups shared are for educational purposes only</li>
-      <li>Bot performance in the past does not guarantee future results</li>
-      <li>You are solely responsible for all trading decisions and their outcomes</li>
-    </ul>
+  <div class="legal-section">
+    <div class="legal-h">USER CONDUCT</div>
+    <p class="legal-p">You agree not to share, resell, or redistribute Core member content outside the platform. You agree not to use the platform to harass, mislead, or harm other members. Violations may result in immediate termination of membership without refund.</p>
   </div>
-  <div class="section" id="services">
-    <div class="section-num">// 03</div>
-    <div class="section-title">WHAT WE PROVIDE</div>
-    <p class="section-text">RawCore Trading provides an educational trading platform including:</p>
-    <ul class="bullet-list">
-      <li>Educational content on trading concepts, psychology, and risk management</li>
-      <li>Automated trading bot source code and documentation for educational use</li>
-      <li>A community space for traders to share knowledge and ideas</li>
-      <li>Signal analysis content explaining trade setups and reasoning</li>
-      <li>Broker guides and comparison information</li>
-    </ul>
-    <p class="section-text">We do not manage money, provide personalised investment advice, or guarantee any trading results. All tools and content are provided "as is" for educational purposes.</p>
+  <div class="legal-section">
+    <div class="legal-h">INTELLECTUAL PROPERTY</div>
+    <p class="legal-p">All content on RawCore Trading — including lessons, bot code, designs, and branding — is the intellectual property of RawCore Trading. Reproduction or redistribution without written permission is prohibited.</p>
   </div>
-  <div class="section" id="accounts">
-    <div class="section-num">// 04</div>
-    <div class="section-title">ACCOUNTS AND MEMBERSHIP</div>
-    <p class="section-text">To access certain features you must create an account. You are responsible for maintaining the confidentiality of your credentials and all activity under your account.</p>
-    <p class="section-text">You agree to provide accurate information when registering. We reserve the right to suspend or terminate accounts that violate these terms.</p>
-    <p class="section-text"><strong>Membership tiers:</strong> We offer a free Observer tier and paid Core membership (monthly and weekly). Features are described on our Pricing page and may change with reasonable notice.</p>
+  <div class="legal-section">
+    <div class="legal-h">CHANGES TO TERMS</div>
+    <p class="legal-p">We reserve the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms. Material changes will be communicated via email.</p>
   </div>
-  <div class="section" id="payments">
-    <div class="section-num">// 05</div>
-    <div class="section-title">PAYMENTS AND CANCELLATION</div>
-    <p class="section-text">Paid memberships are billed in advance on a weekly or monthly basis. Prices are in Euros (€) and exclude VAT where applicable.</p>
-    <ul class="bullet-list">
-      <li><strong>Cancellation:</strong> Cancel anytime. Access continues until end of current billing period.</li>
-      <li><strong>No refunds:</strong> We do not offer refunds for partial billing periods already paid.</li>
-      <li><strong>Price changes:</strong> We may change prices with 30 days notice. Existing active members keep their current rate.</li>
-      <li><strong>Founding member rate:</strong> Members who joined during the founding period have their rate locked for as long as their subscription remains active and uninterrupted.</li>
-    </ul>
-    <p class="section-text">Payments are processed securely via Stripe. We do not store your payment card details.</p>
-  </div>
-  <div class="section" id="conduct">
-    <div class="section-num">// 06</div>
-    <div class="section-title">COMMUNITY CONDUCT</div>
-    <p class="section-text">RawCore Trading is built on mutual respect and genuine knowledge sharing. By participating you agree not to:</p>
-    <ul class="bullet-list">
-      <li>Post misleading, false, or deceptive trading information</li>
-      <li>Harass, intimidate, or disrespect other members</li>
-      <li>Spam, advertise, or promote external services without permission</li>
-      <li>Share content that is illegal, hateful, or harmful</li>
-      <li>Impersonate other members or the RawCore team</li>
-      <li>Attempt to manipulate or pump/dump any trading instrument</li>
-    </ul>
-    <p class="section-text">We reserve the right to remove content and suspend or ban members who violate these standards without refund.</p>
-  </div>
-  <div class="section" id="content">
-    <div class="section-num">// 07</div>
-    <div class="section-title">USER CONTENT</div>
-    <p class="section-text">When you post content to the platform you retain ownership but grant RawCore Trading a non-exclusive licence to display and share that content within the platform.</p>
-    <p class="section-text">Community-submitted bots accepted into the marketplace are shared with all Core members. Credit is always given to the original author.</p>
-  </div>
-  <div class="section" id="ip">
-    <div class="section-num">// 08</div>
-    <div class="section-title">INTELLECTUAL PROPERTY</div>
-    <p class="section-text">All RawCore Trading platform design, branding, original content, and proprietary systems are owned by RawCore Trading and protected by applicable intellectual property laws.</p>
-    <p class="section-text">Bot source code provided to Core members is licensed for personal use only. You may modify and use it for your own trading but may not redistribute, resell, or publish it outside the platform without written permission.</p>
-  </div>
-  <div class="section" id="liability">
-    <div class="section-num">// 09</div>
-    <div class="section-title">LIMITATION OF LIABILITY</div>
-    <div class="highlight-box warning">
-      <span class="label">// IMPORTANT</span>
-      RawCore Trading is not liable for any trading losses, financial losses, or damages of any kind arising from your use of this platform, its content, tools, or community. You use everything at your own risk.
-    </div>
-    <p class="section-text">To the maximum extent permitted by law, RawCore Trading's total liability to you for any claim shall not exceed the amount you paid us in the 30 days prior to the claim arising.</p>
-  </div>
-  <div class="section" id="termination">
-    <div class="section-num">// 10</div>
-    <div class="section-title">TERMINATION</div>
-    <p class="section-text">You may stop using the platform and cancel your account at any time by contacting <a href="mailto:hello@rawcoretrading.com">hello@rawcoretrading.com</a>.</p>
-    <p class="section-text">We may suspend or terminate your access if you breach these terms or engage in fraudulent activity, with reasonable notice where possible.</p>
-    <p class="section-text">These terms are governed by the laws of Ireland.</p>
-  </div>
-  <div class="section" id="contact">
-    <div class="section-num">// 11</div>
-    <div class="section-title">CONTACT</div>
-    <ul class="bullet-list">
-      <li>Email: <a href="mailto:hello@rawcoretrading.com" style="color:var(--green)">hello@rawcoretrading.com</a></li>
-      <li>Telegram: <a href="https://t.me/rawcoretrading" target="_blank" style="color:var(--green)">t.me/rawcoretrading</a></li>
-    </ul>
+  <div class="legal-section">
+    <div class="legal-h">CONTACT</div>
+    <p class="legal-p">Questions about these terms: <a href="mailto:hello@rawcoretrading.com">hello@rawcoretrading.com</a></p>
   </div>
 </div>
 <footer>
   <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="footer-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="terms.html">Terms</a></li>
-    <li><a href="privacy.html">Privacy</a></li>
-  </ul>
-  <span>© 2026 RAWCORETRADING.COM</span>
+  <span>© 2026 RawCore Trading · All rights reserved</span>
 </footer>
 </body>
 </html>
