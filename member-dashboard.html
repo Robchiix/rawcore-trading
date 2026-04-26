@@ -79,8 +79,8 @@
   .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
 
   /* MARKET BAR */
-  .market-bar { padding: 8px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; background: var(--black); flex-shrink: 0; overflow-x: auto; }
-  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+  .market-bar { padding: 0 24px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: nowrap; align-items: center; gap: 24px; background: var(--black); flex-shrink: 0; overflow-x: auto; overflow-y: hidden; height: 37px; min-height: 37px; }
+  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; flex-shrink: 0; }
   .market-sym { color: var(--text-bright); }
   .market-price { color: var(--text); }
   .market-change.up { color: var(--green); }
@@ -347,13 +347,12 @@
 
 <!-- MARKET BAR -->
 <div class="market-bar">
-  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
-  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
-  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">—</span></div>
+  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price" id="btcPrice">—</span><span class="market-change" id="btcChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price" id="ethPrice">—</span><span class="market-change" id="ethChange" style="color:var(--text-dim)">—</span></div>
   <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
-  <div class="market-item"><span class="market-sym">SOLUSD</span><span class="market-price">182.40</span><span class="market-change up">▲ +2.1%</span></div>
-  <div class="market-item"><span class="market-sym">GBPUSD</span><span class="market-price">1.2614</span><span class="market-change dn">▼ -0.06%</span></div>
-  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" style="color:var(--green)">LONDON</span><span class="market-change up">● ACTIVE</span></div>
+  <div class="market-item"><span class="market-sym">SOLUSD</span><span class="market-price" id="solPrice">—</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName" style="color:var(--green)">—</span><span class="market-change up" id="sessionDot">●</span></div>
 </div>
 
 <div class="dash-body">
@@ -396,7 +395,7 @@
     </div>
     <div class="stat-card blue">
       <div class="sc-label">// CORE CREDITS</div>
-      <div class="sc-val blue" id="dashCredits">0</div>
+      <div class="sc-val blue" id="dashCredits">1,240</div>
       <div class="sc-sub up">Core Credits</div>
     </div>
     <div class="stat-card amber">
@@ -405,9 +404,9 @@
       <div class="sc-sub up">↑ 2 positions</div>
     </div>
     <div class="stat-card">
-      <div class="sc-label">// CORE POT ENTRY</div>
-      <div class="sc-val green">€134</div>
-      <div class="sc-sub">Draw: May 31</div>
+      <div class="sc-label">// CORE POT</div>
+      <div class="sc-val" style="color:var(--amber);font-size:18px">LOCKED</div>
+      <div class="sc-sub" style="color:var(--text-dim)">Unlocks at 100 members</div>
     </div>
   </div>
 
@@ -722,11 +721,28 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   // Update UI with user info
   const user = session.user;
   const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  
+  // Nav username
   const nameEl = document.querySelector('.nav-user span');
   if (nameEl) nameEl.textContent = username;
+  
+  // Welcome name (Bebas Neue renders uppercase naturally)
   const welcomeNameEl = document.getElementById('welcomeName');
   if (welcomeNameEl) welcomeNameEl.textContent = username;
-  // Update greeting based on time of day
+  
+  // Nav username by ID too
+  const navUsernameEl = document.getElementById('navUsername');
+  if (navUsernameEl) navUsernameEl.textContent = username;
+  
+  // Nav credits
+  const creditsEl = document.getElementById('navCredits');
+  if (creditsEl) creditsEl.textContent = '1,240 pts';
+  
+  // Dashboard credits
+  const dashCreditsEl = document.getElementById('dashCredits');
+  if (dashCreditsEl) dashCreditsEl.textContent = '1,240';
+  
+  // Greeting by time
   const hour = new Date().getHours();
   const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
   const greetingEl = document.getElementById('welcomeGreeting');
@@ -738,6 +754,46 @@ async function logout() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
 }
+
+// ── LIVE MARKET PRICES ──
+async function updateMarketPrices() {
+  const pairs = [
+    ['BTCUSDT', 'btcPrice', 'btcChange'],
+    ['ETHUSDT', 'ethPrice', 'ethChange'],
+    ['SOLUSDT', 'solPrice', null],
+  ];
+  for (const [sym, pid, cid] of pairs) {
+    try {
+      const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`);
+      if (r.ok) {
+        const d = await r.json();
+        const el = document.getElementById(pid), ch = cid ? document.getElementById(cid) : null;
+        if (el) el.textContent = parseFloat(d.lastPrice).toLocaleString('en', {maximumFractionDigits: sym === 'SOLUSDT' ? 2 : 0});
+        if (ch) { const up = parseFloat(d.priceChangePercent) >= 0; ch.textContent = (up ? '▲ +' : '▼ ') + Math.abs(parseFloat(d.priceChangePercent)).toFixed(2) + '%'; ch.className = 'market-change ' + (up ? 'up' : 'dn'); }
+      }
+    } catch(e) {}
+  }
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
+    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {}
+}
+updateMarketPrices();
+setInterval(updateMarketPrices, 30000);
+
+function updateSession() {
+  const h = new Date().getUTCHours(), t = h * 60 + new Date().getUTCMinutes();
+  const day = new Date().getUTCDay();
+  const el = document.getElementById('sessionName');
+  if (!el) return;
+  if (day === 0 || day === 6) { el.textContent = 'CLOSED'; el.style.color = 'var(--red)'; return; }
+  let s = 'ASIAN';
+  if (t >= 7*60 && t < 16*60) s = 'LONDON';
+  else if (t >= 12*60 && t < 21*60) s = 'NEW YORK';
+  el.textContent = s; el.style.color = 'var(--green)';
+}
+updateSession();
+setInterval(updateSession, 60000);
 </script>
 
 </body>
