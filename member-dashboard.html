@@ -724,6 +724,13 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
   const nameEl = document.querySelector('.nav-user span');
   if (nameEl) nameEl.textContent = username;
+  const welcomeNameEl = document.getElementById('welcomeName');
+  if (welcomeNameEl) welcomeNameEl.textContent = username;
+  // Update greeting based on time of day
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
+  const greetingEl = document.getElementById('welcomeGreeting');
+  if (greetingEl) greetingEl.textContent = greeting;
 })();
 
 // Logout function
