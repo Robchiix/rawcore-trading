@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Core Room — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --black: #050608;
@@ -23,6 +24,10 @@
     --mono: 'Share Tech Mono', monospace;
     --display: 'Bebas Neue', sans-serif;
     --body: 'Rajdhani', sans-serif;
+
+    --sidebar-w: 220px;
+    --nav-h: 56px;
+    --market-h: 37px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,1032 +45,876 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.006) 2px, rgba(0,255,136,0.006) 4px);
     pointer-events: none;
     z-index: 9999;
   }
 
-  /* MEMBER NAV */
+  /* ── NAV ── */
   .member-nav {
-    height: 56px;
+    height: var(--nav-h);
     background: rgba(5,6,8,0.98);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     padding: 0 24px;
-    gap: 0;
     flex-shrink: 0;
     z-index: 100;
   }
 
   .nav-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; margin-right: 32px; }
   .nav-logo span { color: var(--green); }
-
   .nav-items { display: flex; gap: 0; flex: 1; }
-
-  .nav-item {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0 18px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    color: var(--text-dim);
-    text-decoration: none;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    gap: 7px;
-    cursor: pointer;
-  }
-
+  .nav-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 18px; height: var(--nav-h); display: flex; align-items: center; color: var(--text-dim); text-decoration: none; border-bottom: 2px solid transparent; transition: all 0.2s; gap: 7px; }
   .nav-item:hover { color: var(--text); }
   .nav-item.active { color: var(--green); border-bottom-color: var(--green); }
-
-  .nav-item .nav-badge {
-    font-size: 8px;
-    background: var(--red);
-    color: white;
-    border-radius: 8px;
-    padding: 1px 5px;
-    min-width: 16px;
-    text-align: center;
-  }
-
+  .nav-badge { font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center; }
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
-
   .nav-credits { font-family: var(--mono); font-size: 10px; color: var(--blue); border: 1px solid rgba(59,130,246,0.25); padding: 4px 10px; display: flex; align-items: center; gap: 6px; }
-  .nav-credits::before { content: '◈'; font-size: 10px; }
-
-  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); cursor: pointer; }
-  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); }
+  .nav-credits::before { content: '◈'; }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-muted); border: 1px solid rgba(0,255,136,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--green); overflow: hidden; }
+  .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .nav-tier { font-size: 8px; color: var(--green); border: 1px solid rgba(0,255,136,0.3); padding: 2px 6px; letter-spacing: 0.15em; }
+  .logout-btn { font-family: var(--mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); padding: 4px 10px; cursor: pointer; transition: all 0.2s; background: none; letter-spacing: 0.1em; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
-  /* MAIN LAYOUT */
-  .core-room {
+  /* ── MARKET BAR ── */
+  .market-bar { padding: 8px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; background: var(--black); flex-shrink: 0; overflow-x: auto; height: var(--market-h); align-items: center; }
+  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+  .market-sym { color: var(--text-bright); }
+  .market-change.up { color: var(--green); }
+  .market-change.dn { color: var(--red); }
+
+  /* ── ROOM LAYOUT ── */
+  .room-wrap {
     flex: 1;
     display: grid;
-    grid-template-columns: 200px 1fr 1fr 280px;
+    grid-template-columns: var(--sidebar-w) 1fr 200px;
     overflow: hidden;
   }
 
-  /* SIDEBAR — CHANNELS */
-  .channels-sidebar {
+  /* ── LEFT SIDEBAR — CHANNELS ── */
+  .sidebar {
     background: var(--dark);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
-  .sidebar-section { padding: 14px 12px 6px; }
-  .sidebar-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 4px; }
+  .sidebar-section { padding: 16px 12px 8px; }
+  .sidebar-section-title { font-family: var(--mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 8px; padding-left: 8px; }
 
   .channel-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 10px;
-    border-radius: 0;
-    cursor: pointer;
-    transition: background 0.15s;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .channel-item:hover { background: var(--card); color: var(--text); }
-  .channel-item.active { background: var(--green-muted); color: var(--green); }
-  .channel-item .ch-hash { opacity: 0.5; font-size: 12px; }
-  .channel-item .ch-unread { margin-left: auto; font-size: 8px; background: var(--green); color: var(--black); padding: 1px 5px; border-radius: 8px; }
-  .channel-item .ch-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .channel-item .ch-dot.online { background: var(--green); }
-  .channel-item .ch-dot.away { background: var(--amber); }
-  .channel-item .ch-dot.offline { background: var(--border); }
-
-  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
-
-  /* COMMUNITY CHAT */
-  .chat-panel {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .panel-header {
-    height: 48px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    gap: 10px;
-    flex-shrink: 0;
-    background: var(--dark);
-  }
-
-  .panel-title { font-family: var(--mono); font-size: 11px; color: var(--text-bright); letter-spacing: 0.1em; }
-  .panel-sub { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-  .panel-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; flex-shrink: 0; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  .panel-actions { margin-left: auto; display: flex; gap: 8px; }
-  .panel-action { font-family: var(--mono); font-size: 9px; color: var(--text-dim); padding: 4px 8px; border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
-  .panel-action:hover { border-color: var(--green); color: var(--green); }
-
-  .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .chat-messages::-webkit-scrollbar { width: 4px; }
-  .chat-messages::-webkit-scrollbar-track { background: transparent; }
-  .chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
-
-  .chat-msg {
-    padding: 6px 16px;
-    display: grid;
-    grid-template-columns: 28px 1fr;
-    gap: 10px;
-    transition: background 0.1s;
-  }
-
-  .chat-msg:hover { background: rgba(14,17,20,0.5); }
-
-  .msg-avatar {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 9px;
-    color: var(--text-dim);
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .msg-avatar.core-av { background: var(--green-muted); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
-  .msg-avatar.signal-av { background: rgba(255,51,85,0.1); color: var(--red); border: 1px solid rgba(255,51,85,0.2); }
-
-  .msg-content { }
-  .msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
-  .msg-name { font-family: var(--mono); font-size: 11px; font-weight: 600; }
-  .msg-name.core { color: var(--green); }
-  .msg-name.signal { color: var(--red); }
-  .msg-name.member { color: var(--text-bright); }
-  .msg-name.you { color: var(--blue); }
-  .msg-role { font-family: var(--mono); font-size: 8px; padding: 1px 5px; border: 1px solid; letter-spacing: 0.1em; }
-  .msg-role.core-role { border-color: rgba(0,255,136,0.3); color: var(--green); }
-  .msg-role.contrib-role { border-color: rgba(139,92,246,0.3); color: var(--purple); }
-  .msg-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-left: auto; }
-  .msg-text { font-size: 13px; color: var(--text); line-height: 1.55; }
-  .msg-text .hi { color: var(--green); }
-  .msg-text .lo { color: var(--red); }
-  .msg-text .code { font-family: var(--mono); font-size: 11px; background: var(--black); border: 1px solid var(--border); padding: 1px 6px; color: var(--amber); }
-
-  .msg-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-  }
-
-  .msg-divider::before, .msg-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  .signal-card {
-    margin: 4px 16px 4px 54px;
-    background: var(--black);
-    border: 1px solid rgba(255,51,85,0.2);
-    border-left: 2px solid var(--red);
-    padding: 12px 16px;
-  }
-
-  .signal-card.bull { border-color: rgba(0,255,136,0.2); border-left-color: var(--green); }
-  .sc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: var(--mono); font-size: 10px; }
-  .sc-type { color: var(--red); letter-spacing: 0.15em; }
-  .sc-type.bull { color: var(--green); }
-  .sc-pair { color: var(--text-bright); }
-  .sc-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .sc-field { font-family: var(--mono); font-size: 10px; }
-  .sc-field-label { color: var(--text-dim); font-size: 9px; margin-bottom: 2px; }
-  .sc-field-val { color: var(--text-bright); }
-  .sc-field-val.green { color: var(--green); }
-  .sc-field-val.red { color: var(--red); }
-  .sc-why { margin-top: 10px; font-size: 12px; color: var(--text-dim); line-height: 1.5; padding-top: 8px; border-top: 1px solid var(--border); }
-
-  .chat-input-wrap {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    background: var(--dark);
-  }
-
-  .chat-input-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--black);
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    transition: border-color 0.2s;
-  }
-
-  .chat-input-box:focus-within { border-color: var(--green); }
-
-  .chat-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text);
-  }
-
-  .chat-input::placeholder { color: var(--text-dim); opacity: 0.4; }
-
-  .chat-send {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    background: none;
-    border: none;
-    cursor: pointer;
-    letter-spacing: 0.1em;
-    transition: opacity 0.2s;
-  }
-
-  .chat-send:hover { opacity: 0.7; }
-
-  .chat-tools { display: flex; gap: 12px; margin-top: 6px; }
-  .chat-tool { font-family: var(--mono); font-size: 9px; color: var(--text-dim); cursor: pointer; letter-spacing: 0.1em; transition: color 0.15s; }
-  .chat-tool:hover { color: var(--green); }
-
-  /* AI AGENT PANEL */
-  .ai-panel {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-right: 1px solid var(--border);
-  }
-
-  .ai-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .ai-msg {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .ai-msg.user { align-items: flex-end; }
-  .ai-msg.bot { align-items: flex-start; }
-
-  .ai-bubble {
-    max-width: 85%;
-    padding: 10px 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    line-height: 1.65;
-  }
-
-  .ai-msg.user .ai-bubble {
-    background: var(--green-muted);
-    border: 1px solid rgba(0,255,136,0.2);
-    color: var(--text);
-    border-radius: 0;
-  }
-
-  .ai-msg.bot .ai-bubble {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 2px solid var(--blue);
-    color: var(--text);
-  }
-
-  .ai-bubble .hi { color: var(--green); }
-  .ai-bubble .code { background: var(--black); border: 1px solid var(--border); padding: 1px 5px; color: var(--amber); display: inline; }
-  .ai-bubble-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.1em; }
-
-  .ai-suggestions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
-
-  .ai-suggestion {
+    padding: 6px 8px;
     font-family: var(--mono);
     font-size: 10px;
     color: var(--text-dim);
-    border: 1px solid var(--border);
-    padding: 5px 10px;
     cursor: pointer;
+    border-radius: 2px;
     transition: all 0.15s;
-    background: transparent;
-  }
-
-  .ai-suggestion:hover { border-color: var(--blue); color: var(--blue); }
-
-  .ai-typing {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 14px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 2px solid var(--blue);
-    width: fit-content;
-  }
-
-  .typing-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); animation: typingPulse 1.2s infinite; }
-  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typingPulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
-
-  .ai-input-wrap {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    background: var(--dark);
-  }
-
-  .ai-input-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--black);
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    transition: border-color 0.2s;
-  }
-
-  .ai-input-box:focus-within { border-color: var(--blue); }
-
-  .ai-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text);
-  }
-
-  .ai-input::placeholder { color: var(--text-dim); opacity: 0.4; }
-
-  .ai-send {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--blue);
-    background: none;
-    border: none;
-    cursor: pointer;
-    letter-spacing: 0.1em;
-  }
-
-  .ai-context {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-
-  .ai-ctx-pill {
-    font-family: var(--mono);
-    font-size: 9px;
-    padding: 3px 8px;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .ai-ctx-pill.active { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,0.08); }
-  .ai-ctx-pill:hover { border-color: var(--blue); color: var(--blue); }
-
-  /* MEMBERS SIDEBAR */
-  .members-sidebar {
-    background: var(--dark);
-    border-left: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .members-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .members-count { color: var(--green); }
-
-  .member-group { padding: 12px 12px 4px; }
-  .member-group-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 6px; }
-
-  .member-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 8px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .member-item:hover { background: var(--card); }
-
-  .member-av {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 9px;
-    color: var(--text-dim);
-    flex-shrink: 0;
+    text-decoration: none;
     position: relative;
   }
+  .channel-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
+  .channel-item.active { background: var(--green-muted); color: var(--green); }
+  .channel-prefix { color: var(--text-dim); font-size: 12px; }
+  .channel-item.active .channel-prefix { color: var(--green); }
+  .channel-unread { margin-left: auto; font-size: 8px; background: var(--red); color: white; border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center; }
+  .channel-dot { width: 6px; height: 6px; border-radius: 50%; margin-left: auto; }
+  .channel-dot.live { background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-  .member-av::after {
-    content: '';
-    position: absolute;
-    bottom: 0; right: 0;
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    border: 1px solid var(--dark);
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+
+  /* ONLINE MEMBERS */
+  .online-section { padding: 8px 12px; flex: 1; overflow-y: auto; }
+  .online-section-title { font-family: var(--mono); font-size: 8px; color: var(--text-dim); letter-spacing: 0.2em; margin-bottom: 10px; padding-left: 8px; }
+  .online-member { display: flex; align-items: center; gap: 8px; padding: 4px 8px; margin-bottom: 2px; }
+  .online-av { width: 22px; height: 22px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 8px; color: var(--text-dim); position: relative; flex-shrink: 0; }
+  .online-av::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: var(--green); border: 1px solid var(--dark); }
+  .online-av.away::after { background: var(--amber); }
+  .online-name { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .online-tag { font-size: 7px; color: var(--green); border: 1px solid rgba(0,255,136,0.2); padding: 1px 4px; margin-left: auto; letter-spacing: 0.1em; }
+
+  /* ── MAIN FEED ── */
+  .feed-main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
   }
 
-  .member-av.online::after { background: var(--green); }
-  .member-av.away::after { background: var(--amber); }
-  .member-av.core-member { background: var(--green-muted); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
-
-  .member-name { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .member-role-badge { font-family: var(--mono); font-size: 7px; margin-left: auto; padding: 1px 4px; border: 1px solid; letter-spacing: 0.1em; }
-  .member-role-badge.core { border-color: rgba(0,255,136,0.3); color: var(--green); }
-  .member-role-badge.contrib { border-color: rgba(139,92,246,0.3); color: var(--purple); }
-
-  /* MARKET BAR */
-  .market-bar {
-    padding: 8px 16px;
+  .feed-header {
+    padding: 12px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
-    gap: 20px;
-    background: var(--black);
+    align-items: center;
+    justify-content: space-between;
     flex-shrink: 0;
-    overflow-x: auto;
+    background: var(--dark);
+  }
+  .feed-header-left { display: flex; align-items: center; gap: 10px; }
+  .feed-channel-name { font-family: var(--mono); font-size: 12px; color: var(--text-bright); }
+  .feed-channel-prefix { color: var(--green); }
+  .feed-channel-desc { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .feed-header-right { display: flex; gap: 10px; align-items: center; }
+  .feed-header-stat { font-family: var(--mono); font-size: 9px; color: var(--text-dim); border: 1px solid var(--border); padding: 3px 8px; }
+
+  /* MESSAGES */
+  .messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .messages-area::-webkit-scrollbar { width: 4px; }
+  .messages-area::-webkit-scrollbar-track { background: transparent; }
+  .messages-area::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* DATE DIVIDER */
+  .date-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    margin: 8px 0;
+  }
+  .date-divider::before, .date-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .date-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); letter-spacing: 0.1em; white-space: nowrap; }
+
+  /* MESSAGE ROW */
+  .msg-row {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    padding: 3px 20px;
+    transition: background 0.1s;
+    cursor: default;
+  }
+  .msg-row:hover { background: rgba(255,255,255,0.015); }
+  .msg-row.with-header { padding-top: 10px; }
+
+  .msg-av-col { padding-top: 2px; }
+  .msg-av {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .msg-av.core { background: var(--green-muted); border-color: rgba(0,255,136,0.3); color: var(--green); }
+  .msg-av.signal-av { background: rgba(255,51,85,0.08); border-color: rgba(255,51,85,0.2); color: var(--red); }
+  .msg-av.expose-av { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); color: var(--amber); }
+  /* show nothing in avatar col for continued messages */
+  .msg-row:not(.with-header) .msg-av { opacity: 0; }
+
+  .msg-content { }
+  .msg-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 3px; }
+  .msg-author { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+  .msg-author.core { color: var(--green); }
+  .msg-author.member { color: var(--text-bright); }
+  .msg-author.signal-auth { color: var(--red); }
+  .msg-author.expose-auth { color: var(--amber); }
+  .msg-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+  .msg-role { font-size: 8px; padding: 1px 5px; border: 1px solid; letter-spacing: 0.1em; }
+  .msg-role.core { background: var(--green-muted); color: var(--green); border-color: rgba(0,255,136,0.25); }
+  .msg-role.mod { background: rgba(59,130,246,0.08); color: var(--blue); border-color: rgba(59,130,246,0.25); }
+
+  .msg-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .msg-text .hi { color: var(--green); font-weight: 600; }
+  .msg-text .lo { color: var(--red); font-weight: 600; }
+  .msg-text .amber { color: var(--amber); }
+  .msg-text .code { font-family: var(--mono); font-size: 11px; background: var(--card); border: 1px solid var(--border); padding: 1px 6px; color: var(--blue); }
+
+  /* SIGNAL CARD */
+  .signal-card {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 12px 14px;
+    margin-top: 6px;
+    max-width: 480px;
+    font-family: var(--mono);
+  }
+  .signal-card.bear { border-left-color: var(--red); }
+  .signal-card.neutral { border-left-color: var(--amber); }
+  .signal-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .signal-card-title { font-size: 11px; color: var(--text-bright); letter-spacing: 0.1em; }
+  .signal-card-dir { font-size: 9px; padding: 2px 8px; }
+  .signal-card-dir.buy { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+  .signal-card-dir.sell { background: rgba(255,51,85,0.1); color: var(--red); border: 1px solid rgba(255,51,85,0.3); }
+  .signal-card-dir.watch { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .signal-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 9px; }
+  .signal-level-item { display: flex; justify-content: space-between; }
+  .signal-level-key { color: var(--text-dim); }
+  .signal-level-val { color: var(--text-bright); }
+  .signal-level-val.green { color: var(--green); }
+  .signal-level-val.red { color: var(--red); }
+  .signal-card-footer { margin-top: 10px; font-size: 9px; color: var(--text-dim); padding-top: 8px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
+
+  /* IMAGE / CHART ATTACHMENT */
+  .msg-attachment {
+    margin-top: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px;
+    max-width: 380px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .attachment-icon { font-size: 18px; }
+
+  /* REACTIONS */
+  .msg-reactions { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+  .reaction { font-family: var(--mono); font-size: 9px; background: var(--card); border: 1px solid var(--border); padding: 2px 8px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 4px; }
+  .reaction:hover { border-color: var(--green); background: var(--green-muted); }
+  .reaction.active { background: var(--green-muted); border-color: rgba(0,255,136,0.3); color: var(--green); }
+  .reaction-emoji { font-size: 11px; }
+  .reaction-count { color: var(--text-dim); }
+  .reaction.active .reaction-count { color: var(--green); }
+
+  /* COMPOSE */
+  .compose-area {
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--dark);
+  }
+  .compose-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .compose-box:focus-within { border-color: rgba(0,255,136,0.3); }
+  .compose-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    resize: none;
+    min-height: 20px;
+    max-height: 120px;
+    line-height: 1.5;
+  }
+  .compose-input::placeholder { color: var(--text-dim); opacity: 0.5; }
+  .compose-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .compose-btn { background: none; border: none; font-family: var(--mono); font-size: 10px; color: var(--text-dim); cursor: pointer; padding: 4px 6px; transition: color 0.15s; }
+  .compose-btn:hover { color: var(--text); }
+  .compose-send {
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: opacity 0.2s;
+  }
+  .compose-send:hover { opacity: 0.85; }
+  .compose-hint { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 6px; }
+
+  /* ── RIGHT PANEL — CONTEXT ── */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--dark);
   }
 
-  .market-item { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 10px; white-space: nowrap; }
-  .market-sym { color: var(--text-bright); }
-  .market-price { color: var(--text); }
-  .market-change.up { color: var(--green); }
-  .market-change.dn { color: var(--red); }
+  .rp-section { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); }
+  .rp-title { font-family: var(--mono); font-size: 8px; color: var(--green); letter-spacing: 0.2em; margin-bottom: 10px; }
 
-  @media (max-width: 768px) {
-    body { cursor: default; }
-    .mobile-banner { display: flex !important; }
-    .member-nav { padding: 0 16px; overflow-x: auto; }
-    .nav-items { gap: 0; }
-    .nav-item { padding: 0 12px; font-size: 9px; }
-    .nav-credits { display: none; }
-    .nav-user span { display: none; }
-    .market-bar { padding: 6px 12px; gap: 14px; }
-    .market-item { font-size: 9px; }
+  .rp-stat { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; padding: 4px 0; border-bottom: 1px solid rgba(26,31,38,0.4); }
+  .rp-stat:last-child { border-bottom: none; }
+  .rp-stat-key { color: var(--text-dim); }
+  .rp-stat-val { color: var(--text-bright); }
+  .rp-stat-val.green { color: var(--green); }
+  .rp-stat-val.red { color: var(--red); }
+  .rp-stat-val.amber { color: var(--amber); }
+
+  .rp-pin {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--green);
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
-  .mobile-banner { display: none; }
+  .rp-pin:hover { border-color: var(--green); }
+  .rp-pin-label { font-size: 8px; color: var(--green); letter-spacing: 0.1em; margin-bottom: 4px; }
 
+  .rules-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; padding: 14px; flex: 1; }
+  .rule-item { font-family: var(--mono); font-size: 9px; color: var(--text-dim); display: flex; gap: 8px; line-height: 1.5; }
+  .rule-num { color: var(--green); flex-shrink: 0; }
+
+  /* ── SCROLLBAR ── */
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .room-wrap { grid-template-columns: 1fr; }
+    .sidebar, .right-panel { display: none; }
+    .nav-items { display: none; }
+  }
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- SUPABASE AUTH GUARD -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  (async () => {
-    const sb = supabase.createClient(
-      'https://mlzxnrmctblfpijtihvm.supabase.co',
-      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
-    );
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) {
-      window.location.href = 'login.html';
-      return;
-    }
-    // Set user info in nav if elements exist
-    const user = session.user;
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
-    const avatar = user.user_metadata?.avatar_url || null;
-    const nameEl = document.getElementById('navUsername');
-    const avatarEl = document.getElementById('navAvatar');
-    if (nameEl) nameEl.textContent = name;
-    if (avatarEl && avatar) {
-      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
-    }
-
-    // Sign out function
-    window.signOut = async () => {
-      await sb.auth.signOut();
-      window.location.href = 'index.html';
-    };
-  })();
-  </script>
 </head>
 <body>
 
-<!-- MEMBER NAV -->
+<!-- NAV -->
 <nav class="member-nav">
   <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
   <div class="nav-items">
-    <a href="member-dashboard.html" class="nav-item"data-fixed>Home</a>
-    <a href="core-room.html" class="nav-item active">Core Room <span class="nav-badge">3</span></a>
+    <a href="member-dashboard.html" class="nav-item">Home</a>
+    <a href="core-room.html" class="nav-item active">Core Room <span class="nav-badge" id="unreadBadge">3</span></a>
     <a href="member-bots.html" class="nav-item">Bots</a>
     <a href="member-knowledge.html" class="nav-item">Learn</a>
     <a href="member-core.html" class="nav-item">My Core</a>
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
   <div class="nav-right">
-    <div class="nav-credits">1,240 pts</div>
+    <div class="nav-credits" id="navCredits">1,240 pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
-      <span id="navUsername">Robchiix</span>
-      <div class="nav-tier">CORE</div>
+      <span id="navUsername">—</span>
+      <span class="nav-tier">CORE</span>
     </div>
+    <button class="logout-btn" onclick="logout()">LOGOUT</button>
   </div>
 </nav>
 
-<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
-  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
-</div>
-
 <!-- MARKET BAR -->
 <div class="market-bar">
-  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price">2,341.84</span><span class="market-change up">▲ +0.34%</span></div>
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
   <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
   <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
   <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
-  <div class="market-item"><span class="market-sym">SOLUSD</span><span class="market-price">182.40</span><span class="market-change up">▲ +2.1%</span></div>
-  <div class="market-item"><span class="market-sym">GBPUSD</span><span class="market-price">1.2614</span><span class="market-change dn">▼ -0.06%</span></div>
-  <div class="market-item"><span class="market-sym">DXY</span><span class="market-price">104.32</span><span class="market-change dn">▼ -0.3%</span></div>
-  <div class="market-item"><span class="market-sym">NASDAQ</span><span class="market-price">17,890</span><span class="market-change up">▲ +0.54%</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName">LONDON</span><span class="market-change up">● ACTIVE</span></div>
 </div>
 
-<!-- CORE ROOM -->
-<div class="core-room">
+<!-- ROOM -->
+<div class="room-wrap">
 
-  <!-- CHANNELS SIDEBAR -->
-  <div class="channels-sidebar">
+  <!-- ── LEFT SIDEBAR ── -->
+  <div class="sidebar">
     <div class="sidebar-section">
-      <div class="sidebar-label">// CHANNELS</div>
-      <div class="channel-item active"><span class="ch-hash">#</span> general<span class="ch-unread">3</span></div>
-      <div class="channel-item"><span class="ch-hash">#</span> signals</div>
-      <div class="channel-item"><span class="ch-hash">#</span> gold-xauusd</div>
-      <div class="channel-item"><span class="ch-hash">#</span> crypto</div>
-      <div class="channel-item"><span class="ch-hash">#</span> systems<span class="ch-unread">1</span></div>
-      <div class="channel-item"><span class="ch-hash">#</span> psychology</div>
-      <div class="channel-item"><span class="ch-hash">#</span> bot-help</div>
-      <div class="channel-item"><span class="ch-hash">#</span> broker-talk</div>
-      <div class="channel-item"><span class="ch-hash">#</span> wins-losses</div>
+      <div class="sidebar-section-title">// CHANNELS</div>
+      <div class="channel-item active" onclick="switchChannel('general', this)">
+        <span class="channel-prefix">#</span> general
+        <span class="channel-dot live"></span>
+      </div>
+      <div class="channel-item" onclick="switchChannel('signals', this)">
+        <span class="channel-prefix">#</span> signals
+        <span class="channel-unread">2</span>
+      </div>
+      <div class="channel-item" onclick="switchChannel('systems', this)">
+        <span class="channel-prefix">#</span> systems
+      </div>
+      <div class="channel-item" onclick="switchChannel('gold', this)">
+        <span class="channel-prefix">#</span> gold-xauusd
+        <span class="channel-dot live"></span>
+      </div>
+      <div class="channel-item" onclick="switchChannel('crypto', this)">
+        <span class="channel-prefix">#</span> crypto
+      </div>
+      <div class="channel-item" onclick="switchChannel('knowledge', this)">
+        <span class="channel-prefix">#</span> knowledge
+        <span class="channel-unread">1</span>
+      </div>
+      <div class="channel-item" onclick="switchChannel('ungurued', this)">
+        <span class="channel-prefix">#</span> ungurued
+      </div>
     </div>
+
     <div class="sidebar-divider"></div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">// DIRECT</div>
-      <div class="channel-item"><div class="ch-dot online"></div> CORE Team</div>
-      <div class="channel-item"><div class="ch-dot online"></div> MarketKing</div>
-      <div class="channel-item"><div class="ch-dot away"></div> AlgoX</div>
-    </div>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">// MY STATUS</div>
-      <div class="channel-item"><div class="ch-dot online"></div> Online</div>
+
+    <div class="online-section">
+      <div class="online-section-title">// ONLINE — 12</div>
+      <div class="online-member">
+        <div class="online-av">RC</div>
+        <span class="online-name" id="sidebarUsername">you</span>
+        <span class="online-tag">CORE</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av">MK</div>
+        <span class="online-name">MarketKing</span>
+        <span class="online-tag" style="color:var(--amber);border-color:rgba(245,158,11,0.2)">MOD</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av">GF</div>
+        <span class="online-name">GoldFox</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av">AX</div>
+        <span class="online-name">AlgoX</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av">ST</div>
+        <span class="online-name">SteadyTrade</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av away">TR</div>
+        <span class="online-name">TrendRider</span>
+      </div>
+      <div class="online-member">
+        <div class="online-av away">PX</div>
+        <span class="online-name">PipX</span>
+      </div>
     </div>
   </div>
 
-  <!-- COMMUNITY CHAT -->
-  <div class="chat-panel">
-    <div class="panel-header">
-      <div class="panel-dot"></div>
-      <div class="panel-title"># general</div>
-      <div class="panel-sub">312 members · live</div>
-      <div class="panel-actions">
-        <div class="panel-action">SIGNALS</div>
-        <div class="panel-action">PINNED</div>
-        <div class="panel-action">SEARCH</div>
+  <!-- ── MAIN FEED ── -->
+  <div class="feed-main">
+    <div class="feed-header">
+      <div class="feed-header-left">
+        <span class="feed-channel-name"><span class="feed-channel-prefix">#</span> <span id="channelName">general</span></span>
+        <span class="feed-channel-desc" id="channelDesc">· Main room — trading, bots, market talk</span>
+      </div>
+      <div class="feed-header-right">
+        <div class="feed-header-stat">67 members</div>
+        <div class="feed-header-stat" style="color:var(--green)">12 online</div>
       </div>
     </div>
 
-    <div class="chat-messages" id="chatMessages">
-      <div class="msg-divider">TODAY</div>
+    <div class="messages-area" id="messagesArea">
 
-      <div class="chat-msg">
-        <div class="msg-avatar core-av">RC</div>
+      <div class="date-divider"><span class="date-label">TODAY — APR 26</span></div>
+
+      <!-- CORE SYSTEM MESSAGE -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av core">RC</div></div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-name core">CORE</span>
-            <span class="msg-role core-role">ADMIN</span>
-            <span class="msg-time">08:02</span>
+            <span class="msg-author core">RawCore</span>
+            <span class="msg-role core">CORE</span>
+            <span class="msg-time">08:00</span>
           </div>
-          <div class="msg-text">Good morning Core 🔥 London session opening strong. XAUUSD holding above <span class="hi">2338</span> after the overnight sweep. Eyes on the <span class="hi">2344</span> level for continuation.</div>
+          <div class="msg-text">Good morning. London session active. XAUUSD holding above <span class="hi">2,338</span> — bias remains <span class="hi">bullish</span> while above that level. OMEGA is running. NOVA scanning. Keep it clean.</div>
         </div>
       </div>
 
-      <div class="chat-msg">
-        <div class="msg-avatar signal-av">SIG</div>
+      <!-- SIGNAL POST -->
+      <div class="msg-row with-header" style="margin-top:4px">
+        <div class="msg-av-col"><div class="msg-av signal-av">⚡</div></div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-name signal">SIGNAL BOT</span>
-            <span class="msg-role" style="border-color:rgba(255,51,85,0.3);color:var(--red)">AUTO</span>
-            <span class="msg-time">08:14</span>
+            <span class="msg-author signal-auth">OMEGA</span>
+            <span class="msg-role" style="background:rgba(0,255,136,0.08);color:var(--green);border-color:rgba(0,255,136,0.2)">BOT</span>
+            <span class="msg-time">08:42</span>
           </div>
-          <div class="msg-text">New signal posted in #signals</div>
-        </div>
-      </div>
-
-      <div class="signal-card bull">
-        <div class="sc-header">
-          <span class="sc-type bull">▲ LONG</span>
-          <span class="sc-pair">XAUUSD · 5M</span>
-          <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">08:14 · London</span>
-        </div>
-        <div class="sc-body">
-          <div class="sc-field"><div class="sc-field-label">ENTRY</div><div class="sc-field-val">2,339.40</div></div>
-          <div class="sc-field"><div class="sc-field-label">STOP LOSS</div><div class="sc-field-val red">2,335.80</div></div>
-          <div class="sc-field"><div class="sc-field-label">TP1</div><div class="sc-field-val green">2,344.80</div></div>
-          <div class="sc-field"><div class="sc-field-label">TP2</div><div class="sc-field-val green">2,349.20</div></div>
-        </div>
-        <div class="sc-why">// WHY: Liquidity sweep confirmed below 2338. EMA9 × EMA21 cross on 5M. ATR elevated. London bias bullish. 1.5R minimum target.</div>
-      </div>
-
-      <div class="chat-msg">
-        <div class="msg-avatar" style="background:rgba(139,92,246,0.1);color:var(--purple);border:1px solid rgba(139,92,246,0.2)">MK</div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-name member">MarketKing</span>
-            <span class="msg-role contrib-role">CONTRIBUTOR</span>
-            <span class="msg-time">08:19</span>
+          <div class="msg-text">Signal triggered — XAUUSD</div>
+          <div class="signal-card">
+            <div class="signal-card-header">
+              <span class="signal-card-title">XAUUSD · BUY</span>
+              <span class="signal-card-dir buy">BUY</span>
+            </div>
+            <div class="signal-levels">
+              <div class="signal-level-item"><span class="signal-level-key">ENTRY</span><span class="signal-level-val">2,338.40</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">SL</span><span class="signal-level-val red">2,334.40</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">TP1</span><span class="signal-level-val green">2,342.40</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">TP2</span><span class="signal-level-val green">2,346.40</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">TP3</span><span class="signal-level-val green">2,350.40</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">RR</span><span class="signal-level-val">1:1 · 1:2 · 1:3</span></div>
+            </div>
+            <div class="signal-card-footer">
+              <span>EMA9×EMA21 cross · ATR OK · London session</span>
+              <span style="color:var(--green)">+2.4R CLOSED ✓</span>
+            </div>
           </div>
-          <div class="msg-text">Confirming — saw the sweep on my end too. ATR is reading <span class="hi">1.24</span> which is above the threshold. Clean setup. Already in at <span class="hi">2339.60</span></div>
-        </div>
-      </div>
-
-      <div class="chat-msg">
-        <div class="msg-avatar">AX</div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-name member">AlgoX</span>
-            <span class="msg-time">08:22</span>
+          <div class="msg-reactions">
+            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🔥</span><span class="reaction-count">14</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">✅</span><span class="reaction-count">9</span></div>
           </div>
-          <div class="msg-text">OMEGA GS triggered at the same level automatically. Running the <span class="code">ATR_RIDER</span> fork — SL placed at structure low <span class="lo">2335.20</span> instead of fixed pips. Slightly tighter but more logical.</div>
         </div>
       </div>
 
-      <div class="chat-msg">
-        <div class="msg-avatar">ST</div>
+      <!-- MEMBER MESSAGE -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av">GF</div></div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-name member">SteadyTrade</span>
-            <span class="msg-time">08:31</span>
+            <span class="msg-author member">GoldFox</span>
+            <span class="msg-time">08:55</span>
           </div>
-          <div class="msg-text">Quick question for anyone — when OMEGA triggers in the NY session as well, do you reduce position size? I've been running full risk both sessions and the drawdown is more than I'd like</div>
-        </div>
-      </div>
-
-      <div class="chat-msg">
-        <div class="msg-avatar core-av">RC</div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-name core">CORE</span>
-            <span class="msg-role core-role">ADMIN</span>
-            <span class="msg-time">08:35</span>
+          <div class="msg-text">TP1 hit. Moving SL to breakeven. Running to TP2 🎯</div>
+          <div class="msg-reactions">
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💪</span><span class="reaction-count">6</span></div>
           </div>
-          <div class="msg-text">Good question @SteadyTrade — yes, we run 0.5% in Asian, 1% London, 1.5% NY overlap. The overlap is where the real moves happen. Ask the AI agent on the right — it can walk you through the session risk config 👉</div>
         </div>
       </div>
 
-      <div class="chat-msg">
-        <div class="msg-avatar">GF</div>
+      <div class="msg-row">
+        <div class="msg-av-col"><div class="msg-av">GF</div></div>
         <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-name member">GoldFox</span>
-            <span class="msg-time">08:44</span>
-          </div>
-          <div class="msg-text">TP1 hit 🔥 <span class="hi">+1.5R</span> — moved SL to breakeven. Letting the rest run to TP2</div>
+          <div class="msg-text"><span class="hi">TP2 hit</span> — <span class="hi">+2.0R</span> locked. Letting TP3 run with no risk now. This is how OMEGA is supposed to work.</div>
         </div>
       </div>
 
-      <div class="chat-msg">
-        <div class="msg-avatar" style="background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)">RC</div>
+      <!-- ANOTHER MEMBER -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av">AX</div></div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-name you">Robchiix (you)</span>
-            <span class="msg-role" style="border-color:rgba(59,130,246,0.3);color:var(--blue)">FOUNDER</span>
-            <span class="msg-time">08:51</span>
-          </div>
-          <div class="msg-text">Nice one GoldFox 💪 That's exactly the execution we're building this community for. Entry logic understood, SL placed properly, letting it run. No emotion involved.</div>
-        </div>
-      </div>
-
-      <div class="chat-msg">
-        <div class="msg-avatar">PL</div>
-        <div class="msg-content">
-          <div class="msg-header">
-            <span class="msg-name member">PipLord</span>
+            <span class="msg-author member">AlgoX</span>
             <span class="msg-time">09:02</span>
           </div>
-          <div class="msg-text">Anyone else notice the <span class="code">ORDER_FILLING_RETURN</span> issue on Tradequo this morning? My bot threw an error on entry — had to switch fill mode manually</div>
+          <div class="msg-text">Anyone else notice the ATR Rider fork from yesterday is holding better SL distances on gold? Tested it on 3 weeks of data. <span class="amber">Will post results in #systems.</span></div>
         </div>
       </div>
 
-      <div class="chat-msg">
-        <div class="msg-avatar core-av">RC</div>
+      <!-- MODERATOR -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);color:var(--amber)">MK</div></div>
         <div class="msg-content">
           <div class="msg-header">
-            <span class="msg-name core">CORE</span>
-            <span class="msg-role core-role">ADMIN</span>
+            <span class="msg-author" style="color:var(--amber)">MarketKing</span>
+            <span class="msg-role mod">MOD</span>
             <span class="msg-time">09:06</span>
           </div>
-          <div class="msg-text">Known Tradequo quirk @PipLord — check the broker setup guide in #broker-talk. The fill mode config is covered in full there. It's a 2 line fix in the bot config.</div>
+          <div class="msg-text">Good call. Post it with the backtest parameters and R-results. If the logic holds up we'll look at merging it. Use <span class="code">#systems</span> thread format.</div>
         </div>
       </div>
 
+      <!-- MEMBER WITH CHART -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av">ST</div></div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author member">SteadyTrade</span>
+            <span class="msg-time">09:14</span>
+          </div>
+          <div class="msg-text">XAUUSD 5M structure — clean higher highs forming above 2,340. EMA9 holding as dynamic support after the cross.</div>
+          <div class="msg-attachment">
+            <span class="attachment-icon">📊</span>
+            <div>
+              <div style="color:var(--text-bright);margin-bottom:3px">XAUUSD_5M_structure.png</div>
+              <div>Chart screenshot · 09:14</div>
+            </div>
+          </div>
+          <div class="msg-reactions">
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">👀</span><span class="reaction-count">4</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">✅</span><span class="reaction-count">3</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORE SYSTEM CLOSE MESSAGE -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av core">RC</div></div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author core">RawCore</span>
+            <span class="msg-role core">CORE</span>
+            <span class="msg-time">09:42</span>
+          </div>
+          <div class="msg-text">OMEGA signal closed — <span class="hi">+2.4R</span>. All 4 TPs hit. TP3 caught the full move. Textbook. Full trade breakdown posted in <span class="code">#signals</span>.</div>
+          <div class="msg-reactions">
+            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🔥</span><span class="reaction-count">21</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">🎯</span><span class="reaction-count">15</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💚</span><span class="reaction-count">8</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNGURUED POST -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av expose-av">UG</div></div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author expose-auth">UNGURUED</span>
+            <span class="msg-role" style="background:rgba(245,158,11,0.08);color:var(--amber);border-color:rgba(245,158,11,0.2)">EXPOSE</span>
+            <span class="msg-time">10:15</span>
+          </div>
+          <div class="msg-text">New drop — "$1,500 ICT course vs what's actually in it." 4-part thread. Short version: 80% is YouTube content resold. The 20% that's real? We cover it free in <span class="code">#knowledge</span>. Full breakdown in <span class="code">#ungurued</span>.</div>
+          <div class="msg-reactions">
+            <div class="reaction active" onclick="toggleReaction(this)"><span class="reaction-emoji">🫡</span><span class="reaction-count">33</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">💀</span><span class="reaction-count">18</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOVA SIGNAL -->
+      <div class="msg-row with-header">
+        <div class="msg-av-col"><div class="msg-av" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);color:var(--blue)">⚡</div></div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author" style="color:var(--blue)">NOVA</span>
+            <span class="msg-role" style="background:rgba(59,130,246,0.08);color:var(--blue);border-color:rgba(59,130,246,0.2)">BOT</span>
+            <span class="msg-time">10:28</span>
+          </div>
+          <div class="msg-text">Signal triggered — BTCUSDT</div>
+          <div class="signal-card" style="border-left-color:var(--blue)">
+            <div class="signal-card-header">
+              <span class="signal-card-title">BTCUSDT · LONG</span>
+              <span class="signal-card-dir buy">LONG</span>
+            </div>
+            <div class="signal-levels">
+              <div class="signal-level-item"><span class="signal-level-key">ENTRY</span><span class="signal-level-val">70,840</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">SL</span><span class="signal-level-val red">69,900</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">TP</span><span class="signal-level-val green">73,200</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">LEVERAGE</span><span class="signal-level-val amber">20×</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">CONF</span><span class="signal-level-val">FVG + 4H demand</span></div>
+              <div class="signal-level-item"><span class="signal-level-key">STATUS</span><span class="signal-level-val amber">● RUNNING +1.4R</span></div>
+            </div>
+            <div class="signal-card-footer">
+              <span>4H bias bullish · 1H demand zone · 15M FVG fill</span>
+              <span style="color:var(--amber)">● OPEN</span>
+            </div>
+          </div>
+          <div class="msg-reactions">
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">🚀</span><span class="reaction-count">11</span></div>
+            <div class="reaction" onclick="toggleReaction(this)"><span class="reaction-emoji">👀</span><span class="reaction-count">7</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPACER so messages don't hide behind compose -->
+      <div style="height:8px;flex-shrink:0"></div>
+
+    </div><!-- end messages-area -->
+
+    <!-- COMPOSE -->
+    <div class="compose-area">
+      <div class="compose-box">
+        <textarea class="compose-input" id="composeInput" placeholder="Message #general..." rows="1"
+          onkeydown="handleCompose(event)"
+          oninput="autoResize(this)"></textarea>
+        <div class="compose-actions">
+          <button class="compose-btn" title="Attach">📎</button>
+          <button class="compose-btn" title="Emoji">😎</button>
+          <button class="compose-send" onclick="sendMessage()">SEND →</button>
+        </div>
+      </div>
+      <div class="compose-hint">// Enter to send · Shift+Enter for new line · No spam. No signals unless you can back them up.</div>
     </div>
 
-    <div class="chat-input-wrap">
-      <div class="chat-input-box">
-        <input class="chat-input" id="chatInput" placeholder="// message #general..." />
-        <button class="chat-send" onclick="sendChat()">SEND →</button>
+  </div><!-- end feed-main -->
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel">
+
+    <div class="rp-section">
+      <div class="rp-title">// TODAY'S ACTIVITY</div>
+      <div class="rp-stat"><span class="rp-stat-key">MESSAGES</span><span class="rp-stat-val">47</span></div>
+      <div class="rp-stat"><span class="rp-stat-key">SIGNALS</span><span class="rp-stat-val amber">2</span></div>
+      <div class="rp-stat"><span class="rp-stat-key">OMEGA P&L</span><span class="rp-stat-val green">+2.4R</span></div>
+      <div class="rp-stat"><span class="rp-stat-key">NOVA P&L</span><span class="rp-stat-val amber">+1.4R ●</span></div>
+      <div class="rp-stat"><span class="rp-stat-key">MEMBERS</span><span class="rp-stat-val">67 total</span></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">// PINNED</div>
+      <div class="rp-pin">
+        <div class="rp-pin-label">// SIGNAL FORMAT</div>
+        Post signals with PAIR, DIR, ENTRY, SL, TP. No track record = no credibility.
       </div>
-      <div class="chat-tools">
-        <span class="chat-tool">// ATTACH</span>
-        <span class="chat-tool">// CODE BLOCK</span>
-        <span class="chat-tool">// SIGNAL CARD</span>
-        <span class="chat-tool">// BOT SHARE</span>
+      <div class="rp-pin" style="border-left-color:var(--amber)">
+        <div class="rp-pin-label" style="color:var(--amber)">// NEXT BUILD SESSION</div>
+        Tue Apr 29 · 20:00 UTC — OMEGA deep dive with live code walk.
       </div>
     </div>
+
+    <div class="rules-list">
+      <div class="rp-title" style="padding:0 0 8px">// ROOM RULES</div>
+      <div class="rule-item"><span class="rule-num">01</span>No fake signals. Back it up or don't post it.</div>
+      <div class="rule-item"><span class="rule-num">02</span>No promo, no referrals, no DM farming.</div>
+      <div class="rule-item"><span class="rule-num">03</span>Be direct. No ego. No flexing fake gains.</div>
+      <div class="rule-item"><span class="rule-num">04</span>Bad calls are fine. Lying about them isn't.</div>
+      <div class="rule-item"><span class="rule-num">05</span>This is not financial advice. Ever.</div>
+    </div>
+
   </div>
 
-  <!-- AI AGENT -->
-  <div class="ai-panel">
-    <div class="panel-header">
-      <div class="panel-dot" style="background:var(--blue);box-shadow:none;animation:none;"></div>
-      <div class="panel-title">CORE AI AGENT</div>
-      <div class="panel-sub">trading assistant</div>
-      <div class="panel-actions">
-        <div class="panel-action">CLEAR</div>
-        <div class="panel-action">HISTORY</div>
-      </div>
-    </div>
-
-    <div class="ai-messages" id="aiMessages">
-
-      <div class="ai-msg bot">
-        <div class="ai-bubble-label">// CORE AI · 08:00</div>
-        <div class="ai-bubble">
-          Morning Robchiix 👋 I'm your Core AI agent. I can help with:<br><br>
-          <span class="hi">→</span> Explaining bot logic and code<br>
-          <span class="hi">→</span> Market structure and signal analysis<br>
-          <span class="hi">→</span> Risk management calculations<br>
-          <span class="hi">→</span> Broker setup and configuration<br>
-          <span class="hi">→</span> Trading psychology questions<br><br>
-          What do you need today?
-        </div>
-        <div class="ai-suggestions">
-          <button class="ai-suggestion" onclick="askAI('Explain the OMEGA GS entry logic')">OMEGA GS logic</button>
-          <button class="ai-suggestion" onclick="askAI('How do I calculate position size?')">Position sizing</button>
-          <button class="ai-suggestion" onclick="askAI('What is a liquidity sweep?')">Liquidity sweep</button>
-          <button class="ai-suggestion" onclick="askAI('Fix my Tradequo ORDER_FILLING error')">Broker fix</button>
-        </div>
-      </div>
-
-      <div class="ai-msg user" id="aiUserMsg1" style="display:none">
-        <div class="ai-bubble-label">// YOU</div>
-        <div class="ai-bubble" id="aiUserText1"></div>
-      </div>
-
-      <div class="ai-msg bot" id="aiBotMsg1" style="display:none">
-        <div class="ai-bubble-label">// CORE AI</div>
-        <div class="ai-bubble" id="aiBotText1"></div>
-      </div>
-
-      <div class="ai-msg bot" id="aiTyping" style="display:none">
-        <div class="ai-bubble-label">// CORE AI · thinking...</div>
-        <div class="ai-typing">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="ai-input-wrap">
-      <div class="ai-context">
-        <div class="ai-ctx-pill active">General</div>
-        <div class="ai-ctx-pill">OMEGA GS</div>
-        <div class="ai-ctx-pill">NOVA BTC</div>
-        <div class="ai-ctx-pill">ALPHA</div>
-        <div class="ai-ctx-pill">Risk Calc</div>
-      </div>
-      <div class="ai-input-box" style="margin-top:8px">
-        <input class="ai-input" id="aiInput" placeholder="// ask the AI agent..." onkeydown="if(event.key==='Enter') sendAI()" />
-        <button class="ai-send" onclick="sendAI()">ASK →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MEMBERS SIDEBAR -->
-  <div class="members-sidebar">
-    <div class="members-header">
-      <span>ONLINE</span>
-      <span class="members-count">47 / 312</span>
-    </div>
-
-    <div class="member-group">
-      <div class="member-group-label">// CORE TEAM</div>
-      <div class="member-item">
-        <div class="member-av core-member online">RC</div>
-        <span class="member-name" style="color:var(--green)">CORE</span>
-        <span class="member-role-badge core">ADMIN</span>
-      </div>
-    </div>
-
-    <div class="member-group">
-      <div class="member-group-label">// CONTRIBUTORS</div>
-      <div class="member-item">
-        <div class="member-av core-member online" style="background:rgba(139,92,246,0.1);color:var(--purple);border-color:rgba(139,92,246,0.2)">MK</div>
-        <span class="member-name">MarketKing</span>
-        <span class="member-role-badge contrib">CONTRIB</span>
-      </div>
-      <div class="member-item">
-        <div class="member-av away">AX</div>
-        <span class="member-name">AlgoX</span>
-        <span class="member-role-badge contrib">CONTRIB</span>
-      </div>
-    </div>
-
-    <div class="member-group">
-      <div class="member-group-label">// CORE MEMBERS — ONLINE</div>
-      <div class="member-item"><div class="member-av core-member online">ST</div><span class="member-name">SteadyTrade</span></div>
-      <div class="member-item"><div class="member-av online">GF</div><span class="member-name">GoldFox</span></div>
-      <div class="member-item"><div class="member-av online">PL</div><span class="member-name">PipLord</span></div>
-      <div class="member-item"><div class="member-av online">RW</div><span class="member-name">RawWick</span></div>
-      <div class="member-item"><div class="member-av online">T9</div><span class="member-name">Trade909</span></div>
-      <div class="member-item"><div class="member-av online">NK</div><span class="member-name">NovakFX</span></div>
-      <div class="member-item"><div class="member-av online">ZR</div><span class="member-name">ZeroRisk</span></div>
-      <div class="member-item"><div class="member-av online">BS</div><span class="member-name">BullStack</span></div>
-      <div class="member-item"><div class="member-av away">CR</div><span class="member-name">CryptoRaj</span></div>
-      <div class="member-item"><div class="member-av away">WP</div><span class="member-name">WickPro</span></div>
-      <div class="member-item"><div class="member-av away">EM</div><span class="member-name">EdgeMaker</span></div>
-      <div class="member-item"><div class="member-av away">FT</div><span class="member-name">FibTrader</span></div>
-    </div>
-
-    <div class="member-group">
-      <div class="member-group-label" style="margin-top:4px">// YOU</div>
-      <div class="member-item">
-        <div class="member-av" style="background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)" class="online">RC</div>
-        <span class="member-name" style="color:var(--blue)">Robchiix</span>
-        <span class="member-role-badge" style="border-color:rgba(59,130,246,0.3);color:var(--blue)">FOUNDER</span>
-      </div>
-    </div>
-
-  </div>
-
-</div>
+</div><!-- end room-wrap -->
 
 <script>
-const aiResponses = {
-  'Explain the OMEGA GS entry logic': 'OMEGA GS uses a <span class="hi">4-condition entry system</span>:<br><br>1. <span class="hi">Session filter</span> — London or NY only, no Asian trades<br>2. <span class="hi">15M regime</span> — higher timeframe bias must match direction<br>3. <span class="hi">EMA9 × EMA21 cross</span> on 5M — confirms momentum<br>4. <span class="hi">ATR > 0.8</span> — confirms real volatility exists<br><br>All 4 must align. If any fails, no trade is taken. That\'s what keeps the win rate clean.',
-  'How do I calculate position size?': 'Position size formula:<br><br><span class="hi">Lots = (Account × Risk%) ÷ (SL pips × Pip value)</span><br><br>Example: €1000 account, 1% risk, 40 pip SL on XAUUSD:<br>→ Risk amount = €10<br>→ Pip value on gold ≈ €1 per 0.01 lot<br>→ Lots = 10 ÷ (40 × 1) = <span class="hi">0.25 lots</span><br><br>Always size based on your SL distance, never a fixed lot.',
-  'What is a liquidity sweep?': 'A liquidity sweep is when price <span class="hi">hunts stop losses</span> before reversing.<br><br>Most retail traders place stops just below swing lows or above swing highs. Institutions need to fill large orders — they push price to those levels to trigger the stops and absorb the liquidity.<br><br>After the sweep: price often reverses sharply. That\'s your entry signal — trade the reversal <span class="hi">after</span> the sweep, not before.',
-  'Fix my Tradequo ORDER_FILLING error': 'Classic Tradequo quirk. In your bot config set:<br><br><span class="code">filling_mode = mt5.ORDER_FILLING_RETURN</span><br><br>Most brokers use <span class="code">ORDER_FILLING_FOK</span> but Tradequo requires <span class="code">RETURN</span> mode. This tells MT5 to partially fill if full volume isn\'t available.<br><br>Also check your symbol name — Tradequo uses <span class="code">XAUUSDs</span> with a lowercase s suffix.',
-  default: 'Good question. Based on your context — let me break that down clearly.<br><br>The key thing to understand here is that <span class="hi">every decision should have a rule behind it</span>. If you can\'t explain why you\'re taking a trade in one sentence, the setup probably isn\'t there yet.<br><br>Want me to dig deeper into any specific aspect of this?'
-};
-
-function askAI(question) {
-  document.getElementById('aiInput').value = question;
-  sendAI();
-}
-
-function sendAI() {
-  const input = document.getElementById('aiInput');
-  const question = input.value.trim();
-  if (!question) return;
-
-  const userMsg = document.getElementById('aiUserMsg1');
-  const userText = document.getElementById('aiUserText1');
-  const botMsg = document.getElementById('aiBotMsg1');
-  const botText = document.getElementById('aiBotText1');
-  const typing = document.getElementById('aiTyping');
-
-  userText.textContent = question;
-  userMsg.style.display = 'flex';
-  typing.style.display = 'flex';
-  botMsg.style.display = 'none';
-  input.value = '';
-
-  const msgs = document.getElementById('aiMessages');
-  msgs.scrollTop = msgs.scrollHeight;
-
-  setTimeout(() => {
-    typing.style.display = 'none';
-    const response = aiResponses[question] || aiResponses.default;
-    botText.innerHTML = response;
-    botMsg.style.display = 'flex';
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1200);
-}
-
-function sendChat() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  const messages = document.getElementById('chatMessages');
-  const now = new Date();
-  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-
-  const el = document.createElement('div');
-  el.className = 'chat-msg';
-  el.innerHTML = `
-    <div class="msg-avatar" style="background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)">RC</div>
-    <div class="msg-content">
-      <div class="msg-header">
-        <span class="msg-name you">Robchiix (you)</span>
-        <span class="msg-time">${time}</span>
-      </div>
-      <div class="msg-text">${msg}</div>
-    </div>`;
-
-  messages.appendChild(el);
-  messages.scrollTop = messages.scrollHeight;
-  input.value = '';
-}
-
-document.getElementById('chatInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendChat();
-});
-
-document.querySelectorAll('.channel-item').forEach(item => {
-  item.addEventListener('click', function() {
-    document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-document.querySelectorAll('.ai-ctx-pill').forEach(pill => {
-  pill.addEventListener('click', function() {
-    document.querySelectorAll('.ai-ctx-pill').forEach(p => p.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-</script>
-
-<script>
-// ============================================
-// SUPABASE AUTH CHECK — MEMBER AREA
-// ============================================
+// ── AUTH ──
 const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Check session on load
+let currentUsername = 'You';
+
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
-  }
-  // Update UI with user info
+  if (!session) { window.location.href = 'login.html'; return; }
   const user = session.user;
-  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
-  const nameEl = document.querySelector('.nav-user span');
-  if (nameEl) nameEl.textContent = username;
+  currentUsername = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
+  const usernameEl = document.getElementById('navUsername');
+  if (usernameEl) usernameEl.textContent = currentUsername;
+  const sidebarEl = document.getElementById('sidebarUsername');
+  if (sidebarEl) sidebarEl.textContent = currentUsername;
+  const avatarEl = document.getElementById('navAvatar');
+  if (avatarEl) {
+    if (user.user_metadata?.avatar_url) {
+      avatarEl.innerHTML = `<img src="${user.user_metadata.avatar_url}" alt="avatar">`;
+    } else {
+      avatarEl.textContent = currentUsername.substring(0, 2).toUpperCase();
+    }
+  }
+  // clear unread badge once room is opened
+  const badge = document.getElementById('unreadBadge');
+  if (badge) setTimeout(() => badge.remove(), 1500);
 })();
 
-// Logout function
 async function logout() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
 }
+
+// ── CHANNEL SWITCHING ──
+const channelData = {
+  general: { desc: '· Main room — trading, bots, market talk' },
+  signals:  { desc: '· Verified signals only — with context and track record' },
+  systems:  { desc: '· Bot builds, forks, strategy sharing' },
+  gold:     { desc: '· XAUUSD specific — analysis, setups, results' },
+  crypto:   { desc: '· BTC/ETH/SOL — NOVA discussion' },
+  knowledge:{ desc: '· Questions, lessons, learning discussion' },
+  ungurued: { desc: '· Guru exposure — no fluff, just facts' },
+};
+
+function switchChannel(name, el) {
+  document.querySelectorAll('.channel-item').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('channelName').textContent = name;
+  document.getElementById('channelDesc').textContent = channelData[name]?.desc || '';
+  document.querySelector('.compose-input').placeholder = `Message #${name}...`;
+  // remove unread badge from clicked channel
+  const badge = el.querySelector('.channel-unread');
+  if (badge) badge.remove();
+}
+
+// ── REACTIONS ──
+function toggleReaction(el) {
+  const countEl = el.querySelector('.reaction-count');
+  const count = parseInt(countEl.textContent);
+  if (el.classList.toggle('active')) {
+    countEl.textContent = count + 1;
+  } else {
+    countEl.textContent = count - 1;
+  }
+}
+
+// ── COMPOSE ──
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleCompose(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('composeInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const area = document.getElementById('messagesArea');
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const initials = currentUsername.substring(0, 2).toUpperCase();
+
+  const msgEl = document.createElement('div');
+  msgEl.className = 'msg-row with-header';
+  msgEl.style.animation = 'fadeIn 0.2s ease';
+  msgEl.innerHTML = `
+    <div class="msg-av-col"><div class="msg-av" style="background:var(--green-muted);border-color:rgba(0,255,136,0.3);color:var(--green)">${initials}</div></div>
+    <div class="msg-content">
+      <div class="msg-header">
+        <span class="msg-author member">${currentUsername}</span>
+        <span class="msg-time">${timeStr}</span>
+      </div>
+      <div class="msg-text">${escapeHtml(text)}</div>
+    </div>
+  `;
+
+  // insert before the spacer
+  const spacer = area.lastElementChild;
+  area.insertBefore(msgEl, spacer);
+
+  input.value = '';
+  input.style.height = 'auto';
+  area.scrollTop = area.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── GOLD TICKER ──
+let goldBase = 2341.84;
+setInterval(() => {
+  goldBase += (Math.random() - 0.48) * 0.8;
+  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
+  const el = document.getElementById('goldPrice');
+  const chEl = document.getElementById('goldChange');
+  if (el) el.textContent = goldBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  if (chEl) {
+    const up = parseFloat(change) >= 0;
+    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
+    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
+  }
+}, 2000);
+
+// ── SESSION ──
+function updateSession() {
+  const hour = new Date().getUTCHours();
+  let session = 'ASIAN';
+  if (hour >= 7 && hour < 16) session = 'LONDON';
+  else if (hour >= 13 && hour < 21) session = 'NEW YORK';
+  const el = document.getElementById('sessionName');
+  if (el) el.textContent = session;
+}
+updateSession();
+setInterval(updateSession, 60000);
+
+// ── SCROLL TO BOTTOM ON LOAD ──
+window.addEventListener('load', () => {
+  const area = document.getElementById('messagesArea');
+  if (area) area.scrollTop = area.scrollHeight;
+});
+
+// ── FADE IN ANIMATION ──
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }';
+document.head.appendChild(style);
 </script>
 
 </body>
