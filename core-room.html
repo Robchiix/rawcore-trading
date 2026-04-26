@@ -90,7 +90,7 @@
   .room-wrap {
     flex: 1;
     display: grid;
-    grid-template-columns: var(--sidebar-w) 1fr 200px;
+    grid-template-columns: var(--sidebar-w) 1fr 280px;
     overflow: hidden;
   }
 
@@ -405,7 +405,7 @@
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
   <div class="nav-right">
-    <div class="nav-credits" id="navCredits">1,240 pts</div>
+    <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">—</span>
@@ -417,11 +417,11 @@
 
 <!-- MARKET BAR -->
 <div class="market-bar">
-  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
-  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
-  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">—</span><span class="market-change" id="goldChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price" id="btcPrice">—</span><span class="market-change" id="btcChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price" id="ethPrice">—</span><span class="market-change" id="ethChange" style="color:var(--text-dim)">—</span></div>
   <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
-  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName">LONDON</span><span class="market-change up">● ACTIVE</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName">—</span><span class="market-change up" id="sessionStatus">●</span></div>
 </div>
 
 <!-- ROOM -->
@@ -434,10 +434,6 @@
       <div class="channel-item active" onclick="switchChannel('general', this)">
         <span class="channel-prefix">#</span> general
         <span class="channel-dot live"></span>
-      </div>
-      <div class="channel-item" onclick="switchChannel('signals', this)" style="opacity:0.4;cursor:not-allowed" title="Signals locked — enabled when bots are consistently profitable">
-        <span class="channel-prefix">#</span> signals
-        <span style="font-family:var(--mono);font-size:8px;color:var(--amber);margin-left:auto;border:1px solid rgba(245,158,11,0.3);padding:1px 5px">LOCKED</span>
       </div>
       <div class="channel-item" onclick="switchChannel('systems', this)">
         <span class="channel-prefix">#</span> systems
@@ -455,6 +451,10 @@
       </div>
       <div class="channel-item" onclick="switchChannel('ungurued', this)">
         <span class="channel-prefix">#</span> ungurued
+      </div>
+      <div class="channel-item" style="opacity:0.4;cursor:not-allowed;margin-top:4px;border-top:1px solid var(--border);padding-top:8px" title="Signals locked — enabled when bots are consistently profitable">
+        <span class="channel-prefix" style="color:var(--amber)">#</span> <span style="color:var(--amber)">signals</span>
+        <span style="font-family:var(--mono);font-size:7px;color:var(--amber);margin-left:auto;border:1px solid rgba(245,158,11,0.3);padding:1px 4px">LOCKED</span>
       </div>
     </div>
 
@@ -721,29 +721,51 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── GOLD TICKER ──
-let goldBase = 2341.84;
-setInterval(() => {
-  goldBase += (Math.random() - 0.48) * 0.8;
-  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
-  const el = document.getElementById('goldPrice');
-  const chEl = document.getElementById('goldChange');
-  if (el) el.textContent = goldBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  if (chEl) {
-    const up = parseFloat(change) >= 0;
-    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
-    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
+// ── LIVE MARKET PRICES ──
+async function fetchCrypto(symbol) {
+  try {
+    const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+    if (r.ok) { const d = await r.json(); return { price: parseFloat(d.lastPrice), pct: parseFloat(d.priceChangePercent) }; }
+  } catch(e) {}
+  return null;
+}
+
+async function updateMarketBar() {
+  const btc = await fetchCrypto('BTCUSDT');
+  const eth = await fetchCrypto('ETHUSDT');
+  if (btc) {
+    const el = document.getElementById('btcPrice'); const ch = document.getElementById('btcChange');
+    if (el) el.textContent = btc.price.toLocaleString('en', {maximumFractionDigits: 0});
+    if (ch) { const up = btc.pct >= 0; ch.textContent = (up?'\u25b2 +':'\u25bc ') + Math.abs(btc.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up?'up':'dn'); }
   }
-}, 2000);
+  if (eth) {
+    const el = document.getElementById('ethPrice'); const ch = document.getElementById('ethChange');
+    if (el) el.textContent = eth.price.toLocaleString('en', {maximumFractionDigits: 0});
+    if (ch) { const up = eth.pct >= 0; ch.textContent = (up?'\u25b2 +':'\u25bc ') + Math.abs(eth.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up?'up':'dn'); }
+  }
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
+    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {}
+}
+updateMarketBar();
+setInterval(updateMarketBar, 30000);
 
 // ── SESSION ──
 function updateSession() {
-  const hour = new Date().getUTCHours();
-  let session = 'ASIAN';
-  if (hour >= 7 && hour < 16) session = 'LONDON';
-  else if (hour >= 13 && hour < 21) session = 'NEW YORK';
-  const el = document.getElementById('sessionName');
-  if (el) el.textContent = session;
+  const h = new Date().getUTCHours(), m = new Date().getUTCMinutes(), t = h*60+m;
+  const day = new Date().getUTCDay();
+  const el = document.getElementById('sessionName'), st = document.getElementById('sessionStatus');
+  if (!el) return;
+  if (day === 0 || day === 6) {
+    el.textContent = 'CLOSED'; el.style.color = 'var(--red)';
+    if (st) { st.textContent = '\u25cf WEEKEND'; st.style.color = 'var(--red)'; } return;
+  }
+  let s = 'ASIAN';
+  if (t >= 7*60 && t < 16*60) s = 'LONDON';
+  else if (t >= 12*60 && t < 21*60) s = 'NEW YORK';
+  el.textContent = s; el.style.color = 'var(--green)';
+  if (st) { st.textContent = '\u25cf ACTIVE'; st.style.color = 'var(--green)'; }
 }
 updateSession();
 setInterval(updateSession, 60000);

@@ -280,7 +280,7 @@
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
   <div class="nav-right">
-    <div class="nav-credits" id="navCredits">1,240 pts</div>
+    <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">—</span>
@@ -292,7 +292,12 @@
 
 <!-- MARKET BAR -->
 <div class="market-bar">
-  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">2,341.84</span><span class="market-change up" id="goldChange">▲ +0.34%</span></div>
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">—</span></div>
+  <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price" id="btcPrice">—</span><span class="market-change" id="btcChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price" id="ethPrice">—</span><span class="market-change" id="ethChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName" style="color:var(--green)">—</span></div>
+</div>
   <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price">71,240</span><span class="market-change up">▲ +1.2%</span></div>
   <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price">3,412</span><span class="market-change dn">▼ -0.8%</span></div>
   <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
@@ -751,32 +756,46 @@ function filterBots(filter, tabEl) {
   });
 }
 
-// ============ LIVE GOLD TICKER ============
-let goldBase = 2341.84;
-setInterval(() => {
-  goldBase += (Math.random() - 0.48) * 0.8;
-  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
-  const el = document.getElementById('goldPrice');
-  const chEl = document.getElementById('goldChange');
-  if (el) el.textContent = goldBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  if (chEl) {
-    const up = parseFloat(change) >= 0;
-    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
-    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
+// ============ LIVE MARKET DATA ============
+async function fetchCrypto(sym) {
+  try {
+    const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`);
+    if (r.ok) { const d = await r.json(); return { price: parseFloat(d.lastPrice), pct: parseFloat(d.priceChangePercent) }; }
+  } catch(e) {}
+  return null;
+}
+async function updateMarketBar() {
+  const pairs = [['BTCUSDT','btcPrice','btcChange'],['ETHUSDT','ethPrice','ethChange']];
+  for (const [sym, pid, cid] of pairs) {
+    const d = await fetchCrypto(sym);
+    if (!d) continue;
+    const el = document.getElementById(pid), ch = document.getElementById(cid);
+    if (el) el.textContent = d.price.toLocaleString('en', {maximumFractionDigits: 0});
+    if (ch) { const up = d.pct >= 0; ch.textContent = (up ? '▲ +' : '▼ ') + Math.abs(d.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up ? 'up' : 'dn'); }
   }
-}, 2000);
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
+    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {}
+}
+updateMarketBar();
+setInterval(updateMarketBar, 30000);
 
 // ============ SESSION LABEL ============
 function updateSession() {
-  const hour = new Date().getUTCHours();
-  let session = 'ASIAN';
-  if (hour >= 7 && hour < 16) session = 'LONDON';
-  else if (hour >= 13 && hour < 21) session = 'NEW YORK';
+  const h = new Date().getUTCHours(), m = new Date().getUTCMinutes(), t = h*60+m;
+  const day = new Date().getUTCDay();
   const el = document.getElementById('sessionName');
-  if (el) el.textContent = session;
+  if (!el) return;
+  if (day === 0 || day === 6) { el.textContent = 'CLOSED'; el.style.color = 'var(--red)'; return; }
+  let s = 'ASIAN';
+  if (t >= 7*60 && t < 16*60) s = 'LONDON';
+  else if (t >= 12*60 && t < 21*60) s = 'NEW YORK';
+  el.textContent = s; el.style.color = 'var(--green)';
 }
 updateSession();
 setInterval(updateSession, 60000);
+
 </script>
 
 </body>

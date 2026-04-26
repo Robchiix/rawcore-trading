@@ -445,7 +445,7 @@
     <a href="member-shop.html" class="nav-item active">Shop</a>
   </div>
   <div class="nav-right">
-    <div class="nav-credits">1,240 pts</div>
+    <div class="nav-credits" id="navCredits">— pts</div>
     <div class="cart-icon" onclick="toggleCart()">
       <span>CART</span>
       <div class="cart-count" id="cartCount">0</div>
@@ -529,6 +529,8 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   const nameEl = document.getElementById('navUsername');
   const avatarEl = document.getElementById('navAvatar');
   if (nameEl) nameEl.textContent = username;
+  const creditsEl = document.getElementById('navCredits');
+  if (creditsEl) creditsEl.textContent = '1,240 pts'; // placeholder until credits DB is live
   if (avatarEl) {
     if (user.user_metadata?.avatar_url) {
       avatarEl.innerHTML = `<img src="${user.user_metadata.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
@@ -556,25 +558,46 @@ function notifyMe() {
   document.getElementById('notifyEmail').value = '';
 }
 
-// Gold ticker
-let goldBase = 2341.84;
-setInterval(() => {
-  goldBase += (Math.random() - 0.48) * 0.8;
-  const el = document.getElementById('goldPrice');
-  if (el) el.textContent = goldBase.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}, 2000);
+// ============ LIVE MARKET DATA ============
+async function fetchCrypto(sym) {
+  try {
+    const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`);
+    if (r.ok) { const d = await r.json(); return { price: parseFloat(d.lastPrice), pct: parseFloat(d.priceChangePercent) }; }
+  } catch(e) {}
+  return null;
+}
+async function updateMarketBar() {
+  const pairs = [['BTCUSDT','btcPrice','btcChange'],['ETHUSDT','ethPrice','ethChange']];
+  for (const [sym, pid, cid] of pairs) {
+    const d = await fetchCrypto(sym);
+    if (!d) continue;
+    const el = document.getElementById(pid), ch = document.getElementById(cid);
+    if (el) el.textContent = d.price.toLocaleString('en', {maximumFractionDigits: 0});
+    if (ch) { const up = d.pct >= 0; ch.textContent = (up ? '▲ +' : '▼ ') + Math.abs(d.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up ? 'up' : 'dn'); }
+  }
+  try {
+    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
+    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {}
+}
+updateMarketBar();
+setInterval(updateMarketBar, 30000);
 
-// Session label
+// ============ SESSION LABEL ============
 function updateSession() {
-  const hour = new Date().getUTCHours();
-  let s = 'ASIAN';
-  if (hour >= 7 && hour < 16) s = 'LONDON';
-  else if (hour >= 13 && hour < 21) s = 'NEW YORK';
+  const h = new Date().getUTCHours(), m = new Date().getUTCMinutes(), t = h*60+m;
+  const day = new Date().getUTCDay();
   const el = document.getElementById('sessionName');
-  if (el) el.textContent = s;
+  if (!el) return;
+  if (day === 0 || day === 6) { el.textContent = 'CLOSED'; el.style.color = 'var(--red)'; return; }
+  let s = 'ASIAN';
+  if (t >= 7*60 && t < 16*60) s = 'LONDON';
+  else if (t >= 12*60 && t < 21*60) s = 'NEW YORK';
+  el.textContent = s; el.style.color = 'var(--green)';
 }
 updateSession();
 setInterval(updateSession, 60000);
+
 </script>
 
 </body>
