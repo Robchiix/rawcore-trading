@@ -417,11 +417,11 @@
 
 <!-- MARKET BAR -->
 <div class="market-bar">
-  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">—</span><span class="market-change" id="goldChange" style="color:var(--text-dim)">—</span></div>
+  <div class="market-item"><span class="market-sym">XAUUSD</span><span class="market-price" id="goldPrice">—</span></div>
   <div class="market-item"><span class="market-sym">BTCUSD</span><span class="market-price" id="btcPrice">—</span><span class="market-change" id="btcChange" style="color:var(--text-dim)">—</span></div>
   <div class="market-item"><span class="market-sym">ETHUSD</span><span class="market-price" id="ethPrice">—</span><span class="market-change" id="ethChange" style="color:var(--text-dim)">—</span></div>
-  <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">▲ +0.12%</span></div>
-  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName">—</span><span class="market-change up" id="sessionStatus">●</span></div>
+  <div class="market-item"><span class="market-sym">EURUSD</span><span class="market-price">1.0842</span><span class="market-change up">&#9650; +0.12%</span></div>
+  <div class="market-item"><span class="market-sym">SESSION</span><span class="market-price" id="sessionName" style="color:var(--green)">—</span></div>
 </div>
 
 <!-- ROOM -->
@@ -744,8 +744,8 @@ async function updateMarketBar() {
     if (ch) { const up = eth.pct >= 0; ch.textContent = (up?'\u25b2 +':'\u25bc ') + Math.abs(eth.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up?'up':'dn'); }
   }
   try {
-    const gr = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT');
-    if (gr.ok) { const gd = await gr.json(); const gp = parseFloat(gd.price); if (gp > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = gp.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+    const gr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
+    if (gr.ok) { const gd = await gr.json(); const gp = gd?.['pax-gold']?.usd; if (gp > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = parseFloat(gp).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
   } catch(e) {
     try {
       const gr2 = await fetch('https://api.metals.live/v1/spot/gold');

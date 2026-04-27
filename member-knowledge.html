@@ -670,8 +670,9 @@
     if (avatarEl && avatar) {
       avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
     }
-
-    // Sign out function
+    
+    // Load progress and credits from Supabase
+    loadProgressFromDB(user.id);
     window.signOut = async () => {
       await sb.auth.signOut();
       window.location.href = 'index.html';
