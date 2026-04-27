@@ -725,6 +725,18 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
       avatarEl.textContent = username.substring(0, 2).toUpperCase();
     }
   }
+  // Load credits from Supabase
+  try {
+    const cr = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (cr.ok) {
+      const cd = await cr.json();
+      const pts = cd.length > 0 ? cd[0].credits : 0;
+      const creditsEl = document.getElementById('navCredits');
+      if (creditsEl) creditsEl.textContent = pts.toLocaleString() + ' pts';
+    }
+  } catch(e) {}
 })();
 
 async function logout() {

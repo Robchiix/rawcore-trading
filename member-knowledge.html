@@ -672,7 +672,7 @@
     }
     
     // Load progress and credits from Supabase
-    loadProgressFromDB(user.id);
+    loadProgressFromDB(user.id, session.access_token);
     window.signOut = async () => {
       await sb.auth.signOut();
       window.location.href = 'index.html';
@@ -1454,12 +1454,15 @@ let _userId = null;
 const _sbUrl = 'https://mlzxnrmctblfpijtihvm.supabase.co';
 const _sbKey = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
 
-async function loadProgressFromDB(userId) {
+let _jwt = null;  // session JWT for authenticated writes
+
+async function loadProgressFromDB(userId, accessToken) {
   _userId = userId;
+  _jwt = accessToken;
   try {
     // Load lesson progress
     const r = await fetch(`${_sbUrl}/rest/v1/user_progress?user_id=eq.${userId}&select=lesson_id,score`, {
-      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_sbKey}` }
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
     });
     if (r.ok) {
       const rows = await r.json();
@@ -1471,7 +1474,7 @@ async function loadProgressFromDB(userId) {
     }
     // Load credits
     const r2 = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${userId}&select=credits`, {
-      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_sbKey}` }
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
     });
     if (r2.ok) {
       const rows2 = await r2.json();
@@ -1497,7 +1500,7 @@ async function saveProgressToDB(lessonId, score) {
       method: 'POST',
       headers: {
         'apikey': _sbKey,
-        'Authorization': `Bearer ${_sbKey}`,
+        'Authorization': `Bearer ${_jwt || _sbKey}`,
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates'
       },
@@ -1513,7 +1516,7 @@ async function saveCreditsToDb(newCredits) {
       method: 'POST',
       headers: {
         'apikey': _sbKey,
-        'Authorization': `Bearer ${_sbKey}`,
+        'Authorization': `Bearer ${_jwt || _sbKey}`,
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates'
       },

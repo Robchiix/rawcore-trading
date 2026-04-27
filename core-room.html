@@ -623,6 +623,19 @@ let currentUsername = 'You';
   // clear unread badge once room is opened
   const badge = document.getElementById('unreadBadge');
   if (badge) setTimeout(() => badge.remove(), 1500);
+
+  // Load credits from Supabase
+  try {
+    const cr = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (cr.ok) {
+      const cd = await cr.json();
+      const pts = cd.length > 0 ? cd[0].credits : 0;
+      const creditsEl = document.getElementById('navCredits');
+      if (creditsEl) creditsEl.textContent = pts.toLocaleString() + ' pts';
+    }
+  } catch(e) {}
 })();
 
 async function logout() {
