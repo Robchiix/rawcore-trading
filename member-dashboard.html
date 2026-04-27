@@ -331,7 +331,7 @@
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
   <div class="nav-right">
-    <div class="nav-credits">1,240 pts</div>
+    <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">Robchiix</span>
@@ -370,7 +370,7 @@
       </div>
       <div class="welcome-divider"></div>
       <div class="welcome-stat">
-        <div class="welcome-stat-val blue">1,240</div>
+        <div class="welcome-stat-val blue" id="headerCredits">—</div>
         <div class="welcome-stat-label">CORE CREDITS</div>
       </div>
       <div class="welcome-divider"></div>
@@ -395,7 +395,7 @@
     </div>
     <div class="stat-card blue">
       <div class="sc-label">// CORE CREDITS</div>
-      <div class="sc-val blue" id="dashCredits">1,240</div>
+      <div class="sc-val blue" id="dashCredits">—</div>
       <div class="sc-sub up">Core Credits</div>
     </div>
     <div class="stat-card amber">
@@ -543,7 +543,7 @@
             <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1">7</div>
             <div id="lbYourAv" style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)">RC</div>
             <div><div id="lbYourName" style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px">You</div><div style="height:2px;background:var(--border)"><div style="width:26%;height:100%;background:var(--blue)"></div></div></div>
-            <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">1,240</div>
+            <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">—</div>
           </div>
 
         </div>
@@ -729,7 +729,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
       if (creditsEl) creditsEl.textContent = userCredits.toLocaleString() + ' pts';
       const dashCreditsEl = document.getElementById('dashCredits');
       if (dashCreditsEl) dashCreditsEl.textContent = userCredits.toLocaleString();
-      const headerCredits = document.querySelector('.welcome-stat-val.blue');
+      const headerCredits = document.getElementById('headerCredits');
       if (headerCredits) headerCredits.textContent = userCredits.toLocaleString();
       // Update leaderboard your row
       const lbAv = document.getElementById('lbYourAv');

@@ -1488,6 +1488,9 @@ async function loadProgressFromDB(userId, accessToken) {
     const credEl = document.getElementById('creditsDisplay');
     if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
     updateProgress();
+    // Signal that credits baseline is loaded
+    _creditsLoaded = true;
+    if (_creditsLoadResolve) _creditsLoadResolve();
   } catch(e) {
     console.warn('Progress load failed:', e);
   }
@@ -1511,6 +1514,8 @@ async function saveProgressToDB(lessonId, score) {
 
 async function saveCreditsToDb(newCredits) {
   if (!_userId) return;
+  // Save the absolute total (newCredits is already the running total from in-memory credits var)
+  // Use upsert so it creates or updates
   try {
     await fetch(`${_sbUrl}/rest/v1/user_credits`, {
       method: 'POST',
@@ -1524,6 +1529,11 @@ async function saveCreditsToDb(newCredits) {
     });
   } catch(e) { console.warn('Credits save failed:', e); }
 }
+
+// Ensure credits are loaded from DB before any quiz can be answered
+let _creditsLoaded = false;
+let _creditsLoadResolve = null;
+const _creditsLoadPromise = new Promise(res => { _creditsLoadResolve = res; });
 
 function openTopic(topicId) {
   // Update sidebar active state
@@ -1621,7 +1631,7 @@ function openLesson(lessonId) {
   }
 }
 
-function answerTask(lessonId, optIdx, isCorrect) {
+async function answerTask(lessonId, optIdx, isCorrect) {
   if (completedTasks.has(lessonId)) return;
   completedTasks.add(lessonId);
 
@@ -1639,6 +1649,8 @@ function answerTask(lessonId, optIdx, isCorrect) {
 
   // Progress: correct = 20pts + full lesson credit, wrong = 10pts + partial
   const pts = isCorrect ? 20 : 10;
+  // Wait for DB credits to load so we don't overwrite with wrong baseline
+  if (!_creditsLoaded) await _creditsLoadPromise;
   earnCredits(pts);
   todayTasks++;
 
