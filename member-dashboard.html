@@ -539,78 +539,126 @@
     </div>
   </div>
 
-  <!-- BOTTOM GRID -->
-  <div class="bottom-grid">
-
-    <!-- LEADERBOARD -->
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-title">// LEADERBOARD</span>
-        <a href="member-core.html" class="panel-action">FULL BOARD →</a>
-      </div>
-      <div class="panel-body" style="padding:0">
-        <div class="lb-list">
-          <div class="lb-row">
-            <div class="lb-rank g">1</div>
-            <div class="lb-av">MK</div>
-            <div class="lb-info"><div class="lb-name">MarketKing</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:100%;background:var(--amber)"></div></div></div>
-            <div class="lb-score" style="color:var(--amber)">4,820</div>
-          </div>
-          <div class="lb-row">
-            <div class="lb-rank s">2</div>
-            <div class="lb-av">AX</div>
-            <div class="lb-info"><div class="lb-name">AlgoX</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:78%"></div></div></div>
-            <div class="lb-score">3,760</div>
-          </div>
-          <div class="lb-row">
-            <div class="lb-rank b">3</div>
-            <div class="lb-av">ST</div>
-            <div class="lb-info"><div class="lb-name">SteadyTrade</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:62%"></div></div></div>
-            <div class="lb-score">2,990</div>
-          </div>
-          <div class="lb-row you">
-            <div class="lb-rank" style="color:var(--blue)">7</div>
-            <div class="lb-av you-av">RC</div>
-            <div class="lb-info"><div class="lb-name you-name">Robchiix (you)</div><div class="lb-bar-wrap"><div class="lb-bar-fill" style="width:26%;background:var(--blue)"></div></div></div>
-            <div class="lb-score you-score">1,240</div>
-          </div>
-        </div>
-      </div>
+  <!-- BOTTOM SECTION — LEADERBOARD FULL WIDTH -->
+  <div class="panel" style="margin-bottom:12px">
+    <div class="panel-head">
+      <span class="panel-title">// LEADERBOARD — THIS MONTH</span>
+      <a href="member-core.html" class="panel-action">FULL BOARD →</a>
     </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)">
 
-    <!-- KNOWLEDGE PROGRESS -->
+      <div style="background:var(--dark);padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-family:var(--display);font-size:28px;color:var(--amber);line-height:1;min-width:24px">1</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--amber)">MK</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">MarketKing</div>
+        </div>
+        <div style="font-family:var(--display);font-size:32px;color:var(--amber);line-height:1">4,820</div>
+        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:100%;height:100%;background:var(--amber)"></div></div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +340 this month</div>
+      </div>
+
+      <div style="background:var(--dark);padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-family:var(--display);font-size:28px;color:#9ca3af;line-height:1;min-width:24px">2</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">AX</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">AlgoX</div>
+        </div>
+        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">3,760</div>
+        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:78%;height:100%;background:var(--green)"></div></div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +210 this month</div>
+      </div>
+
+      <div style="background:var(--dark);padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-family:var(--display);font-size:28px;color:#b45309;line-height:1;min-width:24px">3</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">ST</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">SteadyTrade</div>
+        </div>
+        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">2,990</div>
+        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:62%;height:100%;background:var(--green)"></div></div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +180 this month</div>
+      </div>
+
+      <div style="background:var(--dark);padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-family:var(--display);font-size:28px;color:var(--text-dim);line-height:1;min-width:24px">4</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">GF</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">GoldFox</div>
+        </div>
+        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">2,440</div>
+        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:51%;height:100%;background:var(--green)"></div></div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +90 this month</div>
+      </div>
+
+      <!-- YOUR POSITION -->
+      <div style="background:rgba(59,130,246,0.05);border-left:2px solid var(--blue);padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="font-family:var(--display);font-size:28px;color:var(--blue);line-height:1;min-width:24px">7</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--blue)" id="lbYourAv">RC</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--blue)" id="lbYourName">You</div>
+        </div>
+        <div style="font-family:var(--display);font-size:32px;color:var(--blue);line-height:1" id="lbYourScore">1,240</div>
+        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:26%;height:100%;background:var(--blue)"></div></div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--blue);margin-top:5px">▲ +2 positions · 320pts to #6</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROGRESS + POT ROW -->
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:12px;margin-bottom:12px">
+
+    <!-- LEARNING PROGRESS -->
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">// LEARNING PROGRESS</span>
         <a href="member-knowledge.html" class="panel-action">CONTINUE →</a>
       </div>
-      <div class="panel-body">
-        <div class="progress-list" id="knowledgeProgress">
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Psychology</span><span class="progress-pct" id="pctPsych">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="barPsych" style="width:0%;background:var(--purple)"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Market Structure</span><span class="progress-pct">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--blue)"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Risk Management</span><span class="progress-pct">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--green)"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Trading Bots</span><span class="progress-pct">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--green)"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Signals</span><span class="progress-pct">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--amber)"></div></div>
-          </div>
-          <div class="progress-item">
-            <div class="progress-header"><span class="progress-name">Brokers</span><span class="progress-pct">0%</span></div>
-            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%;background:var(--text-dim)"></div></div>
-          </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)">
+
+        <div style="background:var(--dark);padding:14px 16px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:0.15em;margin-bottom:8px">PSYCHOLOGY</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctPsych">0%</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barPsych" style="width:0%;height:100%;background:var(--purple);transition:width 1s"></div></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="donePsych">0/5 answered</div>
         </div>
+
+        <div style="background:var(--dark);padding:14px 16px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--blue);letter-spacing:0.15em;margin-bottom:8px">MARKETS</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctMarkets">0%</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barMarkets" style="width:0%;height:100%;background:var(--blue);transition:width 1s"></div></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneMarkets">0/5 answered</div>
+        </div>
+
+        <div style="background:var(--dark);padding:14px 16px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:0.15em;margin-bottom:8px">RISK MANAGEMENT</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctRisk">0%</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barRisk" style="width:0%;height:100%;background:var(--red);transition:width 1s"></div></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneRisk">0/5 answered</div>
+        </div>
+
+        <div style="background:var(--dark);padding:14px 16px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.15em;margin-bottom:8px">TRADING BOTS</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctBots">0%</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barBots" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneBots">0/5 answered</div>
+        </div>
+
+        <div style="background:var(--dark);padding:14px 16px;opacity:0.5">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:8px">SIGNALS</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-dim)">—</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Coming soon</div>
+        </div>
+
+        <div style="background:var(--dark);padding:14px 16px;opacity:0.5">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:8px">BROKERS</div>
+          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-dim)">🔒</div>
+          <div style="height:3px;background:var(--border);margin:8px 0 5px"></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Complete Signals first</div>
+        </div>
+
       </div>
     </div>
 
@@ -618,19 +666,23 @@
     <div class="panel">
       <div class="panel-head">
         <span class="panel-title">// CORE POT</span>
-        <a href="member-core.html" class="panel-action" style="color:var(--amber)">⚠ LOCKED →</a>
+        <a href="member-core.html" class="panel-action" style="color:var(--amber)">DETAILS →</a>
       </div>
-      <div class="panel-body">
-        <div class="pot-box" style="text-align:center;padding:20px">
-          <div style="font-size:32px;margin-bottom:8px">🔒</div>
-          <div class="pot-amount" style="font-size:28px;color:var(--amber)">LOCKED</div>
-          <div class="pot-sub" style="color:var(--text-dim);margin-top:6px">// Activates at 100 members</div>
-          <div style="margin-top:14px">
-            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:5px"><span>67 members</span><span>100 needed</span></div>
-            <div style="height:4px;background:var(--border)"><div style="width:67%;height:100%;background:var(--amber)"></div></div>
-          </div>
-          <div style="margin-top:12px;font-family:var(--mono);font-size:9px;color:var(--text-dim)">Last winner: <span style="color:var(--green)">USR_041</span> · Apr 2026</div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;height:calc(100% - 45px)">
+        <div style="text-align:center">
+          <div style="font-size:36px;margin-bottom:6px">🔒</div>
+          <div style="font-family:var(--display);font-size:32px;color:var(--amber);line-height:1">LOCKED</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:5px">Activates at 100 members</div>
         </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:6px"><span>67 members</span><span>100 target</span></div>
+          <div style="height:6px;background:var(--border);border-radius:0"><div style="width:67%;height:100%;background:var(--amber)"></div></div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:5px;text-align:center">67% · 33 to go</div>
+        </div>
+        <div style="background:var(--dark);border:1px solid var(--border);padding:10px;font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.7">
+          €2/member/month goes into the pot. One member wins it all at month end. Random draw — no way to buy extra entries.
+        </div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-align:center">Last winner: <span style="color:var(--green)">USR_041</span> · Apr 2026</div>
       </div>
     </div>
 
@@ -740,15 +792,46 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
       if (creditsEl) creditsEl.textContent = userCredits.toLocaleString() + ' pts';
       const dashCreditsEl = document.getElementById('dashCredits');
       if (dashCreditsEl) dashCreditsEl.textContent = userCredits.toLocaleString();
-      // Also update the header stat
       const headerCredits = document.querySelector('.welcome-stat-val.blue');
       if (headerCredits) headerCredits.textContent = userCredits.toLocaleString();
+      // Update leaderboard your row
+      const lbAv = document.getElementById('lbYourAv');
+      const lbName = document.getElementById('lbYourName');
+      const lbScore = document.getElementById('lbYourScore');
+      if (lbAv) lbAv.textContent = username.substring(0, 2).toUpperCase();
+      if (lbName) lbName.textContent = username + ' (you)';
+      if (lbScore) lbScore.textContent = userCredits.toLocaleString();
     }
   } catch(e) {
-    // Fallback display
     const creditsEl = document.getElementById('navCredits');
     if (creditsEl) creditsEl.textContent = '0 pts';
   }
+
+  // Load learning progress from Supabase
+  try {
+    const pRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_progress?user_id=eq.' + user.id + '&select=lesson_id,score', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4' }
+    });
+    if (pRes.ok) {
+      const rows = await pRes.json();
+      const topicMap = {
+        'psych-1':'psychology','psych-2':'psychology','psych-3':'psychology','psych-4':'psychology','psych-5':'psychology',
+        'markets-1':'markets','markets-2':'markets','markets-3':'markets','markets-4':'markets','markets-5':'markets',
+        'risk-1':'risk','risk-2':'risk','risk-3':'risk','risk-4':'risk','risk-5':'risk',
+        'bots-1':'bots','bots-2':'bots','bots-3':'bots','bots-4':'bots','bots-5':'bots',
+      };
+      const counts = { psychology:0, markets:0, risk:0, bots:0 };
+      rows.forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
+      [['psychology','pctPsych','barPsych','donePsych'],['markets','pctMarkets','barMarkets','doneMarkets'],
+       ['risk','pctRisk','barRisk','doneRisk'],['bots','pctBots','barBots','doneBots']].forEach(([t,p,b,d]) => {
+        const pct = Math.round((counts[t] / 5) * 100);
+        const pEl = document.getElementById(p), bEl = document.getElementById(b), dEl = document.getElementById(d);
+        if (pEl) pEl.textContent = pct + '%';
+        if (bEl) bEl.style.width = pct + '%';
+        if (dEl) dEl.textContent = counts[t] + '/5 answered';
+      });
+    }
+  } catch(e) {}
   
   // Greeting by time
   const hour = new Date().getHours();
