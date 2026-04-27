@@ -718,7 +718,7 @@
     <div class="streak-bar">
       <div class="streak-icon">🔥</div>
       <div class="streak-info">
-        <div class="streak-val">3</div>
+        <div class="streak-val" id="streakVal">—</div>
         <div class="streak-label">// DAY STREAK</div>
         <div class="streak-dots">
           <div class="streak-dot done"></div>
@@ -921,19 +921,19 @@
         <div class="lb-mini-item">
           <span class="lb-mini-rank g">1</span>
           <div class="lb-mini-av">MK</div>
-          <span class="lb-mini-name">MarketKing</span>
+          <span class="lb-mini-name">USR_041</span>
           <span class="lb-mini-pts">890</span>
         </div>
         <div class="lb-mini-item">
           <span class="lb-mini-rank">2</span>
           <div class="lb-mini-av">AX</div>
-          <span class="lb-mini-name">AlgoX</span>
+          <span class="lb-mini-name">USR_119</span>
           <span class="lb-mini-pts">720</span>
         </div>
         <div class="lb-mini-item">
           <span class="lb-mini-rank">3</span>
           <div class="lb-mini-av">ST</div>
-          <span class="lb-mini-name">SteadyTrade</span>
+          <span class="lb-mini-name">USR_087</span>
           <span class="lb-mini-pts">640</span>
         </div>
         <div class="lb-mini-item you">
@@ -1517,18 +1517,142 @@ async function saveCreditsToDb(newCredits) {
   // Save the absolute total (newCredits is already the running total from in-memory credits var)
   // Use upsert so it creates or updates
   try {
-    await fetch(`${_sbUrl}/rest/v1/user_credits`, {
-      method: 'POST',
+    // Use PATCH (update) if exists, POST (insert) if not - more reliable than upsert
+    const checkR = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`, {
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
+    });
+    const existing = checkR.ok ? await checkR.json() : [];
+    const method = existing.length > 0 ? 'PATCH' : 'POST';
+    const url = existing.length > 0
+      ? `${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`
+      : `${_sbUrl}/rest/v1/user_credits`;
+    await fetch(url, {
+      method,
       headers: {
         'apikey': _sbKey,
         'Authorization': `Bearer ${_jwt || _sbKey}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ user_id: _userId, credits: newCredits, updated_at: new Date().toISOString() })
     });
   } catch(e) { console.warn('Credits save failed:', e); }
 }
+// ── DAILY CHALLENGE ROTATION ──
+const DAILY_CHALLENGES = [
+  "Identify the nearest support and demand zone on XAUUSD 1H chart",
+  "What session is active right now and why does it matter for XAUUSD?",
+  "Calculate your correct position size for a 40-pip SL with 1% risk",
+  "Identify if price is trending or ranging on the 15M chart right now",
+  "Find an FVG (Fair Value Gap) on BTC 4H — does it align with the trend?",
+  "What is your trading plan for the next London session opening?",
+  "Review your last 3 trades — what pattern do you see in your losses?",
+  "Identify the current market structure: HH/HL or LH/LL on XAUUSD 4H",
+  "Where is the most recent liquidity sweep on XAUUSD 1H?",
+  "What would make you NOT take the next OMEGA signal — name 3 filters",
+  "Draw the current daily bias on XAUUSD before the NY session opens",
+  "Check NOVA — is BTC above or below EMA200 on the 4H right now?",
+  "What is your R-multiple target for today and why?",
+  "Identify one psychological pattern that affected your trades this week",
+  "Check if there is a supply zone above current XAUUSD price on 1H"
+];
+
+function loadDailyChallenge(userId) {
+  const today = new Date().toISOString().split('T')[0];
+  const seed = today.split('-').reduce((a,b) => a + parseInt(b), 0) + userId.charCodeAt(0);
+  const idx = seed % DAILY_CHALLENGES.length;
+  const challenge = DAILY_CHALLENGES[idx];
+  
+  const titleEl = document.getElementById('dcTitle');
+  const subEl = document.getElementById('dcSub');
+  
+  if (titleEl) titleEl.textContent = challenge;
+  
+  // Calculate time until reset (next midnight)
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  const diff = tomorrow - now;
+  const hours = Math.floor(diff / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  
+  const key_dc = 'rc_dc_done_' + userId + '_' + today;
+  const done = localStorage.getItem(key_dc);
+  
+  if (subEl) {
+    if (done) {
+      subEl.textContent = `// Completed ✓ · Resets in ${hours}h ${mins}m`;
+      subEl.style.color = 'var(--green)';
+    } else {
+      subEl.textContent = `// Resets in ${hours}h ${mins}m · Complete to keep your streak alive`;
+    }
+  }
+  
+  // Make START button mark as done
+  const startBtn = document.querySelector('.dc-action');
+  if (startBtn && !done) {
+    startBtn.addEventListener('click', () => {
+      localStorage.setItem(key_dc, '1');
+      if (subEl) { subEl.textContent = `// Completed ✓ · Resets in ${hours}h ${mins}m`; subEl.style.color = 'var(--green)'; }
+      if (_creditsLoaded) earnCredits(25);
+    }, { once: true });
+  } else if (startBtn && done) {
+    startBtn.textContent = '✓ DONE';
+    startBtn.style.background = 'none';
+    startBtn.style.color = 'var(--green)';
+    startBtn.style.border = '1px solid rgba(0,255,136,0.3)';
+    startBtn.style.cursor = 'default';
+  }
+}
+
+
+// ── REAL STREAK LOGIC ──
+async function loadAndUpdateStreak(userId, jwt) {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const key_last = 'rc_last_login_' + userId;
+  const key_streak = 'rc_streak_' + userId;
+  
+  const lastLogin = localStorage.getItem(key_last);
+  let streak = parseInt(localStorage.getItem(key_streak) || '0');
+  
+  if (lastLogin === today) {
+    // Already logged in today, just show current streak
+  } else if (lastLogin) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yd = yesterday.toISOString().split('T')[0];
+    if (lastLogin === yd) {
+      streak += 1; // continued streak
+    } else {
+      streak = 1; // streak broken, restart
+    }
+  } else {
+    streak = 1; // first login
+  }
+  
+  localStorage.setItem(key_last, today);
+  localStorage.setItem(key_streak, streak.toString());
+  
+  // Update display
+  const el = document.getElementById('streakVal');
+  if (el) el.textContent = streak;
+  
+  // Fill streak dots
+  const dots = document.querySelectorAll('.streak-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('done', i < Math.min(streak, dots.length));
+  });
+  
+  // Award daily login credit (once per day)
+  const key_credit_day = 'rc_daily_credit_' + userId + '_' + today;
+  if (!localStorage.getItem(key_credit_day) && _creditsLoaded) {
+    localStorage.setItem(key_credit_day, '1');
+    earnCredits(10); // +10 for daily login
+  }
+  
+  return streak;
+}
+
 
 // Ensure credits are loaded from DB before any quiz can be answered
 let _creditsLoaded = false;
@@ -1675,7 +1799,7 @@ function earnCredits(amount) {
   document.getElementById('rsCredits').textContent = '+' + todayCredits;
   document.getElementById('rsLessons').textContent = todayLessons;
   document.getElementById('rsTasks').textContent = todayTasks;
-  document.getElementById('lbPts').textContent = (credits);
+  const lbEl = document.getElementById('lbPts'); if (lbEl) lbEl.textContent = credits.toLocaleString();
   saveCreditsToDb(credits);
 }
 

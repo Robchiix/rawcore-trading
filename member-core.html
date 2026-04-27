@@ -296,7 +296,7 @@
   <div class="my-banner">
     <div class="banner-cell green">
       <div class="bc-label">// CORE CREDITS</div>
-      <div class="bc-val green">1,240</div>
+      <div class="bc-val green">—</div>
       <div class="bc-sub up">↑ +180 this week</div>
     </div>
     <div class="banner-cell amber">
@@ -629,6 +629,12 @@ let currentUsername = 'Robchiix';
     }
   }
   renderLeaderboard('monthly');
+  
+  // Update leaderboard your-row with real data
+  const lbAv = document.getElementById('lbYourAv');
+  const lbName = document.getElementById('lbYourName');
+  if (lbAv) lbAv.textContent = currentUsername.substring(0,2).toUpperCase();
+  if (lbName) lbName.textContent = currentUsername + ' (you)';
   // Load credits from Supabase
   try {
     const cr = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
@@ -651,32 +657,32 @@ async function logout() {
 // ── LEADERBOARD DATA ──
 const lbData = {
   monthly: [
-    { rank: 1, init: 'MK', name: 'MarketKing', score: 4820, delta: '+340', up: true, barPct: 100, barColor: 'var(--amber)' },
-    { rank: 2, init: 'AX', name: 'AlgoX',      score: 3760, delta: '+210', up: true, barPct: 78,  barColor: 'var(--green)' },
-    { rank: 3, init: 'ST', name: 'SteadyTrade', score: 2990, delta: '+180', up: true, barPct: 62,  barColor: 'var(--green)' },
-    { rank: 4, init: 'GF', name: 'GoldFox',    score: 2440, delta: '+90',  up: true, barPct: 51,  barColor: 'var(--green)' },
-    { rank: 5, init: 'TR', name: 'TrendRider', score: 1980, delta: '-40',  up: false, barPct: 41, barColor: 'var(--green)' },
-    { rank: 6, init: 'PX', name: 'PipX',       score: 1560, delta: '+20',  up: true, barPct: 32,  barColor: 'var(--text-dim)' },
+    { rank: 1, init: 'MK', name: 'USR_041', score: 4820, delta: '+340', up: true, barPct: 100, barColor: 'var(--amber)' },
+    { rank: 2, init: 'AX', name: 'USR_119',      score: 3760, delta: '+210', up: true, barPct: 78,  barColor: 'var(--green)' },
+    { rank: 3, init: 'ST', name: 'USR_087', score: 2990, delta: '+180', up: true, barPct: 62,  barColor: 'var(--green)' },
+    { rank: 4, init: 'GF', name: 'USR_203',    score: 2440, delta: '+90',  up: true, barPct: 51,  barColor: 'var(--green)' },
+    { rank: 5, init: 'TR', name: 'USR_156', score: 1980, delta: '-40',  up: false, barPct: 41, barColor: 'var(--green)' },
+    { rank: 6, init: 'PX', name: 'USR_312',       score: 1560, delta: '+20',  up: true, barPct: 32,  barColor: 'var(--text-dim)' },
     { rank: 7, init: null, name: null,          score: 1240, delta: '+180', up: true, barPct: 26,  barColor: 'var(--blue)', isYou: true },
     { rank: 8, init: 'SR', name: 'SRLevel',    score: 1010, delta: '+60',  up: true, barPct: 21,  barColor: 'var(--text-dim)' },
     { rank: 9, init: 'NB', name: 'NightBot',   score: 870,  delta: '-20',  up: false, barPct: 18, barColor: 'var(--text-dim)' },
     { rank: 10,init: 'QT', name: 'QuietTP',    score: 720,  delta: '+10',  up: true, barPct: 15,  barColor: 'var(--text-dim)' },
   ],
   alltime: [
-    { rank: 1, init: 'MK', name: 'MarketKing', score: 24800, delta: '', barPct: 100, barColor: 'var(--amber)' },
-    { rank: 2, init: 'GF', name: 'GoldFox',    score: 19200, delta: '', barPct: 77,  barColor: 'var(--green)' },
-    { rank: 3, init: 'AX', name: 'AlgoX',      score: 14400, delta: '', barPct: 58,  barColor: 'var(--green)' },
-    { rank: 4, init: 'ST', name: 'SteadyTrade',score: 11200, delta: '', barPct: 45,  barColor: 'var(--green)' },
-    { rank: 5, init: 'TR', name: 'TrendRider', score: 8800,  delta: '', barPct: 35,  barColor: 'var(--green)' },
-    { rank: 6, init: 'PX', name: 'PipX',       score: 6400,  delta: '', barPct: 26,  barColor: 'var(--text-dim)' },
+    { rank: 1, init: 'MK', name: 'USR_041', score: 24800, delta: '', barPct: 100, barColor: 'var(--amber)' },
+    { rank: 2, init: 'GF', name: 'USR_203',    score: 19200, delta: '', barPct: 77,  barColor: 'var(--green)' },
+    { rank: 3, init: 'AX', name: 'USR_119',      score: 14400, delta: '', barPct: 58,  barColor: 'var(--green)' },
+    { rank: 4, init: 'ST', name: 'USR_087',score: 11200, delta: '', barPct: 45,  barColor: 'var(--green)' },
+    { rank: 5, init: 'TR', name: 'USR_156', score: 8800,  delta: '', barPct: 35,  barColor: 'var(--green)' },
+    { rank: 6, init: 'PX', name: 'USR_312',       score: 6400,  delta: '', barPct: 26,  barColor: 'var(--text-dim)' },
     { rank: 7, init: null, name: null,          score: 1240,  delta: '', barPct: 5,   barColor: 'var(--blue)', isYou: true },
   ],
   weekly: [
-    { rank: 1, init: 'AX', name: 'AlgoX',      score: 480, delta: '', barPct: 100, barColor: 'var(--amber)' },
+    { rank: 1, init: 'AX', name: 'USR_119',      score: 480, delta: '', barPct: 100, barColor: 'var(--amber)' },
     { rank: 2, init: null, name: null,          score: 180, delta: '', barPct: 37,  barColor: 'var(--blue)', isYou: true },
-    { rank: 3, init: 'ST', name: 'SteadyTrade', score: 170, delta: '', barPct: 35,  barColor: 'var(--green)' },
-    { rank: 4, init: 'MK', name: 'MarketKing', score: 140, delta: '', barPct: 29,  barColor: 'var(--green)' },
-    { rank: 5, init: 'GF', name: 'GoldFox',    score: 90,  delta: '', barPct: 19,  barColor: 'var(--text-dim)' },
+    { rank: 3, init: 'ST', name: 'USR_087', score: 170, delta: '', barPct: 35,  barColor: 'var(--green)' },
+    { rank: 4, init: 'MK', name: 'USR_041', score: 140, delta: '', barPct: 29,  barColor: 'var(--green)' },
+    { rank: 5, init: 'GF', name: 'USR_203',    score: 90,  delta: '', barPct: 19,  barColor: 'var(--text-dim)' },
   ],
 };
 
