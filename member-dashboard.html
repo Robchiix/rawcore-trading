@@ -413,8 +413,10 @@
   <!-- MAIN GRID -->
   <div class="main-grid">
 
-    <!-- LEFT — BOTS + AI -->
-    <div>
+    <!-- ── LEFT COLUMN ── -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <!-- BOTS + AI -->
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">// ACTIVE BOT PROJECTS</span>
@@ -441,7 +443,6 @@
               <a href="member-bots.html" class="bot-open">OPEN</a>
             </div>
           </div>
-
           <div class="ai-box">
             <div class="ai-box-label">// CORE AI — ASK ABOUT YOUR BOTS</div>
             <input class="ai-box-input" id="aiInput" placeholder="e.g. why did OMEGA not trade this morning?" onkeydown="if(event.key==='Enter') askAI()" />
@@ -450,8 +451,8 @@
         </div>
       </div>
 
-      <!-- LATEST SIGNALS -->
-      <div class="panel" style="margin-top:12px">
+      <!-- SIGNALS -->
+      <div class="panel">
         <div class="panel-head">
           <span class="panel-title">// LATEST SIGNALS</span>
           <a href="core-room.html" class="panel-action">FULL FEED →</a>
@@ -465,10 +466,7 @@
         </div>
       </div>
 
-      <!-- RIGHT SIDE -->
-    <div class="side-grid">
-
-      <!-- LIVE FEED -->
+      <!-- CORE FEED -->
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">// CORE FEED</span>
@@ -476,215 +474,154 @@
         </div>
         <div class="panel-body" style="padding:0 16px">
           <div class="feed-list">
-            <div class="feed-msg">
-              <span class="feed-time">09:14</span>
-              <span class="feed-tag core">CORE</span>
-              <div class="feed-text">XAUUSD EMA cross confirmed. London bias <span class="hi">bullish</span>. Signal posted.</div>
-            </div>
-            <div class="feed-msg">
-              <span class="feed-time">09:06</span>
-              <span class="feed-tag member">USR_041</span>
-              <div class="feed-text">ATR Rider fork live — improved SL logic. Results in #systems</div>
-            </div>
-            <div class="feed-msg">
-              <span class="feed-time">08:58</span>
-              <span class="feed-tag signal">SIGNAL</span>
-              <div class="feed-text">BTC sweep below <span class="lo">71,200</span>. Short bias confirmed.</div>
-            </div>
-            <div class="feed-msg">
-              <span class="feed-time">08:44</span>
-              <span class="feed-tag expose">UNGURUED</span>
-              <div class="feed-text">New episode — ICT $1,500 course breakdown. Thread in #knowledge</div>
-            </div>
-            <div class="feed-msg">
-              <span class="feed-time">08:31</span>
-              <span class="feed-tag member">GoldFox</span>
-              <div class="feed-text">TP1 hit on XAUUSD <span class="hi">+1.5R</span> — SL to breakeven. Running.</div>
-            </div>
+            <div class="feed-msg"><span class="feed-time">09:14</span><span class="feed-tag core">CORE</span><div class="feed-text">XAUUSD EMA cross confirmed. London bias <span class="hi">bullish</span>. Signal posted.</div></div>
+            <div class="feed-msg"><span class="feed-time">09:06</span><span class="feed-tag member">USR_041</span><div class="feed-text">ATR Rider fork live — improved SL logic. Results in #systems</div></div>
+            <div class="feed-msg"><span class="feed-time">08:58</span><span class="feed-tag signal">SIGNAL</span><div class="feed-text">BTC sweep below <span class="lo">71,200</span>. Short bias confirmed.</div></div>
+            <div class="feed-msg"><span class="feed-time">08:44</span><span class="feed-tag expose">UNGURUED</span><div class="feed-text">New episode — ICT $1,500 course breakdown. Thread in #knowledge</div></div>
+            <div class="feed-msg"><span class="feed-time">08:31</span><span class="feed-tag member">GoldFox</span><div class="feed-text">TP1 hit on XAUUSD <span class="hi">+1.5R</span> — SL to breakeven. Running.</div></div>
           </div>
         </div>
       </div>
 
       <!-- QUICK ACTIONS -->
       <div class="panel">
-        <div class="panel-head">
-          <span class="panel-title">// QUICK ACTIONS</span>
-        </div>
+        <div class="panel-head"><span class="panel-title">// QUICK ACTIONS</span></div>
         <div class="panel-body">
           <div class="actions-grid">
-            <a href="core-room.html" class="action-btn">
-              <div class="action-icon">#</div>
-              <div class="action-name">CORE ROOM</div>
-              <div class="action-desc">Join the live chat</div>
-            </a>
-            <a href="member-bots.html" class="action-btn">
-              <div class="action-icon">&lt;/&gt;</div>
-              <div class="action-name">BOT LIBRARY</div>
-              <div class="action-desc">Browse all systems</div>
-            </a>
-            <a href="member-knowledge.html" class="action-btn">
-              <div class="action-icon">◎</div>
-              <div class="action-name">CONTINUE LEARNING</div>
-              <div class="action-desc">Risk management · L3</div>
-            </a>
-            <a href="member-shop.html" class="action-btn">
-              <div class="action-icon">▲</div>
-              <div class="action-name">SHOP</div>
-              <div class="action-desc">Member discount active</div>
-            </a>
+            <a href="core-room.html" class="action-btn"><div class="action-icon">#</div><div class="action-name">CORE ROOM</div><div class="action-desc">Join the live chat</div></a>
+            <a href="member-bots.html" class="action-btn"><div class="action-icon">&lt;/&gt;</div><div class="action-name">BOT LIBRARY</div><div class="action-desc">Browse all systems</div></a>
+            <a href="member-knowledge.html" class="action-btn"><div class="action-icon">◎</div><div class="action-name">CONTINUE LEARNING</div><div class="action-desc">Risk management · L3</div></a>
+            <a href="member-shop.html" class="action-btn"><div class="action-icon">▲</div><div class="action-name">SHOP</div><div class="action-desc">Member discount active</div></a>
           </div>
         </div>
       </div>
 
     </div>
-  </div>
 
-  <!-- BOTTOM SECTION — LEADERBOARD FULL WIDTH -->
-  <div class="panel" style="margin-bottom:12px">
-    <div class="panel-head">
-      <span class="panel-title">// LEADERBOARD — THIS MONTH</span>
-      <a href="member-core.html" class="panel-action">FULL BOARD →</a>
+    <!-- ── RIGHT COLUMN ── -->
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <!-- LEADERBOARD — compact rows -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// LEADERBOARD</span>
+          <a href="member-core.html" class="panel-action">FULL BOARD →</a>
+        </div>
+        <div style="display:flex;flex-direction:column">
+
+          <!-- Row helper: rank · av · name · bar · score -->
+          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
+            <div style="font-family:var(--display);font-size:20px;color:var(--amber);line-height:1">1</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--amber)">MK</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">MarketKing</div><div style="height:2px;background:var(--border)"><div style="width:100%;height:100%;background:var(--amber)"></div></div></div>
+            <div style="font-family:var(--display);font-size:18px;color:var(--amber);line-height:1">4,820</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
+            <div style="font-family:var(--display);font-size:20px;color:#9ca3af;line-height:1">2</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">AX</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">AlgoX</div><div style="height:2px;background:var(--border)"><div style="width:78%;height:100%;background:var(--green)"></div></div></div>
+            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">3,760</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
+            <div style="font-family:var(--display);font-size:20px;color:#b45309;line-height:1">3</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">ST</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">SteadyTrade</div><div style="height:2px;background:var(--border)"><div style="width:62%;height:100%;background:var(--green)"></div></div></div>
+            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">2,990</div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-dim);line-height:1">4</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">GF</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">GoldFox</div><div style="height:2px;background:var(--border)"><div style="width:51%;height:100%;background:var(--green)"></div></div></div>
+            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">2,440</div>
+          </div>
+
+          <!-- YOU -->
+          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.05);border-left:2px solid var(--blue)">
+            <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1">7</div>
+            <div id="lbYourAv" style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)">RC</div>
+            <div><div id="lbYourName" style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px">You</div><div style="height:2px;background:var(--border)"><div style="width:26%;height:100%;background:var(--blue)"></div></div></div>
+            <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">1,240</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LEARNING PROGRESS -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// LEARNING PROGRESS</span>
+          <a href="member-knowledge.html" class="panel-action">CONTINUE →</a>
+        </div>
+        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--purple)">PSYCHOLOGY</span><span id="pctPsych" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barPsych" style="width:0%;height:100%;background:var(--purple);transition:width 1s"></div></div>
+            <div id="donePsych" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--blue)">MARKETS</span><span id="pctMarkets" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barMarkets" style="width:0%;height:100%;background:var(--blue);transition:width 1s"></div></div>
+            <div id="doneMarkets" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--red)">RISK MANAGEMENT</span><span id="pctRisk" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barRisk" style="width:0%;height:100%;background:var(--red);transition:width 1s"></div></div>
+            <div id="doneRisk" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--green)">TRADING BOTS</span><span id="pctBots" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barBots" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
+            <div id="doneBots" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px;opacity:0.4">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--text-dim)">SIGNALS</span><span style="color:var(--text-dim)">—</span></div>
+            <div style="height:4px;background:var(--border)"></div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">Coming soon</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px;opacity:0.4">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--text-dim)">BROKERS</span><span style="color:var(--text-dim)">🔒</span></div>
+            <div style="height:4px;background:var(--border)"></div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">Complete Signals first</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CORE POT -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">// CORE POT</span>
+          <a href="member-core.html" class="panel-action" style="color:var(--amber)">DETAILS →</a>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="font-size:28px">🔒</div>
+            <div>
+              <div style="font-family:var(--display);font-size:22px;color:var(--amber);line-height:1">LOCKED</div>
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Activates at 100 members</div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:5px"><span>67 members</span><span>100 target</span></div>
+            <div style="height:4px;background:var(--border)"><div style="width:67%;height:100%;background:var(--amber)"></div></div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:4px">67% there · 33 to go</div>
+          </div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.7;padding:10px;background:var(--dark);border:1px solid var(--border)">€2/member/month into the pot. One winner at month end. Random draw.</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Last winner: <span style="color:var(--green)">USR_041</span> · Apr 2026</div>
+        </div>
+      </div>
+
     </div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)">
-
-      <div style="background:var(--dark);padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="font-family:var(--display);font-size:28px;color:var(--amber);line-height:1;min-width:24px">1</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--amber)">MK</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">MarketKing</div>
-        </div>
-        <div style="font-family:var(--display);font-size:32px;color:var(--amber);line-height:1">4,820</div>
-        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:100%;height:100%;background:var(--amber)"></div></div>
-        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +340 this month</div>
-      </div>
-
-      <div style="background:var(--dark);padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="font-family:var(--display);font-size:28px;color:#9ca3af;line-height:1;min-width:24px">2</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">AX</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">AlgoX</div>
-        </div>
-        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">3,760</div>
-        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:78%;height:100%;background:var(--green)"></div></div>
-        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +210 this month</div>
-      </div>
-
-      <div style="background:var(--dark);padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="font-family:var(--display);font-size:28px;color:#b45309;line-height:1;min-width:24px">3</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">ST</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">SteadyTrade</div>
-        </div>
-        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">2,990</div>
-        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:62%;height:100%;background:var(--green)"></div></div>
-        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +180 this month</div>
-      </div>
-
-      <div style="background:var(--dark);padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="font-family:var(--display);font-size:28px;color:var(--text-dim);line-height:1;min-width:24px">4</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">GF</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-bright)">GoldFox</div>
-        </div>
-        <div style="font-family:var(--display);font-size:32px;color:var(--text-bright);line-height:1">2,440</div>
-        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:51%;height:100%;background:var(--green)"></div></div>
-        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);margin-top:5px">▲ +90 this month</div>
-      </div>
-
-      <!-- YOUR POSITION -->
-      <div style="background:rgba(59,130,246,0.05);border-left:2px solid var(--blue);padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <div style="font-family:var(--display);font-size:28px;color:var(--blue);line-height:1;min-width:24px">7</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--blue)" id="lbYourAv">RC</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--blue)" id="lbYourName">You</div>
-        </div>
-        <div style="font-family:var(--display);font-size:32px;color:var(--blue);line-height:1" id="lbYourScore">1,240</div>
-        <div style="height:3px;background:var(--border);margin-top:8px"><div style="width:26%;height:100%;background:var(--blue)"></div></div>
-        <div style="font-family:var(--mono);font-size:8px;color:var(--blue);margin-top:5px">▲ +2 positions · 320pts to #6</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- PROGRESS + POT ROW -->
-  <div style="display:grid;grid-template-columns:1fr 320px;gap:12px;margin-bottom:12px">
-
-    <!-- LEARNING PROGRESS -->
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-title">// LEARNING PROGRESS</span>
-        <a href="member-knowledge.html" class="panel-action">CONTINUE →</a>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)">
-
-        <div style="background:var(--dark);padding:14px 16px">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--purple);letter-spacing:0.15em;margin-bottom:8px">PSYCHOLOGY</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctPsych">0%</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barPsych" style="width:0%;height:100%;background:var(--purple);transition:width 1s"></div></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="donePsych">0/5 answered</div>
-        </div>
-
-        <div style="background:var(--dark);padding:14px 16px">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--blue);letter-spacing:0.15em;margin-bottom:8px">MARKETS</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctMarkets">0%</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barMarkets" style="width:0%;height:100%;background:var(--blue);transition:width 1s"></div></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneMarkets">0/5 answered</div>
-        </div>
-
-        <div style="background:var(--dark);padding:14px 16px">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:0.15em;margin-bottom:8px">RISK MANAGEMENT</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctRisk">0%</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barRisk" style="width:0%;height:100%;background:var(--red);transition:width 1s"></div></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneRisk">0/5 answered</div>
-        </div>
-
-        <div style="background:var(--dark);padding:14px 16px">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.15em;margin-bottom:8px">TRADING BOTS</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="pctBots">0%</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"><div id="barBots" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)" id="doneBots">0/5 answered</div>
-        </div>
-
-        <div style="background:var(--dark);padding:14px 16px;opacity:0.5">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:8px">SIGNALS</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-dim)">—</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Coming soon</div>
-        </div>
-
-        <div style="background:var(--dark);padding:14px 16px;opacity:0.5">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:0.15em;margin-bottom:8px">BROKERS</div>
-          <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-dim)">🔒</div>
-          <div style="height:3px;background:var(--border);margin:8px 0 5px"></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Complete Signals first</div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- CORE POT -->
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-title">// CORE POT</span>
-        <a href="member-core.html" class="panel-action" style="color:var(--amber)">DETAILS →</a>
-      </div>
-      <div style="padding:20px;display:flex;flex-direction:column;gap:14px;height:calc(100% - 45px)">
-        <div style="text-align:center">
-          <div style="font-size:36px;margin-bottom:6px">🔒</div>
-          <div style="font-family:var(--display);font-size:32px;color:var(--amber);line-height:1">LOCKED</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:5px">Activates at 100 members</div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:6px"><span>67 members</span><span>100 target</span></div>
-          <div style="height:6px;background:var(--border);border-radius:0"><div style="width:67%;height:100%;background:var(--amber)"></div></div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:5px;text-align:center">67% · 33 to go</div>
-        </div>
-        <div style="background:var(--dark);border:1px solid var(--border);padding:10px;font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.7">
-          €2/member/month goes into the pot. One member wins it all at month end. Random draw — no way to buy extra entries.
-        </div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-align:center">Last winner: <span style="color:var(--green)">USR_041</span> · Apr 2026</div>
-      </div>
-    </div>
+    <!-- end right column -->
 
   </div>
 
