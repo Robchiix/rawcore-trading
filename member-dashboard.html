@@ -734,13 +734,27 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   const navUsernameEl = document.getElementById('navUsername');
   if (navUsernameEl) navUsernameEl.textContent = username;
   
-  // Nav credits
-  const creditsEl = document.getElementById('navCredits');
-  if (creditsEl) creditsEl.textContent = '1,240 pts';
-  
-  // Dashboard credits
-  const dashCreditsEl = document.getElementById('dashCredits');
-  if (dashCreditsEl) dashCreditsEl.textContent = '1,240';
+  // Load real credits from Supabase
+  try {
+    const cRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4' }
+    });
+    if (cRes.ok) {
+      const cData = await cRes.json();
+      const userCredits = cData.length > 0 ? cData[0].credits : 0;
+      const creditsEl = document.getElementById('navCredits');
+      if (creditsEl) creditsEl.textContent = userCredits.toLocaleString() + ' pts';
+      const dashCreditsEl = document.getElementById('dashCredits');
+      if (dashCreditsEl) dashCreditsEl.textContent = userCredits.toLocaleString();
+      // Also update the header stat
+      const headerCredits = document.querySelector('.welcome-stat-val.blue');
+      if (headerCredits) headerCredits.textContent = userCredits.toLocaleString();
+    }
+  } catch(e) {
+    // Fallback display
+    const creditsEl = document.getElementById('navCredits');
+    if (creditsEl) creditsEl.textContent = '0 pts';
+  }
   
   // Greeting by time
   const hour = new Date().getHours();
@@ -774,9 +788,14 @@ async function updateMarketPrices() {
     } catch(e) {}
   }
   try {
-    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
-    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
-  } catch(e) {}
+    const gr = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT');
+    if (gr.ok) { const gd = await gr.json(); const gp = parseFloat(gd.price); if (gp > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = gp.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {
+    try {
+      const gr2 = await fetch('https://api.metals.live/v1/spot/gold');
+      if (gr2.ok) { const gd2 = await gr2.json(); const gp2 = gd2?.[0]?.price; if (gp2 > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = parseFloat(gp2).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+    } catch(e2) {}
+  }
 }
 updateMarketPrices();
 setInterval(updateMarketPrices, 30000);

@@ -1906,8 +1906,8 @@ async function fetchRealPrice() {
   } else {
     // Gold via Frankfurter (CORS enabled)
     try {
-      const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD', {mode:'cors'});
-      if (r.ok) { const d = await r.json(); return d.rates?.USD || null; }
+      const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT', {mode:'cors'});
+      if (r.ok) { const d = await r.json(); const p = parseFloat(d.price); if (p > 1000) return p; }
     } catch(e) {}
     // Fallback: metals-api
     try {

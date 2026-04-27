@@ -774,9 +774,14 @@ async function updateMarketBar() {
     if (ch) { const up = d.pct >= 0; ch.textContent = (up ? '▲ +' : '▼ ') + Math.abs(d.pct).toFixed(2) + '%'; ch.className = 'market-change ' + (up ? 'up' : 'dn'); }
   }
   try {
-    const r = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD');
-    if (r.ok) { const d = await r.json(); const g = d.rates?.USD; if (g) { const el = document.getElementById('goldPrice'); if (el) el.textContent = g.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
-  } catch(e) {}
+    const gr = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUUSDT');
+    if (gr.ok) { const gd = await gr.json(); const gp = parseFloat(gd.price); if (gp > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = gp.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+  } catch(e) {
+    try {
+      const gr2 = await fetch('https://api.metals.live/v1/spot/gold');
+      if (gr2.ok) { const gd2 = await gr2.json(); const gp2 = gd2?.[0]?.price; if (gp2 > 1000) { const el = document.getElementById('goldPrice'); if (el) el.textContent = parseFloat(gp2).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }
+    } catch(e2) {}
+  }
 }
 updateMarketBar();
 setInterval(updateMarketBar, 30000);

@@ -1443,10 +1443,83 @@ const topicData = {
   systems: { title:'TRADING BOTS EXPLAINED', color:'var(--green)', desc:"The real story behind ALPHA, OMEGA GS, and NOVA. How they were built, what rules they follow, and how to build your own EA concept.", lessons:['systems-1','systems-2','systems-3','systems-4','systems-5'] }
 };
 
-let credits = 1240, todayLessons = 0, todayTasks = 0, todayCredits = 0;
+let credits = 0, todayLessons = 0, todayTasks = 0, todayCredits = 0;
 let completedLessons = new Set(), completedTasks = new Set();
 let lessonScores = {}; // lessonId -> 'full' | 'partial'
 let currentTopic = null;
+let _userId = null;
+
+// ── SUPABASE PROGRESS PERSISTENCE ──
+const _sbUrl = 'https://mlzxnrmctblfpijtihvm.supabase.co';
+const _sbKey = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+
+async function loadProgressFromDB(userId) {
+  _userId = userId;
+  try {
+    // Load lesson progress
+    const r = await fetch(`${_sbUrl}/rest/v1/user_progress?user_id=eq.${userId}&select=lesson_id,score`, {
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_sbKey}` }
+    });
+    if (r.ok) {
+      const rows = await r.json();
+      rows.forEach(row => {
+        completedTasks.add(row.lesson_id);
+        completedLessons.add(row.lesson_id);
+        lessonScores[row.lesson_id] = row.score;
+      });
+    }
+    // Load credits
+    const r2 = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${userId}&select=credits`, {
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_sbKey}` }
+    });
+    if (r2.ok) {
+      const rows2 = await r2.json();
+      if (rows2.length > 0) {
+        credits = rows2[0].credits;
+      } else {
+        credits = 0;
+      }
+    }
+    // Update display
+    const credEl = document.getElementById('creditsDisplay');
+    if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
+    updateProgress();
+  } catch(e) {
+    console.warn('Progress load failed:', e);
+  }
+}
+
+async function saveProgressToDB(lessonId, score) {
+  if (!_userId) return;
+  try {
+    await fetch(`${_sbUrl}/rest/v1/user_progress`, {
+      method: 'POST',
+      headers: {
+        'apikey': _sbKey,
+        'Authorization': `Bearer ${_sbKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ user_id: _userId, lesson_id: lessonId, score, completed_at: new Date().toISOString() })
+    });
+  } catch(e) { console.warn('Progress save failed:', e); }
+}
+
+async function saveCreditsToDb(newCredits) {
+  if (!_userId) return;
+  try {
+    await fetch(`${_sbUrl}/rest/v1/user_credits`, {
+      method: 'POST',
+      headers: {
+        'apikey': _sbKey,
+        'Authorization': `Bearer ${_sbKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ user_id: _userId, credits: newCredits, updated_at: new Date().toISOString() })
+    });
+  } catch(e) { console.warn('Credits save failed:', e); }
+}
 
 function openTopic(topicId) {
   // Update sidebar active state
@@ -1566,7 +1639,9 @@ function answerTask(lessonId, optIdx, isCorrect) {
   todayTasks++;
 
   // Mark lesson progress score
-  lessonScores[lessonId] = isCorrect ? 'full' : 'partial';
+  const score = isCorrect ? 'full' : 'partial';
+  lessonScores[lessonId] = score;
+  saveProgressToDB(lessonId, score);
 
   const cp = document.getElementById('creditsPop');
   cp.innerHTML = isCorrect
@@ -1584,7 +1659,8 @@ function earnCredits(amount) {
   document.getElementById('rsCredits').textContent = '+' + todayCredits;
   document.getElementById('rsLessons').textContent = todayLessons;
   document.getElementById('rsTasks').textContent = todayTasks;
-  document.getElementById('lbPts').textContent = 240 + todayCredits;
+  document.getElementById('lbPts').textContent = (credits);
+  saveCreditsToDb(credits);
 }
 
 function updateProgress() {
