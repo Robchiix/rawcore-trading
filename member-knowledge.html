@@ -673,6 +673,8 @@
     
     // Load progress and credits from Supabase
     loadProgressFromDB(user.id, session.access_token);
+    loadAndUpdateStreak(user.id, session.access_token);
+    loadDailyChallenge(user.id);
     window.signOut = async () => {
       await sb.auth.signOut();
       window.location.href = 'index.html';
@@ -721,9 +723,9 @@
         <div class="streak-val" id="streakVal">—</div>
         <div class="streak-label">// DAY STREAK</div>
         <div class="streak-dots">
-          <div class="streak-dot done"></div>
-          <div class="streak-dot done"></div>
-          <div class="streak-dot done"></div>
+          <div class="streak-dot"></div>
+          <div class="streak-dot"></div>
+          <div class="streak-dot"></div>
           <div class="streak-dot today"></div>
           <div class="streak-dot"></div>
           <div class="streak-dot"></div>
@@ -833,8 +835,8 @@
     <div class="daily-challenge">
       <div class="dc-badge">// DAILY CHALLENGE</div>
       <div class="dc-content">
-        <div class="dc-title">Identify the liquidity sweep on today's XAUUSD chart</div>
-        <div class="dc-sub">// Resets in 14h 22m · Complete to keep your streak alive</div>
+        <div class="dc-title" id="dcTitle">Loading today's challenge...</div>
+        <div class="dc-sub" id="dcSub">// Resets in 14h 22m · Complete to keep your streak alive</div>
       </div>
       <div class="dc-reward">+25 pts</div>
       <button class="dc-btn" onclick="openChallenge()">START →</button>

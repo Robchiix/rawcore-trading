@@ -659,19 +659,7 @@ function choosePot(el) {
 }
 
 // Live gold price ticker
-let goldBase = 2341.84;
-setInterval(() => {
-  goldBase += (Math.random() - 0.48) * 0.8;
-  const change = ((goldBase - 2333.84) / 2333.84 * 100).toFixed(2);
-  const el = document.getElementById('goldPrice');
-  const chEl = document.getElementById('goldChange');
-  if (el) el.textContent = goldBase.toFixed(2);
-  if (chEl) {
-    const up = parseFloat(change) >= 0;
-    chEl.textContent = (up ? '▲ +' : '▼ ') + change + '%';
-    chEl.className = 'market-change ' + (up ? 'up' : 'dn');
-  }
-}, 2000);
+// Gold price now handled by updateMarketPrices() via CoinGecko
 </script>
 
 <script>
@@ -812,7 +800,7 @@ async function updateMarketPrices() {
   }
 }
 updateMarketPrices();
-setInterval(updateMarketPrices, 30000);
+setInterval(updateMarketPrices, 15000);
 
 function updateSession() {
   const h = new Date().getUTCHours(), t = h * 60 + new Date().getUTCMinutes();
