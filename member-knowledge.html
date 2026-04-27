@@ -942,7 +942,7 @@
           <span class="lb-mini-rank" style="color:var(--blue)">7</span>
           <div class="lb-mini-av" style="background:rgba(59,130,246,0.1);color:var(--blue)">RC</div>
           <span class="lb-mini-name" style="color:var(--blue)" id="navUsername2">You</span>
-          <span class="lb-mini-pts" style="color:var(--blue)" id="lbPts">240</span>
+          <span class="lb-mini-pts" style="color:var(--blue)" id="lbPts">—</span>
         </div>
       </div>
     </div>
@@ -1489,6 +1489,8 @@ async function loadProgressFromDB(userId, accessToken) {
     // Update display
     const credEl = document.getElementById('creditsDisplay');
     if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
+    const lbEl = document.getElementById('lbPts');
+    if (lbEl) lbEl.textContent = credits.toLocaleString();
     updateProgress();
     // Signal that credits baseline is loaded
     _creditsLoaded = true;

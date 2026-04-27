@@ -296,7 +296,7 @@
   <div class="my-banner">
     <div class="banner-cell green">
       <div class="bc-label">// CORE CREDITS</div>
-      <div class="bc-val green">—</div>
+      <div class="bc-val green" id="mcCreditsVal">—</div>
       <div class="bc-sub up"><span id="creditsDelta">↑ loading...</span></div>
     </div>
     <div class="banner-cell amber">
@@ -645,6 +645,13 @@ let currentUsername = 'Robchiix';
       const pts = cd.length > 0 ? cd[0].credits : 0;
       const creditsEl = document.getElementById('navCredits');
       if (creditsEl) creditsEl.textContent = pts.toLocaleString() + ' pts';
+      const mcCredEl = document.getElementById('mcCreditsVal');
+      if (mcCredEl) mcCredEl.textContent = pts.toLocaleString();
+      const mcDeltaEl = document.getElementById('creditsDelta');
+      if (mcDeltaEl) mcDeltaEl.textContent = '';
+      // Update leaderboard your score
+      const lbScore = document.getElementById('lbYourScore');
+      if (lbScore) lbScore.textContent = pts.toLocaleString();
     }
   } catch(e) {}
 })();
