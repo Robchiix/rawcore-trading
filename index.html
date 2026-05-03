@@ -3,1273 +3,832 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RawCore Trading</title>
+<title>RawCore Trading — Build. Automate. Trade.</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #050608;
-    --dark: #0a0c0f;
-    --card: #0e1114;
-    --border: #1a1f26;
-    --green: #00ff88;
-    --green-dim: #00cc6a;
-    --green-muted: #00ff8822;
-    --red: #ff3355;
-    --red-muted: #ff335522;
-    --text: #c8d4e0;
-    --text-dim: #5a6a7a;
-    --text-bright: #eaf2ff;
-    --mono: 'Share Tech Mono', monospace;
-    --display: 'Bebas Neue', sans-serif;
-    --body: 'Rajdhani', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: var(--body);
-    font-size: 16px;
-    overflow-x: hidden;
-    cursor: crosshair;
-  }
-
-  /* SCANLINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,255,136,0.012) 2px,
-      rgba(0,255,136,0.012) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    height: 64px;
-    background: rgba(5,6,8,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 18px;
-    color: var(--text-bright);
-    letter-spacing: 0.05em;
-  }
-
-  .nav-logo span { color: var(--green); }
-
-  .nav-links {
-    display: flex;
-    gap: 36px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    text-decoration: none;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--green); }
-
-  .nav-cta {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-  }
-
-  .nav-cta:hover {
-    background: var(--green);
-    color: var(--black);
-  }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-top: 64px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* ANIMATED CHART BACKGROUND */
-  .chart-bg {
-    position: absolute;
-    inset: 0;
-    opacity: 0.06;
-    pointer-events: none;
-  }
-
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 80px 60px 80px 80px;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hero-tag::before {
-    content: '';
-    width: 24px;
-    height: 1px;
-    background: var(--green);
-  }
-
-  .hero-headline {
-    font-family: var(--display);
-    font-size: clamp(64px, 7vw, 96px);
-    line-height: 0.92;
-    color: var(--text-bright);
-    letter-spacing: 0.02em;
-    margin-bottom: 8px;
-  }
-
-  .hero-headline .accent { color: var(--green); }
-  .hero-headline .red-accent { color: var(--red); }
-
-  .hero-sub {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.8;
-    margin: 28px 0 44px;
-    max-width: 420px;
-    border-left: 2px solid var(--border);
-    padding-left: 16px;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 14px 28px;
-    background: var(--green);
-    color: var(--black);
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary::after {
-    content: '_';
-    animation: blink 1s infinite;
-  }
-
-  .btn-secondary {
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 14px 28px;
-    background: transparent;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--text-dim);
-    color: var(--text-bright);
-  }
-
-  .hero-disclaimer {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 20px;
-    opacity: 0.6;
-  }
-
-  /* HERO RIGHT - LIVE CANDLE CHART */
-  .hero-right {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    padding: 80px 40px;
-  }
-
-  .chart-container {
-    width: 100%;
-    max-width: 540px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
-  .chart-title { color: var(--text-bright); letter-spacing: 0.1em; }
-
-  .chart-price {
-    color: var(--green);
-    font-size: 13px;
-  }
-
-  .chart-price.down { color: var(--red); }
-
-  .chart-canvas-wrap {
-    position: relative;
-    height: 280px;
-    padding: 12px 0 12px 12px;
-  }
-
-  canvas#candleChart {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .chart-footer {
-    display: flex;
-    gap: 20px;
-    padding: 10px 16px;
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-  }
-
-  .stat-up { color: var(--green); }
-  .stat-down { color: var(--red); }
-
-  /* TICKER */
-  .ticker-wrap {
-    background: var(--dark);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    padding: 10px 0;
-  }
-
-  .ticker-inner {
-    display: flex;
-    gap: 60px;
-    animation: ticker 30s linear infinite;
-    white-space: nowrap;
-  }
-
-  .ticker-item {
-    font-family: var(--mono);
-    font-size: 11px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    color: var(--text-dim);
-  }
-
-  .ticker-item .sym { color: var(--text-bright); }
-  .ticker-item .up { color: var(--green); }
-  .ticker-item .dn { color: var(--red); }
-
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* MANIFESTO SECTION */
-  .manifesto {
-    padding: 100px 80px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .manifesto-left {
-    position: relative;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .manifesto-title {
-    font-family: var(--display);
-    font-size: clamp(40px, 4vw, 58px);
-    line-height: 0.95;
-    color: var(--text-bright);
-    margin-bottom: 24px;
-  }
-
-  .manifesto-title .green { color: var(--green); }
-
-  .manifesto-body {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-dim);
-    font-weight: 400;
-    margin-bottom: 16px;
-  }
-
-  .manifesto-right {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .compare-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 12px;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
-  .compare-row:last-child { border-bottom: none; }
-
-  .compare-them {
-    color: var(--red);
-    opacity: 0.7;
-    text-decoration: line-through;
-    text-align: right;
-  }
-
-  .compare-vs {
-    color: var(--text-dim);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-
-  .compare-us { color: var(--green); }
-
-  /* FEATURES GRID */
-  .features {
-    padding: 100px 80px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .features-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .features-title {
-    font-family: var(--display);
-    font-size: clamp(36px, 4vw, 54px);
-    color: var(--text-bright);
-    margin-top: 12px;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .feature-card {
-    background: var(--dark);
-    padding: 36px 32px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-
-  .feature-card:hover { background: var(--card); }
-
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: transparent;
-    transition: background 0.3s;
-  }
-
-  .feature-card:hover::before { background: var(--green); }
-
-  .feature-icon {
-    font-family: var(--mono);
-    font-size: 22px;
-    color: var(--green);
-    margin-bottom: 20px;
-    opacity: 0.8;
-  }
-
-  .feature-name {
-    font-family: var(--display);
-    font-size: 22px;
-    color: var(--text-bright);
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
-  }
-
-  .feature-desc {
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    font-weight: 400;
-  }
-
-  .feature-tag {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    margin-top: 16px;
-    opacity: 0.6;
-  }
-
-  /* LIVE FEED */
-  .live-section {
-    padding: 100px 80px;
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 40px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .feed-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .feed-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .feed-header .live-dot {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--green);
-  }
-
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .feed-messages {
-    height: 320px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .feed-inner {
-    padding: 0;
-    animation: scrollFeed 20s linear infinite;
-  }
-
-  @keyframes scrollFeed {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
-  }
-
-  .feed-msg {
-    display: grid;
-    grid-template-columns: 60px auto 1fr;
-    gap: 12px;
-    align-items: start;
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(26,31,38,0.5);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
-  .feed-time { color: var(--text-dim); padding-top: 1px; }
-
-  .feed-user {
-    padding: 1px 6px;
-    font-size: 10px;
-    font-weight: 600;
-  }
-
-  .feed-user.core { background: var(--green-muted); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
-  .feed-user.member { background: rgba(90,106,122,0.15); color: var(--text-dim); border: 1px solid var(--border); }
-  .feed-user.signal { background: var(--red-muted); color: var(--red); border: 1px solid rgba(255,51,85,0.2); }
-
-  .feed-text { color: var(--text); line-height: 1.5; }
-  .feed-text .hi { color: var(--green); }
-  .feed-text .lo { color: var(--red); }
-
-  /* PRICING */
-  .pricing {
-    padding: 100px 80px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .pricing-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .pricing-title {
-    font-family: var(--display);
-    font-size: clamp(36px, 4vw, 54px);
-    color: var(--text-bright);
-    margin-top: 12px;
-  }
-
-  .pricing-sub {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 12px;
-  }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .price-card {
-    background: var(--dark);
-    padding: 40px 32px;
-    position: relative;
-    transition: background 0.3s;
-  }
-
-  .price-card.featured {
-    background: var(--card);
-    outline: 1px solid var(--green);
-    outline-offset: -1px;
-    z-index: 1;
-  }
-
-  .price-tier {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .price-tier.featured-label { color: var(--green); }
-
-  .price-amount {
-    font-family: var(--display);
-    font-size: 52px;
-    color: var(--text-bright);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .price-amount span {
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--text-dim);
-    vertical-align: super;
-  }
-
-  .price-period {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-bottom: 28px;
-  }
-
-  .price-features {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 32px;
-  }
-
-  .price-features li {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .price-features li::before {
-    content: '→';
-    color: var(--green);
-    opacity: 0.6;
-  }
-
-  .price-features li.locked { opacity: 0.3; }
-  .price-features li.locked::before { content: '×'; color: var(--red); }
-
-  .price-btn {
-    width: 100%;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .price-btn:hover, .price-btn.featured-btn {
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  .price-btn.featured-btn {
-    background: var(--green);
-    color: var(--black);
-    font-weight: 700;
-  }
-
-  .price-note {
-    text-align: center;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-top: 24px;
-    opacity: 0.6;
-  }
-
-  /* QUOTE SECTION */
-  .quote-section {
-    padding: 80px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    background: var(--dark);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .quote-section::before {
-    content: '"';
-    position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: var(--display);
-    font-size: 300px;
-    color: var(--green);
-    opacity: 0.03;
-    pointer-events: none;
-  }
-
-  .big-quote {
-    font-family: var(--display);
-    font-size: clamp(28px, 3.5vw, 44px);
-    color: var(--text-bright);
-    max-width: 800px;
-    margin: 0 auto 16px;
-    line-height: 1.1;
-    position: relative;
-    z-index: 1;
-  }
-
-  .big-quote .green { color: var(--green); }
-
-  .quote-attr {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    position: relative;
-    z-index: 1;
-  }
-
-  /* FOOTER */
-  footer {
-    padding: 40px 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    border-top: 1px solid var(--border);
-  }
-
-  .footer-logo { color: var(--text-bright); }
-  .footer-logo span { color: var(--green); }
-
-  .footer-links {
-    display: flex;
-    gap: 24px;
-    list-style: none;
-  }
-
-  .footer-links a {
-    color: var(--text-dim);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--green); }
-
-  .footer-right {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-
-  .social-icon {
-    width: 32px; height: 32px;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-
-  .social-icon:hover {
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  .social-icon svg { display: block; }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  /* SCROLL ANIMATIONS */
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* UNGURUED STRIP */
-  .ungurued-strip {
-    padding: 60px 80px;
-    background: var(--dark);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .ungurued-left { flex: 1; }
-
-  .ungurued-badge {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--red);
-    border: 1px solid var(--red);
-    padding: 4px 10px;
-    letter-spacing: 0.2em;
-    margin-bottom: 16px;
-    opacity: 0.8;
-  }
-
-  .ungurued-title {
-    font-family: var(--display);
-    font-size: clamp(32px, 3vw, 46px);
-    color: var(--text-bright);
-    line-height: 0.95;
-    margin-bottom: 16px;
-  }
-
-  .ungurued-title .red { color: var(--red); }
-
-  .ungurued-desc {
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.65;
-    max-width: 480px;
-  }
-
-  .ungurued-right {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 280px;
-  }
-
-  .expose-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    background: var(--card);
-  }
-
-  .expose-item .x-mark { color: var(--red); }
-
-  /* ============================================
-     MOBILE RESPONSIVE — under 768px
-  ============================================ */
-  @media (max-width: 768px) {
-
-    body { cursor: default; }
-
-    /* NAV — hamburger */
-    nav {
-      padding: 0 20px;
-      height: 56px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links { display: none; }
-
-    .nav-cta {
-      font-size: 9px;
-      padding: 7px 12px;
-    }
-
-    /* HAMBURGER MENU */
-    .mobile-menu-btn {
-      display: flex !important;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-      margin-left: 12px;
-    }
-
-    .mobile-menu-btn span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--text-dim);
-      transition: all 0.2s;
-    }
-
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 56px; left: 0; right: 0;
-      background: rgba(5,6,8,0.98);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
-      flex-direction: column;
-      gap: 0;
-      z-index: 99;
-    }
-
-    .mobile-nav.open { display: flex !important; }
-
-    .mobile-nav a {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text-dim);
-      text-decoration: none;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      transition: color 0.2s;
-    }
-
-    .mobile-nav a:last-child { border-bottom: none; }
-    .mobile-nav a:hover { color: var(--green); }
-
-    /* HERO */
-    .hero {
-      grid-template-columns: 1fr;
-      padding-top: 80px;
-      min-height: auto;
-    }
-
-    .hero-left {
-      padding: 40px 24px 24px;
-    }
-
-    .hero-right {
-      padding: 0 24px 40px;
-    }
-
-    .hero-headline {
-      font-size: clamp(52px, 14vw, 80px);
-    }
-
-    .hero-sub {
-      font-size: 12px;
-    }
-
-    .hero-buttons {
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .btn-primary, .btn-secondary {
-      text-align: center;
-      width: 100%;
-      padding: 14px;
-    }
-
-    /* TICKER */
-    .ticker-wrap { display: none; }
-
-    /* MANIFESTO */
-    .manifesto {
-      padding: 48px 24px;
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-
-    .manifesto-right {
-      gap: 0;
-    }
-
-    .compare-row {
-      grid-template-columns: 1fr auto 1fr;
-      gap: 8px;
-      font-size: 10px;
-    }
-
-    /* FEATURES */
-    .features {
-      padding: 48px 24px;
-    }
-
-    .features-grid {
-      grid-template-columns: 1fr;
-    }
-
-    /* UNGURUED STRIP */
-    .ungurued-strip {
-      padding: 40px 24px;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    /* LIVE SECTION */
-    .live-section {
-      padding: 48px 24px;
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-
-    /* PRICING */
-    .pricing {
-      padding: 48px 24px;
-    }
-
-    .pricing-grid {
-      grid-template-columns: 1fr;
-      max-width: 100%;
-    }
-
-    .price-card.featured {
-      order: -1;
-    }
-
-    /* QUOTE */
-    .quote-section {
-      padding: 48px 24px;
-    }
-
-    .big-quote {
-      font-size: clamp(22px, 5vw, 36px);
-    }
-
-    /* FOOTER */
-    footer {
-      padding: 24px 20px;
-      flex-direction: column;
-      gap: 16px;
-      text-align: center;
-    }
-
-    .footer-links {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .footer-right {
-      justify-content: center;
-    }
-
-    /* CHART CONTAINER */
-    .chart-container {
-      max-width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .hero-headline {
-      font-size: clamp(44px, 12vw, 64px);
-    }
-
-    .compare-row {
-      font-size: 9px;
-    }
-
-    .compare-them, .compare-us {
-      font-size: 9px;
-    }
-  }
-
-  /* Hide hamburger on desktop */
-  .mobile-menu-btn { display: none; }
-  .mobile-nav { display: none; }
-
-
-  /* ── SHOP SECTION ── */
-  .shop-section {
-    padding: 80px;
-    border-bottom: 1px solid var(--border);
-    background: var(--dark);
-  }
-
-  .shop-header { margin-bottom: 40px; }
-  .shop-title { font-family: var(--display); font-size: clamp(36px,5vw,64px); color: var(--text-bright); line-height: 0.95; margin-bottom: 12px; }
-  .shop-sub { font-size: 15px; color: var(--text-dim); line-height: 1.7; max-width: 560px; }
-  .shop-sub strong { color: var(--text); }
-
-  .shop-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    margin-bottom: 1px;
-  }
-
-  .shop-card {
-    background: var(--card);
-    text-decoration: none;
-    transition: background 0.2s;
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-  .shop-card:hover { background: #131820; }
-  .shop-card:hover .shop-img img { transform: scale(1.04); }
-
-  .shop-img {
-    width: 100%;
-    aspect-ratio: 1;
-    overflow: hidden;
-    position: relative;
-    border-bottom: 1px solid var(--border);
-  }
-  .shop-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; display: block; }
-
-  .shop-badge {
-    position: absolute;
-    bottom: 10px; left: 10px;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    padding: 4px 10px;
-  }
-  .shop-badge.founding { background: var(--amber); color: var(--black); font-weight: 700; }
-
-  .shop-card-info { padding: 16px 18px; }
-  .shop-name { font-family: var(--display); font-size: 20px; color: var(--text-bright); letter-spacing: 0.05em; margin-bottom: 4px; }
-  .shop-desc { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
-
-  .shop-footer-bar {
-    background: var(--black);
-    border: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .shop-cta {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    padding: 9px 18px;
-    border: 1px solid var(--green);
-    color: var(--green);
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .shop-cta:hover { background: var(--green); color: var(--black); }
-
-  @media (max-width: 768px) {
-    .shop-section { padding: 48px 20px; }
-    .shop-grid { grid-template-columns: 1fr; }
-    .shop-footer-bar { flex-direction: column; gap: 12px; text-align: center; }
-  }
-
+:root {
+  --black: #050608;
+  --dark: #0a0c0f;
+  --card: #0e1114;
+  --border: #1a1f26;
+  --green: #00ff88;
+  --green-dim: #00cc6a;
+  --green-muted: #00ff8815;
+  --red: #ff3355;
+  --amber: #f59e0b;
+  --blue: #3b82f6;
+  --text: #c8d4e0;
+  --text-dim: #5a6a7a;
+  --text-bright: #eaf2ff;
+  --mono: 'Share Tech Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'Rajdhani', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--body);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.008) 2px, rgba(0,255,136,0.008) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 60px;
+  background: rgba(5,6,8,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--text-bright);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+}
+.nav-logo span { color: var(--green); }
+
+.nav-links {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0 16px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.nav-links a:hover { color: var(--text-bright); }
+
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  background: var(--green);
+  color: var(--black) !important;
+  padding: 8px 20px !important;
+  height: auto !important;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s !important;
+  border-bottom: none !important;
+}
+.nav-cta:hover { opacity: 0.85 !important; }
+
+/* hamburger */
+.menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  background: none;
+  border: none;
+}
+.menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  transition: all 0.2s;
+}
+
+/* ── SECTIONS COMMON ── */
+.section { padding: 100px 80px; }
+.section-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.3em;
+  margin-bottom: 16px;
+}
+
+/* ── HERO ── */
+.hero {
+  padding-top: 60px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding-left: 80px;
+  padding-right: 80px;
+}
+
+.hero-left { padding-top: 60px; }
+
+.hero-headline {
+  font-family: var(--display);
+  font-size: clamp(44px, 5.5vw, 72px);
+  line-height: 0.95;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+  margin-bottom: 24px;
+}
+.hero-headline .accent { color: var(--green); }
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 440px;
+  margin-bottom: 36px;
+  font-family: var(--body);
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.btn-primary {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  background: var(--green);
+  color: var(--black);
+  padding: 14px 28px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-secondary {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  background: transparent;
+  color: var(--text-dim);
+  padding: 14px 28px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-secondary:hover { border-color: var(--green); color: var(--green); }
+
+.hero-proof {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.proof-item {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.proof-item .x { color: var(--red); }
+.proof-item .check { color: var(--green); }
+
+/* ── TERMINAL WIDGET ── */
+.hero-right {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.terminal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.terminal-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--dark);
+}
+.terminal-dots { display: flex; gap: 6px; }
+.terminal-dots span {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+}
+.terminal-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+}
+
+.chart-header-row {
+  padding: 12px 16px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chart-sym {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-bright);
+  letter-spacing: 0.1em;
+}
+.chart-pnl {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+.chart-pnl.dn { color: var(--red); }
+
+.chart-canvas-wrap {
+  height: 220px;
+  padding: 8px 0 8px 8px;
+  position: relative;
+}
+canvas#candleChart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.perf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+.perf-cell {
+  background: var(--dark);
+  padding: 12px 16px;
+}
+.perf-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+.perf-val {
+  font-family: var(--display);
+  font-size: 24px;
+  color: var(--text-bright);
+  line-height: 1;
+}
+.perf-val.green { color: var(--green); }
+.perf-val.active-label { font-family: var(--mono); font-size: 11px; }
+
+/* ── TICKER ── */
+.ticker-wrap {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--dark);
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.ticker-inner {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  animation: ticker 40s linear infinite;
+  will-change: transform;
+}
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 0 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 36px;
+}
+.ticker-item .sym { color: var(--text-bright); }
+.ticker-item .up { color: var(--green); }
+.ticker-item .dn { color: var(--red); }
+
+/* ── WHAT IS RAWCORE ── */
+.what-section {
+  padding: 80px;
+  background: var(--dark);
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 48px;
+}
+.feature-card {
+  background: var(--card);
+  padding: 32px 24px;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: #111418; }
+.feature-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+.feature-name {
+  font-family: var(--display);
+  font-size: 18px;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  line-height: 1.1;
+}
+.feature-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  padding: 80px;
+}
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 48px;
+  position: relative;
+}
+.step-card {
+  padding: 0 32px 0 0;
+  position: relative;
+}
+.step-card:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: 8px;
+  top: 16px;
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--border);
+}
+.step-num {
+  font-family: var(--display);
+  font-size: 56px;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+.step-name {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+/* ── COMMUNITY ── */
+.community-section {
+  padding: 80px;
+  background: var(--dark);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.community-left {}
+.community-headline {
+  font-family: var(--display);
+  font-size: clamp(40px, 4vw, 60px);
+  color: var(--text-bright);
+  line-height: 0.95;
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+.community-headline .accent { color: var(--green); }
+.community-sub {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.community-points { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.community-point {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.community-point::before {
+  content: '>';
+  color: var(--green);
+}
+
+.community-right {}
+.live-feed-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: 0.25em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.feed-items { display: flex; flex-direction: column; gap: 1px; }
+.feed-item {
+  background: var(--card);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+.feed-item:hover { border-left-color: var(--green); }
+.feed-text { font-size: 13px; color: var(--text); }
+.feed-time { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+.feed-enter {
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: gap 0.2s;
+}
+.feed-enter:hover { gap: 12px; }
+
+/* ── WHAT YOU GET + PRICING ── */
+.offer-section {
+  padding: 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.offer-left {}
+.offer-items { display: flex; flex-direction: column; gap: 0; margin-top: 32px; }
+.offer-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.offer-item:first-child { border-top: 1px solid var(--border); }
+.offer-icon {
+  font-size: 22px;
+  width: 36px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.offer-name {
+  font-family: var(--display);
+  font-size: 18px;
+  color: var(--text-bright);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.offer-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+.pricing-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--green);
+  padding: 36px;
+  position: sticky;
+  top: 80px;
+}
+.pricing-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--green);
+  letter-spacing: 0.25em;
+  margin-bottom: 20px;
+}
+.pricing-amount {
+  font-family: var(--display);
+  font-size: 72px;
+  color: var(--green);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.pricing-amount sup { font-size: 32px; vertical-align: super; }
+.pricing-period {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 28px;
+  margin-top: 4px;
+}
+.pricing-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.pricing-feature {
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pricing-feature::before {
+  content: '✓';
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.pricing-note {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: 0.05em;
+}
+.founding-badge {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--amber);
+  letter-spacing: 0.15em;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+/* ── CLOSING CTA ── */
+.cta-section {
+  padding: 80px;
+  background: var(--dark);
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.cta-headline {
+  font-family: var(--display);
+  font-size: clamp(28px, 3.5vw, 48px);
+  color: var(--text-dim);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.cta-headline span { color: var(--green); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  padding: 40px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo { font-family: var(--mono); font-size: 14px; color: var(--text-bright); }
+.footer-logo span { color: var(--green); }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--green); }
+.footer-socials { display: flex; gap: 16px; }
+.footer-socials a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.footer-socials a:hover { color: var(--green); }
+.footer-copy {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── MOBILE ── */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding: 100px 24px 48px; }
+  .hero-right { display: none; }
+  .what-section { padding: 60px 24px; }
+  .feature-grid { grid-template-columns: 1fr 1fr; }
+  .how-section { padding: 60px 24px; }
+  .steps-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .step-card::after { display: none; }
+  .community-section { padding: 60px 24px; grid-template-columns: 1fr; gap: 40px; }
+  .offer-section { padding: 60px 24px; grid-template-columns: 1fr; gap: 40px; }
+  .pricing-box { position: static; }
+  .cta-section { padding: 60px 24px; }
+  footer { padding: 32px 24px; }
+  .nav-links { display: none; }
+  .menu-btn { display: flex; }
+}
+
+@media (max-width: 640px) {
+  .feature-grid { grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; }
+}
+
+/* Mobile nav */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0; right: 0;
+  background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  z-index: 199;
+  flex-direction: column;
+  padding: 16px 0;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.mobile-nav a:hover { color: var(--green); }
+.mobile-nav .mobile-cta {
+  margin: 16px 24px 0;
+  background: var(--green);
+  color: var(--black) !important;
+  text-align: center;
+  font-weight: 700;
+  border-bottom: none;
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">&gt;_ Raw<span>Core</span>Trading</div>
-  <ul class="nav-links">
-    <li><a href="index.html">HOME</a></li>
-    <li><a href="about.html">ABOUT</a></li>
-    <li><a href="knowledge.html">KNOWLEDGE</a></li>
-    <li><a href="systems.html">SYSTEMS</a></li>
-    <li><a href="community.html">COMMUNITY</a></li>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <ul class="nav-links" style="list-style:none;display:flex;gap:0;align-items:center">
+    <li><a href="core-room.html">CORE ROOM</a></li>
+    <li><a href="knowledge.html">KNOWLEDGE HUB</a></li>
+    <li><a href="systems.html">BOTS</a></li>
+    <li><a href="login.html" style="color:var(--text-dim)">AI-RAWCORE</a></li>
     <li><a href="pricing.html">PRICING</a></li>
-    <li><a href="contact.html">CONTACT</a></li>
-    <li><a href="#" onclick="document.querySelector('.shop-section').scrollIntoView({behavior:'smooth'});return false" style="color:var(--amber)">SHOP — SOON</a></li>
+    <li><a href="community.html">FAQ</a></li>
+    <li style="margin-left:16px"><a href="login.html" class="nav-cta">JOIN THE CORE →</a></li>
   </ul>
-  <a href="login.html" class="nav-cta">ENTER THE CORE →</a>
-  <div class="mobile-menu-btn" onclick="toggleMobileMenu()" id="menuBtn"><span></span><span></span><span></span></div>
+  <button class="menu-btn" id="menuBtn" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
-  <a href="index.html">HOME</a>
-  <a href="about.html">ABOUT</a>
-  <a href="knowledge.html">KNOWLEDGE</a>
-  <a href="systems.html">SYSTEMS</a>
-  <a href="community.html">COMMUNITY</a>
+  <a href="core-room.html">CORE ROOM</a>
+  <a href="knowledge.html">KNOWLEDGE HUB</a>
+  <a href="systems.html">BOTS</a>
   <a href="pricing.html">PRICING</a>
-  <a href="contact.html">CONTACT</a>
-  <a href="#" onclick="document.querySelector('.shop-section').scrollIntoView({behavior:'smooth'});document.getElementById('mobileNav').classList.remove('open');return false" style="color:var(--amber)">SHOP — COMING SOON</a>
-  <a href="login.html" style="color:var(--green)">ENTER THE CORE →</a>
+  <a href="community.html">FAQ</a>
+  <a href="login.html" class="mobile-cta">JOIN THE CORE →</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <svg class="chart-bg" viewBox="0 0 1200 800" preserveAspectRatio="none">
-    <polyline points="0,600 80,550 160,580 240,480 320,500 400,380 480,420 560,300 640,340 720,260 800,280 880,200 960,220 1040,160 1120,180 1200,120" fill="none" stroke="#00ff88" stroke-width="1.5"/>
-  </svg>
-
   <div class="hero-left">
-    <div class="hero-tag">// BUILT BY TRADERS. FOR TRADERS.</div>
+    <div class="section-tag">// BUILT BY TRADERS. FOR TRADERS.</div>
     <h1 class="hero-headline">
-      NO<br>
-      FAKE<br>
-      <span class="accent">GURUS.</span>
+      BUILD BETTER.<br>
+      AUTOMATE SMARTER.<br>
+      <span class="accent">TRADE YOUR WAY.</span>
     </h1>
-    <p class="hero-sub">
-      Real systems. Real code. Real results.<br>
-      We build automated trading tools and teach<br>
-      you to do the same. No demo accounts.<br>
-      No promises. Just the raw core of it.
-    </p>
-    <div class="hero-buttons">
-      <a href="waitlist.html" class="btn-primary">ACCESS THE CORE &gt;</a>
-      <a href="systems.html" class="btn-secondary">EXPLORE BOTS</a>
-      <a href="member-shop.html" class="btn-secondary" style="border-color:rgba(245,158,11,0.3);color:var(--amber);opacity:0.7;cursor:default;pointer-events:none">SHOP — COMING SOON</a>
+    <p class="hero-sub">RawCore Trading is a platform for traders who build, test and automate their own strategies. No signals. No shortcuts. Just tools, knowledge and a community that pushes forward together.</p>
+    <div class="hero-btns">
+      <a href="login.html" class="btn-primary">JOIN THE CORE →</a>
+      <a href="systems.html" class="btn-secondary">EXPLORE THE PLATFORM</a>
     </div>
-    <p class="hero-disclaimer">// This is not for everyone. Good.</p>
+    <div class="hero-proof">
+      <div class="proof-item"><span class="x">✕</span> No Signals</div>
+      <div class="proof-item"><span class="x">✕</span> No Gurus</div>
+      <div class="proof-item"><span class="x">✕</span> No Courses</div>
+      <div class="proof-item"><span class="check">✓</span> Just The Core</div>
+    </div>
   </div>
 
   <div class="hero-right">
-    <div class="chart-container">
-      <div class="chart-header">
-        <span class="chart-title">XAUUSD // 5M</span>
-        <span class="chart-price" id="livePrice" style="color:var(--text-dim)">—</span>
+    <!-- TERMINAL WIDGET -->
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <span style="background:#ff3355"></span>
+          <span style="background:#f59e0b"></span>
+          <span style="background:#00ff88"></span>
+        </div>
+        <div class="terminal-title">RAWCORE TERMINAL</div>
+      </div>
+      <div class="chart-header-row">
+        <span class="chart-sym" id="chartTitle">XAUUSD // 5M</span>
+        <span class="chart-pnl" id="livePrice">—</span>
       </div>
       <div class="chart-canvas-wrap">
         <canvas id="candleChart"></canvas>
       </div>
-      <div class="chart-footer">
-        <span>EMA9 <span class="stat-up">●</span></span>
-        <span style="color:rgba(59,130,246,0.7)">EMA21 ●</span>
-        <span>SESSION: <span id="sessionLabel" style="color:var(--green)">—</span></span>
+      <div style="padding:8px 16px;border-top:1px solid var(--border)">
+        <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:0.2em;margin-bottom:10px">PERFORMANCE OVERVIEW</div>
+      </div>
+      <div class="perf-grid">
+        <div class="perf-cell">
+          <div class="perf-label">RUNNING BOTS</div>
+          <div class="perf-val">3</div>
+        </div>
+        <div class="perf-cell">
+          <div class="perf-label">TOTAL P&L</div>
+          <div class="perf-val green">+3.21%</div>
+        </div>
+        <div class="perf-cell">
+          <div class="perf-label">SESSION</div>
+          <div class="perf-val active-label" id="sessionLabel" style="color:var(--green)">—</div>
+        </div>
+        <div class="perf-cell">
+          <div class="perf-label">STATUS</div>
+          <div class="perf-val active-label" style="color:var(--green)">ACTIVE</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1278,391 +837,228 @@
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-inner">
-    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up">2341.84 ▲ +0.34%</span></div>
-    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up">71,240 ▲ +1.2%</span></div>
-    <div class="ticker-item"><span class="sym">ETHUSD</span><span class="dn">3,412 ▼ -0.8%</span></div>
+    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up" id="tickerXAU">—</span></div>
+    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up" id="tickerBTC">—</span></div>
+    <div class="ticker-item"><span class="sym">ETHUSD</span><span id="tickerETH">—</span></div>
     <div class="ticker-item"><span class="sym">EURUSD</span><span class="up">1.0842 ▲ +0.12%</span></div>
-    <div class="ticker-item"><span class="sym">SOLUSD</span><span class="up">182.40 ▲ +2.1%</span></div>
-    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.06%</span></div>
+    <div class="ticker-item"><span class="sym">SOLUSDT</span><span id="tickerSOL">—</span></div>
+    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.08%</span></div>
     <div class="ticker-item"><span class="sym">DXY</span><span class="dn">104.32 ▼ -0.3%</span></div>
-    <div class="ticker-item"><span class="sym">NASDAQ</span><span class="up">17,890 ▲ +0.54%</span></div>
-    <!-- duplicate for infinite loop -->
-    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up">2341.84 ▲ +0.34%</span></div>
-    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up">71,240 ▲ +1.2%</span></div>
-    <div class="ticker-item"><span class="sym">ETHUSD</span><span class="dn">3,412 ▼ -0.8%</span></div>
+    <!-- duplicate for loop -->
+    <div class="ticker-item"><span class="sym">XAUUSD</span><span class="up" id="tickerXAU2">—</span></div>
+    <div class="ticker-item"><span class="sym">BTCUSD</span><span class="up" id="tickerBTC2">—</span></div>
+    <div class="ticker-item"><span class="sym">ETHUSD</span><span id="tickerETH2">—</span></div>
     <div class="ticker-item"><span class="sym">EURUSD</span><span class="up">1.0842 ▲ +0.12%</span></div>
-    <div class="ticker-item"><span class="sym">SOLUSD</span><span class="up">182.40 ▲ +2.1%</span></div>
-    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.06%</span></div>
+    <div class="ticker-item"><span class="sym">SOLUSDT</span><span id="tickerSOL2">—</span></div>
+    <div class="ticker-item"><span class="sym">GBPUSD</span><span class="dn">1.2614 ▼ -0.08%</span></div>
     <div class="ticker-item"><span class="sym">DXY</span><span class="dn">104.32 ▼ -0.3%</span></div>
-    <div class="ticker-item"><span class="sym">NASDAQ</span><span class="up">17,890 ▲ +0.54%</span></div>
   </div>
 </div>
 
-<!-- MANIFESTO -->
-<section class="manifesto reveal">
-  <div class="manifesto-left">
-    <div class="section-label">// THE RAWCORE WAY</div>
-    <h2 class="manifesto-title">WE KILLED<br>THE <span class="green">GURU</span><br>PLAYBOOK.</h2>
-    <p class="manifesto-body">
-      Most trading education is a product designed to sell you more products. 
-      Courses that teach you to buy more courses. Signals that keep you dependent. 
-      Communities built around one person's ego.
-    </p>
-    <p class="manifesto-body">
-      We build systems. We share code. We explain the why behind every signal. 
-      When you leave, you leave better — not broke.
-    </p>
-  </div>
-  <div class="manifesto-right">
-    <div class="compare-row">
-      <div class="compare-them">$2,000 course</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">€28/month, cancel anytime</div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-them">Demo account screenshots</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">Live bot logs & real results</div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-them">Secret sauce signals</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">Full explanation of every trade</div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-them">Lock-in yearly plans</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">Weekly or monthly, your choice</div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-them">Lambo thumbnails</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">Working code you can run tonight</div>
-    </div>
-    <div class="compare-row">
-      <div class="compare-them">One guru, one gospel</div>
-      <div class="compare-vs">VS</div>
-      <div class="compare-us">Community of builders & thinkers</div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features reveal">
-  <div class="features-header">
-    <div class="section-label">// WHAT YOU ACTUALLY GET</div>
-    <h2 class="features-title">THE FULL TOOLKIT</h2>
-  </div>
-  <div class="features-grid">
+<!-- WHAT IS RAWCORE -->
+<section class="what-section reveal">
+  <div class="section-tag">// WHAT IS RAWCORE TRADING?</div>
+  <div class="feature-grid">
     <div class="feature-card">
-      <div class="feature-icon">&lt;/&gt;</div>
-      <div class="feature-name">BOT SYSTEMS</div>
-      <div class="feature-desc">Real MT5 and crypto EAs with full source code. Modify them, break them, learn from them. Built on XAUUSD, BTC, ETH, SOL — tested live, not backtested fantasy.</div>
-      <div class="feature-tag">// OMEGA · NOVA · ALPHA</div>
+      <span class="feature-icon">&lt;/&gt;</span>
+      <div class="feature-name">STRATEGY FRAMEWORKS</div>
+      <div class="feature-desc">Modular bot frameworks that you can customise and make your own.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">◈</div>
-      <div class="feature-name">SIGNAL LOGIC</div>
-      <div class="feature-desc">Every signal comes with the why. EMA structure, liquidity sweeps, session timing. You understand what you're following or you don't follow it.</div>
-      <div class="feature-tag">// NOT FINANCIAL ADVICE</div>
+      <span class="feature-icon">🤖</span>
+      <div class="feature-name">AUTOMATE YOUR EDGE</div>
+      <div class="feature-desc">Turn your strategy into automated execution. You stay in control.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">⬡</div>
-      <div class="feature-name">PSYCHOLOGY EA</div>
-      <div class="feature-desc">Can't stick to your SL? We automate your discipline. EAs that enforce your own rules so you stop overriding them at 2am in revenge mode.</div>
-      <div class="feature-tag">// THE EDGE IS IN EXECUTION</div>
+      <span class="feature-icon">🧠</span>
+      <div class="feature-name">AI ASSISTANT RAWCORE</div>
+      <div class="feature-desc">Get help from AI to build, optimise and improve your strategies.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">◎</div>
-      <div class="feature-name">BROKER GUIDES</div>
-      <div class="feature-desc">Honest breakdown of brokers for gold, forex, crypto. No affiliate spam — just what works, what to watch out for, and which quirks will wreck your bot.</div>
-      <div class="feature-tag">// TRADEQUO · BYBIT · MORE</div>
+      <span class="feature-icon">👥</span>
+      <div class="feature-name">CORE ROOM COMMUNITY</div>
+      <div class="feature-desc">Share ideas, get feedback, discuss setups and grow with real traders.</div>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">⌘</div>
-      <div class="feature-name">COMMUNITY CORE</div>
-      <div class="feature-desc">A space where coders and traders share setups, improve each other's code, and give honest feedback. No ego. No hype. No noise.</div>
-      <div class="feature-tag">// BUILDERS ONLY</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">▲</div>
+      <span class="feature-icon">📘</span>
       <div class="feature-name">KNOWLEDGE HUB</div>
-      <div class="feature-desc">Real trading education — psychology, market structure, risk management, signals. Every lesson explained clearly for beginners with enough depth for experienced traders.</div>
-      <div class="feature-tag">// FREE + CORE TIERS</div>
+      <div class="feature-desc">Real world experience, tasks, guides and lessons from the trenches.</div>
     </div>
   </div>
 </section>
 
-
-
-<!-- LIVE FEED -->
-<section class="live-section reveal">
-  <div class="feed-box">
-    <div class="feed-header">
-      <div class="live-dot"><div class="dot"></div> CORE FEED</div>
-      <span>CONNECTED: 312</span>
+<!-- HOW IT WORKS -->
+<section class="how-section reveal">
+  <div class="section-tag">// HOW IT WORKS</div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1.</div>
+      <div class="step-name">BUILD</div>
+      <div class="step-desc">Use our frameworks and tools to build your strategy.</div>
     </div>
-    <div class="feed-messages">
-      <div class="feed-inner" id="feedInner">
-        <div class="feed-msg">
-          <span class="feed-time">09:14:22</span>
-          <span class="feed-user core">CORE</span>
-          <span class="feed-text">XAUUSD — EMA9 crossed EMA21 on 5M. ATR elevated. Watching for London push above <span class="hi">2344.00</span></span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:12:05</span>
-          <span class="feed-user member">USR_041</span>
-          <span class="feed-text">Modified OMEGA GS SL logic, moved to ATR-based instead of fixed. Backtested 3 months — improved by 0.4R average. Sharing the diff in #systems</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:08:44</span>
-          <span class="feed-user signal">SIGNAL</span>
-          <span class="feed-text">Gold liquidity sweep confirmed below <span class="lo">2338.20</span>. Bias bullish for London session. Explanation thread posted.</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:04:11</span>
-          <span class="feed-user member">USR_182</span>
-          <span class="feed-text">First live trade with the bot — 1.8R on XAUUSD. Wanted to manually close at 1R but the EA held the position. This is literally why automation exists</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">08:58:33</span>
-          <span class="feed-user core">CORE</span>
-          <span class="feed-text">New Knowledge Hub lesson live — Risk Management L1 is up. Thread in #knowledge</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">08:44:17</span>
-          <span class="feed-user member">USR_299</span>
-          <span class="feed-text">Added dynamic session risk to my fork of OMEGA GS. Higher lot in London/NY overlap, reduces in Asian session. Cleaner equity curve already.</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">08:31:02</span>
-          <span class="feed-user member">USR_076</span>
-          <span class="feed-text">Been here 3 weeks. Learned more about actual execution than 6 months on other platforms. The code examples alone are worth it.</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">08:20:48</span>
-          <span class="feed-user signal">SIGNAL</span>
-          <span class="feed-text">BTC consolidating below <span class="lo">71,400</span>. NOVA bot flat — no setup confirmed. Patience is a position. Not every candle needs a trade.</span>
-        </div>
-        <!-- duplicate for loop -->
-        <div class="feed-msg">
-          <span class="feed-time">09:14:22</span>
-          <span class="feed-user core">CORE</span>
-          <span class="feed-text">XAUUSD — EMA9 crossed EMA21 on 5M. ATR elevated. Watching for London push above <span class="hi">2344.00</span></span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:12:05</span>
-          <span class="feed-user member">USR_041</span>
-          <span class="feed-text">Modified OMEGA GS SL logic, moved to ATR-based instead of fixed. Backtested 3 months — improved by 0.4R average. Sharing the diff in #systems</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:08:44</span>
-          <span class="feed-user signal">SIGNAL</span>
-          <span class="feed-text">Gold liquidity sweep confirmed below <span class="lo">2338.20</span>. Bias bullish for London session. Explanation thread posted.</span>
-        </div>
-        <div class="feed-msg">
-          <span class="feed-time">09:04:11</span>
-          <span class="feed-user member">USR_182</span>
-          <span class="feed-text">First live trade with the bot — 1.8R on XAUUSD. Wanted to manually close at 1R but the EA held the position. This is literally why automation exists</span>
-        </div>
-      </div>
+    <div class="step-card">
+      <div class="step-num">2.</div>
+      <div class="step-name">BACKTEST & OPTIMISE</div>
+      <div class="step-desc">Test your edge, optimise settings and refine your logic.</div>
     </div>
-  </div>
-
-  <div style="display:flex;flex-direction:column;gap:40px;">
-    <div>
-      <div class="section-label">// WHY RAWCORE</div>
-      <h2 style="font-family:var(--display);font-size:clamp(32px,3vw,46px);color:var(--text-bright);line-height:0.95;margin-bottom:20px;">BECOME A TRADER<br><span style="color:var(--green);">WHO BUILDS.</span></h2>
-      <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">The market doesn't care about your feelings or your favourite guru's course. It rewards those with a system, a process, and the discipline to follow it.</p>
-      <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">We give you the tools. The community sharpens you. You do the rest.</p>
+    <div class="step-card">
+      <div class="step-num">3.</div>
+      <div class="step-name">AUTOMATE</div>
+      <div class="step-desc">Deploy your strategy with our bots and let it execute.</div>
     </div>
-    <div style="background:var(--card);border:1px solid var(--border);padding:24px;">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px;">// COMMUNITY STATS</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div>
-          <div style="font-family:var(--display);font-size:36px;color:var(--text-bright);">312</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">ACTIVE MEMBERS</div>
-        </div>
-        <div>
-          <div style="font-family:var(--display);font-size:36px;color:var(--green);">47</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">BOT FORKS SHARED</div>
-        </div>
-        <div>
-          <div style="font-family:var(--display);font-size:36px;color:var(--text-bright);">€0</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">LAMBOS SHOWN</div>
-        </div>
-        <div>
-          <div style="font-family:var(--display);font-size:36px;color:var(--red);">∞</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);">GURUS EXPOSED</div>
-        </div>
-      </div>
+    <div class="step-card">
+      <div class="step-num">4.</div>
+      <div class="step-name">SHARE & IMPROVE</div>
+      <div class="step-desc">Get feedback, share results and level up together.</div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section class="pricing reveal">
-  <div class="pricing-header">
-    <div class="section-label">// NO LOCK-IN. NO NONSENSE.</div>
-    <h2 class="pricing-title">PAY AS YOU GROW</h2>
-    <p class="pricing-sub">Weekly or monthly. Cancel anytime. No yearly traps.</p>
+<!-- COMMUNITY -->
+<section class="community-section reveal">
+  <div class="community-left">
+    <div class="section-tag">// COMMUNITY IS THE PRODUCT</div>
+    <div class="community-headline">NOT JUST A PLATFORM.<br><span class="accent">A MOVEMENT.</span></div>
+    <p class="community-sub">Traders from around the world building, testing and winning together.</p>
+    <div class="community-points">
+      <div class="community-point">Real discussions</div>
+      <div class="community-point">Real feedback</div>
+      <div class="community-point">Real growth</div>
+      <div class="community-point">Real people</div>
+    </div>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:28px">This is the Core.</p>
+    <a href="login.html" class="btn-primary">ENTER THE CORE →</a>
   </div>
-  <div class="pricing-grid">
-    <div class="price-card">
-      <div class="price-tier">FREE TIER</div>
-      <div class="price-amount"><span></span>0</div>
-      <div class="price-period">// FOREVER FREE</div>
-      <ul class="price-features">
-        <li>Knowledge Hub — 5 free lessons</li>
-        <li>2 bot samples with explanation</li>
-        <li>Broker comparison guide</li>
-        <li>Public community access</li>
-        <li class="locked">Full bot source code</li>
-        <li class="locked">Signal feed + explanations</li>
-        <li class="locked">Private community core</li>
-      </ul>
-      <button class="price-btn">START FREE</button>
+  <div class="community-right">
+    <div class="live-feed-label">
+      <span class="live-dot"></span>
+      CORE ROOM LIVE FEED
     </div>
-    <div class="price-card featured">
-      <div class="price-tier featured-label">// FOUNDING MEMBER — FIRST 500</div>
-      <div class="price-tier">CORE MEMBER</div>
-      <div class="price-amount"><span>€</span>28</div>
-      <div class="price-period">// PER MONTH · CANCEL ANYTIME · <span style="color:var(--amber)">PRICE LOCKS IN FOREVER</span></div>
-      <ul class="price-features">
-        <li>Everything in Free</li>
-        <li>Full bot library + source code</li>
-        <li>Signal feed with full breakdowns</li>
-        <li>Private community access</li>
-        <li>Monthly live build sessions</li>
-        <li>Broker setup walkthroughs</li>
-        <li>Early access to new systems</li>
-      </ul>
-      <button class="price-btn featured-btn">JOIN THE CORE — €28/MO</button>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:10px;text-align:center">// After 500 members price rises to €33/mo. You lock in €28 forever.</div>
-    </div>
-    <div class="price-card">
-      <div class="price-tier">WEEKLY ACCESS</div>
-      <div class="price-amount"><span>€</span>9</div>
-      <div class="price-period">// PER WEEK · CANCEL ANYTIME</div>
-      <ul class="price-features">
-        <li>Full Core Member access</li>
-        <li>No monthly commitment</li>
-        <li>Perfect for testing the waters</li>
-        <li>Same bots, same community</li>
-        <li class="locked">Live build session access</li>
-        <li class="locked">Early system access</li>
-      </ul>
-      <button class="price-btn">START WEEKLY</button>
-    </div>
-  </div>
-  <p class="price-note">// No yearly plans. No upsells. No surprises. What you see is what you get.</p>
-</section>
-
-
-<!-- SHOP -->
-<section class="shop-section reveal">
-  <div class="shop-header">
-    <div class="section-tag">// THE DROP</div>
-    <h2 class="shop-title">WEAR THE <span class="green">CORE.</span></h2>
-    <p class="shop-sub">Merch is coming. Designs are being finalised — quality kit, no fast fashion. <strong>Core members get 20% off when it drops.</strong></p>
-  </div>
-
-  <!-- COMING SOON GRID -->
-  <div class="shop-grid">
-    <div class="shop-card" style="cursor:default;pointer-events:none">
-      <div class="shop-img" style="filter:grayscale(0.4)">
-        <img src="rc-cap.png" alt="RC Snapback Cap">
-        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
-        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
-          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
-        </div>
+    <div class="feed-items">
+      <div class="feed-item">
+        <span class="feed-text">Omega Bot v2.1 update shared</span>
+        <span class="feed-time">2m ago</span>
       </div>
-      <div class="shop-card-info">
-        <div class="shop-name">RC SNAPBACK CAP</div>
-        <div class="shop-desc" style="color:var(--amber)">// From €32 · Available soon</div>
+      <div class="feed-item">
+        <span class="feed-text">New strategy idea: Mean Reversion</span>
+        <span class="feed-time">5m ago</span>
+      </div>
+      <div class="feed-item">
+        <span class="feed-text">Backtest results uploaded</span>
+        <span class="feed-time">12m ago</span>
+      </div>
+      <div class="feed-item">
+        <span class="feed-text">Gold bot settings discussion</span>
+        <span class="feed-time">18m ago</span>
+      </div>
+      <div class="feed-item">
+        <span class="feed-text">RawCore AI prompt library updated</span>
+        <span class="feed-time">25m ago</span>
       </div>
     </div>
-
-    <div class="shop-card" style="cursor:default;pointer-events:none">
-      <div class="shop-img" style="filter:grayscale(0.4)">
-        <img src="rc-hoodie.png" alt="Buy Low Think High Hoodie">
-        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
-        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
-          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
-        </div>
-      </div>
-      <div class="shop-card-info">
-        <div class="shop-name">BUY LOW THINK HIGH</div>
-        <div class="shop-desc" style="color:var(--amber)">// From €42 · Available soon</div>
-      </div>
-    </div>
-
-    <div class="shop-card" style="cursor:default;pointer-events:none">
-      <div class="shop-img" style="filter:grayscale(0.4)">
-        <img src="rc-tee.png" alt="Bro Just Wait Tee">
-        <div class="shop-badge" style="background:var(--amber);color:var(--black);font-weight:700">COMING SOON</div>
-        <div style="position:absolute;inset:0;background:rgba(5,6,8,0.55);display:flex;align-items:center;justify-content:center">
-          <span style="font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.2em;border:1px solid rgba(245,158,11,0.4);padding:6px 12px">🔒 NOT YET</span>
-        </div>
-      </div>
-      <div class="shop-card-info">
-        <div class="shop-name">BRO... JUST WAIT</div>
-        <div class="shop-desc" style="color:var(--amber)">// From €26 · Available soon</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="shop-footer-bar">
-    <span>// Shop opens when Printful is set up. Core members get <strong style="color:var(--green)">20% off everything</strong> — forever.</span>
-    <span style="font-family:var(--mono);font-size:10px;color:var(--amber);border:1px solid rgba(245,158,11,0.3);padding:6px 16px;letter-spacing:0.15em">COMING SOON</span>
+    <a href="login.html" class="feed-enter">ENTER THE CORE ROOM →</a>
   </div>
 </section>
 
-<!-- QUOTE -->
-<section class="quote-section reveal">
-  <p class="big-quote">THE MARKET DOESN'T CARE ABOUT YOUR FEELINGS.<br>BUILD SKILLS. TRUST THE PROCESS. <span class="green">STAY RAW.</span></p>
-  <p class="quote-attr">// RawCore Trading — Knowledge. Systems. Community.</p>
+<!-- WHAT YOU GET + PRICING -->
+<section class="offer-section reveal">
+  <div class="offer-left">
+    <div class="section-tag">// WHAT YOU GET</div>
+    <div class="offer-items">
+      <div class="offer-item">
+        <div class="offer-icon">📦</div>
+        <div>
+          <div class="offer-name">ACCESS TO ALL BOT FRAMEWORKS</div>
+          <div class="offer-desc">Crypto, Gold, Forex and more.</div>
+        </div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-icon">🧠</div>
+        <div>
+          <div class="offer-name">RAWCORE AI ASSISTANT</div>
+          <div class="offer-desc">Your personal strategy co-pilot.</div>
+        </div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-icon">💬</div>
+        <div>
+          <div class="offer-name">CORE ROOM ACCESS</div>
+          <div class="offer-desc">Private community of serious traders.</div>
+        </div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-icon">📘</div>
+        <div>
+          <div class="offer-name">KNOWLEDGE HUB</div>
+          <div class="offer-desc">Tasks, guides and real world content.</div>
+        </div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-icon">🏆</div>
+        <div>
+          <div class="offer-name">COMMUNITY POT</div>
+          <div class="offer-desc">2€ from every subscription goes to the monthly member reward.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="pricing-box">
+      <div class="pricing-tag">// SIMPLE. FAIR. TRANSPARENT.</div>
+      <div class="founding-badge">⚡ FOUNDING MEMBER PRICE — FIRST 500</div>
+      <div class="pricing-amount"><sup>€</sup>28</div>
+      <div class="pricing-period">/ MONTH · CANCEL ANYTIME · LOCKS IN FOREVER</div>
+      <div class="pricing-features">
+        <div class="pricing-feature">Full platform access</div>
+        <div class="pricing-feature">All features included</div>
+        <div class="pricing-feature">Cancel anytime</div>
+        <div class="pricing-feature">2€ goes to the community pot</div>
+        <div class="pricing-feature">Price rises to €33 after 500 members</div>
+      </div>
+      <a href="login.html" class="btn-primary" style="width:100%;justify-content:center">JOIN THE CORE →</a>
+      <div class="pricing-note">Be part of something real.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="cta-section reveal">
+  <div class="cta-headline">THIS ISN'T EASY MONEY.</div>
+  <div class="cta-headline">THIS IS WHERE YOU <span>BECOME A BETTER TRADER.</span></div>
+  <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:0.25em;margin-top:16px">// WELCOME TO THE CORE</div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)">
-    <a href="index.html" class="footer-logo">&gt;_ Raw<span>Core</span>Trading</a>
-    <ul class="footer-links">
-      <li><a href="index.html">HOME</a></li>
-      <li><a href="about.html">ABOUT</a></li>
-      <li><a href="knowledge.html">KNOWLEDGE</a></li>
-      <li><a href="systems.html">SYSTEMS</a></li>
-      <li><a href="community.html">COMMUNITY</a></li>
-      <li><a href="pricing.html">PRICING</a></li>
-      <li><a href="contact.html">CONTACT</a></li>
-    </ul>
-    <div class="footer-right">
-      <a href="https://t.me/rawcoretrading" target="_blank" class="social-icon" title="Telegram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.67l-2.945-.92c-.64-.203-.654-.64.136-.954l11.498-4.43c.533-.194 1.001.131.835.855z"/></svg></a>
-      <a href="https://www.tiktok.com/@rawcoretrading" target="_blank" class="social-icon" title="TikTok"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>
-      <a href="https://www.instagram.com/rawcoretrading" target="_blank" class="social-icon" title="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-      <a href="https://x.com/rawcoretrading" target="_blank" class="social-icon" title="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-    </div>
+  <div class="footer-logo">&gt;_ Raw<span>Core</span>Trading</div>
+  <div class="footer-links">
+    <a href="about.html">About</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="community.html">Community</a>
+    <a href="contact.html">Contact</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
   </div>
-  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-    <span style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</span>
-    <div style="display:flex;gap:20px">
-      <a href="terms.html" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">TERMS OF SERVICE</a>
-      <a href="privacy.html" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">PRIVACY POLICY</a>
-    </div>
+  <div class="footer-socials">
+    <a href="https://t.me/rawcoretrading" target="_blank" title="Telegram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.67l-2.945-.92c-.64-.203-.654-.64.136-.954l11.498-4.43c.533-.194 1.001.131.835.855z"/></svg>
+    </a>
+    <a href="https://x.com/rawcoretrading" target="_blank" title="X">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.629 5.905-5.629zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/rawcoretrading" target="_blank" title="Instagram">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    </a>
   </div>
+  <div class="footer-copy">© 2026 RAWCORETRADING.COM // KNOWLEDGE. SYSTEMS. COMMUNITY.</div>
 </footer>
 
 <script>
-// ============================================================
-// CHART ENGINE — Proper candlestick chart with real price feed
-// Weekdays: XAUUSD 5M | Weekends: BTCUSD 1H
-// ============================================================
-
+// ── CHART ENGINE (same as before — real prices) ──
 const canvas = document.getElementById('candleChart');
 const ctx = canvas.getContext('2d');
 
-// ── RETINA / DPI AWARE CANVAS ──
 function resizeCanvas() {
   const wrap = canvas.parentElement;
   const dpr = window.devicePixelRatio || 1;
@@ -1677,36 +1073,22 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', () => { resizeCanvas(); drawChart(); });
 
-// ── TIMEFRAME DETECTION ──
-const dow = new Date().getUTCDay(); // 0=Sun, 6=Sat
+const dow = new Date().getUTCDay();
 const isWeekend = (dow === 0 || dow === 6);
-const SYM   = isWeekend ? 'BTCUSD' : 'XAUUSD';
-const TF    = isWeekend ? '1H' : '5M';
-// Candle interval: 5M = 300s, 1H = 3600s
+const SYM = isWeekend ? 'BTCUSD' : 'XAUUSD';
+const TF  = isWeekend ? '1H' : '5M';
 const CANDLE_SECS = isWeekend ? 3600 : 300;
 const CANDLE_COUNT = 60;
-const PRICE_AXIS_W = 54; // px reserved for price labels on right
+const PRICE_AXIS_W = 54;
 
-// Update chart title
-const chartTitleEl = document.querySelector('.chart-title');
+const chartTitleEl = document.getElementById('chartTitle');
 if (chartTitleEl) chartTitleEl.textContent = `${SYM} // ${TF}`;
 
-// ── CANDLE STORE ──
-// Each candle: { open, high, low, close, ts }
-// ts = unix seconds of candle open (snapped to candle interval)
-let candles = [];
-let realPrice = 0;
-let openPrice = 0;
+let candles = [], realPrice = 0, openPrice = 0, seeded = false, prevDisplayPrice = 0;
 
-function snapTs(ts) {
-  return Math.floor(ts / CANDLE_SECS) * CANDLE_SECS;
-}
+function snapTs(ts) { return Math.floor(ts / CANDLE_SECS) * CANDLE_SECS; }
+function currentCandleTs() { return snapTs(Math.floor(Date.now() / 1000)); }
 
-function currentCandleTs() {
-  return snapTs(Math.floor(Date.now() / 1000));
-}
-
-// Seed initial candles from a known real price — called once on first fetch
 function seedCandles(basePrice) {
   const volatility = isWeekend ? basePrice * 0.0005 : basePrice * 0.0006;
   candles = [];
@@ -1715,7 +1097,6 @@ function seedCandles(basePrice) {
   for (let i = CANDLE_COUNT - 1; i >= 0; i--) {
     const ts = nowTs - i * CANDLE_SECS;
     const open = p;
-    // Realistic drift: slight mean reversion + random walk
     const trend = (Math.random() - 0.49) * volatility;
     const close = open + trend;
     const wick  = volatility * (0.2 + Math.random() * 0.5);
@@ -1727,75 +1108,49 @@ function seedCandles(basePrice) {
   openPrice = basePrice;
 }
 
-// Update or append tick to current candle
 function tickCandle(price) {
   const ts = currentCandleTs();
   const last = candles[candles.length - 1];
   if (last && last.ts === ts) {
-    // Update current candle
-    last.close = price;
-    last.high  = Math.max(last.high, price);
-    last.low   = Math.min(last.low,  price);
+    last.close = price; last.high = Math.max(last.high, price); last.low = Math.min(last.low, price);
   } else {
-    // New candle
     const open = last ? last.close : price;
     candles.push({ open, high: Math.max(open, price), low: Math.min(open, price), close: price, ts });
     if (candles.length > CANDLE_COUNT + 5) candles.shift();
   }
 }
 
-// ── DRAW CHART ──
 function drawChart() {
   if (!candles.length) return;
   const wrap = canvas.parentElement;
-  const W = wrap.clientWidth;
-  const H = wrap.clientHeight;
-
+  const W = wrap.clientWidth, H = wrap.clientHeight;
   ctx.clearRect(0, 0, W, H);
-
   const drawW = W - PRICE_AXIS_W;
-  const PAD_TOP = 16, PAD_BOT = 8;
+  const PAD_TOP = 12, PAD_BOT = 6;
   const chartH = H - PAD_TOP - PAD_BOT;
-
-  // Price range across visible candles
   const visible = candles.slice(-CANDLE_COUNT);
-  const prices  = visible.flatMap(c => [c.high, c.low]);
-  const minP    = Math.min(...prices);
-  const maxP    = Math.max(...prices);
-  const range   = maxP - minP || 1;
-  // Add 8% breathing room top and bottom
-  const padPct  = 0.08;
-  const lo = minP - range * padPct;
-  const hi = maxP + range * padPct;
+  const prices = visible.flatMap(c => [c.high, c.low]);
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
+  const range = maxP - minP || 1;
+  const lo = minP - range * 0.08, hi = maxP + range * 0.08;
   const span = hi - lo;
-
   const toY = p => PAD_TOP + (1 - (p - lo) / span) * chartH;
 
-  // ── GRID LINES + PRICE AXIS ──
-  const GRID_LINES = 5;
   ctx.font = '9px Share Tech Mono, monospace';
   ctx.textAlign = 'left';
-  for (let i = 0; i <= GRID_LINES; i++) {
-    const price = hi - (i / GRID_LINES) * span;
+  for (let i = 0; i <= 4; i++) {
+    const price = hi - (i / 4) * span;
     const y = toY(price);
-    // Grid line
     ctx.strokeStyle = 'rgba(26,31,38,0.7)';
     ctx.lineWidth = 1;
     ctx.setLineDash([3, 6]);
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(drawW - 2, y);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(drawW - 2, y); ctx.stroke();
     ctx.setLineDash([]);
-    // Price label in axis area
-    const label = isWeekend
-      ? price.toLocaleString('en', { maximumFractionDigits: 0 })
-      : price.toFixed(2);
+    const label = isWeekend ? price.toLocaleString('en', { maximumFractionDigits: 0 }) : price.toFixed(2);
     ctx.fillStyle = 'rgba(90,106,122,0.8)';
     ctx.fillText(label, drawW + 4, y + 3);
   }
 
-  // ── CURRENT PRICE LINE ──
   if (realPrice > 0) {
     const cy = toY(realPrice);
     ctx.strokeStyle = 'rgba(0,255,136,0.4)';
@@ -1803,159 +1158,142 @@ function drawChart() {
     ctx.setLineDash([4, 4]);
     ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(drawW - 2, cy); ctx.stroke();
     ctx.setLineDash([]);
-    // Price label highlight
     ctx.fillStyle = 'rgba(0,255,136,0.15)';
     ctx.fillRect(drawW, cy - 8, PRICE_AXIS_W, 16);
-    ctx.fillStyle = 'var(--green, #00ff88)';
     ctx.fillStyle = '#00ff88';
     const lbl = isWeekend ? realPrice.toLocaleString('en', { maximumFractionDigits: 0 }) : realPrice.toFixed(2);
     ctx.fillText(lbl, drawW + 4, cy + 3);
   }
 
-  // ── CANDLES ──
-  const cw  = (drawW - 10) / visible.length;
+  const cw = (drawW - 10) / visible.length;
   const gap = Math.max(cw * 0.15, 1);
-  const bw  = Math.max(cw - gap * 2, 1);
-
+  const bw = Math.max(cw - gap * 2, 1);
   visible.forEach((c, i) => {
-    const x    = 5 + i * cw + cw / 2;
+    const x = 5 + i * cw + cw / 2;
     const bull = c.close >= c.open;
-    const col  = bull ? '#00ff88' : '#ff3355';
-
-    // Wick
-    ctx.strokeStyle = col;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(x, toY(c.high));
-    ctx.lineTo(x, toY(c.low));
-    ctx.stroke();
-
-    // Body
+    const col = bull ? '#00ff88' : '#ff3355';
+    ctx.strokeStyle = col; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, toY(c.high)); ctx.lineTo(x, toY(c.low)); ctx.stroke();
     const bodyTop = toY(Math.max(c.open, c.close));
     const bodyBot = toY(Math.min(c.open, c.close));
-    const bodyH   = Math.max(bodyBot - bodyTop, 1.5);
+    const bodyH = Math.max(bodyBot - bodyTop, 1.5);
     ctx.fillStyle = bull ? 'rgba(0,255,136,0.88)' : 'rgba(255,51,85,0.88)';
     ctx.fillRect(x - bw / 2, bodyTop, bw, bodyH);
   });
 
-  // ── EMA 9 (fast) ──
+  // EMA9
   const ema9 = [], k9 = 2 / 10;
-  visible.forEach((c, i) => {
-    const v = (c.open + c.close) / 2;
-    ema9.push(i === 0 ? v : v * k9 + ema9[i-1] * (1 - k9));
-  });
-  ctx.strokeStyle = 'rgba(0,255,136,0.55)';
-  ctx.lineWidth = 1.5;
+  visible.forEach((c, i) => { const v = (c.open + c.close) / 2; ema9.push(i === 0 ? v : v * k9 + ema9[i-1] * (1 - k9)); });
+  ctx.strokeStyle = 'rgba(0,255,136,0.5)'; ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ema9.forEach((v, i) => {
-    const x = 5 + i * cw + cw / 2;
-    i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v));
-  });
+  ema9.forEach((v, i) => { const x = 5 + i * cw + cw / 2; i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v)); });
   ctx.stroke();
 
-  // ── EMA 21 (slow) ──
+  // EMA21
   const ema21 = [], k21 = 2 / 22;
-  visible.forEach((c, i) => {
-    const v = (c.open + c.close) / 2;
-    ema21.push(i === 0 ? v : v * k21 + ema21[i-1] * (1 - k21));
-  });
-  ctx.strokeStyle = 'rgba(59,130,246,0.45)';
-  ctx.lineWidth = 1.2;
+  visible.forEach((c, i) => { const v = (c.open + c.close) / 2; ema21.push(i === 0 ? v : v * k21 + ema21[i-1] * (1 - k21)); });
+  ctx.strokeStyle = 'rgba(59,130,246,0.4)'; ctx.lineWidth = 1.2;
   ctx.beginPath();
-  ema21.forEach((v, i) => {
-    const x = 5 + i * cw + cw / 2;
-    i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v));
-  });
+  ema21.forEach((v, i) => { const x = 5 + i * cw + cw / 2; i === 0 ? ctx.moveTo(x, toY(v)) : ctx.lineTo(x, toY(v)); });
   ctx.stroke();
 
-  // ── AXIS SEPARATOR ──
-  ctx.strokeStyle = 'rgba(26,31,38,0.9)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([]);
-  ctx.beginPath();
-  ctx.moveTo(drawW, 0);
-  ctx.lineTo(drawW, H);
-  ctx.stroke();
+  ctx.strokeStyle = 'rgba(26,31,38,0.9)'; ctx.lineWidth = 1; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(drawW, 0); ctx.lineTo(drawW, H); ctx.stroke();
 }
 
-// ── PRICE DISPLAY ──
-function updatePriceDisplay(price, prevPrice) {
+function updatePriceDisplay(price, prev) {
   const el = document.getElementById('livePrice');
   if (!el) return;
   const fmt = isWeekend
     ? price.toLocaleString('en-US', { maximumFractionDigits: 0 })
     : price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   el.textContent = fmt;
-  el.className = 'chart-price' + (price >= prevPrice ? '' : ' down');
+  el.className = 'chart-pnl' + (price >= prev ? '' : ' dn');
 }
 
-// ── REAL PRICE FETCH ──
-// Uses direct APIs first, falls back to allorigins CORS proxy if needed
 async function fetchRealPrice() {
   if (isWeekend) {
-    // BTC via Binance direct (works on most hosts)
     try {
       const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', {mode:'cors'});
       if (r.ok) { const d = await r.json(); return parseFloat(d.price); }
     } catch(e) {}
-    // Fallback: CoinGecko (no CORS issues)
     try {
       const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
       if (r.ok) { const d = await r.json(); return d.bitcoin?.usd || null; }
     } catch(e) {}
+    return 77000;
   } else {
-    // Gold via Frankfurter (CORS enabled)
     try {
       const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd', {mode:'cors'});
       if (r.ok) { const d = await r.json(); const p = d?.['pax-gold']?.usd; if (p > 1000) return p; }
     } catch(e) {}
-    // Fallback: metals-api
-    try {
-      const r = await fetch('https://api.metals.live/v1/spot/gold');
-      if (r.ok) { const d = await r.json(); return d?.[0]?.price || null; }
-    } catch(e) {}
+    return 4700;
   }
-  // Last resort: use a known reasonable price so chart isn't blank
-  return isWeekend ? 77000 : 2340;
 }
 
-// ── SESSION DISPLAY ──
+// ── TICKER PRICES ──
+async function updateTicker() {
+  try {
+    const pairs = [
+      { sym: 'BTCUSDT', ids: ['tickerBTC', 'tickerBTC2'], decimals: 0 },
+      { sym: 'ETHUSDT', ids: ['tickerETH', 'tickerETH2'], decimals: 0 },
+      { sym: 'SOLUSDT', ids: ['tickerSOL', 'tickerSOL2'], decimals: 2 },
+    ];
+    for (const p of pairs) {
+      const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p.sym}`);
+      if (!r.ok) continue;
+      const d = await r.json();
+      const price = parseFloat(d.lastPrice);
+      const pct = parseFloat(d.priceChangePercent);
+      const up = pct >= 0;
+      const txt = price.toLocaleString('en', {maximumFractionDigits: p.decimals}) + ' ' + (up ? '▲ +' : '▼ ') + Math.abs(pct).toFixed(2) + '%';
+      p.ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = txt; el.className = up ? 'up' : 'dn'; }
+      });
+    }
+    // Gold
+    const gr = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
+    if (gr.ok) {
+      const gd = await gr.json();
+      const gp = gd?.['pax-gold']?.usd;
+      if (gp) {
+        const txt = gp.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        ['tickerXAU','tickerXAU2'].forEach(id => { const el = document.getElementById(id); if (el) { el.textContent = txt; el.className = 'up'; } });
+      }
+    }
+  } catch(e) {}
+}
+
+// ── SESSION ──
 function updateSessionDisplay() {
   const h = new Date().getUTCHours(), m = new Date().getUTCMinutes();
   const t = h * 60 + m;
   const day = new Date().getUTCDay();
-
-  let sessionText = 'ASIAN';
-  let sessionColor = 'var(--text-dim)';
-  if (day === 0 || day === 6) {
-    sessionText = 'FOREX CLOSED · CRYPTO 24/7';
-    sessionColor = 'var(--amber)';
-  } else if (t >= 7*60 && t < 16*60) {
-    sessionText = 'LONDON';
-    sessionColor = 'var(--green)';
-  } else if (t >= 12*60 && t < 21*60) {
-    sessionText = 'NEW YORK';
-    sessionColor = 'var(--green)';
-  } else if (t >= 21*60 || t < 6*60) {
-    sessionText = 'SYDNEY';
-    sessionColor = 'var(--text-dim)';
-  }
-
+  let s = 'ASIAN', col = 'var(--text-dim)';
+  if (day === 0 || day === 6) { s = 'FOREX CLOSED'; col = 'var(--amber)'; }
+  else if (t >= 7*60 && t < 16*60) { s = 'LONDON'; col = 'var(--green)'; }
+  else if (t >= 12*60 && t < 21*60) { s = 'NEW YORK'; col = 'var(--green)'; }
   const el = document.getElementById('sessionLabel');
-  if (el) { el.textContent = sessionText; el.style.color = sessionColor; }
+  if (el) { el.textContent = s; el.style.color = col; }
 }
 
-// ── MAIN LOOP ──
-let seeded = false;
-let prevDisplayPrice = 0;
-let tickerInterval = null;
+async function fetchAndUpdate() {
+  const fetched = await fetchRealPrice();
+  if (!fetched) return;
+  prevDisplayPrice = realPrice || fetched;
+  realPrice = fetched;
+  if (!seeded) { seedCandles(fetched); seeded = true; }
+  tickCandle(fetched);
+  updatePriceDisplay(fetched, prevDisplayPrice);
+  drawChart();
+  updateSessionDisplay();
+}
 
-// Simulate micro ticks between real fetches
 function simulateTick() {
   if (!seeded || !realPrice) return;
   const last = candles[candles.length - 1];
-  const vol  = isWeekend ? realPrice * 0.0001 : realPrice * 0.00015;
-  // Pull toward real price with small random noise
+  const vol = isWeekend ? realPrice * 0.0001 : realPrice * 0.00015;
   const pull = (realPrice - last.close) * 0.1;
   const noise = (Math.random() - 0.5) * vol;
   const newPrice = last.close + pull + noise;
@@ -1965,62 +1303,30 @@ function simulateTick() {
   drawChart();
 }
 
-async function fetchAndUpdate() {
-  const fetched = await fetchRealPrice();
-  if (!fetched) return;
-
-  prevDisplayPrice = realPrice || fetched;
-  realPrice = fetched;
-
-  if (!seeded) {
-    seedCandles(fetched);
-    seeded = true;
-  }
-
-  tickCandle(fetched);
-  updatePriceDisplay(fetched, prevDisplayPrice);
-  drawChart();
-  updateSessionDisplay();
-}
-
-// First fetch immediately on load
 fetchAndUpdate();
-
-// Fetch real price every 30 seconds
+updateTicker();
 setInterval(fetchAndUpdate, 30000);
-
-// Simulate tick every 5 seconds (realistic candle movement, NOT new candles every tick)
 setInterval(simulateTick, 5000);
-
-// Session update every minute
 setInterval(updateSessionDisplay, 60000);
-
-// Initial session display
+setInterval(updateTicker, 60000);
 updateSessionDisplay();
 
-// SCROLL REVEALS
+// ── SCROLL REVEALS ──
 const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
-  });
-}, { threshold: 0.1 });
-
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+// ── MOBILE MENU ──
 function toggleMobileMenu() {
   const nav = document.getElementById('mobileNav');
-  const btn = document.getElementById('menuBtn');
   nav.classList.toggle('open');
-  btn.style.opacity = nav.classList.contains('open') ? '1' : '0.6';
 }
-
-// Close mobile menu on link click
 document.querySelectorAll('.mobile-nav a').forEach(a => {
   a.addEventListener('click', () => {
     document.getElementById('mobileNav').classList.remove('open');
   });
 });
-
 </script>
 </body>
 </html>
