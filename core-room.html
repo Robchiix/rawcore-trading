@@ -383,15 +383,75 @@
   /* ── SCROLLBAR ── */
   * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 
+  /* TOAST */
+  .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { font-family: var(--mono); font-size: 10px; padding: 10px 16px; border: 1px solid; display: flex; align-items: center; gap: 10px; pointer-events: auto; opacity: 0; transform: translateY(10px); transition: all 0.25s ease; max-width: 320px; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.3); color: var(--green); }
+  .toast.error { background: rgba(255,51,85,0.08); border-color: rgba(255,51,85,0.3); color: var(--red); }
+  .toast.info { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.3); color: var(--blue); }
+  /* HAMBURGER */
+  .nav-hamburger { display: none; background: none; border: 1px solid var(--border); color: var(--text-dim); font-size: 14px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); transition: all 0.2s; }
+  .nav-hamburger:hover { border-color: var(--green); color: var(--green); }
+  .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(5,6,8,0.97); z-index: 200; flex-direction: column; padding: 20px; gap: 2px; overflow-y: auto; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .mobile-menu-logo { font-family: var(--mono); font-size: 15px; color: var(--text-bright); }
+  .mobile-menu-logo span { color: var(--green); }
+  .mobile-menu-close { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; }
+  .mobile-nav-item { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; padding: 13px 16px; color: var(--text-dim); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+  .mobile-nav-item:hover, .mobile-nav-item.active { color: var(--green); border-left-color: var(--green); background: var(--green-muted); }
+  .mobile-menu-divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .mobile-menu-user { padding: 14px 16px; background: var(--card); border: 1px solid var(--border); margin-top: 12px; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  /* MOBILE SIDEBAR TOGGLE */
+  .sidebar-toggle-btn { display: none; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; padding: 6px 12px; background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+  .sidebar-toggle-btn:hover { border-color: var(--green); color: var(--green); }
+  .sidebar-toggle-btn.active { border-color: var(--green); color: var(--green); background: var(--green-muted); }
   /* ── MOBILE ── */
-  @media (max-width: 900px) {
-    .room-wrap { grid-template-columns: 1fr; }
-    .sidebar, .right-panel { display: none; }
+  @media (max-width: 768px) {
+    html, body { overflow: hidden; }
+    .room-wrap { grid-template-columns: 1fr; position: relative; }
+    .right-panel { display: none; }
+    .sidebar { display: none; position: absolute; left: 0; top: 0; bottom: 0; width: 240px; z-index: 50; border-right: 1px solid var(--border); }
+    .sidebar.mobile-open { display: flex; }
+    .sidebar-toggle-btn { display: block; }
     .nav-items { display: none; }
+    .nav-hamburger { display: flex; align-items: center; }
+    .logout-btn { display: none; }
+    .nav-credits { font-size: 9px; padding: 3px 8px; }
+    .feed-header { flex-wrap: wrap; gap: 6px; }
+    .compose-hint { font-size: 8px; }
+    .market-bar { gap: 14px; padding: 0 12px; }
+  }
+  @media (max-width: 480px) {
+    .nav-credits { display: none; }
+    .feed-channel-desc { display: none; }
+    .msg-text { font-size: 13px; }
+    .compose-input { font-size: 11px; }
   }
 </style>
 </head>
 <body>
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-logo">&gt;_ Raw<span>Core</span></span>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">&#10005; CLOSE</button>
+  </div>
+  <a href="member-dashboard.html" class="mobile-nav-item">HOME</a>
+  <a href="core-room.html" class="mobile-nav-item active">CORE ROOM</a>
+  <a href="member-bots.html" class="mobile-nav-item">BOTS</a>
+  <a href="member-knowledge.html" class="mobile-nav-item">LEARN</a>
+  <a href="member-core.html" class="mobile-nav-item">MY CORE</a>
+  <a href="member-shop.html" class="mobile-nav-item">SHOP</a>
+  <div class="mobile-menu-divider"></div>
+  <div class="mobile-menu-user">
+    <div class="nav-avatar" style="width:32px;height:32px;font-size:11px" id="mobileAvatar">RC</div>
+    <div><div style="color:var(--text-bright);font-family:var(--mono);font-size:11px" id="mobileUsername">—</div><div style="font-size:9px;color:var(--green);margin-top:2px;font-family:var(--mono)">CORE MEMBER</div></div>
+    <button onclick="logout()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;letter-spacing:0.1em">LOGOUT</button>
+  </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
 
 <!-- NAV -->
 <nav class="member-nav">
@@ -404,6 +464,7 @@
     <a href="member-core.html" class="nav-item">My Core</a>
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
+  <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu">&#9776;</button>
   <div class="nav-right">
     <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
@@ -502,7 +563,8 @@
         <span class="feed-channel-name"><span class="feed-channel-prefix">#</span> <span id="channelName">general</span></span>
         <span class="feed-channel-desc" id="channelDesc">· Main room — trading, bots, market talk</span>
       </div>
-      <div class="feed-header-right">
+      <button class="sidebar-toggle-btn" onclick="toggleSidebar()" id="sidebarToggle">&#9776; CHANNELS</button>
+        <div class="feed-header-right">
         <div class="feed-header-stat" id="memberCount">67 members</div>
         <div class="feed-header-stat" style="color:var(--green)" id="onlineCount">12 online</div>
       </div>
@@ -880,6 +942,49 @@ async function askAI() {
 const style = document.createElement('style');
 style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }';
 document.head.appendChild(style);
+
+// ============ TOAST ============
+function showToast(msg, type, duration) {
+  type = type || 'info'; duration = duration || 4000;
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg + '<span style="margin-left:auto;cursor:pointer;opacity:0.6;padding-left:10px" onclick="this.parentElement.remove()">&#10005;</span>';
+  container.appendChild(t);
+  setTimeout(function(){ t.classList.add('show'); }, 10);
+  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 300); }, duration);
+}
+// ============ MOBILE MENU ============
+function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMobileMenu(); closeSidebar(); } });
+// ============ MOBILE SIDEBAR ============
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.getElementById('sidebarToggle');
+  if (sidebar) { sidebar.classList.toggle('mobile-open'); btn && btn.classList.toggle('active'); }
+}
+function closeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const btn = document.getElementById('sidebarToggle');
+  if (sidebar) { sidebar.classList.remove('mobile-open'); btn && btn.classList.remove('active'); }
+}
+// close sidebar when channel selected on mobile
+document.querySelectorAll('.channel-item').forEach(function(el){
+  el.addEventListener('click', function(){ if (window.innerWidth <= 768) closeSidebar(); });
+});
+// mobile menu user info
+(async function(){
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  const u = session.user;
+  const uname = u.user_metadata && (u.user_metadata.username || u.user_metadata.full_name) || u.email.split('@')[0];
+  const mu = document.getElementById('mobileUsername'); const ma = document.getElementById('mobileAvatar');
+  if (mu) mu.textContent = uname;
+  if (ma) ma.textContent = uname.substring(0,2).toUpperCase();
+})();
+
 </script>
 
 </body>
