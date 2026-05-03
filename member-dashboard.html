@@ -253,6 +253,7 @@
     .mobile-banner { display: flex !important; }
     .member-nav { padding: 0 16px; overflow-x: auto; }
     .nav-items { gap: 0; }
+    .nav-hamburger { display: flex !important; align-items: center; }
     .nav-item { padding: 0 12px; font-size: 9px; }
     .nav-credits { display: none; }
     .nav-user span { display: none; }
@@ -318,6 +319,20 @@
   </script>
 </head>
 <body>
+<div id="mobileMenu" style="display:none;position:fixed;inset:0;background:rgba(5,6,8,0.97);z-index:200;flex-direction:column;padding:20px;gap:2px;overflow-y:auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #1a1f26">
+    <span style="font-family:var(--mono);font-size:15px;color:#eaf2ff">&gt;_ Raw<span style="color:#00ff88">Core</span></span>
+    <button onclick="closeMobileMenu()" style="background:none;border:1px solid #1a1f26;color:#5a6a7a;font-family:var(--mono);font-size:11px;padding:6px 12px;cursor:pointer">&#10005; CLOSE</button>
+  </div>
+  <a href="member-dashboard.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#00ff88;text-decoration:none;border-left:2px solid #00ff88;background:rgba(0,255,136,0.05);display:block">HOME</a>
+  <a href="core-room.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#5a6a7a;text-decoration:none;border-left:2px solid transparent;display:block">CORE ROOM</a>
+  <a href="member-bots.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#5a6a7a;text-decoration:none;border-left:2px solid transparent;display:block">BOTS</a>
+  <a href="member-knowledge.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#5a6a7a;text-decoration:none;border-left:2px solid transparent;display:block">LEARN</a>
+  <a href="member-core.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#5a6a7a;text-decoration:none;border-left:2px solid transparent;display:block">MY CORE</a>
+  <a href="member-shop.html" style="font-family:var(--mono);font-size:11px;padding:13px 16px;color:#5a6a7a;text-decoration:none;border-left:2px solid transparent;display:block">SHOP</a>
+  <hr style="border:none;border-top:1px solid #1a1f26;margin:8px 0">
+  <button onclick="logout()" style="background:none;border:1px solid #1a1f26;color:#5a6a7a;font-family:var(--mono);font-size:9px;padding:10px 16px;cursor:pointer;display:block;width:100%;text-align:left;letter-spacing:0.1em">LOGOUT</button>
+</div>
 
 <!-- MEMBER NAV -->
 <nav class="member-nav">
@@ -330,6 +345,7 @@
     <a href="member-core.html" class="nav-item">My Core</a>
     <a href="member-shop.html" class="nav-item" style="color:var(--amber)">Shop</a>
   </div>
+  <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu" style="display:none;background:none;border:1px solid #1a1f26;color:#5a6a7a;font-size:14px;padding:4px 10px;cursor:pointer;font-family:var(--mono);flex-shrink:0">&#9776;</button>
   <div class="nav-right">
     <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
@@ -815,6 +831,10 @@ function updateSession() {
 }
 updateSession();
 setInterval(updateSession, 60000);
+
+function openMobileMenu(){const m=document.getElementById('mobileMenu');if(m){m.style.display='flex';document.body.style.overflow='hidden';}}
+function closeMobileMenu(){const m=document.getElementById('mobileMenu');if(m){m.style.display='none';document.body.style.overflow='';}}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMobileMenu();});
 </script>
 
 </body>
