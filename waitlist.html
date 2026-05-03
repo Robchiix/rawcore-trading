@@ -670,23 +670,17 @@ async function joinWaitlist() {
   const email = document.getElementById('emailInput').value.trim();
   const btn = document.getElementById('submitBtn');
   const input = document.getElementById('emailInput');
-
   if (!email || !email.includes('@') || !email.includes('.')) {
     input.style.outline = '1px solid var(--red)';
     input.placeholder = 'enter a valid email...';
     return;
   }
-
   btn.disabled = true;
   btn.textContent = 'JOINING...';
   input.disabled = true;
-
   try {
-    // Insert into Supabase
     const { error } = await sb.from('waitlist').insert({ email, source: 'waitlist_page' });
-
     if (error && error.code === '23505') {
-      // Already on the list
       btn.disabled = false;
       btn.textContent = 'JOIN NOW →';
       input.disabled = false;
@@ -695,21 +689,23 @@ async function joinWaitlist() {
       input.placeholder = 'you are already on the list!';
       return;
     }
-
     if (error) throw error;
-
-    // Get real count from Supabase
     const { count: realCount } = await sb.from('waitlist').select('*', { count: 'exact', head: true });
     count = realCount || count + 1;
     localStorage.setItem('rc_waitlist_count', count);
     document.getElementById('counterNum').textContent = count.toLocaleString();
-
-    // Show success
+    // Send welcome email via Edge Function (fire and forget)
+    try {
+      fetch('https://mlzxnrmctblfpijtihvm.supabase.co/functions/v1/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4' },
+        body: JSON.stringify({ action: 'welcome', email, name: email.split('@')[0] })
+      });
+    } catch(e) {}
     document.getElementById('formRow').style.display = 'none';
     document.getElementById('yourNumber').textContent = '#' + count;
     document.getElementById('successBox').classList.add('show');
     document.querySelector('.form-note').style.display = 'none';
-
   } catch (err) {
     console.error(err);
     btn.disabled = false;
@@ -718,7 +714,6 @@ async function joinWaitlist() {
     input.style.outline = '1px solid var(--red)';
   }
 }
-
 // Enter key support
 document.getElementById('emailInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') joinWaitlist();
