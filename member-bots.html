@@ -256,17 +256,80 @@
   .sig-result.open { color: var(--amber); }
   .sig-time { color: var(--text-dim); font-size: 9px; }
 
+  /* TOAST */
+  .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { font-family: var(--mono); font-size: 10px; padding: 10px 16px; border: 1px solid; display: flex; align-items: center; gap: 10px; pointer-events: auto; opacity: 0; transform: translateY(10px); transition: all 0.25s ease; max-width: 320px; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.3); color: var(--green); }
+  .toast.error { background: rgba(255,51,85,0.08); border-color: rgba(255,51,85,0.3); color: var(--red); }
+  .toast.info { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.3); color: var(--blue); }
+  /* HAMBURGER */
+  .nav-hamburger { display: none; background: none; border: 1px solid var(--border); color: var(--text-dim); font-size: 14px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); transition: all 0.2s; }
+  .nav-hamburger:hover { border-color: var(--green); color: var(--green); }
+  .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(5,6,8,0.97); z-index: 200; flex-direction: column; padding: 20px; gap: 2px; overflow-y: auto; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .mobile-menu-logo { font-family: var(--mono); font-size: 15px; color: var(--text-bright); }
+  .mobile-menu-logo span { color: var(--green); }
+  .mobile-menu-close { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; }
+  .mobile-nav-item { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; padding: 13px 16px; color: var(--text-dim); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+  .mobile-nav-item:hover, .mobile-nav-item.active { color: var(--green); border-left-color: var(--green); background: var(--green-muted); }
+  .mobile-menu-divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .mobile-menu-user { padding: 14px 16px; background: var(--card); border: 1px solid var(--border); margin-top: 12px; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
   /* MOBILE */
-  @media (max-width: 900px) {
-    .bot-detail-grid { grid-template-columns: 1fr; }
-    .detail-col { border-right: none; border-bottom: 1px solid var(--border); }
-    .bot-quick-stats { display: none; }
+  @media (max-width: 768px) {
     .nav-items { display: none; }
-    .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .nav-hamburger { display: flex; align-items: center; }
+    .logout-btn { display: none; }
+    .nav-credits { font-size: 9px; padding: 3px 8px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .page-header-right { flex-wrap: wrap; gap: 6px; }
+    .page-title { font-size: 30px; }
+    .bot-card-header { grid-template-columns: auto 1fr auto; gap: 10px; padding: 14px; }
+    .bot-quick-stats { display: none; }
+    .bot-detail-grid { grid-template-columns: 1fr; }
+    .detail-col { border-right: none; border-bottom: 1px solid var(--border); padding: 14px; }
+    .detail-col:last-child { border-bottom: none; }
+    .bot-actions { flex-wrap: wrap; gap: 8px; padding: 12px; }
+    .bot-action-status { width: 100%; margin-left: 0; font-size: 8px; }
+    .page-body { padding: 12px; gap: 14px; }
+    .bot-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .signal-item { grid-template-columns: auto 1fr; gap: 8px; }
+    .sig-result, .sig-time { display: none; }
+    .market-bar { gap: 14px; padding: 0 12px; }
+    .page-sub { font-size: 9px; }
+    .status-pill { font-size: 8px; padding: 4px 8px; }
+  }
+  @media (max-width: 480px) {
+    .page-title { font-size: 24px; }
+    .bot-card-name { font-size: 20px; }
+    .btn-bot { font-size: 8px; padding: 7px 10px; }
+    .nav-credits { display: none; }
   }
 </style>
 </head>
 <body>
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-logo">&gt;_ Raw<span>Core</span></span>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">&#10005; CLOSE</button>
+  </div>
+  <a href="member-dashboard.html" class="mobile-nav-item">HOME</a>
+  <a href="core-room.html" class="mobile-nav-item">CORE ROOM</a>
+  <a href="member-bots.html" class="mobile-nav-item active">BOTS</a>
+  <a href="member-knowledge.html" class="mobile-nav-item">LEARN</a>
+  <a href="member-core.html" class="mobile-nav-item">MY CORE</a>
+  <a href="member-shop.html" class="mobile-nav-item">SHOP</a>
+  <div class="mobile-menu-divider"></div>
+  <div class="mobile-menu-user">
+    <div class="nav-avatar" style="width:32px;height:32px;font-size:11px" id="mobileAvatar">RC</div>
+    <div><div style="color:var(--text-bright);font-family:var(--mono);font-size:11px" id="mobileUsername">—</div><div style="font-size:9px;color:var(--green);margin-top:2px;font-family:var(--mono)">CORE MEMBER</div></div>
+    <button onclick="logout()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-dim);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;letter-spacing:0.1em">LOGOUT</button>
+  </div>
+</div>
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
 
 <!-- NAV -->
 <nav class="member-nav">
@@ -279,6 +342,7 @@
     <a href="member-core.html" class="nav-item">My Core</a>
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
+  <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu">&#9776;</button>
   <div class="nav-right">
     <div class="nav-credits" id="navCredits">— pts</div>
     <div class="nav-user">
@@ -434,7 +498,7 @@
 
         <!-- ACTIONS -->
         <div class="bot-actions">
-          <a href="#" class="btn-bot primary" onclick="alert('Bot files coming soon — check back shortly.');return false">⬇ DOWNLOAD OMEGA</a>
+          <a href="#" class="btn-bot primary" onclick="showBotDownloadInfo(this);return false">⬇ DOWNLOAD OMEGA</a>
           <a href="systems.html#omega" class="btn-bot secondary">VIEW FULL SYSTEM →</a>
           <a href="member-knowledge.html" class="btn-bot ghost">LEARN HOW IT WORKS</a>
           <div class="bot-action-status">// Last trade: 09:42 today · Next scan: in 3m</div>
@@ -549,7 +613,7 @@
 
         <!-- ACTIONS -->
         <div class="bot-actions">
-          <a href="#" class="btn-bot primary" onclick="alert('Bot files coming soon — check back shortly.');return false">⬇ DOWNLOAD NOVA</a>
+          <a href="#" class="btn-bot primary" onclick="showBotDownloadInfo(this);return false">⬇ DOWNLOAD NOVA</a>
           <a href="systems.html#nova" class="btn-bot secondary">VIEW FULL SYSTEM →</a>
           <a href="member-knowledge.html" class="btn-bot ghost">LEARN HOW IT WORKS</a>
           <div class="bot-action-status">// 1 open position · BTC +1.4R running · Scan: 10s</div>
@@ -651,7 +715,7 @@
 
         <!-- ACTIONS -->
         <div class="bot-actions">
-          <a href="#" class="btn-bot primary" onclick="alert('Bot files coming soon — check back shortly.');return false">⬇ DOWNLOAD ALPHA</a>
+          <a href="#" class="btn-bot primary" onclick="showBotDownloadInfo(this);return false">⬇ DOWNLOAD ALPHA</a>
           <a href="systems.html#alpha" class="btn-bot secondary">VIEW FULL SYSTEM →</a>
           <a href="member-knowledge.html" class="btn-bot ghost">HOW TO USE ALPHA</a>
           <div class="bot-action-status">// Idle · Monitoring Telegram · No open positions</div>
@@ -799,7 +863,7 @@ function updateSession() {
   const day = new Date().getUTCDay();
   const el = document.getElementById('sessionName');
   if (!el) return;
-  if (day === 0 || day === 6) { el.textContent = 'CLOSED'; el.style.color = 'var(--red)'; return; }
+  if (day === 0 || day === 6) { el.textContent = 'CLOSED'; el.stylhe.color = 'var(--red)'; return; }
   let s = 'ASIAN';
   if (t >= 7*60 && t < 16*60) s = 'LONDON';
   else if (t >= 12*60 && t < 21*60) s = 'NEW YORK';
@@ -807,6 +871,43 @@ function updateSession() {
 }
 updateSession();
 setInterval(updateSession, 60000);
+
+
+// ============ TOAST NOTIFICATIONS ============
+function showToast(msg, type, duration) {
+  type = type || 'info'; duration = duration || 4000;
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = msg + '<span style="margin-left:auto;cursor:pointer;opacity:0.6;padding-left:10px" onclick="this.parentElement.remove()">&#10005;</span>';
+  container.appendChild(t);
+  setTimeout(function(){ t.classList.add('show'); }, 10);
+  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 300); }, duration);
+}
+function showBotDownloadInfo(btn) {
+  showToast('// Bot files coming soon — watch <a href="core-room.html" style="color:var(--green)">#general</a> for the drop.', 'info', 5000);
+}
+// ============ MOBILE MENU ============
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMobileMenu(); });
+(async function(){
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+  const u = session.user;
+  const uname = u.user_metadata && (u.user_metadata.username || u.user_metadata.full_name) || u.email.split('@')[0];
+  const mu = document.getElementById('mobileUsername');
+  const ma = document.getElementById('mobileAvatar');
+  if (mu) mu.textContent = uname;
+  if (ma) ma.textContent = uname.substring(0,2).toUpperCase();
+})();
 
 </script>
 
