@@ -52,11 +52,12 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  height: 60px;
-  background: rgba(5,6,8,0.95);
+  padding: 0 32px;
+  height: 56px;
+  background: rgba(5,6,8,0.97);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  gap: 24px;
 }
 
 .nav-logo {
@@ -72,19 +73,21 @@ nav {
   display: flex;
   gap: 0;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 .nav-links a {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
+  font-size: 9px;
+  letter-spacing: 0.15em;
   color: var(--text-dim);
   text-decoration: none;
-  padding: 0 16px;
-  height: 60px;
+  padding: 0 14px;
+  height: 56px;
   display: flex;
   align-items: center;
   transition: color 0.2s;
-  border-bottom: 2px solid transparent;
+  white-space: nowrap;
 }
 .nav-links a:hover { color: var(--text-bright); }
 
@@ -745,15 +748,15 @@ footer {
 <!-- NAV -->
 <nav>
   <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links" style="list-style:none;display:flex;gap:0;align-items:center">
-    <li><a href="core-room.html">CORE ROOM</a></li>
-    <li><a href="knowledge.html">KNOWLEDGE HUB</a></li>
-    <li><a href="systems.html">BOTS</a></li>
-    <li><a href="login.html" style="color:var(--text-dim)">AI-RAWCORE</a></li>
-    <li><a href="pricing.html">PRICING</a></li>
-    <li><a href="community.html">FAQ</a></li>
-    <li style="margin-left:16px"><a href="login.html" class="nav-cta">JOIN THE CORE →</a></li>
-  </ul>
+  <div class="nav-links">
+    <a href="community.html">COMMUNITY</a>
+    <a href="systems.html">BOTS</a>
+    <a href="knowledge.html">KNOWLEDGE</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="about.html">ABOUT</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
   <button class="menu-btn" id="menuBtn" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
   </button>
@@ -761,12 +764,13 @@ footer {
 
 <!-- MOBILE NAV -->
 <div class="mobile-nav" id="mobileNav">
-  <a href="core-room.html">CORE ROOM</a>
-  <a href="knowledge.html">KNOWLEDGE HUB</a>
+  <a href="community.html">COMMUNITY</a>
   <a href="systems.html">BOTS</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
   <a href="pricing.html">PRICING</a>
-  <a href="community.html">FAQ</a>
-  <a href="login.html" class="mobile-cta">JOIN THE CORE →</a>
+  <a href="about.html">ABOUT</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="waitlist.html" class="mobile-cta">JOIN WAITLIST →</a>
 </div>
 
 <!-- HERO -->
@@ -780,7 +784,7 @@ footer {
     </h1>
     <p class="hero-sub">RawCore Trading is a platform for traders who build, test and automate their own strategies. No signals. No shortcuts. Just tools, knowledge and a community that pushes forward together.</p>
     <div class="hero-btns">
-      <a href="login.html" class="btn-primary">JOIN THE CORE →</a>
+      <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
       <a href="systems.html" class="btn-secondary">EXPLORE THE PLATFORM</a>
     </div>
     <div class="hero-proof">
@@ -927,7 +931,7 @@ footer {
       <div class="community-point">Real people</div>
     </div>
     <p style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:28px">This is the Core.</p>
-    <a href="login.html" class="btn-primary">ENTER THE CORE →</a>
+    <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
   </div>
   <div class="community-right">
     <div class="live-feed-label">
@@ -956,7 +960,7 @@ footer {
         <span class="feed-time">25m ago</span>
       </div>
     </div>
-    <a href="login.html" class="feed-enter">ENTER THE CORE ROOM →</a>
+    <a href="waitlist.html" class="feed-enter">JOIN THE WAITLIST →</a>
   </div>
 </section>
 
@@ -1016,7 +1020,7 @@ footer {
         <div class="pricing-feature">2€ goes to the community pot</div>
         <div class="pricing-feature">Price rises to €33 after 500 members</div>
       </div>
-      <a href="login.html" class="btn-primary" style="width:100%;justify-content:center">JOIN THE CORE →</a>
+      <a href="waitlist.html" class="btn-primary" style="width:100%;justify-content:center">JOIN WAITLIST →</a>
       <div class="pricing-note">Be part of something real.</div>
     </div>
   </div>
