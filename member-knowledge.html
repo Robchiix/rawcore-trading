@@ -1793,8 +1793,8 @@ async function answerTask(lessonId, optIdx, isCorrect) {
   fb.textContent = l.task.options[optIdx].feedback;
   fb.className = 'task-feedback show ' + (isCorrect ? 'correct' : 'wrong');
 
-  // Progress: correct = 20pts + full lesson credit, wrong = 10pts + partial
-  const pts = isCorrect ? 20 : 10;
+          // Progress: correct = 20pts + full lesson credit, wrong = 0pts + partial
+          const pts = isCorrect ? 20 : 0;
   // Wait for DB credits to load so we don't overwrite with wrong baseline
   if (!_creditsLoaded) await _creditsLoadPromise;
   earnCredits(pts);
@@ -1808,7 +1808,7 @@ async function answerTask(lessonId, optIdx, isCorrect) {
   const cp = document.getElementById('creditsPop');
   cp.innerHTML = isCorrect
     ? '<span>+20 pts earned · Lesson complete ✓</span>'
-    : '<span>+10 pts · Try the re-learn when it drops 🔄</span>';
+              : '<span>Wrong answer · No pts earned · Quiz marked</span>';
   cp.classList.add('show');
 
   updateProgress();
@@ -1857,7 +1857,7 @@ function getTopicPct(t) {
   return Math.round((score / tl.length) * 100);
 }
 
-function isTopicComplete(t) { return getTopicPct(t) === 100; }
+    function isTopicComplete(t) { return topicData[t].lessons.every(lid => !!lessonScores[lid]); }
 
 function isLessonUnlocked(lessonId) {
   const l = lessonData[lessonId];
@@ -1870,7 +1870,7 @@ function isLessonUnlocked(lessonId) {
   const topicIdx = topicOrder.indexOf(l.topic);
   if (idx === 0) return topicIdx === 0 || isTopicComplete(topicOrder[topicIdx - 1]);
   // Subsequent lessons: previous lesson task must be answered
-  return !!lessonScores[tl[idx - 1]];
+      return completedLessons.has(tl[idx - 1]) && !!lessonScores[tl[idx - 1]];
 }
 
 function updateKnowledgeTree() {
@@ -1885,7 +1885,7 @@ function updateKnowledgeTree() {
   const topicOrder = ['psychology','markets','risk','systems'];
   tree.innerHTML = topics.map(tp => {
     const pct = getTopicPct(tp.id);
-    const done = pct === 100;
+            const done = isTopicComplete(tp.id);
     const topicIdx = topicOrder.indexOf(tp.id);
     const unlocked = topicIdx === 0 || isTopicComplete(topicOrder[topicIdx - 1]);
     const dotClass = done ? 'done' : unlocked ? 'current' : 'locked';
@@ -1894,17 +1894,7 @@ function updateKnowledgeTree() {
       <span class="kt-name${done?' done':currentTopic===tp.id?' active':''}">${tp.label}</span>
       <span class="kt-pct" style="color:${done?'var(--green)':unlocked?'var(--amber)':'var(--text-dim)'}">${pct}%</span>
     </div>`;
-  }).join('') + `
-    <div class="kt-item" style="opacity:0.35;cursor:not-allowed">
-      <div class="kt-dot locked"></div>
-      <span class="kt-name">Signals ⏳</span>
-      <span class="kt-pct">soon</span>
-    </div>
-    <div class="kt-item" style="opacity:0.25;cursor:not-allowed">
-      <div class="kt-dot locked"></div>
-      <span class="kt-name">Brokers 🔒</span>
-      <span class="kt-pct">0%</span>
-    </div>`;
+  }).join('');
 }
 
 function updateNextUp() {
@@ -1957,10 +1947,10 @@ function showLockMsg(lid) {
   let msg;
   if (idx === 0 && topicIdx > 0) {
     const prevTopic = topicData[topicOrder[topicIdx-1]].title;
-    msg = `Complete ${prevTopic} (100%) to unlock this topic.`;
+          msg = `Read all lessons and answer all quizzes in ${prevTopic} to unlock this topic.`;
   } else {
     const prevLesson = lessonData[tl[idx-1]];
-    msg = `Answer the task in "${prevLesson.title}" first.`;
+          msg = `Read the lesson and answer the quiz in "${prevLesson.title}" first.`;
   }
   // Show inline message in content area
   const area = document.getElementById('contentArea');
