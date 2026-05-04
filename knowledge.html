@@ -10,12 +10,12 @@
   *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
   body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:crosshair;}
   body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9999;}
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(5,6,8,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(5,6,8,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);gap:24px;}
   .nav-logo{font-family:var(--mono);font-size:16px;color:var(--text-bright);text-decoration:none;letter-spacing:0.05em;}.nav-logo span{color:var(--green);}
-  .nav-links{display:flex;gap:24px;list-style:none;}.nav-links a{font-family:var(--mono);font-size:9.5px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}.nav-links a:hover,.nav-links a.active{color:var(--green);}
-  .nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:9px 18px;background:transparent;border:1px solid var(--green);color:var(--green);cursor:pointer;transition:all 0.2s;text-decoration:none;}.nav-cta:hover{background:var(--green);color:var(--black);}
+  .nav-links{display:flex;gap:0;align-items:center;flex:1;justify-content:center;}.nav-links a{font-family:var(--mono);font-size:9px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;padding:0 14px;height:56px;display:flex;align-items:center;transition:color 0.2s;white-space:nowrap;}.nav-links a:hover,.nav-links a.active{color:var(--text-bright);}
+  .nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;background:var(--green);color:var(--black)!important;padding:8px 20px!important;height:auto!important;font-weight:700;border:none;cursor:pointer;transition:opacity 0.2s!important;text-decoration:none;white-space:nowrap;}.nav-cta:hover{opacity:0.85!important;}
   .mobile-menu-btn{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;margin-left:12px;}.mobile-menu-btn span{display:block;width:22px;height:2px;background:var(--text-dim);}
-  .mobile-nav{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(5,6,8,0.98);border-bottom:1px solid var(--border);padding:16px 20px;flex-direction:column;z-index:99;}
+  .mobile-nav{display:none;position:fixed;top:56px;left:0;right:0;background:rgba(5,6,8,0.98);border-bottom:1px solid var(--border);padding:16px 20px;flex-direction:column;z-index:199;}
   .mobile-nav.open{display:flex;}.mobile-nav a{font-family:var(--mono);font-size:12px;color:var(--text-dim);text-decoration:none;letter-spacing:0.15em;text-transform:uppercase;padding:14px 0;border-bottom:1px solid var(--border);}.mobile-nav a:last-child{border-bottom:none;}
   .hero{padding:100px 80px 60px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
   .hero::before{content:'KNOWLEDGE';position:absolute;right:-60px;top:50%;transform:translateY(-50%);font-family:var(--display);font-size:180px;color:var(--green);opacity:0.02;pointer-events:none;white-space:nowrap;}
@@ -128,24 +128,24 @@
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="knowledge.html" class="active">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-  <a href="login.html" class="nav-cta">JOIN THE CORE →</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="knowledge.html" class="active">KNOWLEDGE</a>
+    <a href="systems.html">SYSTEMS</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
   <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
 <div class="mobile-nav" id="mobileNav">
-  <a href="index.html">HOME</a><a href="about.html">ABOUT</a><a href="knowledge.html">KNOWLEDGE</a>
+  <a href="/">HOME</a><a href="about.html">ABOUT</a><a href="knowledge.html">KNOWLEDGE</a>
   <a href="systems.html">SYSTEMS</a><a href="community.html">COMMUNITY</a>
   <a href="pricing.html">PRICING</a><a href="contact.html">CONTACT</a>
-  <a href="login.html" style="color:var(--green)">JOIN THE CORE →</a>
+  <a href="waitlist.html" style="color:var(--green)">JOIN WAITLIST →</a>
 </div>
 
 <section class="hero">
@@ -157,7 +157,7 @@
 <div class="free-banner">
   <span class="fb-badge">// FREE ACCESS</span>
   <span class="fb-text">4 free lessons — <span>one per topic</span> — no account needed. Real content, no strings attached.</span>
-  <a href="login.html" class="fb-cta">START FREE →</a>
+  <a href="waitlist.html" class="fb-cta">🔒 START FREE →</a>
 </div>
 
 <section class="topics-section reveal">
@@ -368,7 +368,7 @@
   <h2 class="cta-title">FREE GETS YOU<br><span class="green">STARTED.</span></h2>
   <p class="cta-sub">// 4 free lessons — one per topic — no card needed.<br>// Upgrade to Core when you're ready for everything.</p>
   <div class="cta-btns">
-    <a href="login.html" class="btn-primary">JOIN FREE NOW →</a>
+    <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
     <a href="pricing.html" class="btn-secondary">SEE WHAT'S INCLUDED</a>
   </div>
 </section>
@@ -1015,7 +1015,7 @@ function openLesson(id) {
     <div class="lm-body">${l.content}</div>
     <div class="lm-footer">
       <span class="lm-footer-note">// Want all lessons? Join Core for full access.</span>
-      <a href="login.html" class="lm-upgrade">UNLOCK ALL LESSONS →</a>
+      <a href="waitlist.html" class="lm-upgrade">UNLOCK ALL LESSONS →</a>
     </div>`;
   document.getElementById('lessonModal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1033,7 +1033,7 @@ function openLocked() {
         <div class="lo-icon">🔒</div>
         <div class="lo-title">CORE CONTENT</div>
         <div class="lo-sub">This lesson is available to Core members only.<br>Join free to access 4 free lessons, or go Core for the full 20-lesson curriculum.</div>
-        <a href="login.html" class="lo-btn">JOIN FREE OR CORE →</a>
+        <a href="waitlist.html" class="lo-btn">JOIN WAITLIST →</a>
       </div>
     </div>`;
   document.getElementById('lessonModal').classList.add('open');
