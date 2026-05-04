@@ -178,7 +178,6 @@
   .feed-tag { font-family: var(--mono); font-size: 9px; padding: 2px 6px; border: 1px solid; white-space: nowrap; }
   .feed-tag.core { background: var(--green-muted); color: var(--green); border-color: rgba(0,255,136,0.2); }
   .feed-tag.member { background: rgba(90,106,122,0.1); color: var(--text-dim); border-color: var(--border); }
-  .feed-tag.signal { background: rgba(255,51,85,0.08); color: var(--red); border-color: rgba(255,51,85,0.2); }
   .feed-tag.expose { background: rgba(245,158,11,0.08); color: var(--amber); border-color: rgba(245,158,11,0.2); }
   .feed-text { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
   .feed-text .hi { color: var(--green); }
@@ -231,22 +230,6 @@
   .action-name { font-family: var(--mono); font-size: 10px; color: var(--text-bright); letter-spacing: 0.1em; }
   .action-desc { font-size: 11px; color: var(--text-dim); }
 
-  /* SIGNAL CARD */
-  .signal-mini { background: var(--black); border: 1px solid rgba(0,255,136,0.15); border-left: 2px solid var(--green); padding: 12px 14px; margin-bottom: 8px; }
-  .signal-mini.bear { border-color: rgba(255,51,85,0.15); border-left-color: var(--red); }
-  .sm-header { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; margin-bottom: 8px; }
-  .sm-type { color: var(--green); }
-  .sm-type.bear { color: var(--red); }
-  .sm-time { color: var(--text-dim); }
-  .sm-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .sm-field { font-family: var(--mono); font-size: 10px; }
-  .sm-label { color: var(--text-dim); font-size: 9px; }
-  .sm-val { color: var(--text-bright); }
-  .sm-val.g { color: var(--green); }
-  .sm-val.r { color: var(--red); }
-
-  /* BOTTOM GRID */
-  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
   @media (max-width: 768px) {
     body { cursor: default; }
@@ -260,7 +243,6 @@
     .market-bar { padding: 6px 12px; gap: 14px; }
     .market-item { font-size: 9px; }
   }
-  .mobile-banner { display: none; }
 
 </style>
   <!-- Supabase Auth -->
@@ -276,46 +258,12 @@
       if (!session) {
         window.location.href = 'login.html';
       } else {
-        // Set username in nav if available
         const user = session.user;
         const name = user.user_metadata?.username || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Member';
         const nameEl = document.querySelector('.nav-user span');
         if (nameEl) nameEl.textContent = name;
       }
     })();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- SUPABASE AUTH GUARD -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  (async () => {
-    const sb = supabase.createClient(
-      'https://mlzxnrmctblfpijtihvm.supabase.co',
-      'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
-    );
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) {
-      window.location.href = 'login.html';
-      return;
-    }
-    // Set user info in nav if elements exist
-    const user = session.user;
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
-    const avatar = user.user_metadata?.avatar_url || null;
-    const nameEl = document.getElementById('navUsername');
-    const avatarEl = document.getElementById('navAvatar');
-    if (nameEl) nameEl.textContent = name;
-    if (avatarEl && avatar) {
-      avatarEl.innerHTML = '<img src="' + avatar + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
-    }
-
-    // Sign out function
-    window.signOut = async () => {
-      await sb.auth.signOut();
-      window.location.href = 'index.html';
-    };
-  })();
   </script>
 </head>
 <body>
@@ -351,15 +299,11 @@
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">Robchiix</span>
-      <div class="nav-tier">CORE</div>
+      <div class="nav-tier" style="border-color:rgba(255,51,85,0.4);color:var(--red);background:rgba(255,51,85,0.08)">ADMIN</div>
       <button onclick="signOut()" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);background:none;border:1px solid var(--border);padding:4px 10px;cursor:pointer;letter-spacing:0.1em;margin-left:8px;transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">LOGOUT</button>
     </div>
   </div>
 </nav>
-
-<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
-  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
-</div>
 
 <!-- MARKET BAR -->
 <div class="market-bar">
@@ -391,12 +335,12 @@
       </div>
       <div class="welcome-divider"></div>
       <div class="welcome-stat">
-        <div class="welcome-stat-val amber">#7</div>
+        <div class="welcome-stat-val amber" id="welcomeRank">—</div>
         <div class="welcome-stat-label">LEADERBOARD</div>
       </div>
       <div class="welcome-divider"></div>
       <div class="welcome-stat">
-        <div class="welcome-stat-val">3</div>
+        <div class="welcome-stat-val" id="welcomeBots">—</div>
         <div class="welcome-stat-label">ACTIVE BOTS</div>
       </div>
     </div>
@@ -416,13 +360,13 @@
     </div>
     <div class="stat-card amber">
       <div class="sc-label">// RANK THIS MONTH</div>
-      <div class="sc-val amber">#7</div>
-      <div class="sc-sub up">↑ 2 positions</div>
+      <div class="sc-val amber" id="rankCard">—</div>
+      <div class="sc-sub" id="rankSub" style="color:var(--text-dim)">Loading...</div>
     </div>
     <div class="stat-card">
       <div class="sc-label">// CORE POT</div>
-      <div class="sc-val" style="color:var(--amber);font-size:18px">LOCKED</div>
-      <div class="sc-sub" style="color:var(--text-dim)">Unlocks at 100 members</div>
+      <div class="sc-val" style="color:var(--green);font-size:24px" id="potCard">€2/mo</div>
+      <div class="sc-sub" style="color:var(--text-dim)">Draw at month end</div>
     </div>
   </div>
 
@@ -454,7 +398,7 @@
             </div>
             <div class="bot-row">
               <div class="bot-dot idle"></div>
-              <div class="bot-info"><div class="bot-name">ALPHA</div><div class="bot-pair">Signal executor · MT5 · Waiting for signal</div></div>
+              <div class="bot-info"><div class="bot-name">ALPHA</div><div class="bot-pair">Telegram executor · MT5 · Ready</div></div>
               <div class="bot-rr neu">IDLE</div>
               <a href="member-bots.html" class="bot-open">OPEN</a>
             </div>
@@ -467,17 +411,22 @@
         </div>
       </div>
 
-      <!-- SIGNALS -->
+      <!-- MARKET UPDATES -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">// LATEST SIGNALS</span>
-          <a href="core-room.html" class="panel-action">FULL FEED →</a>
+          <span class="panel-title">// MARKET UPDATES</span>
+          <a href="core-room.html" class="panel-action">CORE ROOM →</a>
         </div>
         <div class="panel-body">
-          <div style="background:var(--black);border:1px solid var(--border);border-left:2px solid var(--amber);padding:16px;font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8">
-            <div style="color:var(--amber);font-size:9px;letter-spacing:0.2em;margin-bottom:8px">// SIGNALS — COMING SOON</div>
-            Signal providers being verified. No fake calls. When we go live — every signal will have a real track record behind it.<br><br>
-            <span style="color:var(--text-dim)">Follow</span> <a href="https://t.me/rawcoretrading" style="color:var(--green);text-decoration:none">t.me/rawcoretrading</a> <span style="color:var(--text-dim)">for the announcement.</span>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="background:var(--black);border:1px solid var(--border);border-left:2px solid var(--green);padding:12px 14px">
+              <div style="font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:0.2em;margin-bottom:6px">// XAUUSD · LONDON SESSION</div>
+              <div style="font-size:13px;color:var(--text);line-height:1.6">Price trading above EMA50 on 1H. Structure remains bullish. London open confirmed higher high. ATR elevated — conditions favour active bots.</div>
+            </div>
+            <div style="background:var(--black);border:1px solid var(--border);border-left:2px solid var(--blue);padding:12px 14px">
+              <div style="font-family:var(--mono);font-size:9px;color:var(--blue);letter-spacing:0.2em;margin-bottom:6px">// CRYPTO · BTC/ETH</div>
+              <div style="font-size:13px;color:var(--text);line-height:1.6">BTC holding above key structure. ETH lagging. NOVA monitoring 4H bias — no entry triggers yet this session.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -490,11 +439,11 @@
         </div>
         <div class="panel-body" style="padding:0 16px">
           <div class="feed-list">
-            <div class="feed-msg"><span class="feed-time">09:14</span><span class="feed-tag core">CORE</span><div class="feed-text">XAUUSD EMA cross confirmed. London bias <span class="hi">bullish</span>. Signal posted.</div></div>
-            <div class="feed-msg"><span class="feed-time">09:06</span><span class="feed-tag member">USR_041</span><div class="feed-text">ATR Rider fork live — improved SL logic. Results in #systems</div></div>
-            <div class="feed-msg"><span class="feed-time">08:58</span><span class="feed-tag signal">SIGNAL</span><div class="feed-text">BTC sweep below <span class="lo">71,200</span>. Short bias confirmed.</div></div>
+            <div class="feed-msg"><span class="feed-time">09:14</span><span class="feed-tag core">CORE</span><div class="feed-text">XAUUSD EMA cross confirmed. London bias <span class="hi">bullish</span>. OMEGA running.</div></div>
+            <div class="feed-msg"><span class="feed-time">09:06</span><span class="feed-tag member">MEMBER</span><div class="feed-text">ATR Rider fork live — improved SL logic. Results in #systems</div></div>
             <div class="feed-msg"><span class="feed-time">08:44</span><span class="feed-tag expose">UNGURUED</span><div class="feed-text">New episode — ICT $1,500 course breakdown. Thread in #knowledge</div></div>
-            <div class="feed-msg"><span class="feed-time">08:31</span><span class="feed-tag member">USR_203</span><div class="feed-text">TP1 hit on XAUUSD <span class="hi">+1.5R</span> — SL to breakeven. Running.</div></div>
+            <div class="feed-msg"><span class="feed-time">08:31</span><span class="feed-tag member">MEMBER</span><div class="feed-text">OMEGA TP1 hit on XAUUSD <span class="hi">+1.5R</span> — SL to breakeven. Running.</div></div>
+            <div class="feed-msg"><span class="feed-time">08:12</span><span class="feed-tag core">CORE</span><div class="feed-text">New bot fork posted in #systems — NOVA scalper variant. Download in Bot Library.</div></div>
           </div>
         </div>
       </div>
@@ -525,29 +474,18 @@
         </div>
         <div style="display:flex;flex-direction:column">
 
-          <!-- Row helper: rank · av · name · bar · score -->
-          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
-            <div style="font-family:var(--display);font-size:20px;color:var(--amber);line-height:1">1</div>
-            <div style="width:28px;height:28px;border-radius:50%;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--amber)">MK</div>
-            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">USR_041</div><div style="height:2px;background:var(--border)"><div style="width:100%;height:100%;background:var(--amber)"></div></div></div>
-            <div style="font-family:var(--display);font-size:18px;color:var(--amber);line-height:1">4,820</div>
-          </div>
+        <div id="lbRows" style="display:flex;flex-direction:column">
+          <!-- Populated by JS from Supabase -->
+          <div style="padding:24px 14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Loading leaderboard...</div>
+        </div>
 
-          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
-            <div style="font-family:var(--display);font-size:20px;color:#9ca3af;line-height:1">2</div>
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">AX</div>
-            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">USR_119</div><div style="height:2px;background:var(--border)"><div style="width:78%;height:100%;background:var(--green)"></div></div></div>
-            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">3,760</div>
-          </div>
-
-          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
-            <div style="font-family:var(--display);font-size:20px;color:#b45309;line-height:1">3</div>
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">ST</div>
-            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">USR_087</div><div style="height:2px;background:var(--border)"><div style="width:62%;height:100%;background:var(--green)"></div></div></div>
-            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">2,990</div>
-          </div>
-
-          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
+        <!-- YOUR ROW -->
+        <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)">
+          <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1" id="lbYourRank">—</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)" id="lbYourAv">—</div>
+          <div><div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px" id="lbYourName">you</div><div style="height:2px;background:var(--border)"><div id="lbYourBar" style="width:0%;height:100%;background:var(--blue)"></div></div></div>
+          <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">—</div>
+        </div>          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
             <div style="font-family:var(--display);font-size:20px;color:var(--text-dim);line-height:1">4</div>
             <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">GF</div>
             <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">USR_203</div><div style="height:2px;background:var(--border)"><div style="width:51%;height:100%;background:var(--green)"></div></div></div>
@@ -597,16 +535,10 @@
             <div id="doneBots" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:4px;opacity:0.4">
-            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--text-dim)">SIGNALS</span><span style="color:var(--text-dim)">—</span></div>
-            <div style="height:4px;background:var(--border)"></div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">Coming soon</div>
-          </div>
-
-          <div style="display:flex;flex-direction:column;gap:4px;opacity:0.4">
-            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--text-dim)">BROKERS</span><span style="color:var(--text-dim)">🔒</span></div>
-            <div style="height:4px;background:var(--border)"></div>
-            <div style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">Complete Signals first</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--amber)">BROKERS</span><span id="pctBrokers" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barBrokers" style="width:0%;height:100%;background:var(--amber);transition:width 1s"></div></div>
+            <div id="doneBrokers" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
           </div>
 
         </div>
@@ -616,23 +548,21 @@
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">// CORE POT</span>
-          <a href="member-core.html" class="panel-action" style="color:var(--amber)">DETAILS →</a>
+          <a href="member-core.html" class="panel-action">DETAILS →</a>
         </div>
         <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;align-items:center;gap:12px">
-            <div style="font-size:28px">🔒</div>
+            <div style="font-size:28px">🟢</div>
             <div>
-              <div style="font-family:var(--display);font-size:22px;color:var(--amber);line-height:1">LOCKED</div>
-              <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Activates at 100 members</div>
+              <div style="font-family:var(--display);font-size:22px;color:var(--green);line-height:1">YOU'RE IN</div>
+              <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">€2/month contributed · draw at month end</div>
             </div>
           </div>
           <div>
-            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:5px"><span>67 members</span><span>100 target</span></div>
-            <div style="height:4px;background:var(--border)"><div style="width:67%;height:100%;background:var(--amber)"></div></div>
-            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:4px">67% there · 33 to go</div>
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-bottom:5px"><span id="potMembersLabel">— members</span><span>growing</span></div>
+            <div style="height:4px;background:var(--border)"><div id="potBar" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
           </div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.7;padding:10px;background:var(--dark);border:1px solid var(--border)">€2/member/month into the pot. One winner at month end. Random draw.</div>
-          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim)">Last winner: <span style="color:var(--green)">USR_041</span> · Apr 2026</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);line-height:1.7;padding:10px;background:var(--dark);border:1px solid var(--border)">Every active Core member is automatically entered. No tickets. No catches. Winner chooses — trading funds, cash/crypto, or donate to another member.</div>
         </div>
       </div>
 
@@ -760,11 +690,13 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
         'markets-1':'markets','markets-2':'markets','markets-3':'markets','markets-4':'markets','markets-5':'markets',
         'risk-1':'risk','risk-2':'risk','risk-3':'risk','risk-4':'risk','risk-5':'risk',
         'bots-1':'bots','bots-2':'bots','bots-3':'bots','bots-4':'bots','bots-5':'bots',
+        'brokers-1':'brokers','brokers-2':'brokers','brokers-3':'brokers','brokers-4':'brokers','brokers-5':'brokers',
       };
-      const counts = { psychology:0, markets:0, risk:0, bots:0 };
+      const counts = { psychology:0, markets:0, risk:0, bots:0, brokers:0 };
       rows.forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
       [['psychology','pctPsych','barPsych','donePsych'],['markets','pctMarkets','barMarkets','doneMarkets'],
-       ['risk','pctRisk','barRisk','doneRisk'],['bots','pctBots','barBots','doneBots']].forEach(([t,p,b,d]) => {
+       ['risk','pctRisk','barRisk','doneRisk'],['bots','pctBots','barBots','doneBots'],
+       ['brokers','pctBrokers','barBrokers','doneBrokers']].forEach(([t,p,b,d]) => {
         const pct = Math.round((counts[t] / 5) * 100);
         const pEl = document.getElementById(p), bEl = document.getElementById(b), dEl = document.getElementById(d);
         if (pEl) pEl.textContent = pct + '%';
@@ -774,7 +706,65 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
     }
   } catch(e) {}
   
-  // Greeting by time
+  // Load leaderboard from Supabase
+  try {
+    const lbRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc&limit=5', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (lbRes.ok) {
+      const lbData = await lbRes.json();
+      const rankColors = ['var(--amber)', '#c8d4e0', '#cd7c2e', 'var(--text-dim)', 'var(--text-dim)'];
+      const lbRows = document.getElementById('lbRows');
+      if (lbRows && lbData.length > 0) {
+        lbRows.innerHTML = lbData.map((row, i) => {
+          const initials = (row.username || 'RC').substring(0, 2).toUpperCase();
+          const barPct = i === 0 ? 100 : Math.round((row.credits / lbData[0].credits) * 100);
+          const isYou = row.user_id === user.id;
+          return `<div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)${isYou ? ';background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)' : ''}">
+            <div style="font-family:var(--display);font-size:20px;color:${isYou ? 'var(--blue)' : rankColors[i]};line-height:1">${i + 1}</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">${initials}</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:${isYou ? 'var(--blue)' : 'var(--text-bright)'};margin-bottom:4px">${row.username || 'member'}${isYou ? ' (you)' : ''}</div><div style="height:2px;background:var(--border)"><div style="width:${barPct}%;height:100%;background:${isYou ? 'var(--blue)' : 'var(--green)'}"></div></div></div>
+            <div style="font-family:var(--display);font-size:18px;color:${isYou ? 'var(--blue)' : rankColors[i]};line-height:1">${row.credits.toLocaleString()}</div>
+          </div>`;
+        }).join('');
+      } else if (lbRows) {
+        lbRows.innerHTML = '<div style="padding:20px 14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Be the first on the board — start contributing</div>';
+      }
+      // Find user's rank
+      const myRank = lbData.findIndex(r => r.user_id === user.id);
+      if (myRank >= 0) {
+        const rankEl = document.getElementById('welcomeRank');
+        const rankCardEl = document.getElementById('rankCard');
+        const rankSubEl = document.getElementById('rankSub');
+        const lbYourRankEl = document.getElementById('lbYourRank');
+        if (rankEl) rankEl.textContent = '#' + (myRank + 1);
+        if (rankCardEl) rankCardEl.textContent = '#' + (myRank + 1);
+        if (rankSubEl) rankSubEl.textContent = 'This month';
+        if (lbYourRankEl) lbYourRankEl.textContent = myRank + 1;
+        if (document.getElementById('lbYourBar')) document.getElementById('lbYourBar').style.width = (myRank === 0 ? 100 : Math.round((lbData[myRank].credits / lbData[0].credits) * 100)) + '%';
+      }
+    }
+  } catch(e) {}
+
+  // Load member count for pot bar
+  try {
+    const mcRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/waitlist?select=id&subscription=eq.core', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (mcRes.ok) {
+      const mcData = await mcRes.json();
+      const count = mcData.length;
+      const potLabel = document.getElementById('potMembersLabel');
+      const potBar = document.getElementById('potBar');
+      if (potLabel) potLabel.textContent = count + ' Core members';
+      if (potBar) potBar.style.width = Math.min(100, Math.round((count / 50) * 100)) + '%';
+    }
+  } catch(e) {}
+
+  // Set welcome bots count from bot list
+  const liveBots = document.querySelectorAll('.bot-dot.live').length;
+  const welcomeBotsEl = document.getElementById('welcomeBots');
+  if (welcomeBotsEl) welcomeBotsEl.textContent = liveBots;
   const hour = new Date().getHours();
   const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
   const greetingEl = document.getElementById('welcomeGreeting');
