@@ -772,24 +772,24 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">// YOUR NAME</label>
-            <input class="form-input" type="text" placeholder="First name" />
+            <input class="form-input" id="c-name" type="text" placeholder="First name" />
           </div>
           <div class="form-group">
             <label class="form-label">// HANDLE / USERNAME</label>
-            <input class="form-input" type="text" placeholder="@yourhandle" />
+            <input class="form-input" id="c-handle" type="text" placeholder="@yourhandle" />
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">// EMAIL</label>
-          <input class="form-input" type="email" placeholder="your@email.com" />
+          <input class="form-input" id="c-email" type="email" placeholder="your@email.com" />
         </div>
         <div class="form-group">
           <label class="form-label">// YOUR COMMUNITY OR PLATFORM</label>
-          <input class="form-input" type="text" placeholder="Telegram group, YouTube, website etc." />
+          <input class="form-input" id="c-platform" type="text" placeholder="Telegram group, YouTube, website etc." />
         </div>
         <div class="form-group">
           <label class="form-label">// AREA OF EXPERTISE</label>
-          <select class="form-select">
+          <select class="form-select" id="c-expertise">
             <option value="">Select your main area</option>
             <option>Gold / XAUUSD Trading</option>
             <option>Crypto Trading</option>
@@ -804,9 +804,9 @@
         </div>
         <div class="form-group">
           <label class="form-label">// WHAT WOULD YOU BRING TO RAWCORE?</label>
-          <textarea class="form-textarea" placeholder="Tell us about your knowledge, your community, and how you'd contribute. Be specific — generic answers don't make the cut."></textarea>
+          <textarea class="form-textarea" id="c-message" placeholder="Tell us about your knowledge, your community, and how you'd contribute. Be specific — generic answers don't make the cut."></textarea>
         </div>
-        <button class="form-submit" onclick="handleSubmit()">SUBMIT APPLICATION →</button>
+        <button class="form-submit" id="c-submit" onclick="handleSubmit()">SUBMIT APPLICATION →</button>
         <p class="form-note">// We review every application personally. No bots. No auto-replies. Expect a response within 48 hours.</p>
       </div>
     </div>
@@ -857,12 +857,56 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-function handleSubmit() {
-  const btn = document.querySelector('.form-submit');
-  btn.textContent = 'APPLICATION SENT ✓';
-  btn.style.background = 'var(--border)';
-  btn.style.color = 'var(--green)';
+async function handleSubmit() {
+  const btn = document.getElementById('c-submit');
+  const name = document.getElementById('c-name').value.trim();
+  const handle = document.getElementById('c-handle').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const platform = document.getElementById('c-platform').value.trim();
+  const expertise = document.getElementById('c-expertise').value;
+  const message = document.getElementById('c-message').value.trim();
+
+  // Basic validation
+  if (!name || !email || !email.includes('@') || !expertise || !message) {
+    btn.textContent = 'FILL IN ALL FIELDS ✕';
+    btn.style.background = 'var(--red)';
+    setTimeout(() => {
+      btn.textContent = 'SUBMIT APPLICATION →';
+      btn.style.background = 'var(--green)';
+    }, 2500);
+    return;
+  }
+
   btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  try {
+    const res = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/functions/v1/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+      },
+      body: JSON.stringify({ action: 'contributor', email, name, handle, platform, expertise, message })
+    });
+
+    if (res.ok) {
+      btn.textContent = 'APPLICATION SENT ✓';
+      btn.style.background = 'var(--border)';
+      btn.style.color = 'var(--green)';
+    } else {
+      throw new Error('Failed');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'ERROR — TRY AGAIN';
+    btn.style.background = 'var(--red)';
+    setTimeout(() => {
+      btn.textContent = 'SUBMIT APPLICATION →';
+      btn.style.background = 'var(--green)';
+      btn.style.color = 'var(--black)';
+    }, 3000);
+  }
 }
 
 document.querySelectorAll('.pot-choice').forEach(c => {

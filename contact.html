@@ -702,14 +702,14 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-function handleSubmit() {
-  const name = document.getElementById('fname').value;
-  const email = document.getElementById('femail').value;
+async function handleSubmit() {
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
   const reason = document.getElementById('freason').value;
-  const msg = document.getElementById('fmsg').value;
+  const msg = document.getElementById('fmsg').value.trim();
+  const btn = document.getElementById('submitBtn');
 
   if (!name || !email || !reason || !msg) {
-    const btn = document.getElementById('submitBtn');
     btn.textContent = 'FILL IN ALL FIELDS ✕';
     btn.style.background = 'var(--red)';
     setTimeout(() => {
@@ -719,11 +719,36 @@ function handleSubmit() {
     return;
   }
 
-  const btn = document.getElementById('submitBtn');
-  btn.textContent = 'MESSAGE SENT ✓';
-  btn.style.background = 'var(--border)';
-  btn.style.color = 'var(--green)';
   btn.disabled = true;
+  btn.textContent = 'SENDING...';
+
+  try {
+    const res = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/functions/v1/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4'
+      },
+      body: JSON.stringify({ action: 'contact', email, name, reason, message: msg })
+    });
+
+    if (res.ok) {
+      btn.textContent = 'MESSAGE SENT ✓';
+      btn.style.background = 'var(--border)';
+      btn.style.color = 'var(--green)';
+    } else {
+      throw new Error('Failed');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'ERROR — TRY AGAIN';
+    btn.style.background = 'var(--red)';
+    setTimeout(() => {
+      btn.textContent = 'SEND MESSAGE →';
+      btn.style.background = 'var(--green)';
+      btn.style.color = 'var(--black)';
+    }, 3000);
+  }
 }
 
 function toggleMobileMenu() {
