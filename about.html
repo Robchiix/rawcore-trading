@@ -50,15 +50,16 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    background: rgba(5,6,8,0.95);
-    backdrop-filter: blur(12px);
+    padding: 0 32px;
+    height: 56px;
+    background: rgba(5,6,8,0.97);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
+    gap: 24px;
   }
 
   .nav-logo {
@@ -72,36 +73,46 @@
 
   .nav-links {
     display: flex;
-    gap: 32px;
-    list-style: none;
+    gap: 0;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
   }
 
   .nav-links a {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
     color: var(--text-dim);
     text-decoration: none;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    padding: 0 14px;
+    height: 56px;
+    display: flex;
+    align-items: center;
     transition: color 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
   }
 
-  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .nav-links a:hover, .nav-links a.active { color: var(--text-bright); }
 
   .nav-cta {
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 9px 18px;
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
+    background: var(--green);
+    color: var(--black) !important;
+    padding: 8px 20px !important;
+    height: auto !important;
+    font-weight: 700;
+    border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: opacity 0.2s !important;
+    border-bottom: none !important;
     text-decoration: none;
+    white-space: nowrap;
   }
-  .nav-cta:hover { background: var(--green); color: var(--black); }
+  .nav-cta:hover { opacity: 0.85 !important; }
 
   /* HERO */
   .about-hero {
@@ -787,17 +798,17 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
-    <li><a href="about.html" class="active">About</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
-  <a href="login.html" class="nav-cta">JOIN THE CORE →</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="about.html" class="active">ABOUT</a>
+    <a href="knowledge.html">KNOWLEDGE</a>
+    <a href="systems.html">SYSTEMS</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
 </nav>
 
 <!-- HERO -->
@@ -844,7 +855,7 @@
       <div class="value-block">
         <div class="value-num">// 01</div>
         <div class="value-title">KNOWLEDGE FIRST</div>
-        <div class="value-desc">Every signal comes with an explanation. Every bot comes with its source code. You understand what you're using or you don't use it.</div>
+        <div class="value-desc">Every bot comes with its source code. You understand what you're using or you don't use it.</div>
       </div>
       <div class="value-block">
         <div class="value-num">// 02</div>
@@ -911,7 +922,7 @@
         RawCore wasn't built by someone who got lucky on one trade and turned it into a course empire. It was built by someone who <strong>worked for everything they have</strong> — the kind of person who understands that real success doesn't come with a highlight reel.
       </p>
       <p class="story-p">
-        The bots you'll find here — NOVA, OMEGA GS, OMEGA GS — were <strong>debugged at midnight</strong>, rebuilt after failures, tested with real money on real brokers. Every quirk, every fix, every improvement is documented and shared. That's the difference.
+        The bots you'll find here — <strong>Omega, Nova, Alpha</strong> — were <strong>debugged at midnight</strong>, rebuilt after failures, tested with real money on real brokers. Every quirk, every fix, every improvement is documented and shared. That's the difference.
       </p>
       <p class="story-p">
         We're not here to impress you with results we can't verify. We're here to <strong>build something together</strong> — a community where a coder looks at a bot and says "I can improve this," does it, and shares it back. Where knowledge flows freely and the money follows naturally.
@@ -964,7 +975,7 @@
     We will never show you a demo account and call it proof. We will never lock you into a yearly plan. We will never stop explaining the why. And we will never stop building.
   </p>
   <div class="promise-btns">
-    <a href="login.html" class="btn-primary">JOIN THE CORE →</a>
+    <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
     <a href="systems.html" class="btn-secondary">SEE THE SYSTEMS</a>
   </div>
 </section>
