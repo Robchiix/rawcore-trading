@@ -299,7 +299,7 @@
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">Robchiix</span>
-      <div class="nav-tier" style="border-color:rgba(255,51,85,0.4);color:var(--red);background:rgba(255,51,85,0.08)">ADMIN</div>
+      <div class="nav-tier" id="navTierBadge">CORE</div>
       <button onclick="signOut()" style="font-family:var(--mono);font-size:9px;color:var(--text-dim);background:none;border:1px solid var(--border);padding:4px 10px;cursor:pointer;letter-spacing:0.1em;margin-left:8px;transition:all 0.2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">LOGOUT</button>
     </div>
   </div>
@@ -473,33 +473,16 @@
           <a href="member-core.html" class="panel-action">FULL BOARD →</a>
         </div>
         <div style="display:flex;flex-direction:column">
-
-        <div id="lbRows" style="display:flex;flex-direction:column">
-          <!-- Populated by JS from Supabase -->
-          <div style="padding:24px 14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Loading leaderboard...</div>
-        </div>
-
-        <!-- YOUR ROW -->
-        <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)">
-          <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1" id="lbYourRank">—</div>
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)" id="lbYourAv">—</div>
-          <div><div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px" id="lbYourName">you</div><div style="height:2px;background:var(--border)"><div id="lbYourBar" style="width:0%;height:100%;background:var(--blue)"></div></div></div>
-          <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">—</div>
-        </div>          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)">
-            <div style="font-family:var(--display);font-size:20px;color:var(--text-dim);line-height:1">4</div>
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">GF</div>
-            <div><div style="font-family:var(--mono);font-size:10px;color:var(--text-bright);margin-bottom:4px">USR_203</div><div style="height:2px;background:var(--border)"><div style="width:51%;height:100%;background:var(--green)"></div></div></div>
-            <div style="font-family:var(--display);font-size:18px;color:var(--text-bright);line-height:1">2,440</div>
+          <div id="lbRows" style="display:flex;flex-direction:column">
+            <div style="padding:24px 14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Loading leaderboard...</div>
           </div>
-
-          <!-- YOU -->
-          <div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.05);border-left:2px solid var(--blue)">
-            <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1">7</div>
-            <div id="lbYourAv" style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)">RC</div>
-            <div><div id="lbYourName" style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px">You</div><div style="height:2px;background:var(--border)"><div style="width:26%;height:100%;background:var(--blue)"></div></div></div>
+          <!-- YOUR ROW — shown when you're outside top 5 -->
+          <div id="lbYourRowExternal" style="display:none;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.06);border-left:2px solid var(--blue);border-top:1px solid rgba(26,31,38,0.5)">
+            <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1" id="lbYourRank">—</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)" id="lbYourAv">—</div>
+            <div><div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px" id="lbYourName">you</div><div style="height:2px;background:var(--border)"><div id="lbYourBar" style="width:0%;height:100%;background:var(--blue)"></div></div></div>
             <div id="lbYourScore" style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">—</div>
           </div>
-
         </div>
       </div>
 
@@ -514,31 +497,31 @@
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--purple)">PSYCHOLOGY</span><span id="pctPsych" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barPsych" style="width:0%;height:100%;background:var(--purple);transition:width 1s"></div></div>
-            <div id="donePsych" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+            <div id="donePsych" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 passed</div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--blue)">MARKETS</span><span id="pctMarkets" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barMarkets" style="width:0%;height:100%;background:var(--blue);transition:width 1s"></div></div>
-            <div id="doneMarkets" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+            <div id="doneMarkets" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 passed</div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--red)">RISK MANAGEMENT</span><span id="pctRisk" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barRisk" style="width:0%;height:100%;background:var(--red);transition:width 1s"></div></div>
-            <div id="doneRisk" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+            <div id="doneRisk" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 passed</div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--green)">TRADING BOTS</span><span id="pctBots" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barBots" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
-            <div id="doneBots" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+            <div id="doneBots" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 passed</div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--amber)">BROKERS</span><span id="pctBrokers" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barBrokers" style="width:0%;height:100%;background:var(--amber);transition:width 1s"></div></div>
-            <div id="doneBrokers" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 answered</div>
+            <div id="doneBrokers" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 passed</div>
           </div>
 
         </div>
@@ -693,7 +676,8 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
         'brokers-1':'brokers','brokers-2':'brokers','brokers-3':'brokers','brokers-4':'brokers','brokers-5':'brokers',
       };
       const counts = { psychology:0, markets:0, risk:0, bots:0, brokers:0 };
-      rows.forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
+      // Only count lessons where score > 0 (actually passed, not just attempted)
+      rows.filter(r => r.score > 0).forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
       [['psychology','pctPsych','barPsych','donePsych'],['markets','pctMarkets','barMarkets','doneMarkets'],
        ['risk','pctRisk','barRisk','doneRisk'],['bots','pctBots','barBots','doneBots'],
        ['brokers','pctBrokers','barBrokers','doneBrokers']].forEach(([t,p,b,d]) => {
@@ -701,24 +685,47 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
         const pEl = document.getElementById(p), bEl = document.getElementById(b), dEl = document.getElementById(d);
         if (pEl) pEl.textContent = pct + '%';
         if (bEl) bEl.style.width = pct + '%';
-        if (dEl) dEl.textContent = counts[t] + '/5 answered';
+        if (dEl) dEl.textContent = counts[t] + '/5 passed';
       });
     }
   } catch(e) {}
   
-  // Load leaderboard from Supabase
+  // Load leaderboard from Supabase — fetch top 5 + your own row
   try {
+    // Fetch top 5
     const lbRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc&limit=5', {
       headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
     });
+    // Fetch your own entry + count all entries for true rank
+    const myRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits,username', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    const rankCountRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?credits=gte.' + 0 + '&select=user_id&order=credits.desc', {
+      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token, 'Prefer': 'count=exact', 'Range-Unit': 'items', 'Range': '0-999' }
+    });
+
     if (lbRes.ok) {
       const lbData = await lbRes.json();
+      const myData = myRes.ok ? await myRes.json() : [];
+      const myCredits = myData[0]?.credits ?? 0;
+      const myUsername = myData[0]?.username || username;
+
+      // Get true rank by counting how many users have more credits
+      let myTrueRank = 1;
+      if (rankCountRes.ok) {
+        const allUsers = await rankCountRes.json();
+        myTrueRank = allUsers.filter(r => r.user_id !== user.id && (lbData.find(l => l.user_id === r.user_id)?.credits || 0) >= myCredits).length + 1;
+      }
+
       const rankColors = ['var(--amber)', '#c8d4e0', '#cd7c2e', 'var(--text-dim)', 'var(--text-dim)'];
       const lbRows = document.getElementById('lbRows');
+      const topMax = lbData[0]?.credits || 1;
+      const youInTop5 = lbData.some(r => r.user_id === user.id);
+
       if (lbRows && lbData.length > 0) {
         lbRows.innerHTML = lbData.map((row, i) => {
           const initials = (row.username || 'RC').substring(0, 2).toUpperCase();
-          const barPct = i === 0 ? 100 : Math.round((row.credits / lbData[0].credits) * 100);
+          const barPct = Math.round((row.credits / topMax) * 100);
           const isYou = row.user_id === user.id;
           return `<div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)${isYou ? ';background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)' : ''}">
             <div style="font-family:var(--display);font-size:20px;color:${isYou ? 'var(--blue)' : rankColors[i]};line-height:1">${i + 1}</div>
@@ -730,21 +737,28 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
       } else if (lbRows) {
         lbRows.innerHTML = '<div style="padding:20px 14px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--text-dim)">// Be the first on the board — start contributing</div>';
       }
-      // Find user's rank
-      const myRank = lbData.findIndex(r => r.user_id === user.id);
-      if (myRank >= 0) {
-        const rankEl = document.getElementById('welcomeRank');
-        const rankCardEl = document.getElementById('rankCard');
-        const rankSubEl = document.getElementById('rankSub');
-        const lbYourRankEl = document.getElementById('lbYourRank');
-        if (rankEl) rankEl.textContent = '#' + (myRank + 1);
-        if (rankCardEl) rankCardEl.textContent = '#' + (myRank + 1);
-        if (rankSubEl) rankSubEl.textContent = 'This month';
-        if (lbYourRankEl) lbYourRankEl.textContent = myRank + 1;
-        if (document.getElementById('lbYourBar')) document.getElementById('lbYourBar').style.width = (myRank === 0 ? 100 : Math.round((lbData[myRank].credits / lbData[0].credits) * 100)) + '%';
+
+      // Show "your row" below top 5 only if you're not in top 5
+      const yourRowEl = document.getElementById('lbYourRowExternal');
+      if (!youInTop5 && yourRowEl) {
+        yourRowEl.style.display = 'grid';
+        document.getElementById('lbYourRank').textContent = myTrueRank;
+        document.getElementById('lbYourAv').textContent = myUsername.substring(0, 2).toUpperCase();
+        document.getElementById('lbYourName').textContent = myUsername + ' (you)';
+        document.getElementById('lbYourScore').textContent = myCredits.toLocaleString();
+        const barPct = topMax > 0 ? Math.round((myCredits / topMax) * 100) : 0;
+        document.getElementById('lbYourBar').style.width = barPct + '%';
       }
+
+      // Update rank in welcome bar and stat card
+      const rankEl = document.getElementById('welcomeRank');
+      const rankCardEl = document.getElementById('rankCard');
+      const rankSubEl = document.getElementById('rankSub');
+      if (rankEl) rankEl.textContent = '#' + myTrueRank;
+      if (rankCardEl) rankCardEl.textContent = '#' + myTrueRank;
+      if (rankSubEl) rankSubEl.textContent = 'This month';
     }
-  } catch(e) {}
+  } catch(e) { console.error('Leaderboard error:', e); }
 
   // Load member count for pot bar
   try {
@@ -765,6 +779,24 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
   const liveBots = document.querySelectorAll('.bot-dot.live').length;
   const welcomeBotsEl = document.getElementById('welcomeBots');
   if (welcomeBotsEl) welcomeBotsEl.textContent = liveBots;
+
+  // Dynamic tier badge based on role in user_metadata
+  const role = user.user_metadata?.role || 'core';
+  const tierBadge = document.getElementById('navTierBadge');
+  if (tierBadge) {
+    const tierStyles = {
+      admin:   { label: 'ADMIN',   color: 'var(--red)',      border: 'rgba(255,51,85,0.4)',  bg: 'rgba(255,51,85,0.08)' },
+      core:    { label: 'CORE',    color: 'var(--green)',    border: 'rgba(0,255,136,0.3)',  bg: 'var(--green-muted)' },
+      builder: { label: 'BUILDER', color: 'var(--amber)',    border: 'rgba(245,158,11,0.3)', bg: 'rgba(245,158,11,0.08)' },
+      free:    { label: 'FREE',    color: 'var(--text-dim)', border: 'var(--border)',        bg: 'transparent' },
+    };
+    const t = tierStyles[role] || tierStyles.core;
+    tierBadge.textContent = t.label;
+    tierBadge.style.color = t.color;
+    tierBadge.style.borderColor = t.border;
+    tierBadge.style.background = t.bg;
+  }
+
   const hour = new Date().getHours();
   const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
   const greetingEl = document.getElementById('welcomeGreeting');
