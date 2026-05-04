@@ -47,24 +47,25 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    background: rgba(5,6,8,0.95);
-    backdrop-filter: blur(12px);
+    padding: 0 32px;
+    height: 56px;
+    background: rgba(5,6,8,0.97);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
+    gap: 24px;
   }
 
   .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
   .nav-logo span { color: var(--green); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color: var(--green); }
-  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .nav-cta:hover { background: var(--green); color: var(--black); }
+  .nav-links { display: flex; gap: 0; align-items: center; flex: 1; justify-content: center; }
+  .nav-links a { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 14px; height: 56px; display: flex; align-items: center; transition: color 0.2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text-bright); }
+  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; background: var(--green); color: var(--black) !important; padding: 8px 20px !important; height: auto !important; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s !important; text-decoration: none; white-space: nowrap; }
+  .nav-cta:hover { opacity: 0.85 !important; }
 
   /* HERO */
   .hero {
@@ -96,43 +97,6 @@
   .hero-sub strong { color: var(--text); }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* TOGGLE */
-  .billing-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 32px 80px;
-    border-bottom: 1px solid var(--border);
-    background: var(--dark);
-  }
-
-  .toggle-label { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.15em; cursor: pointer; transition: color 0.2s; }
-  .toggle-label.active { color: var(--green); }
-
-  .toggle-switch {
-    width: 48px; height: 24px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .toggle-switch.weekly { background: var(--green-muted); border-color: rgba(0,255,136,0.3); }
-
-  .toggle-knob {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 16px; height: 16px;
-    background: var(--text-dim);
-    transition: all 0.2s;
-  }
-
-  .toggle-switch.weekly .toggle-knob { left: 27px; background: var(--green); }
-
-  .toggle-badge { font-family: var(--mono); font-size: 9px; color: var(--amber); border: 1px solid rgba(245,158,11,0.3); padding: 3px 8px; background: rgba(245,158,11,0.08); }
 
   /* PRICING CARDS */
   .pricing-section {
@@ -531,19 +495,29 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html" class="active">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="shop.html">Shop</a></li>
-  </ul>
-  <a href="#pricing-cards" class="nav-cta">JOIN THE CORE →</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="knowledge.html">KNOWLEDGE</a>
+    <a href="systems.html">SYSTEMS</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="pricing.html" class="active">PRICING</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
+  <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="/">HOME</a>
+  <a href="about.html">ABOUT</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a>
+  <a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="waitlist.html" style="color:var(--green)">JOIN WAITLIST →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -551,26 +525,16 @@
   <h1 class="hero-title">FAIR PRICE.<br><span class="green">REAL VALUE.</span></h1>
   <p class="hero-sub">
     <strong>No yearly lock-ins. No hidden upsells. No dark patterns.</strong>
-    Weekly or monthly — pay when it's worth it, leave when it isn't.
+    Three tiers — free, builder, core. Pay when it's worth it, leave when it isn't.
     That's the only model we respect.
   </p>
 </section>
-
-<!-- BILLING TOGGLE -->
-<div class="billing-toggle">
-  <span class="toggle-label active" id="monthlyLabel">MONTHLY</span>
-  <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()">
-    <div class="toggle-knob"></div>
-  </div>
-  <span class="toggle-label" id="weeklyLabel">WEEKLY</span>
-  <span class="toggle-badge">FLEXIBLE</span>
-</div>
 
 <!-- PRICING CARDS -->
 <section class="pricing-section reveal" id="pricing-cards">
   <div class="pricing-grid">
 
-    <!-- FREE -->
+    <!-- FREE — OBSERVER -->
     <div class="price-card">
       <div class="price-popular hidden">placeholder</div>
       <div class="price-tier">// TIER 01</div>
@@ -582,70 +546,70 @@
       <div class="price-period">// FOREVER. NO CARD NEEDED.</div>
       <div class="price-divider"></div>
       <ul class="price-features">
-        <li class="on">Knowledge Hub — free lessons</li>
-        <li class="on">5 free lessons — one per topic</li>
-        <li class="on">Bot sample templates × 2</li>
+        <li class="on">Knowledge Hub — 4 free lessons (1 per topic)</li>
+        <li class="on">Beginner learning path</li>
         <li class="on">Broker comparison guide</li>
         <li class="on">Public Telegram channel</li>
-        <li class="on">Beginner learning path</li>
+        <li class="on">Bot structure templates × 2 — skeleton code, no strategy</li>
+        <li class="off">Bot logic templates (partial source)</li>
         <li class="off">Full bot library + source code</li>
-        <li class="off">Signal feed with explanations</li>
         <li class="off">Private Core community</li>
         <li class="off">Core Credits + leaderboard</li>
         <li class="off">Monthly Core Pot entry</li>
       </ul>
-      <a href="login.html" class="price-btn">START FREE →</a>
+      <a href="waitlist.html" class="price-btn">JOIN WAITLIST →</a>
     </div>
 
-    <!-- CORE MONTHLY -->
-    <div class="price-card featured">
-      <div class="price-popular">// MOST POPULAR</div>
-      <div class="price-tier">// TIER 02</div>
-      <div class="price-name">CORE</div>
-      <div class="price-amount-wrap">
-        <span class="price-currency">€</span>
-        <span class="price-amount green" id="corePrice">28</span>
-      </div>
-      <div class="price-period" id="corePeriod">// PER MONTH · CANCEL ANYTIME</div>
-      <div class="price-divider"></div>
-      <ul class="price-features">
-        <li class="on">Everything in Observer</li>
-        <li class="on">Full bot library + source code</li>
-        <li class="on">All knowledge lessons unlocked</li>
-        <li class="on">Signal feed with full explanations</li>
-        <li class="on">Private Core community access</li>
-        <li class="on">Core Credits system + leaderboard</li>
-        <li class="on">Monthly Core Pot — €2 contributed</li>
-        <li class="on">Monthly live build sessions</li>
-        <li class="on">Community bot marketplace</li>
-        <li class="on">Early access to new systems</li>
-        <li class="on">Interactive lesson tasks + quizzes</li>
-      </ul>
-      <a href="login.html" class="price-btn featured-btn">JOIN THE CORE →</a>
-    </div>
-
-    <!-- WEEKLY -->
+    <!-- BUILDER — €9/mo -->
     <div class="price-card">
       <div class="price-popular hidden">placeholder</div>
-      <div class="price-tier">// TIER 02 FLEX</div>
-      <div class="price-name">CORE WEEKLY</div>
+      <div class="price-tier">// TIER 02</div>
+      <div class="price-name">BUILDER</div>
       <div class="price-amount-wrap">
         <span class="price-currency">€</span>
         <span class="price-amount">9</span>
       </div>
-      <div class="price-period">// PER WEEK · CANCEL ANYTIME</div>
+      <div class="price-period">// PER MONTH · CANCEL ANYTIME</div>
       <div class="price-divider"></div>
       <ul class="price-features">
-        <li class="on">Full Core member access</li>
-        <li class="on">All bots, all lessons, all signals</li>
-        <li class="on">Private community access</li>
-        <li class="on">Core Credits earned normally</li>
-        <li class="on">Perfect for testing the waters</li>
+        <li class="on">Everything in Observer</li>
+        <li class="on">Full Knowledge Hub — all lessons unlocked</li>
+        <li class="on">Bot logic templates — partial source code, no strategy settings</li>
+        <li class="on">Broker setup walkthroughs</li>
+        <li class="on">Private Core community access</li>
+        <li class="on">Core Credits + leaderboard</li>
+        <li class="off">Full bots with strategy + settings</li>
+        <li class="off">Community bot marketplace</li>
+        <li class="off">Monthly live build sessions</li>
         <li class="off">Monthly Core Pot entry</li>
-        <li class="off">Live build session access</li>
-        <li class="off">Early system access</li>
+        <li class="off">Early access to new systems</li>
       </ul>
-      <a href="login.html" class="price-btn">START WEEKLY →</a>
+      <a href="waitlist.html" class="price-btn">JOIN WAITLIST →</a>
+    </div>
+
+    <!-- CORE — €28/mo -->
+    <div class="price-card featured">
+      <div class="price-popular">// FULL ACCESS</div>
+      <div class="price-tier">// TIER 03</div>
+      <div class="price-name">CORE</div>
+      <div class="price-amount-wrap">
+        <span class="price-currency">€</span>
+        <span class="price-amount green">28</span>
+      </div>
+      <div class="price-period">// PER MONTH · CANCEL ANYTIME</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li class="on">Everything in Builder</li>
+        <li class="on">Full bot library — complete source code with strategy + settings</li>
+        <li class="on">Community bot marketplace access</li>
+        <li class="on">Monthly live build sessions</li>
+        <li class="on">Monthly Core Pot entry — €2 contributed</li>
+        <li class="on">Early access to new systems</li>
+        <li class="on">Bot setup walkthroughs (Python, MT5, Telegram)</li>
+        <li class="on">Error support + state file diagnostics</li>
+        <li class="on">Core Credits system + leaderboard</li>
+      </ul>
+      <a href="waitlist.html" class="price-btn featured-btn">JOIN WAITLIST →</a>
     </div>
 
   </div>
@@ -660,36 +624,33 @@
       <tr>
         <th>FEATURE</th>
         <th class="col-free">OBSERVER<br><span style="color:var(--text-dim);font-size:9px">FREE</span></th>
+        <th class="col-weekly">BUILDER<br><span style="color:var(--text-dim);font-size:9px">€9/MO</span></th>
         <th class="col-core">CORE<br><span style="color:var(--green);font-size:9px">€28/MO</span></th>
-        <th class="col-weekly">WEEKLY<br><span style="color:var(--text-dim);font-size:9px">€9/WK</span></th>
       </tr>
     </thead>
     <tbody>
       <tr><td class="cat-header" colspan="4">// KNOWLEDGE</td></tr>
-      <tr><td class="feature-name">Knowledge Hub — free lessons</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Free lessons (1 per topic)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Full lesson library unlocked</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Interactive tasks + quizzes</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">4 free lessons (1 per topic)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Full lesson library — all topics</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
       <tr><td class="feature-name">Beginner learning path</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-
-      <tr><td class="cat-header" colspan="4">// SYSTEMS & BOTS</td></tr>
-      <tr><td class="feature-name">Bot sample templates (×2)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Full bot library + source code</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Community bot marketplace</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">AI code assistant</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Early access to new systems</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="cross">×</span></td></tr>
-
-      <tr><td class="cat-header" colspan="4">// SIGNALS & ANALYSIS</td></tr>
-      <tr><td class="feature-name">Signal feed with explanations</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
       <tr><td class="feature-name">Broker comparison guide</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
       <tr><td class="feature-name">Broker setup walkthroughs</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+      <tr><td class="cat-header" colspan="4">// SYSTEMS & BOTS</td></tr>
+      <tr><td class="feature-name">Bot structure templates — skeleton code</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Bot logic templates — partial source</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Full bots — complete source + strategy</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Community bot marketplace</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Bot setup walkthroughs (Python, MT5, Telegram)</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Error support + state file diagnostics</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Early access to new systems</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
 
       <tr><td class="cat-header" colspan="4">// COMMUNITY</td></tr>
       <tr><td class="feature-name">Public Telegram channel</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
       <tr><td class="feature-name">Private Core community</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
       <tr><td class="feature-name">Core Credits + leaderboard</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-      <tr><td class="feature-name">Monthly live build sessions</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="cross">×</span></td></tr>
-      <tr><td class="feature-name">Monthly Core Pot entry</td><td><span class="cross">×</span></td><td><span class="check">✓</span></td><td><span class="cross">×</span></td></tr>
+      <tr><td class="feature-name">Monthly live build sessions</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
+      <tr><td class="feature-name">Monthly Core Pot entry</td><td><span class="cross">×</span></td><td><span class="cross">×</span></td><td><span class="check">✓</span></td></tr>
     </tbody>
   </table>
 </section>
@@ -699,15 +660,14 @@
   <div class="pot-mini-left">
     <div class="section-tag">THE CORE POT</div>
     <h2 class="pot-mini-title">YOUR SUBSCRIPTION<br>GIVES <span class="green">BACK.</span></h2>
-    <p class="pot-mini-p">Every Core monthly membership contributes <strong>€2 to the monthly Core Pot</strong>. One member wins it all at the end of the month — trading funds, cash, merch, or donated to someone who needs it more. <strong>No catches. No strings.</strong></p>
+    <p class="pot-mini-p">Every Core monthly membership contributes <strong>€2 to the monthly Core Pot</strong>. One member wins it all at the end of the month — trading funds, cash, crypto, or donated to another member who needs it more. <strong>No catches. No strings.</strong></p>
   </div>
   <div class="pot-mini-right">
-    <div class="pot-row"><span class="pot-row-label">// Contribution per member</span><span class="pot-row-val green">€2 / month</span></div>
-    <div class="pot-row"><span class="pot-row-label">// Current pot (May 2026)</span><span class="pot-row-val green">€134</span></div>
-    <div class="pot-row"><span class="pot-row-label">// Draw date</span><span class="pot-row-val">May 31, 2026</span></div>
-    <div class="pot-row"><span class="pot-row-label">// Winner chooses</span><span class="pot-row-val">Funds · Cash · Merch · Donate</span></div>
-    <div class="pot-row"><span class="pot-row-label">// Last winner</span><span class="pot-row-val">USR_041 — Apr 2026</span></div>
-    <div class="pot-row"><span class="pot-row-label">// Weekly members included</span><span class="pot-row-val" style="color:var(--text-dim)">No — monthly only</span></div>
+    <div class="pot-row"><span class="pot-row-label">// Contribution per Core member</span><span class="pot-row-val green">€2 / month</span></div>
+    <div class="pot-row"><span class="pot-row-label">// Current pot</span><span class="pot-row-val" style="color:var(--amber)">Launching with Core</span></div>
+    <div class="pot-row"><span class="pot-row-label">// Draw date</span><span class="pot-row-val">End of each month</span></div>
+    <div class="pot-row"><span class="pot-row-label">// Winner chooses</span><span class="pot-row-val">Trading Funds · Cash / Crypto · Donate to a Member</span></div>
+    <div class="pot-row"><span class="pot-row-label">// Eligibility</span><span class="pot-row-val" style="color:var(--green)">All active Core members — automatic entry</span></div>
   </div>
 </section>
 
@@ -717,7 +677,7 @@
     <div class="trust-card">
       <div class="trust-icon">⊘</div>
       <div class="trust-title">NO LOCK-IN</div>
-      <div class="trust-desc">Cancel anytime. Weekly or monthly. We don't trap people — if we're not worth it, you should leave.</div>
+      <div class="trust-desc">Cancel anytime. No lock-ins. We don't trap people — if we're not worth it, you should leave.</div>
     </div>
     <div class="trust-card">
       <div class="trust-icon">◎</div>
@@ -746,8 +706,8 @@
       <div class="faq-a">Yes. No questions, no retention offers, no dark patterns. If you cancel, you keep access until the end of your billing period, then it stops. Simple.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">Is the weekly plan the same as monthly?</div>
-      <div class="faq-a">Almost. You get all the same bots, lessons, signals and community access. The only things excluded from weekly are the Core Pot entry and live build sessions — those are monthly-only perks.</div>
+      <div class="faq-q">What's the difference between Builder and Core?</div>
+      <div class="faq-a">Builder gets you partial bot code — enough to understand the structure and logic. Core gets you the complete bots with full strategy settings, setup walkthroughs, error support, live build sessions, and the Core Pot. If you're serious about running bots, Core is the tier for it.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">What payment methods do you accept?</div>
@@ -755,7 +715,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">Is there a free trial for Core?</div>
-      <div class="faq-a">The Observer tier is essentially a permanent free trial — you get a real taste of the content and community before spending anything. The weekly plan is also a low-risk way to try everything.</div>
+      <div class="faq-a">The Observer tier is essentially a permanent free trial — you get real content and can see exactly what the community is about before spending anything. Builder is also a low-risk entry point at €9/mo.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Do prices include tax?</div>
@@ -763,7 +723,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">Will prices go up?</div>
-      <div class="faq-a">Possibly as the platform grows — but existing members always keep their current rate. We'd rather reward loyalty than punish it.</div>
+      <div class="faq-a">Possibly as the platform grows — but existing members always keep their current rate. Joining the waitlist early locks in launch pricing. We reward loyalty, not punish it.</div>
     </div>
   </div>
 </section>
@@ -771,13 +731,13 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta reveal">
   <div class="cta-tag">// WHAT ARE YOU WAITING FOR</div>
-  <h2 class="cta-title">START FREE.<br>UPGRADE WHEN<br><span class="green">IT'S WORTH IT.</span></h2>
+  <h2 class="cta-title">JOIN THE<br>WAITLIST.<br><span class="green">BE FIRST IN.</span></h2>
   <p class="cta-sub">
-    // No card needed to start. No pressure to upgrade.<br>
-    // If the free tier doesn't convince you, nothing will.
+    // No card needed. No pressure.<br>
+    // Early waitlist members get launch pricing locked in.
   </p>
   <div class="cta-btns">
-    <a href="login.html" class="btn-primary">JOIN FREE NOW →</a>
+    <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
     <a href="community.html" class="btn-secondary">SEE WHAT'S INCLUDED</a>
   </div>
 </section>
@@ -815,31 +775,6 @@ const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-let isWeekly = false;
-
-function toggleBilling() {
-  isWeekly = !isWeekly;
-  const toggle = document.getElementById('billingToggle');
-  const monthlyLabel = document.getElementById('monthlyLabel');
-  const weeklyLabel = document.getElementById('weeklyLabel');
-  const corePrice = document.getElementById('corePrice');
-  const corePeriod = document.getElementById('corePeriod');
-
-  if (isWeekly) {
-    toggle.classList.add('weekly');
-    monthlyLabel.classList.remove('active');
-    weeklyLabel.classList.add('active');
-    corePrice.textContent = '9';
-    corePeriod.textContent = '// PER WEEK · CANCEL ANYTIME';
-  } else {
-    toggle.classList.remove('weekly');
-    monthlyLabel.classList.add('active');
-    weeklyLabel.classList.remove('active');
-    corePrice.textContent = '28';
-    corePeriod.textContent = '// PER MONTH · CANCEL ANYTIME';
-  }
-}
 
 function toggleMobileMenu() {
   const nav = document.getElementById('mobileNav');
