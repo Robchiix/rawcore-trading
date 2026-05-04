@@ -220,6 +220,7 @@ body::after {
   margin-bottom: 40px;
   opacity: 0;
   animation: fadeUp 0.5s ease 0.2s forwards;
+  display: none;
 }
 .counter-label {
   font-family: var(--mono);
@@ -501,7 +502,7 @@ body::after {
 
 <!-- TOP BAR -->
 <div class="top-bar">
-  <a href="index.html" class="logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <a href="/" class="logo">&gt;_ Raw<span>Core</span>Trading</a>
   <div class="status-pill">
     <div class="status-dot"></div>
     WAITLIST OPEN
@@ -550,9 +551,9 @@ body::after {
 
     <!-- COUNTER -->
     <div class="counter-wrap">
-      <div class="counter-label">// TRADERS ALREADY ON THE LIST</div>
+      <div class="counter-label">// YOU ARE FOUNDING MEMBER</div>
       <div class="counter-num" id="counterNum">0</div>
-      <div class="counter-sub">// FOUNDING MEMBER SPOTS · LIMITED</div>
+      <div class="counter-sub">// ON THE RAWCORE WAITLIST</div>
     </div>
 
     <!-- FORM -->
@@ -573,11 +574,10 @@ body::after {
 
       <!-- SUCCESS -->
       <div class="success-box" id="successBox">
-        <div class="success-tag">// YOU'RE IN</div>
-        <div class="success-num" id="yourNumber">#247</div>
+        <div class="success-tag">// YOU'RE IN — CHECK YOUR EMAIL</div>
         <div class="success-msg">
-          You're on the list. When the doors open — you'll be first to know.<br>
-          Founding member price locked. <span style="color:var(--green)">Stay raw.</span>
+          You're on the list. Confirmation is on its way.<br>
+          When the doors open — you'll be first to know. <span style="color:var(--green)">Stay raw.</span>
         </div>
       </div>
     </div>
@@ -596,7 +596,7 @@ body::after {
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
   <div style="display:flex;gap:24px">
-    <a href="index.html" class="bottom-link">HOME</a>
+    <a href="/" class="bottom-link">HOME</a>
     <a href="knowledge.html" class="bottom-link">KNOWLEDGE</a>
     <a href="pricing.html" class="bottom-link">PRICING</a>
   </div>
@@ -647,23 +647,23 @@ function animateCounter(target) {
   const step = Math.max(1, Math.ceil(target / 60));
   const timer = setInterval(() => {
     current = Math.min(current + step, target);
-    el.textContent = current.toLocaleString();
+    el.textContent = '#' + current.toLocaleString();
     if (current >= target) clearInterval(timer);
   }, 25);
 }
 
-// Load real count from Supabase
-async function loadCount() {
-  try {
-    const { count: realCount } = await sb.from('waitlist').select('*', { count: 'exact', head: true });
-    count = realCount || 0;
-  } catch(e) {
-    count = parseInt(localStorage.getItem('rc_waitlist_count') || '0');
-  }
-  setTimeout(() => animateCounter(count), 400);
+function showCounter(num) {
+  const wrap = document.querySelector('.counter-wrap');
+  wrap.style.display = 'block';
+  wrap.style.opacity = '0';
+  wrap.style.transform = 'translateY(20px)';
+  wrap.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  setTimeout(() => {
+    wrap.style.opacity = '1';
+    wrap.style.transform = 'translateY(0)';
+    animateCounter(num);
+  }, 50);
 }
-
-loadCount();
 
 // ── WAITLIST FORM ──
 async function joinWaitlist() {
@@ -693,7 +693,6 @@ async function joinWaitlist() {
     const { count: realCount } = await sb.from('waitlist').select('*', { count: 'exact', head: true });
     count = realCount || count + 1;
     localStorage.setItem('rc_waitlist_count', count);
-    document.getElementById('counterNum').textContent = count.toLocaleString();
     // Send welcome email via Edge Function (fire and forget)
     try {
       fetch('https://mlzxnrmctblfpijtihvm.supabase.co/functions/v1/send-email', {
@@ -703,9 +702,9 @@ async function joinWaitlist() {
       });
     } catch(e) {}
     document.getElementById('formRow').style.display = 'none';
-    document.getElementById('yourNumber').textContent = '#' + count;
     document.getElementById('successBox').classList.add('show');
     document.querySelector('.form-note').style.display = 'none';
+    showCounter(count);
   } catch (err) {
     console.error(err);
     btn.disabled = false;
