@@ -45,24 +45,25 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    background: rgba(5,6,8,0.95);
-    backdrop-filter: blur(12px);
+    padding: 0 32px;
+    height: 56px;
+    background: rgba(5,6,8,0.97);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
+    gap: 24px;
   }
 
   .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
   .nav-logo span { color: var(--green); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color: var(--green); }
-  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .nav-cta:hover { background: var(--green); color: var(--black); }
+  .nav-links { display: flex; gap: 0; align-items: center; flex: 1; justify-content: center; }
+  .nav-links a { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 14px; height: 56px; display: flex; align-items: center; transition: color 0.2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text-bright); }
+  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; background: var(--green); color: var(--black) !important; padding: 8px 20px !important; height: auto !important; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s !important; text-decoration: none; white-space: nowrap; }
+  .nav-cta:hover { opacity: 0.85 !important; }
 
   /* HERO */
   .hero {
@@ -496,19 +497,29 @@
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html" class="active">Contact</a></li>
-    <li><a href="shop.html">Shop</a></li>
-  </ul>
-  <a href="login.html" class="nav-cta">JOIN THE CORE →</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="knowledge.html">KNOWLEDGE</a>
+    <a href="systems.html">SYSTEMS</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="contact.html" class="active">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
+  <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="/">HOME</a>
+  <a href="about.html">ABOUT</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a>
+  <a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="waitlist.html" style="color:var(--green)">JOIN WAITLIST →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -625,7 +636,7 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">Can I cancel my membership anytime?</div>
-      <div class="faq-a">Always. No lock-ins, no yearly plans, no dark patterns. Weekly or monthly — cancel whenever you want, no questions asked.</div>
+      <div class="faq-a">Always. No lock-ins, no yearly plans, no dark patterns. Cancel whenever you want, no questions asked.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Are the bots guaranteed to make money?</div>
@@ -649,10 +660,10 @@
 <!-- BOTTOM CTA -->
 <section class="bottom-cta reveal">
   <div class="cta-tag">// READY TO JOIN?</div>
-  <h2 class="cta-title">THE CORE IS<br><span class="green">WAITING.</span></h2>
+  <h2 class="cta-title">THE WAITLIST<br><span class="green">IS OPEN.</span></h2>
   <p class="cta-sub">// No fake promises. No lambos. Just real knowledge and real systems.</p>
   <div class="cta-btns">
-    <a href="login.html" class="btn-primary">JOIN THE CORE →</a>
+    <a href="waitlist.html" class="btn-primary">JOIN WAITLIST →</a>
     <a href="community.html" class="btn-secondary">LEARN MORE</a>
   </div>
 </section>
