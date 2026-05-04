@@ -704,9 +704,19 @@ footer {
   .menu-btn { display: flex; }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .feature-grid { grid-template-columns: 1fr; }
   .steps-grid { grid-template-columns: 1fr; }
+  .hero-btns { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+  .cta-section { padding: 48px 20px; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 80px 16px 40px; }
+  nav { padding: 0 16px; }
 }
 
 /* Mobile nav */

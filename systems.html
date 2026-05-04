@@ -48,24 +48,25 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 48px;
-    height: 64px;
-    background: rgba(5,6,8,0.95);
-    backdrop-filter: blur(12px);
+    padding: 0 32px;
+    height: 56px;
+    background: rgba(5,6,8,0.97);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
+    gap: 24px;
   }
 
   .nav-logo { font-family: var(--mono); font-size: 16px; color: var(--text-bright); text-decoration: none; letter-spacing: 0.05em; }
   .nav-logo span { color: var(--green); }
-  .nav-links { display: flex; gap: 32px; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover, .nav-links a.active { color: var(--green); }
-  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 18px; background: transparent; border: 1px solid var(--green); color: var(--green); cursor: pointer; transition: all 0.2s; text-decoration: none; }
-  .nav-cta:hover { background: var(--green); color: var(--black); }
+  .nav-links { display: flex; gap: 0; align-items: center; flex: 1; justify-content: center; }
+  .nav-links a { font-family: var(--mono); font-size: 9px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; text-transform: uppercase; padding: 0 14px; height: 56px; display: flex; align-items: center; transition: color 0.2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text-bright); }
+  .nav-cta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; background: var(--green); color: var(--black) !important; padding: 8px 20px !important; height: auto !important; font-weight: 700; border: none; cursor: pointer; transition: opacity 0.2s !important; text-decoration: none; white-space: nowrap; }
+  .nav-cta:hover { opacity: 0.85 !important; }
 
   /* HERO */
   .hero {
@@ -489,7 +490,7 @@
     .overview-grid, .config-grid,
     .products-grid, .stat-row,
     .form-row, .pricing-grid,
-    .families-grid {
+    .families-grid, .onboarding-grid {
       grid-template-columns: 1fr !important;
       gap: 1px !important;
     }
@@ -511,7 +512,7 @@
     .families-section, .featured-section,
     .community-section, .coming-section,
     .contribute-section, .cta-section,
-    .products-section, .join-section,
+    .onboarding-section, .products-section, .join-section,
     .telegram-section, .ungurued-strip {
       padding: 40px 20px !important;
     }
@@ -600,24 +601,126 @@
   .mobile-menu-btn { display: none; }
   .mobile-nav { display: none; }
 
+  /* ONBOARDING SECTION */
+  .onboarding-section {
+    padding: 80px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  .onboarding-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 40px;
+  }
+
+  .onboard-card {
+    background: var(--black);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .onboard-card:hover { background: var(--card); }
+
+  .onboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--green);
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .onboard-card:hover::before { opacity: 1; }
+
+  .onboard-step {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.25em;
+    margin-bottom: 16px;
+  }
+
+  .onboard-icon {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--green);
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+
+  .onboard-title {
+    font-family: var(--display);
+    font-size: 26px;
+    color: var(--text-bright);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+
+  .onboard-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .onboard-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .onboard-list li {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .onboard-list li::before {
+    content: '→';
+    color: var(--green);
+    flex-shrink: 0;
+  }
+
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <ul class="nav-links">
-    <li><a href="index.html"data-fixed>Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="knowledge.html">Knowledge</a></li>
-    <li><a href="systems.html" class="active">Systems</a></li>
-    <li><a href="community.html">Community</a></li>
-    <li><a href="pricing.html">Pricing</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="shop.html">Shop</a></li>
-  </ul>
-  <a href="login.html" class="nav-cta">JOIN THE CORE →</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <div class="nav-links">
+    <a href="/">HOME</a>
+    <a href="about.html">ABOUT</a>
+    <a href="knowledge.html">KNOWLEDGE</a>
+    <a href="systems.html" class="active">SYSTEMS</a>
+    <a href="community.html">COMMUNITY</a>
+    <a href="pricing.html">PRICING</a>
+    <a href="contact.html">CONTACT</a>
+  </div>
+  <a href="waitlist.html" class="nav-cta">JOIN WAITLIST →</a>
+  <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
 </nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="/">HOME</a>
+  <a href="about.html">ABOUT</a>
+  <a href="knowledge.html">KNOWLEDGE</a>
+  <a href="systems.html">SYSTEMS</a>
+  <a href="community.html">COMMUNITY</a>
+  <a href="pricing.html">PRICING</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="waitlist.html" style="color:var(--green)">JOIN WAITLIST →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -712,7 +815,7 @@
             <span class="bot-badge badge-live">LIVE</span>
           </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS OMEGA →</a>
+        <a href="waitlist.html" class="family-cta">ACCESS OMEGA →</a>
       </div>
     </div>
 
@@ -742,7 +845,7 @@
             <span class="bot-badge badge-live">LIVE</span>
           </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS NOVA →</a>
+        <a href="waitlist.html" class="family-cta">ACCESS NOVA →</a>
       </div>
     </div>
 
@@ -752,7 +855,7 @@
         <div class="family-glow alpha"></div>
         <div class="family-icon alpha">ALPHA</div>
         <div class="family-subtitle">// SIGNAL EXECUTOR · MT5</div>
-        <div class="family-desc">No strategy of its own — pure execution engine. Reads signals from Telegram, opens the trade on MT5 with correct SL, TP and position sizing. Built so you never miss an entry because your hands are covered in oil.</div>
+        <div class="family-desc">No strategy of its own — pure execution engine. Reads signals from Telegram, opens the trade on MT5 with correct SL, TP and position sizing. Built for traders who want clean, automatic execution without ever missing an entry.</div>
       </div>
       <div class="family-body">
         <div class="bot-list">
@@ -762,7 +865,7 @@
             <span class="bot-badge badge-live">LIVE</span>
           </div>
         </div>
-        <a href="pricing.html" class="family-cta">ACCESS ALPHA →</a>
+        <a href="waitlist.html" class="family-cta">ACCESS ALPHA →</a>
       </div>
     </div>
 
@@ -777,7 +880,7 @@
       <div class="fb-badge">// GOLD SCALPING BOT · FLAGSHIP</div>
       <div class="fb-name">OMEGA</div>
       <div class="fb-sub">GOLD SCALPING BOT · XAUUSD · 5M · MT5 · TRADEQUO · LIVE</div>
-      <div class="fb-desc">The most battle-tested system in the RawCore arsenal. Built by a car mechanic who couldn't watch charts all day. Refined through months of live trading on XAUUSD with Tradequo. <strong>Every quirk of gold behaviour is accounted for</strong> — session timing, ATR spikes, broker-specific pip calculations. This is the real thing — not backtested fantasy.</div>
+      <div class="fb-desc">The most battle-tested system in the RawCore arsenal. Built because watching charts manually all day isn't a strategy — it's a trap. Refined through months of live trading on XAUUSD with Tradequo. <strong>Every quirk of gold behaviour is accounted for</strong> — session timing, ATR spikes, broker-specific pip calculations. This is the real thing — not backtested fantasy.</div>
       <div class="fb-specs">
         <div class="fb-spec"><div class="fb-spec-label">// ASSET</div><div class="fb-spec-val">XAUUSD (XAUUSDs)</div></div>
         <div class="fb-spec"><div class="fb-spec-label">// TIMEFRAME</div><div class="fb-spec-val">5M entry</div></div>
@@ -813,9 +916,57 @@
       </div>
       <div class="fb-access">
         <span>Full source code available to Core members</span>
-        <a href="pricing.html">JOIN CORE →</a>
+        <a href="waitlist.html">JOIN WAITLIST →</a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ONBOARDING — WHAT YOU GET -->
+<section class="onboarding-section reveal">
+  <div class="section-tag">WHAT HAPPENS AFTER YOU JOIN</div>
+  <h2 style="font-family:var(--display);font-size:clamp(32px,4vw,52px);color:var(--text-bright);line-height:0.95;max-width:600px">YOU GET THE BOT.<br><span style="color:var(--green)">WE GET YOU RUNNING.</span></h2>
+  <div class="onboarding-grid">
+
+    <div class="onboard-card">
+      <div class="onboard-step">// STEP 01</div>
+      <div class="onboard-icon">⬡</div>
+      <div class="onboard-title">FULL SETUP GUIDE</div>
+      <div class="onboard-desc">A complete walkthrough from zero to live bot — no assumed knowledge. If you've never touched Python or MT5, that's fine. We cover it all.</div>
+      <ul class="onboard-list">
+        <li>Python installation + all required packages</li>
+        <li>MetaTrader 5 setup and broker connection</li>
+        <li>Bot configuration — risk, sessions, pairs</li>
+        <li>Running your first live trade</li>
+      </ul>
+    </div>
+
+    <div class="onboard-card">
+      <div class="onboard-step">// STEP 02</div>
+      <div class="onboard-icon">◈</div>
+      <div class="onboard-title">TELEGRAM INTEGRATION</div>
+      <div class="onboard-desc">Your bot talks to you through Telegram. Get live trade alerts, account updates, and the ability to tweak settings without touching a single line of code.</div>
+      <ul class="onboard-list">
+        <li>Create your own private Telegram bot in minutes</li>
+        <li>Real-time alerts — entries, exits, SL hits</li>
+        <li>Remote commands — pause, resume, adjust risk</li>
+        <li>Daily P&amp;L summaries sent automatically</li>
+      </ul>
+    </div>
+
+    <div class="onboard-card">
+      <div class="onboard-step">// STEP 03</div>
+      <div class="onboard-icon">▲</div>
+      <div class="onboard-title">ONGOING SUPPORT</div>
+      <div class="onboard-desc">Bots throw errors. Markets change. Strategies need tweaking. You won't be left figuring it out alone — the community and documentation have you covered.</div>
+      <ul class="onboard-list">
+        <li>Error code guide — what broke and why</li>
+        <li>State file diagnostics — see exactly what the bot sees</li>
+        <li>Strategy tweak documentation as we improve</li>
+        <li>Private Core community for live Q&amp;A</li>
+      </ul>
+    </div>
+
   </div>
 </section>
 
@@ -841,7 +992,7 @@
         <div style="color:var(--text-dim)">Bot accepted into Core marketplace</div>
       </div>
     </div>
-    <a href="pricing.html" style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--green);text-decoration:none;border:1px solid rgba(0,255,136,0.3);padding:10px 20px;display:inline-block;transition:all 0.2s" onmouseover="this.style.background='var(--green-muted)'" onmouseout="this.style.background='transparent'">JOIN CORE TO CONTRIBUTE →</a>
+    <a href="waitlist.html" style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:var(--green);text-decoration:none;border:1px solid rgba(0,255,136,0.3);padding:10px 20px;display:inline-block;transition:all 0.2s" onmouseover="this.style.background='var(--green-muted)'" onmouseout="this.style.background='transparent'">JOIN WAITLIST TO CONTRIBUTE →</a>
   </div>
 </section>
 
@@ -903,10 +1054,10 @@
 <!-- CTA -->
 <section class="cta-section reveal">
   <div class="cta-tag">// READY TO RUN REAL SYSTEMS?</div>
-  <h2 class="cta-title">THE CODE IS<br><span class="green">WAITING.</span></h2>
-  <p class="cta-sub">// Full source code. Real documentation. Community support.<br>// Everything you need to run, modify, and improve these systems.</p>
+  <h2 class="cta-title">BE FIRST<br><span class="green">IN.</span></h2>
+  <p class="cta-sub">// Full source code. Real documentation. Step-by-step setup.<br>// Join the waitlist — early members get first access when we open the doors.</p>
   <div class="cta-btns">
-    <a href="pricing.html" class="btn-primary">JOIN CORE — ACCESS ALL SYSTEMS →</a>
+    <a href="waitlist.html" class="btn-primary">GET EARLY ACCESS →</a>
     <a href="knowledge.html" class="btn-secondary">LEARN THE BASICS FIRST</a>
   </div>
 </section>
