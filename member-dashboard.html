@@ -406,9 +406,12 @@
             </div>
           </div>
           <div class="ai-box">
-            <div class="ai-box-label">// CORE AI — ASK ABOUT YOUR BOTS</div>
-            <input class="ai-box-input" id="aiInput" placeholder="e.g. why did OMEGA not trade this morning?" onkeydown="if(event.key==='Enter') askAI()" />
-            <div class="ai-response" id="aiResponse"></div>
+            <div class="ai-box-label">// CORE AI — ASK ABOUT TRADING &amp; BOTS</div>
+            <div style="display:flex;gap:6px;align-items:stretch">
+              <input class="ai-box-input" id="aiInput" placeholder="e.g. what R multiple should I target?" onkeydown="if(event.key==='Enter') askAI()" style="flex:1" />
+              <button onclick="askAI()" style="background:var(--blue);color:white;border:none;font-family:var(--mono);font-size:9px;letter-spacing:0.1em;padding:0 12px;cursor:pointer;white-space:nowrap;transition:opacity 0.2s" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">ASK →</button>
+            </div>
+            <div class="ai-response" id="aiResponse" style="max-height:180px;overflow-y:auto"></div>
           </div>
         </div>
       </div>
@@ -565,30 +568,62 @@
 </div>
 
 <script>
-const aiAnswers = [
-  'OMEGA GS has a <span class="hi">session filter</span> — it only trades during London and NY sessions. If the signal came outside those windows, the bot correctly stayed flat. Check the session times in your config.',
-  'The <span class="hi">ATR filter</span> may have blocked the entry — if volatility was below threshold (ATR < 0.8) OMEGA GS skips the trade even if the EMA cross happened. Low volatility = low quality setups.',
-  'Your NOVA BTC position is currently <span class="hi">running at +1.4R</span>. TP1 hit at 1R, SL moved to breakeven. The remainder is trailing toward TP2 at 2R. No action needed.',
-  'Position sizing on XAUUSD: with a 1% risk on a €1,000 account and 40 pip SL, your lot size should be <span class="hi">0.025 lots</span>. OMEGA GS calculates this automatically based on your account balance.',
-];
+const AI_SYSTEM = `You are RawCore AI — the in-platform assistant for RawCore Trading. Embedded inside a trading education and community platform built by traders, for traders.
 
-let aiIndex = 0;
+Your knowledge is strictly limited to:
+- Trading: technical analysis, market structure, price action, supply & demand zones, fair value gaps, liquidity sweeps, EMA strategies, risk management, R multiples, position sizing, stop loss, take profit, trading psychology, session timing (London/NY/Asian)
+- Algorithmic trading: Python, MetaTrader 5, MT5 APIs, Bybit API, automated strategies, backtesting
+- RawCore platform: OMEGA bot (XAUUSD gold scalping, EMA9×EMA21, ATR filter, Tradequo), NOVA bot (crypto multi-timeframe, BTC/ETH/SOL, Bybit, 20x leverage), ALPHA bot (Telegram signal executor, MT5), Core Room, Knowledge Hub, Core Credits, Core Pot, leaderboard
 
-function askAI() {
+If asked about anything outside these topics respond: "That's outside my lane. I only know trading, bots, and RawCore."
+
+Be direct, concise, no fluff. Never make up trade results or performance data.`;
+
+const _aiHistory = [];
+
+async function askAI() {
   const input = document.getElementById('aiInput');
   const response = document.getElementById('aiResponse');
-  if (!input.value.trim()) return;
+  const question = input.value.trim();
+  if (!question) return;
 
+  // Show thinking state
+  input.disabled = true;
   response.classList.remove('show');
   response.innerHTML = '<span style="color:var(--blue)">// thinking...</span>';
   response.classList.add('show');
 
-  setTimeout(() => {
-    response.innerHTML = aiAnswers[aiIndex % aiAnswers.length];
-    aiIndex++;
-    input.value = '';
-  }, 900);
+  // Add to history
+  _aiHistory.push({ role: 'user', content: question });
+  input.value = '';
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: AI_SYSTEM,
+        messages: _aiHistory
+      })
+    });
+
+    const data = await res.json();
+    const answer = data.content?.[0]?.text || 'No response.';
+    _aiHistory.push({ role: 'assistant', content: answer });
+
+    // Keep history short (last 6 messages)
+    if (_aiHistory.length > 6) _aiHistory.splice(0, 2);
+
+    response.innerHTML = `<span style="color:var(--green);font-size:9px;letter-spacing:0.15em">RAWCORE AI</span><br><span style="white-space:pre-wrap">${answer}</span>`;
+  } catch(e) {
+    response.innerHTML = '<span style="color:var(--red)">// Connection error. Try again.</span>';
+    _aiHistory.pop(); // remove failed message
+  }
+
+  input.disabled = false;
+  input.focus();
 }
+
 
 function choosePot(el) {
   document.querySelectorAll('.pot-choice').forEach(c => c.classList.remove('active'));
