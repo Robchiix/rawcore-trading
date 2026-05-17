@@ -350,7 +350,7 @@
   <div class="stat-row">
     <div class="stat-card green">
       <div class="sc-label">// SUBSCRIPTION</div>
-      <div class="sc-val green">CORE</div>
+      <div class="sc-val green" id="subTierVal">CORE</div>
       <div class="sc-sub" id="billingDate">Active member</div>
     </div>
     <div class="stat-card blue">
@@ -667,6 +667,9 @@ function setW(id, pct)  { const e = document.getElementById(id); if (e) e.style.
     tierBadge.style.color = t.color;
     tierBadge.style.borderColor = t.border;
     tierBadge.style.background = t.bg;
+    // Also update subscription stat card
+    const subVal = document.getElementById('subTierVal');
+    if (subVal) { subVal.textContent = t.label; subVal.style.color = t.color; }
   }
 
   // Upsert user_credits row — this is the key fix for Google OAuth users.
