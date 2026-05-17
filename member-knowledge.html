@@ -1987,9 +1987,28 @@ async function loadAndUpdateStreak(userId, jwt) {
       method: 'POST', headers,
       body: JSON.stringify({ user_id: userId, action_type: 'login', action_date: today })
     });
-    // Award +10 daily login credits — wait for credits to load first
+    // Wait for DB credits baseline before awarding
     await _creditsLoadPromise;
+    // +10 daily login
     earnCredits(10);
+    // Streak milestone bonuses — only fire once per milestone using daily_actions
+    if (streak === 7 || streak === 30) {
+      const bonusPts  = streak === 7 ? 250 : 1000;
+      const bonusType = streak === 7 ? 'streak_7' : 'streak_30';
+      // Check if already claimed this milestone
+      const bonusCheck = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_type=eq.${bonusType}&select=id&limit=1`, { headers });
+      const bonusRows  = bonusCheck.ok ? await bonusCheck.json() : [{ id: 'exists' }]; // default to exists on error
+      if (bonusRows.length === 0) {
+        // First time hitting this streak milestone — award bonus
+        await fetch(`${_sbUrl}/rest/v1/daily_actions`, {
+          method: 'POST', headers,
+          body: JSON.stringify({ user_id: userId, action_type: bonusType, action_date: today })
+        });
+        earnCredits(bonusPts);
+        // Show a toast notification
+        showStreakBonus(streak, bonusPts);
+      }
+    }
   }
 
   // Update display
@@ -2138,6 +2157,29 @@ async function answerTask(lessonId, optIdx, isCorrect) {
     ? '<span>+20 pts earned · Lesson complete ✓</span>'
               : '<span>Wrong answer · No pts earned · Quiz marked</span>';
   cp.classList.add('show');
+
+  // Check all-lessons-complete bonus
+  if (isCorrect) {
+    const totalLessons = Object.keys(lessonData).length;
+    const fullCount = Object.values(lessonScores).filter(s => s === 'full').length;
+    if (fullCount === totalLessons) {
+      // All lessons complete! Check if bonus already awarded
+      fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${_userId}&action_type=eq.all_lessons_complete&select=id&limit=1`, {
+        headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}` }
+      }).then(r => r.json()).then(rows => {
+        if (rows.length === 0) {
+          // Award +500 once
+          fetch(`${_sbUrl}/rest/v1/daily_actions`, {
+            method: 'POST',
+            headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates' },
+            body: JSON.stringify({ user_id: _userId, action_type: 'all_lessons_complete', action_date: new Date().toISOString().split('T')[0] })
+          });
+          earnCredits(500);
+          showStreakBonus('all', 500);
+        }
+      }).catch(() => {});
+    }
+  }
 
   updateProgress();
 }
@@ -2444,6 +2486,32 @@ async function loadLeaderboardMini() {
     }
     // pts already set by loadProgressFromDB / earnCredits
   } catch(e) { console.warn('Leaderboard mini failed:', e); }
+}
+
+function showStreakBonus(streakOrAll, pts) {
+  const msg = streakOrAll === 'all'
+    ? `🎓 ALL LESSONS COMPLETE! +${pts.toLocaleString()} pts bonus!`
+    : `🔥 ${streakOrAll}-DAY STREAK! +${pts.toLocaleString()} pts bonus!`;
+  // Create toast
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:var(--green);color:var(--black);
+    font-family:var(--mono);font-size:12px;font-weight:700;
+    padding:12px 24px;z-index:9999;
+    animation:slideUpFade 4s ease forwards;
+    letter-spacing:0.1em;
+  `;
+  toast.textContent = msg;
+  // Add animation
+  if (!document.getElementById('toastStyle')) {
+    const style = document.createElement('style');
+    style.id = 'toastStyle';
+    style.textContent = '@keyframes slideUpFade{0%{opacity:0;transform:translateX(-50%) translateY(20px)}10%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}';
+    document.head.appendChild(style);
+  }
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
 }
 
 function openMobileMenu(){const m=document.getElementById('mobileMenu');if(m){m.style.display='flex';document.body.style.overflow='hidden';}}
