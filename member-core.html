@@ -361,7 +361,7 @@
     </div>
     <div class="banner-cell blue">
       <div class="bc-label">// SUBSCRIPTION</div>
-      <div class="bc-val blue" id="navTierBadge" style="font-size:24px">—</div>
+      <div style="font-family:var(--display);font-size:28px;line-height:1;color:var(--text-bright)" id="navTierBadge">—</div>
       <div class="bc-sub">Active · monthly</div>
     </div>
     <div class="banner-cell purple">
@@ -626,7 +626,7 @@ let currentUsername = '';
   if (tierBadge) {
     const ts = { admin:{label:'ADMIN',color:'var(--red)',border:'rgba(255,51,85,0.4)',bg:'rgba(255,51,85,0.08)'}, core:{label:'CORE',color:'var(--green)',border:'rgba(0,255,136,0.3)',bg:'var(--green-muted)'}, free:{label:'FREE',color:'var(--text-dim)',border:'var(--border)',bg:'transparent'} };
     const t = ts[role] || ts.core;
-    tierBadge.textContent = t.label; tierBadge.style.color = t.color; tierBadge.style.borderColor = t.border; tierBadge.style.background = t.bg;
+    tierBadge.textContent = t.label; tierBadge.style.color = t.color;
   }
 
   // ── STREAK CALCULATION ────────────────────────────────────────────────────
