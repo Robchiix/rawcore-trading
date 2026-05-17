@@ -664,7 +664,9 @@
     }
     // Set user info in nav if elements exist
     const user = session.user;
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const rawName = user.user_metadata?.username || user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const name = String(rawName).trim().substring(0, 20) || 'member';
+    _username = name; // make available to saveCreditsToDb
     const avatar = user.user_metadata?.avatar_url || null;
     const nameEl = document.getElementById('navUsername');
     const avatarEl = document.getElementById('navAvatar');
@@ -732,7 +734,7 @@
   <div class="topics-sidebar">
     <div class="sidebar-header">
       <div class="sidebar-title">LEARN</div>
-      <div class="sidebar-sub">// 5 TOPICS · 20 LESSONS</div>
+      <div class="sidebar-sub">// 6 TOPICS · 25 LESSONS</div>
     </div>
 
     <div class="streak-bar">
@@ -753,6 +755,27 @@
     </div>
 
     <!-- PSYCHOLOGY -->
+    <!-- INTRO TOPIC -->
+    <div id="topic-intro" class="topic-item" onclick="openTopic('intro')">
+      <div class="ti-head">
+        <div class="ti-icon" style="color:var(--green)">→</div>
+        <div class="ti-info">
+          <div class="ti-title">INTRODUCTION</div>
+          <div class="ti-sub">5 LESSONS</div>
+        </div>
+        <span class="ti-pct" id="pct-intro" style="font-family:var(--mono);font-size:9px;color:var(--green)">0%</span>
+      </div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-intro" style="width:0%;background:var(--green)"></div></div>
+      <div class="ti-meta"><span id="done-intro">0/5 answered</span><span id="tasks-intro">0 tasks</span></div>
+    </div>
+    <div id="list-intro" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-intro-1" onclick="openLesson('intro-1')"><span class="ll-num">01</span><span class="ll-title">What is trading?</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-intro-2" onclick="openLesson('intro-2')"><span class="ll-num">02</span><span class="ll-title">How markets move</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-intro-3" onclick="openLesson('intro-3')"><span class="ll-num">03</span><span class="ll-title">Reading a chart</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-intro-4" onclick="openLesson('intro-4')"><span class="ll-num">04</span><span class="ll-title">Leverage and lots</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-intro-5" onclick="openLesson('intro-5')"><span class="ll-num">05</span><span class="ll-title">Your first trading plan</span><span class="ll-badge free">FREE</span></div>
+    </div>
+
     <div id="topic-psychology" class="topic-item" onclick="openTopic('psychology')">
       <div class="ti-header">
         <span class="ti-icon" style="color:var(--purple)">◎</span>
@@ -807,21 +830,21 @@
     </div>
 
     <!-- TRADING BOTS -->
-    <div id="topic-systems" class="topic-item" onclick="openTopic('systems')">
+    <div id="topic-bots" class="topic-item" onclick="openTopic('bots')">
       <div class="ti-header">
         <span class="ti-icon" style="color:var(--green)">&lt;/&gt;</span>
         <span class="ti-name">Trading Bots</span>
-        <span class="ti-pct" id="pct-systems" style="font-family:var(--mono);font-size:9px;color:var(--green)">0%</span>
+        <span class="ti-pct" id="pct-bots" style="font-family:var(--mono);font-size:9px;color:var(--green)">0%</span>
       </div>
-      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-systems" style="width:0%;background:var(--green)"></div></div>
-      <div class="ti-meta"><span id="done-systems">0/5 lessons</span><span id="tasks-systems">0 tasks</span></div>
+      <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-bots" style="width:0%;background:var(--green)"></div></div>
+      <div class="ti-meta"><span id="done-bots">0/5 lessons</span><span id="tasks-bots">0 tasks</span></div>
     </div>
-    <div id="list-systems" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
-      <div class="ll-item" id="ll-systems-1" onclick="openLesson('systems-1')"><span class="ll-num">01</span><span class="ll-title">Why a mechanic built a bot</span><span class="ll-badge free">FREE</span></div>
-      <div class="ll-item" id="ll-systems-2" onclick="openLesson('systems-2')"><span class="ll-num">02</span><span class="ll-title">How OMEGA GS works</span><span class="ll-badge core">CORE</span></div>
-      <div class="ll-item" id="ll-systems-3" onclick="openLesson('systems-3')"><span class="ll-num">03</span><span class="ll-title">NOVA — the crypto bot</span><span class="ll-badge core">CORE</span></div>
-      <div class="ll-item" id="ll-systems-4" onclick="openLesson('systems-4')"><span class="ll-num">04</span><span class="ll-title">Reading bot results</span><span class="ll-badge core">CORE</span></div>
-      <div class="ll-item" id="ll-systems-5" onclick="openLesson('systems-5')"><span class="ll-num">05</span><span class="ll-title">Building your first EA</span><span class="ll-badge core">CORE</span></div>
+    <div id="list-bots" style="display:none;background:var(--black);border-bottom:1px solid var(--border)">
+      <div class="ll-item" id="ll-bots-1" onclick="openLesson('bots-1')"><span class="ll-num">01</span><span class="ll-title">Why a mechanic built a bot</span><span class="ll-badge free">FREE</span></div>
+      <div class="ll-item" id="ll-bots-2" onclick="openLesson('bots-2')"><span class="ll-num">02</span><span class="ll-title">How OMEGA GS works</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-bots-3" onclick="openLesson('bots-3')"><span class="ll-num">03</span><span class="ll-title">NOVA — the crypto bot</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-bots-4" onclick="openLesson('bots-4')"><span class="ll-num">04</span><span class="ll-title">Reading bot results</span><span class="ll-badge core">CORE</span></div>
+      <div class="ll-item" id="ll-bots-5" onclick="openLesson('bots-5')"><span class="ll-num">05</span><span class="ll-title">Building your first EA</span><span class="ll-badge core">CORE</span></div>
     </div>
 
 <!-- BROKERS (LOCKED) -->
@@ -855,7 +878,7 @@
       <button class="mob-topic-btn" onclick="openTopic('psychology')">◎ PSYCHOLOGY</button>
       <button class="mob-topic-btn" onclick="openTopic('markets')">⬡ MARKETS</button>
       <button class="mob-topic-btn" onclick="openTopic('risk')">▲ RISK</button>
-      <button class="mob-topic-btn" onclick="openTopic('systems')">&lt;/&gt; BOTS</button>
+      <button class="mob-topic-btn" onclick="openTopic('bots')">&lt;/&gt; BOTS</button>
     </div>
 
     <!-- LESSON CONTENT -->
@@ -877,7 +900,7 @@
             <div style="font-family:var(--mono);font-size:9px;color:var(--red);margin-bottom:6px">RISK MANAGEMENT</div>
             <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
           </div>
-          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('systems')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('bots')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
             <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">TRADING BOTS</div>
             <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
           </div>
@@ -971,25 +994,13 @@
       <div class="cb-title">DAILY CHALLENGE</div>
       <button class="cb-close" onclick="closeChallenge()">✕</button>
     </div>
-    <div class="cb-badge">// TODAY · APR 19, 2026 · +25 PTS</div>
-    <div style="margin-top:16px"></div>
-    <div class="cb-question">Look at the XAUUSD price action below. Before the bullish move at point C, what happened at point B?</div>
-    <div class="cb-image">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-bottom:8px">// XAUUSD 5M · LONDON SESSION</div>
-      <div style="color:var(--green);white-space:pre;line-height:1.4;font-size:11px">         C ↑ (strong move up)
-        /
-──────B──  ← what happened here?
-      ↓
-  A (swing low)</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:8px">Price made a swing low at A, moved to B, then launched to C</div>
-    </div>
-    <div class="cb-options" id="challengeOptions">
-      <div class="cb-option" onclick="answerChallenge(this, false)">A — Price consolidated sideways at B before moving up</div>
-      <div class="cb-option" onclick="answerChallenge(this, true)">B — Price swept below the swing low at A (liquidity sweep) before reversing up strongly</div>
-      <div class="cb-option" onclick="answerChallenge(this, false)">C — Price formed a double bottom pattern at B and A</div>
-      <div class="cb-option" onclick="answerChallenge(this, false)">D — Price broke above resistance at B causing the move to C</div>
-    </div>
-    <div class="cb-reward">// Complete daily challenges to maintain your streak · <span>+25 pts</span> on correct answer</div>
+    <div id="cbBadge" class="cb-badge">// TODAY · LOADING...</div>
+    <div id="cbDiffBadge" style="margin-top:8px;font-family:var(--mono);font-size:9px;letter-spacing:0.15em;padding:2px 8px;display:inline-block;border:1px solid var(--border)">EASY</div>
+    <div style="margin-top:16px;font-family:var(--mono);font-size:10px;color:var(--text-dim)" id="cbCategory">// CATEGORY</div>
+    <div class="cb-question" id="cbQuestion">Loading...</div>
+    <div class="cb-options" id="challengeOptions"></div>
+    <div id="cbFeedback" style="display:none;font-family:var(--mono);font-size:11px;padding:12px 14px;margin-top:8px;border-left:2px solid var(--green);background:rgba(0,255,136,0.06);color:var(--text)"></div>
+    <div class="cb-reward">// Complete daily challenges to maintain your streak · <span id="cbPts">+25 pts</span> on correct answer · <span>+5 pts</span> for trying</div>
   </div>
 </div>
 
@@ -998,6 +1009,118 @@
 <script>
 
 const lessonData = {
+
+  'intro-1': {
+    topic:'intro', num:1, title:"WHAT IS TRADING?", sub:"The actual definition — not the Instagram version", read:"6 MIN", free:true,
+    content:`<p class="lv-text">Trading is the act of buying and selling financial instruments — currencies, commodities, stocks, crypto — with the goal of profiting from price movements. That's the clean definition. The reality is messier.</p>
+<div class="lv-callout"><span class="label">// THE REAL DEFINITION</span>Trading is speculation. You are placing a bet on where price will go next, using a probabilistic edge — a set of rules that win more often than they lose over a large sample of trades.</div>
+<div class="lv-section">WHAT TRADERS ACTUALLY DO</div>
+<p class="lv-text">Most people picture a trader shouting on a floor in New York. The modern reality: someone sitting at a laptop, watching charts, waiting for a specific setup that matches a pre-defined rule, entering a position, and then stepping away. The job is mostly waiting.</p>
+<p class="lv-text"><strong>The three types of traders:</strong></p>
+<p class="lv-text"><strong>Day traders</strong> open and close positions within a single session — no overnight exposure. High frequency, higher stress, needs consistent screen time.</p>
+<p class="lv-text"><strong>Swing traders</strong> hold positions for days to weeks. Fewer decisions, bigger targets, more patience required.</p>
+<p class="lv-text"><strong>Algorithmic traders</strong> use automated systems (bots) to execute rules without emotion. This is what OMEGA and NOVA are built on.</p>
+<div class="lv-section">WHY MOST PEOPLE FAIL</div>
+<p class="lv-text">The failure rate in trading is real — around 70-80% of retail traders lose money. The reasons are predictable: overleveraging, no edge, emotional decisions, and treating it like gambling rather than a probability business.</p>
+<div class="lv-callout"><span class="label">// THE CORE TRUTH</span>Profitable trading is not about being right. It's about losing small when you're wrong and winning bigger when you're right. The math works over time — not trade by trade.</div>`,
+    task: {
+      q: "What is the primary goal of a trader?",
+      options: [
+        { text:"To be right on every trade", correct:false, feedback:"Wrong. Even the best traders lose 40% of their trades. Being right on every trade is impossible — managing your losses is what matters." },
+        { text:"To profit from price movements using a probabilistic edge", correct:true, feedback:"Correct. Trading is a probability game. You need rules that produce a positive expected value over a large sample — not perfection on every single trade." },
+        { text:"To predict the market direction accurately", correct:false, feedback:"Not quite. Prediction implies certainty. Traders work with probabilities — they never know what any single trade will do, only what their strategy does over many trades." },
+        { text:"To make money every day without losing", correct:false, feedback:"Incorrect. Every professional trader has losing days. The goal is to be profitable over weeks and months, not to eliminate all losses." }
+      ]
+    }
+  },
+  'intro-2': {
+    topic:'intro', num:2, title:"HOW MARKETS MOVE", sub:"Price, buyers, sellers, and the institutions behind it all", read:"7 MIN", free:true,
+    content:`<p class="lv-text">Price moves because of an imbalance between buyers and sellers. When more people want to buy than sell at a given price, price rises. When more want to sell, it falls. Simple in theory. In practice — the entity doing most of the buying and selling is not you.</p>
+<div class="lv-section">RETAIL VS INSTITUTIONAL</div>
+<p class="lv-text">Retail traders (you) trade in units of thousands or tens of thousands. Institutional traders — banks, hedge funds, market makers — trade in millions and billions. When an institution wants to buy 500 million worth of gold, they can't just click buy at one price without moving the market against themselves.</p>
+<div class="lv-callout"><span class="label">// HOW INSTITUTIONS BUY</span>They accumulate positions slowly, often pushing price in one direction first to trigger retail stop losses — collecting liquidity — before reversing to their actual intended direction. This is called a liquidity sweep.</div>
+<div class="lv-section">WHAT DRIVES PRICE</div>
+<p class="lv-text"><strong>Fundamentals:</strong> Interest rates, economic data (CPI, NFP, GDP), geopolitical events. Gold is particularly sensitive to US dollar strength and interest rate expectations.</p>
+<p class="lv-text"><strong>Technicals:</strong> Price action patterns, support/resistance, volume, order flow. Most short-term traders focus here.</p>
+<p class="lv-text"><strong>Sentiment:</strong> What the market believes will happen — often more powerful than what actually happens.</p>
+<div class="lv-section">THE CURRENCY PAIR</div>
+<p class="lv-text">XAUUSD means one troy ounce of Gold priced in US Dollars. If XAUUSD is 3,200 — one ounce costs $3,200. When we say gold goes up, we mean the dollar is buying less gold — or gold is getting more expensive in dollar terms.</p>`,
+    task: {
+      q: "Why do institutions sometimes push price DOWN before buying?",
+      options: [
+        { text:"To create a better-looking chart pattern", correct:false, feedback:"Incorrect. Institutions don't care about chart aesthetics — they care about filling large orders at good prices." },
+        { text:"To trigger retail stop losses and collect liquidity before reversing up", correct:true, feedback:"Correct. This is the core of the liquidity sweep concept. Institutions need large volumes to fill — retail stops below key levels provide that volume. Price sweeps, collects the orders, then reverses to the real direction." },
+        { text:"Because they're not sure where price will go", correct:false, feedback:"Wrong. Institutions with billions under management have significant information advantages. The downward move before a rally is deliberate, not uncertain." },
+        { text:"To shake out weak holders so price rises faster", correct:false, feedback:"Partially related but not the complete answer. The mechanism is specifically about liquidity — collecting the orders sitting at stop loss levels to fill their own large buy positions." }
+      ]
+    }
+  },
+  'intro-3': {
+    topic:'intro', num:3, title:"READING A CHART", sub:"Candles, timeframes, and what price is actually telling you", read:"7 MIN", free:true,
+    content:`<p class="lv-text">A price chart is a visual record of every transaction at every price over a given time period. Every candle tells you four things: where price opened, where it went highest, where it went lowest, and where it closed.</p>
+<div class="lv-section">CANDLESTICK BASICS</div>
+<p class="lv-text">A <strong>green (bullish) candle</strong> means price closed higher than it opened — buyers won that period. A <strong>red (bearish) candle</strong> means price closed lower — sellers won. The wicks above and below show you how far price tested in either direction before being rejected.</p>
+<div class="lv-callout"><span class="label">// KEY PRINCIPLE</span>Long wicks are rejections. A long upper wick on a candle means price tried to go higher but got pushed back down — sellers showed up aggressively. Long lower wicks mean buyers absorbed the sell pressure.</div>
+<div class="lv-section">TIMEFRAMES</div>
+<p class="lv-text">Every timeframe shows the same market from a different zoom level. The <strong>Monthly</strong> chart shows you the big picture — where price has been over years. The <strong>4H</strong> shows directional bias. The <strong>1H and 15M</strong> are for entries. The <strong>5M</strong> is for fine-tuning.</p>
+<p class="lv-text">The rule at RawCore: always align your trade direction with the higher timeframe bias. Trading a 15M buy signal against a 4H downtrend is fighting the tide.</p>
+<div class="lv-section">SUPPORT AND RESISTANCE</div>
+<p class="lv-text">Support is a price area where buying was strong enough to stop a fall. Resistance is where selling was strong enough to stop a rise. Old resistance often becomes new support — and vice versa — because those prices are significant to institutions and algorithms.</p>`,
+    task: {
+      q: "A 4H candle on XAUUSD has a very long lower wick but closes near the top. What does this most likely mean?",
+      options: [
+        { text:"Strong selling pressure dominated the period", correct:false, feedback:"Incorrect. If selling dominated, price would close near the bottom, not the top. The close near the high shows buyers ultimately won." },
+        { text:"Price tested lower, found buyers who pushed it back up aggressively", correct:true, feedback:"Correct. The long lower wick shows sellers pushed price down hard — but buyers absorbed all that pressure and drove price back to the top. This is a strong bullish rejection signal." },
+        { text:"The market was undecided and moved sideways", correct:false, feedback:"Wrong. A sideways/indecisive candle would have a small body and small wicks roughly equal in size. A long lower wick with a close near the high is a strong directional signal." },
+        { text:"Price will definitely continue lower next candle", correct:false, feedback:"Incorrect. The opposite is more likely — a long lower wick with bullish close suggests buyers are in control and the next move may continue upward." }
+      ]
+    }
+  },
+  'intro-4': {
+    topic:'intro', num:4, title:"LEVERAGE AND LOTS", sub:"Why €100 can control €10,000 — and blow up overnight", read:"6 MIN", free:true,
+    content:`<p class="lv-text">Leverage is the most powerful and most dangerous tool in trading. It allows you to control a position size much larger than your actual deposit. Understanding it mathematically is non-negotiable before you touch a live account.</p>
+<div class="lv-section">WHAT IS A LOT?</div>
+<p class="lv-text">In forex and gold trading, position size is measured in <strong>lots</strong>. One standard lot of XAUUSD = 100 troy ounces of gold. At $3,200 per ounce, one standard lot = $320,000 in notional value. You don't need $320,000 to trade it — that's where leverage comes in.</p>
+<div class="lv-callout"><span class="label">// LOT SIZES</span>1 standard lot = 100oz · 0.1 mini lot = 10oz · 0.01 micro lot = 1oz. Each pip (point) on XAUUSD with a 0.01 lot = approximately $0.10. With 0.1 lots = $1 per pip. With 1 lot = $10 per pip.</div>
+<div class="lv-section">THE LEVERAGE REALITY</div>
+<p class="lv-text">With 100:1 leverage, a €1,000 account can control €100,000 in positions. A 1% move against you wipes your entire account. This is why position sizing is the first thing to learn — not chart patterns.</p>
+<p class="lv-text">The correct approach: risk a fixed percentage of your account per trade — typically 0.5% to 2%. If you have €500 and risk 1% per trade, your maximum loss is €5 per trade. At that risk level, you can survive 100 consecutive losing trades and still have capital to continue.</p>
+<div class="lv-section">OMEGA AND NOVA POSITION SIZING</div>
+<p class="lv-text">OMEGA (gold bot) uses ATR-based position sizing to adjust lot size based on current market volatility. NOVA (crypto) uses a fixed percentage of balance per trade. Neither ever bets more than a defined maximum — this is the circuit breaker that keeps accounts alive during drawdowns.</p>`,
+    task: {
+      q: "You have a €1,000 account and risk 1% per trade with a 50-pip stop loss on XAUUSD. What is your maximum lot size?",
+      options: [
+        { text:"0.1 lots", correct:false, feedback:"Too large. At 0.1 lots, each pip is worth ~$1. A 50-pip stop = $50 loss = 5% of account. That's 5x your intended risk." },
+        { text:"0.02 lots", correct:true, feedback:"Correct. 1% of €1,000 = €10 max loss. At 0.02 lots, each pip ≈ $0.20. 50 pips × $0.20 = $10. That's exactly 1% risk." },
+        { text:"0.01 lots", correct:false, feedback:"Too small. At 0.01 lots, 50 pips = $5 = 0.5% risk. You're leaving risk capacity unused, which slows account growth unnecessarily." },
+        { text:"1 lot", correct:false, feedback:"Way too large. At 1 lot, each pip = $10. A 50-pip stop = $500 = 50% of your account on a single trade. This is account destruction territory." }
+      ]
+    }
+  },
+  'intro-5': {
+    topic:'intro', num:5, title:"YOUR FIRST TRADING PLAN", sub:"The document that stops you making it up in the moment", read:"7 MIN", free:true,
+    content:`<p class="lv-text">A trading plan is a written set of rules that governs every decision you make in the market. Without one, every trade becomes improvised. Improvised trading is gambling. The plan is what separates a trader from a punter.</p>
+<div class="lv-section">WHAT GOES IN A TRADING PLAN</div>
+<p class="lv-text"><strong>1. What you trade:</strong> Specific instruments only. XAUUSD, BTCUSDT — not "whatever looks interesting today."</p>
+<p class="lv-text"><strong>2. When you trade:</strong> Sessions, days of the week. OMEGA doesn't trade the Asian session. That's a rule, not a suggestion.</p>
+<p class="lv-text"><strong>3. Your entry rules:</strong> Specific, testable conditions. "Price must be above EMA21 on 4H and form a demand zone rejection on 15M." Not "when it looks like it's going up."</p>
+<p class="lv-text"><strong>4. Your risk rules:</strong> Maximum risk per trade (e.g. 1%). Maximum daily loss before you stop (e.g. 3%). Maximum weekly loss before you take a break.</p>
+<p class="lv-text"><strong>5. Your exit rules:</strong> Where your stop loss goes before you enter. Where your take profits are. No moving stops against yourself mid-trade.</p>
+<div class="lv-callout"><span class="label">// THE RULE TEST</span>Every rule in your plan should be answerable with YES or NO. "Is price above EMA21?" — yes or no. "Does it look bullish?" is not a rule. Subjective conditions are loopholes your emotions will exploit.</div>
+<div class="lv-section">THE AUTOMATION ADVANTAGE</div>
+<p class="lv-text">A trading bot is a trading plan written in code. It cannot feel fear. It cannot FOMO into a trade. It cannot revenge trade after a loss. OMEGA and NOVA are the culmination of this idea — strict rules, zero emotion, consistent execution.</p>
+<p class="lv-text">You don't need to run a bot to benefit from this mindset. Writing your plan as if it were code — with clear IF/THEN logic — makes it executable by a human too.</p>`,
+    task: {
+      q: "Which entry rule meets the standard of a proper trading plan?",
+      options: [
+        { text:"Enter when gold looks like it's going to bounce", correct:false, feedback:"Not a rule — this is a feeling. 'Looks like' is subjective and impossible to backtest or verify consistently." },
+        { text:"Enter long when price touches the 4H demand zone AND closes above EMA21 on the 1H", correct:true, feedback:"Correct. This is specific, testable, and binary. Either both conditions are met or they aren't. There's no room for emotional interpretation." },
+        { text:"Enter when you feel confident about the trade", correct:false, feedback:"Confidence is an emotion, not a condition. The moments you feel most confident are often the moments you're most exposed to being wrong." },
+        { text:"Enter when the news is positive for gold", correct:false, feedback:"Too vague. 'Positive news' is subjective. What counts? How positive? What timeframe? This cannot be consistently applied or backtested." }
+      ]
+    }
+  },
+
   'psych-1': {
     topic:'psychology', num:1, title:"THE DOPAMINE TRAP", sub:"Why you blow up when you're winning", read:"8 MIN", free:true,
     content:`<p class="lv-text">You deposit €100. Start with 0.01 lots. Patient, disciplined. The account grows. You double it. Then something changes — not the strategy, not the market. <strong>Your brain.</strong> Dopamine tells you to push harder. Lots double. Entries increase. You feel like you've figured it out.</p>
@@ -1323,8 +1446,8 @@ const lessonData = {
       ]
     }
   },
-  'systems-1': {
-    topic:'systems', num:1, title:"WHY A CAR MECHANIC BUILT A TRADING BOT", sub:"The real story behind ALPHA, OMEGA, and NOVA", read:"8 MIN", free:true,
+  'bots-1': {
+    topic:'bots', num:1, title:"WHY A CAR MECHANIC BUILT A TRADING BOT", sub:"The real story behind ALPHA, OMEGA, and NOVA", read:"8 MIN", free:true,
     content:`<div class="lv-section">THE PROBLEM WITH SIGNALS</div>
 <p class="lv-text">When I first got into trading I started where most people start — following signal channels. The problem was real life. Working long hours as a car mechanic, I couldn't sit with my phone waiting for signals. I'd miss entries. I'd have hands covered in oil and miss the window entirely. The signals were good. My ability to act on them in real time wasn't.</p>
 <p class="lv-text"><strong>So I built a bot that did it for me.</strong></p>
@@ -1343,8 +1466,8 @@ const lessonData = {
       ]
     }
   },
-  'systems-2': {
-    topic:'systems', num:2, title:"HOW OMEGA GS WORKS", sub:"Every rule, every filter — transparent", read:"10 MIN", free:false,
+  'bots-2': {
+    topic:'bots', num:2, title:"HOW OMEGA GS WORKS", sub:"Every rule, every filter — transparent", read:"10 MIN", free:false,
     content:`<div class="lv-section">NO BLACK BOX</div>
 <p class="lv-text">Most commercial bots are sold as black boxes. RawCore doesn't work that way. <strong>Every rule in OMEGA GS is documented, explained, and available to Core members in full source code.</strong> Understanding what your bot does is the only way to trust it during drawdown.</p>
 <div class="lv-section">THE STRATEGY</div>
@@ -1372,8 +1495,8 @@ const lessonData = {
       ]
     }
   },
-  'systems-3': {
-    topic:'systems', num:3, title:"NOVA — THE CRYPTO BOT FAMILY", sub:"BTC, ETH, SOL perpetuals on Bybit", read:"9 MIN", free:false,
+  'bots-3': {
+    topic:'bots', num:3, title:"NOVA — THE CRYPTO BOT FAMILY", sub:"BTC, ETH, SOL perpetuals on Bybit", read:"9 MIN", free:false,
     content:`<div class="lv-section">FROM GOLD TO CRYPTO</div>
 <p class="lv-text">NOVA trades cryptocurrency perpetual contracts on Bybit. Different asset, different exchange — same philosophy: <strong>clear strategy, executed consistently, without emotion.</strong></p>
 <div class="lv-section">WHAT NOVA TRADES</div>
@@ -1399,8 +1522,8 @@ const lessonData = {
       ]
     }
   },
-  'systems-4': {
-    topic:'systems', num:4, title:"READING BOT RESULTS — WHAT THE NUMBERS ACTUALLY MEAN", sub:"Evaluate performance without being fooled", read:"9 MIN", free:false,
+  'bots-4': {
+    topic:'bots', num:4, title:"READING BOT RESULTS — WHAT THE NUMBERS ACTUALLY MEAN", sub:"Evaluate performance without being fooled", read:"9 MIN", free:false,
     content:`<div class="lv-section">MOST BOT SELLERS LIE WITH NUMBERS</div>
 <p class="lv-text">You've seen it: "97% win rate!", "3000% in 6 months!" These are cherry-picked, backtested on optimised data, or fabricated. <strong>Knowing how to read real performance data is one of the most valuable skills in automated trading.</strong></p>
 <div class="lv-section">METRICS THAT ACTUALLY MATTER</div>
@@ -1422,8 +1545,8 @@ const lessonData = {
       ]
     }
   },
-  'systems-5': {
-    topic:'systems', num:5, title:"BUILDING YOUR FIRST EA CONCEPT", sub:"From trading idea to automated logic", read:"10 MIN", free:false,
+  'bots-5': {
+    topic:'bots', num:5, title:"BUILDING YOUR FIRST EA CONCEPT", sub:"From trading idea to automated logic", read:"10 MIN", free:false,
     content:`<div class="lv-section">EVERY BOT STARTS AS AN IDEA</div>
 <p class="lv-text">Before a single line of code, a bot is just a set of rules. Rules that can be stated clearly, without ambiguity. <strong>If you can write your strategy as precise if/then statements, you can automate it.</strong> If you can't, you don't have a strategy — you have a feeling.</p>
 <div class="lv-section">STEP 1 — DEFINE YOUR RULES PRECISELY</div>
@@ -1448,10 +1571,11 @@ const lessonData = {
 
 
 const topicData = {
+  intro:      { title:'INTRODUCTION',       color:'var(--green)',  desc:"Brand new to trading? Start here. Five essential lessons covering what trading actually is, how markets move, reading charts, leverage, and building your first plan.", lessons:['intro-1','intro-2','intro-3','intro-4','intro-5'] },
   psychology: { title:'TRADING PSYCHOLOGY', color:'var(--purple)', desc:"Why smart traders make emotional decisions — and how to build a mindset that executes your plan when it matters most. Written from real experience of the dopamine trap.", lessons:['psych-1','psych-2','psych-3','psych-4','psych-5'] },
   markets: { title:'MARKET STRUCTURE', color:'var(--blue)', desc:"Sessions, FVGs, supply and demand, liquidity sweeps, and gold-specific behaviour. The foundation everything else is built on.", lessons:['market-1','market-2','market-3','market-4','market-5'] },
   risk: { title:'RISK MANAGEMENT', color:'var(--red)', desc:"R multiples, position sizing, stop loss placement, profit taking, and daily circuit breakers. The boring stuff that keeps you in the game.", lessons:['risk-1','risk-2','risk-3','risk-4','risk-5'] },
-  systems: { title:'TRADING BOTS EXPLAINED', color:'var(--green)', desc:"The real story behind ALPHA, OMEGA GS, and NOVA. How they were built, what rules they follow, and how to build your own EA concept.", lessons:['systems-1','systems-2','systems-3','systems-4','systems-5'] }
+  bots: { title:'TRADING BOTS EXPLAINED', color:'var(--green)', desc:"The real story behind ALPHA, OMEGA GS, and NOVA. How they were built, what rules they follow, and how to build your own EA concept.", lessons:['bots-1','bots-2','bots-3','bots-4','bots-5'] }
 };
 
 let credits = 0, todayLessons = 0, todayTasks = 0, todayCredits = 0;
@@ -1459,6 +1583,7 @@ let completedLessons = new Set(), completedTasks = new Set();
 let lessonScores = {}; // lessonId -> 'full' | 'partial'
 let currentTopic = null;
 let _userId = null;
+let _username = 'member'; // set on auth load
 
 // ── SUPABASE PROGRESS PERSISTENCE ──
 const _sbUrl = 'https://mlzxnrmctblfpijtihvm.supabase.co';
@@ -1493,6 +1618,14 @@ async function loadProgressFromDB(userId, accessToken) {
       } else {
         credits = 0;
       }
+    }
+    // Upsert user_credits row — guarantees row exists for Google OAuth users
+    if (!rows2 || rows2.length === 0) {
+      await fetch(`${_sbUrl}/rest/v1/user_credits`, {
+        method: 'POST',
+        headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates' },
+        body: JSON.stringify({ user_id: _userId, username: _username, credits: 0 })
+      });
     }
     // Update display
     const credEl = document.getElementById('creditsDisplay');
@@ -1545,52 +1678,141 @@ async function saveCreditsToDb(newCredits) {
         'Authorization': `Bearer ${_jwt || _sbKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ user_id: _userId, credits: newCredits, updated_at: new Date().toISOString() })
+      body: JSON.stringify({ user_id: _userId, credits: newCredits, username: _username, updated_at: new Date().toISOString() })
     });
   } catch(e) { console.warn('Credits save failed:', e); }
 }
 // ── DAILY CHALLENGE ROTATION ──
 const DAILY_CHALLENGES = [
-  "Identify the nearest support and demand zone on XAUUSD 1H chart",
-  "What session is active right now and why does it matter for XAUUSD?",
-  "Calculate your correct position size for a 40-pip SL with 1% risk",
-  "Identify if price is trending or ranging on the 15M chart right now",
-  "Find an FVG (Fair Value Gap) on BTC 4H — does it align with the trend?",
-  "What is your trading plan for the next London session opening?",
-  "Review your last 3 trades — what pattern do you see in your losses?",
-  "Identify the current market structure: HH/HL or LH/LL on XAUUSD 4H",
-  "Where is the most recent liquidity sweep on XAUUSD 1H?",
-  "What would make you NOT take the next OMEGA signal — name 3 filters",
-  "Draw the current daily bias on XAUUSD before the NY session opens",
-  "Check NOVA — is BTC above or below EMA200 on the 4H right now?",
-  "What is your R-multiple target for today and why?",
-  "Identify one psychological pattern that affected your trades this week",
-  "Check if there is a supply zone above current XAUUSD price on 1H"
+  // EASY
+  {
+    difficulty: 'EASY', pts: 25, category: '// MARKET BASICS',
+    q: "What does XAUUSD mean?",
+    options: [
+      { text: "A — Gold priced in US Dollars", correct: true,  feedback: "Correct. XAU is the ISO code for gold (from the Latin 'aurum'). USD is US Dollar. XAUUSD = the price of one troy ounce of gold in dollars." },
+      { text: "B — US Dollar priced in Gold",  correct: false, feedback: "Backwards. XAUUSD tells you how many dollars it costs to buy gold — not the other way around." },
+      { text: "C — Gold futures contract",      correct: false, feedback: "Not quite. XAUUSD is the spot price of gold — the current live price. Futures are a separate instrument traded on exchanges like COMEX." },
+      { text: "D — A gold stock index",         correct: false, feedback: "Incorrect. XAUUSD is the spot commodity price of gold itself, not an index of gold mining companies." }
+    ]
+  },
+  {
+    difficulty: 'EASY', pts: 25, category: '// TRADING BASICS',
+    q: "A green candlestick on a price chart means what?",
+    options: [
+      { text: "A — Price closed higher than it opened",  correct: true,  feedback: "Correct. Green (bullish) candle = close > open. Buyers dominated that period and drove price up." },
+      { text: "B — Price closed lower than it opened",   correct: false, feedback: "That's a red (bearish) candle. Green = bullish = close higher than open." },
+      { text: "C — Price didn't move at all",            correct: false, feedback: "A flat period would show as a doji — a candle with almost no body. Green specifically means price closed higher than it opened." },
+      { text: "D — The market is about to go up",        correct: false, feedback: "One green candle doesn't predict the next move. It only tells you what happened in that specific period, not what comes next." }
+    ]
+  },
+  {
+    difficulty: 'EASY', pts: 25, category: '// RISK MANAGEMENT',
+    q: "You have a €500 account and risk 1% per trade. What is your maximum loss per trade?",
+    options: [
+      { text: "A — €50",  correct: false, feedback: "That's 10% risk per trade — account destruction territory. 1% of €500 = €5." },
+      { text: "B — €5",   correct: true,  feedback: "Correct. 1% of €500 = €5. This means you can take 100 consecutive losses and still have capital remaining. That's how you survive long enough to get good." },
+      { text: "C — €1",   correct: false, feedback: "That's 0.2% risk. Too conservative — your gains will be extremely slow even when the strategy is working. 1% is €5." },
+      { text: "D — €500", correct: false, feedback: "That's 100% risk — one losing trade and your account is gone. Never risk more than 2% per trade, and 1% is safer when starting out." }
+    ]
+  },
+  // MEDIUM
+  {
+    difficulty: 'MEDIUM', pts: 25, category: '// MARKET STRUCTURE',
+    q: "What is a liquidity sweep?",
+    options: [
+      { text: "A — When price moves sideways collecting equal highs and lows", correct: false, feedback: "That describes consolidation or ranging. A liquidity sweep is a directional move specifically designed to trigger stop losses." },
+      { text: "B — When price briefly breaks a key level to trigger stop losses before reversing", correct: true, feedback: "Correct. Institutions need large volumes to fill their orders. By briefly pushing price below key swing lows (where retail buy stop losses cluster), they collect that liquidity to fill their positions before the real move." },
+      { text: "C — When a broker clears your account overnight", correct: false, feedback: "Nothing to do with brokers. This is a market structure concept about how institutional players manipulate price to collect the orders they need." },
+      { text: "D — When price gaps up at market open",  correct: false, feedback: "A gap is a different concept. Liquidity sweeps are deliberate moves through key levels — not gaps." }
+    ]
+  },
+  {
+    difficulty: 'MEDIUM', pts: 25, category: '// SESSIONS',
+    q: "Which trading session typically produces the most volatile moves for XAUUSD?",
+    options: [
+      { text: "A — Asian session (00:00–07:00 UTC)",     correct: false, feedback: "Asian session is typically low volatility for gold — institutional participation is lower and price often consolidates or ranges." },
+      { text: "B — London session (07:00–16:00 UTC)",    correct: false, feedback: "London opens with decent volume but the highest volatility for gold usually comes when New York joins and key US data is released." },
+      { text: "C — New York session overlap (12:00–16:00 UTC)", correct: true, feedback: "Correct. The London-New York overlap (roughly 12:00–16:00 UTC) is when both sessions are active simultaneously. US economic data (CPI, NFP, Fed decisions) drops during NY hours — creating the biggest moves in gold." },
+      { text: "D — Weekend pre-market",                  correct: false, feedback: "Forex markets are closed on weekends. There is no pre-market for XAUUSD on Saturday or Sunday." }
+    ]
+  },
+  {
+    difficulty: 'MEDIUM', pts: 25, category: '// BOT LOGIC',
+    q: "OMEGA uses an ATR filter before taking trades. What does ATR measure?",
+    options: [
+      { text: "A — Average Trade Returns",               correct: false, feedback: "ATR stands for Average True Range — nothing to do with returns." },
+      { text: "B — Market volatility over a set number of periods", correct: true, feedback: "Correct. ATR (Average True Range) measures how much price typically moves over a given period. OMEGA uses it to filter out low-volatility conditions where trend signals are unreliable, and to size positions based on current market conditions." },
+      { text: "C — The strength of the trend direction", correct: false, feedback: "That would be closer to ADX (Average Directional Index). ATR only measures how much price is moving, not which direction." },
+      { text: "D — The time between trades",             correct: false, feedback: "ATR has nothing to do with timing. It measures the size of price movement — the range between high and low, adjusted for gaps." }
+    ]
+  },
+  // HARD
+  {
+    difficulty: 'HARD', pts: 35, category: '// RISK MANAGEMENT',
+    q: "A trade has a 40-pip stop loss. Your account is €2,000 and you risk 1.5%. What lot size should you trade on XAUUSD (where 1 pip ≈ $1 per 0.01 lot)?",
+    options: [
+      { text: "A — 0.03 lots",  correct: false, feedback: "At 0.03 lots, 40 pips = $12. That's 0.6% risk on a €2,000 account. Below target — you're leaving risk capacity unused." },
+      { text: "B — 0.075 lots", correct: true,  feedback: "Correct. 1.5% of €2,000 = €30. At 0.01 lots, 40 pips = $0.40 × 40 = $16 per 0.01 lot. €30 ÷ $0.40 per pip per 0.01 lot ÷ 40 pips = 0.075 lots. Always do this maths before entering." },
+      { text: "C — 0.1 lots",   correct: false, feedback: "At 0.1 lots, 40 pips = $40 ≈ 2% risk. Over your target of 1.5%. Small errors in position sizing compound into big account problems over time." },
+      { text: "D — 0.5 lots",   correct: false, feedback: "At 0.5 lots, 40 pips = $200 ≈ 10% of account. A single trade could cut your account by 10%. This is never acceptable risk." }
+    ]
+  },
+  {
+    difficulty: 'HARD', pts: 35, category: '// MARKET STRUCTURE',
+    q: "Price on XAUUSD 4H has made a Higher High, then a Lower Low. What does this tell you about market structure?",
+    options: [
+      { text: "A — The trend is bullish and you should buy", correct: false, feedback: "A Higher High followed by a Lower Low is a market structure shift — not a continuation signal. The uptrend has been broken." },
+      { text: "B — Market structure has shifted — the uptrend may be over", correct: true, feedback: "Correct. A healthy uptrend makes Higher Highs AND Higher Lows. When price makes a Higher High but then breaks below the previous Higher Low to make a Lower Low, structure has shifted bearish. This is the signal to stop looking for longs and start watching for short setups." },
+      { text: "C — The market is in a strong range",     correct: false, feedback: "A range would show roughly equal highs and equal lows — price bouncing between two levels. HH followed by LL is a structure break, not a range." },
+      { text: "D — Nothing — one candle doesn't matter", correct: false, feedback: "On the 4H timeframe, a confirmed Lower Low is significant. 4H structure shifts often lead to multi-day directional moves." }
+    ]
+  },
+  // TRICK
+  {
+    difficulty: 'TRICK', pts: 35, category: '// MINDSET',
+    q: "A trader wins 70% of their trades but is still losing money overall. How is this possible?",
+    options: [
+      { text: "A — Their broker is cheating them",       correct: false, feedback: "While bad brokers exist, this is almost never the real cause. The answer is about risk/reward ratio — a mathematical concept every trader must understand." },
+      { text: "B — Their wins are small but their losses are much larger", correct: true, feedback: "Correct. This is the classic bad risk/reward trap. If you win €5 on winners and lose €20 on losers, a 70% win rate gives you: (0.7 × €5) − (0.3 × €20) = €3.50 − €6.00 = −€2.50 per trade. Profitable trading requires your average win to be larger than your average loss." },
+      { text: "C — They are not trading enough",         correct: false, feedback: "More trades with negative expected value just means losing faster. The problem is the risk/reward ratio, not volume." },
+      { text: "D — This is mathematically impossible",   correct: false, feedback: "Entirely possible. Win rate alone tells you nothing about profitability. A 30% win rate with 3:1 reward/risk is more profitable than a 70% win rate with 1:3 reward/risk." }
+    ]
+  },
+  {
+    difficulty: 'TRICK', pts: 35, category: '// BOT LOGIC',
+    q: "NOVA made 15 trades last week: 9 winners, 6 losers. A new member says 'NOVA has a 60% win rate — it's profitable.' What information are they missing?",
+    options: [
+      { text: "A — The number of trades is too small to conclude anything", correct: false, feedback: "Partially true — 15 trades is a small sample. But this isn't the most important missing piece. Something more fundamental is being ignored." },
+      { text: "B — The average size of wins vs losses (R multiple)", correct: true, feedback: "Correct. 60% win rate means nothing without knowing the reward/risk. If NOVA's average winner is 1R and average loser is 2R, 60% win rate = losing money. You need both win rate AND average R to evaluate any strategy. Professionals judge bots by expected value: (win% × avg win R) − (loss% × avg loss R)." },
+      { text: "C — What instruments NOVA traded",        correct: false, feedback: "The instruments are relevant context but not the core missing piece. Even if you knew the instruments, you still couldn't evaluate profitability without the risk/reward data." },
+      { text: "D — Nothing — 60% is a good win rate",   correct: false, feedback: "As explained above: win rate alone is meaningless. A 90% win rate with 1:10 negative risk/reward is a losing strategy. Win rate without R multiple is an incomplete picture." }
+    ]
+  }
 ];
 
 function loadDailyChallenge(userId) {
   const today = new Date().toISOString().split('T')[0];
-  const seed = today.split('-').reduce((a,b) => a + parseInt(b), 0) + userId.charCodeAt(0);
+  const seed = today.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
   const idx = seed % DAILY_CHALLENGES.length;
   const challenge = DAILY_CHALLENGES[idx];
-  
+
   const titleEl = document.getElementById('dcTitle');
-  const subEl = document.getElementById('dcSub');
-  
-  if (titleEl) titleEl.textContent = challenge;
-  
-  // Calculate time until reset (next midnight)
+  const subEl   = document.getElementById('dcSub');
+
+  if (titleEl) titleEl.textContent = challenge.q;
+
+  // Timer until reset
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(0, 0, 0, 0);
   const diff = tomorrow - now;
   const hours = Math.floor(diff / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  
-  const key_dc = 'rc_dc_done_' + userId + '_' + today;
-  const done = localStorage.getItem(key_dc);
-  
+  const mins  = Math.floor((diff % 3600000) / 60000);
+
+  const key_dc = 'rc_dc_done_' + (userId || 'anon') + '_' + today;
+  const done   = localStorage.getItem(key_dc);
+
   if (subEl) {
     if (done) {
       subEl.textContent = `// Completed ✓ · Resets in ${hours}h ${mins}m`;
@@ -1599,24 +1821,49 @@ function loadDailyChallenge(userId) {
       subEl.textContent = `// Resets in ${hours}h ${mins}m · Complete to keep your streak alive`;
     }
   }
-  
-  // Make START button mark as done
-  const startBtn = document.querySelector('.dc-action');
-  if (startBtn && !done) {
-    startBtn.addEventListener('click', () => {
-      localStorage.setItem(key_dc, '1');
-      if (subEl) { subEl.textContent = `// Completed ✓ · Resets in ${hours}h ${mins}m`; subEl.style.color = 'var(--green)'; }
-      if (_creditsLoaded) earnCredits(25);
-    }, { once: true });
-  } else if (startBtn && done) {
-    startBtn.textContent = '✓ DONE';
-    startBtn.style.background = 'none';
-    startBtn.style.color = 'var(--green)';
-    startBtn.style.border = '1px solid rgba(0,255,136,0.3)';
-    startBtn.style.cursor = 'default';
+
+  // Update the modal with this challenge
+  const cbBadge    = document.getElementById('cbBadge');
+  const cbDiff     = document.getElementById('cbDiffBadge');
+  const cbCat      = document.getElementById('cbCategory');
+  const cbQ        = document.getElementById('cbQuestion');
+  const cbOpts     = document.getElementById('challengeOptions');
+  const cbPts      = document.getElementById('cbPts');
+
+  const dateStr = now.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }).toUpperCase();
+  if (cbBadge) cbBadge.textContent = `// TODAY · ${dateStr} · +${challenge.pts} PTS`;
+  if (cbPts)   cbPts.textContent   = `+${challenge.pts} pts`;
+  if (cbQ)     cbQ.textContent     = challenge.q;
+  if (cbCat)   cbCat.textContent   = challenge.category;
+
+  const diffColors = { EASY:'var(--green)', MEDIUM:'var(--amber)', HARD:'var(--red)', TRICK:'var(--purple)' };
+  if (cbDiff) {
+    cbDiff.textContent  = challenge.difficulty;
+    cbDiff.style.color  = diffColors[challenge.difficulty] || 'var(--text-dim)';
+    cbDiff.style.borderColor = diffColors[challenge.difficulty] || 'var(--border)';
+  }
+
+  if (cbOpts) {
+    if (done) {
+      cbOpts.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:var(--green);padding:16px 0">✓ Already completed today — come back tomorrow!</div>';
+    } else {
+      cbOpts.innerHTML = challenge.options.map((opt, i) =>
+        `<div class="cb-option" onclick="answerChallenge(this, ${opt.correct}, '${opt.feedback.replace(/'/g,"&#39;")}', '${userId || ''}', '${today}')">${String.fromCharCode(65+i)} — ${opt.text}</div>`
+      ).join('');
+    }
+  }
+
+  // START button behaviour
+  const startBtn = document.querySelector('.dc-btn') || document.querySelector('.dc-action');
+  if (startBtn) {
+    if (done) {
+      startBtn.textContent = '✓ DONE';
+      startBtn.style.cssText = 'background:none;color:var(--green);border:1px solid rgba(0,255,136,0.3);cursor:default;';
+    } else {
+      startBtn.onclick = () => openChallenge();
+    }
   }
 }
-
 
 // ── REAL STREAK LOGIC ──
 async function loadAndUpdateStreak(userId, jwt) {
@@ -1677,7 +1924,7 @@ function openTopic(topicId) {
   document.getElementById('topic-' + topicId)?.classList.add('active');
 
   // Show this topic's lesson list, hide others
-  ['psychology','markets','risk','systems'].forEach(t => {
+  ['intro','psychology','markets','risk','bots'].forEach(t => {
     const list = document.getElementById('list-' + t);
     if (list) list.style.display = (t === topicId) ? 'block' : 'none';
   });
@@ -1698,7 +1945,7 @@ function openLesson(lessonId) {
   currentTopic = l.topic;
   document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
   document.getElementById('topic-' + l.topic)?.classList.add('active');
-  ['psychology','markets','risk','systems'].forEach(t => {
+  ['intro','psychology','markets','risk','bots'].forEach(t => {
     const list = document.getElementById('list-' + t);
     if (list) list.style.display = (t === l.topic) ? 'block' : 'none';
   });
@@ -1816,14 +2063,10 @@ function earnCredits(amount) {
 }
 
 function updateProgress() {
-  ['psychology','markets','risk','systems'].forEach(t => {
+  ['intro','psychology','markets','risk','bots'].forEach(t => {
     const tl = topicData[t].lessons;
-    const score = tl.reduce((sum, lid) => {
-      if (lessonScores[lid] === 'full') return sum + 1;
-      if (lessonScores[lid] === 'partial') return sum + 0.5;
-      return sum;
-    }, 0);
-    const pct = Math.round((score / tl.length) * 100);
+    const fullCount = tl.filter(lid => lessonScores[lid] === 'full').length;
+    const pct = Math.round((fullCount / tl.length) * 100); // full only — matches dashboard
     const answered = tl.filter(lid => lessonScores[lid]).length;
     const el  = document.getElementById('pct-'+t);
     const bar = document.getElementById('bar-'+t);
@@ -1839,12 +2082,8 @@ function updateProgress() {
 
 function getTopicPct(t) {
   const tl = topicData[t].lessons;
-  const score = tl.reduce((sum, lid) => {
-    if (lessonScores[lid] === 'full') return sum + 1;
-    if (lessonScores[lid] === 'partial') return sum + 0.5;
-    return sum;
-  }, 0);
-  return Math.round((score / tl.length) * 100);
+  const fullCount = tl.filter(lid => lessonScores[lid] === 'full').length;
+  return Math.round((fullCount / tl.length) * 100);
 }
 
     function isTopicComplete(t) { return topicData[t].lessons.every(lid => !!lessonScores[lid]); }
@@ -1854,9 +2093,10 @@ function isLessonUnlocked(lessonId) {
   const tl = topicData[l.topic].lessons;
   const idx = tl.indexOf(lessonId);
   // First lesson of psychology always unlocked
-  if (idx === 0 && l.topic === 'psychology') return true;
+  if (idx === 0 && l.topic === 'intro') return true;
+  if (idx === 0 && l.topic === 'psychology') return isTopicComplete('intro');
   // First lesson of a topic: previous topic must be 100%
-  const topicOrder = ['psychology','markets','risk','systems'];
+  const topicOrder = ['intro','psychology','markets','risk','bots'];
   const topicIdx = topicOrder.indexOf(l.topic);
   if (idx === 0) return topicIdx === 0 || isTopicComplete(topicOrder[topicIdx - 1]);
   // Subsequent lessons: previous lesson task must be answered
@@ -1867,12 +2107,13 @@ function updateKnowledgeTree() {
   const tree = document.getElementById('knowledgeTree');
   if (!tree) return;
   const topics = [
+    { id:'intro',      label:'Introduction', color:'var(--green)' },
     { id:'psychology', label:'Psychology', color:'var(--purple)' },
     { id:'markets',    label:'Market Structure', color:'var(--blue)' },
     { id:'risk',       label:'Risk Management', color:'var(--red)' },
-    { id:'systems',    label:'Trading Bots', color:'var(--green)' },
+    { id:'bots',    label:'Trading Bots', color:'var(--green)' },
   ];
-  const topicOrder = ['psychology','markets','risk','systems'];
+  const topicOrder = ['intro','psychology','markets','risk','bots'];
   tree.innerHTML = topics.map(tp => {
     const pct = getTopicPct(tp.id);
             const done = isTopicComplete(tp.id);
@@ -1890,7 +2131,8 @@ function updateKnowledgeTree() {
 function updateNextUp() {
   const panel = document.getElementById('nextUpPanel');
   if (!panel) return;
-  const allLessons = ['psych-1','psych-2','psych-3','psych-4','psych-5',
+  const allLessons = ['intro-1','intro-2','intro-3','intro-4','intro-5',
+    'psych-1','psych-2','psych-3','psych-4','psych-5',
     'market-1','market-2','market-3','market-4','market-5',
     'risk-1','risk-2','risk-3','risk-4','risk-5',
     'systems-1','systems-2','systems-3','systems-4','systems-5'];
@@ -1910,7 +2152,8 @@ function updateNextUp() {
 }
 
 function updateSidebarLocks() {
-  const allLessons = ['psych-1','psych-2','psych-3','psych-4','psych-5',
+  const allLessons = ['intro-1','intro-2','intro-3','intro-4','intro-5',
+    'psych-1','psych-2','psych-3','psych-4','psych-5',
     'market-1','market-2','market-3','market-4','market-5',
     'risk-1','risk-2','risk-3','risk-4','risk-5',
     'systems-1','systems-2','systems-3','systems-4','systems-5'];
@@ -1932,7 +2175,7 @@ function showLockMsg(lid) {
   const l = lessonData[lid];
   const tl = topicData[l.topic].lessons;
   const idx = tl.indexOf(lid);
-  const topicOrder = ['psychology','markets','risk','systems'];
+  const topicOrder = ['intro','psychology','markets','risk','bots'];
   const topicIdx = topicOrder.indexOf(l.topic);
   let msg;
   if (idx === 0 && topicIdx > 0) {
@@ -1956,7 +2199,7 @@ function showLockMsg(lid) {
 function showHome() {
   currentTopic = null;
   document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
-  ['psychology','markets','risk','systems'].forEach(t => {
+  ['intro','psychology','markets','risk','bots'].forEach(t => {
     const list = document.getElementById('list-'+t);
     if (list) list.style.display = 'none';
   });
@@ -1980,7 +2223,7 @@ function showHome() {
           <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
           <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">R multiple, sizing, stops, limits</div>
         </div>
-        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('systems')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+        <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('bots')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
           <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">TRADING BOTS</div>
           <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
           <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">ALPHA, OMEGA, NOVA explained</div>
@@ -1991,13 +2234,55 @@ function showHome() {
 
 function openChallenge() { document.getElementById('challengeModal').classList.add('open'); }
 function closeChallenge() { document.getElementById('challengeModal').classList.remove('open'); }
-function answerChallenge(opt, isCorrect) {
-  document.querySelectorAll('.cb-option').forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+
+function answerChallenge(opt, isCorrect, feedback, userId, today) {
+  // Disable all options
+  document.querySelectorAll('#challengeOptions .cb-option').forEach(o => {
+    o.classList.add('disabled');
+    o.onclick = null;
+  });
   opt.classList.add(isCorrect ? 'correct' : 'wrong');
-  if (!isCorrect) document.querySelectorAll('.cb-option')[1].classList.add('correct');
-  earnCredits(isCorrect ? 25 : 5);
-  setTimeout(closeChallenge, 1200);
+  // Show correct answer if wrong
+  if (!isCorrect) {
+    document.querySelectorAll('#challengeOptions .cb-option').forEach(o => {
+      if (o.onclick === null && o !== opt) {
+        // find the correct one by re-checking
+      }
+    });
+    // Highlight correct by index
+    const today2 = new Date().toISOString().split('T')[0];
+    const seed = today2.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
+    const ch = DAILY_CHALLENGES[seed % DAILY_CHALLENGES.length];
+    const opts = document.querySelectorAll('#challengeOptions .cb-option');
+    ch.options.forEach((o, i) => { if (o.correct && opts[i]) opts[i].classList.add('correct'); });
+  }
+  // Show feedback
+  const fbEl = document.getElementById('cbFeedback');
+  if (fbEl) {
+    fbEl.textContent = feedback;
+    fbEl.style.display = 'block';
+    fbEl.style.borderLeftColor = isCorrect ? 'var(--green)' : 'var(--red)';
+    fbEl.style.background = isCorrect ? 'rgba(0,255,136,0.06)' : 'rgba(255,51,85,0.06)';
+  }
+  // Mark done in localStorage
+  const key_dc = 'rc_dc_done_' + (userId || 'anon') + '_' + today;
+  localStorage.setItem(key_dc, '1');
+  // Award pts
+  const today2 = new Date().toISOString().split('T')[0];
+  const seed2 = today2.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
+  const ch2 = DAILY_CHALLENGES[seed2 % DAILY_CHALLENGES.length];
+  const pts = isCorrect ? ch2.pts : 5;
+  if (_creditsLoaded) earnCredits(pts);
+  // Update the streak bar text
+  const subEl = document.getElementById('dcSub');
+  if (subEl) { subEl.textContent = '// Completed ✓ — come back tomorrow!'; subEl.style.color = 'var(--green)'; }
+  // Update start button
+  const startBtn = document.querySelector('.dc-btn') || document.querySelector('.dc-action');
+  if (startBtn) { startBtn.textContent = '✓ DONE'; startBtn.style.cssText = 'background:none;color:var(--green);border:1px solid rgba(0,255,136,0.3);cursor:default;'; }
+  // Close after delay
+  setTimeout(closeChallenge, 2000);
 }
+
 document.getElementById('challengeModal').addEventListener('click', function(e) { if (e.target===this) closeChallenge(); });
 // Init right sidebar on load
 updateProgress();
