@@ -1958,8 +1958,9 @@ async function loadAndUpdateStreak(userId, jwt) {
       method: 'POST', headers,
       body: JSON.stringify({ user_id: userId, action_type: 'login', action_date: today })
     });
-    // Award +10 daily login credits
-    if (_creditsLoaded) earnCredits(10);
+    // Award +10 daily login credits — wait for credits to load first
+    await _creditsLoadPromise;
+    earnCredits(10);
   }
 
   // Update display
@@ -2023,7 +2024,7 @@ function openLesson(lessonId) {
     <div style="background:var(--dark);border:1px solid var(--border);border-top:2px solid var(--green);padding:20px;margin:28px 0" id="taskBox">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">QUICK CHECK</div>
-        <div style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:3px 8px;background:var(--green-muted)">+10 PTS</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--green);border:1px solid rgba(0,255,136,0.3);padding:3px 8px;background:var(--green-muted)">+20 PTS</div>
       </div>
       <div style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:16px">${l.task.q}</div>
       <div id="taskOpts" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
@@ -2034,7 +2035,7 @@ function openLesson(lessonId) {
           </div>`).join('')}
       </div>
       <div class="task-feedback${taskDone ? ' correct show' : ''}" id="taskFeedback">${taskDone ? '✓ You already completed this task.' : ''}</div>
-      <div class="credits-pop${taskDone ? ' show' : ''}" id="creditsPop"><span>+10 Core Credits earned ✓</span></div>
+      <div class="credits-pop${taskDone ? ' show' : ''}" id="creditsPop"><span>+20 pts earned · Lesson complete ✓</span></div>
     </div>`;
 
   document.getElementById('contentArea').innerHTML = `
@@ -2046,7 +2047,7 @@ function openLesson(lessonId) {
           <span>${l.read} READ</span>
           <span style="padding:2px 8px;border:1px solid;${l.free ? 'border-color:rgba(0,255,136,0.3);color:var(--green)' : 'border-color:rgba(59,130,246,0.3);color:var(--blue)'}">${l.free ? 'FREE' : 'CORE'}</span>
           <span>Lesson ${l.num} of ${topicLessons.length}</span>
-          <span style="color:var(--green)">+10 pts</span>
+          <span style="color:var(--green)">+20 pts</span>
         </div>
         <div class="lv-body">${l.content}</div>
         ${taskHtml}
@@ -2340,12 +2341,12 @@ async function answerChallenge(opt, isCorrect, feedback, userId, today) {
       body: JSON.stringify({ user_id: userId || _userId, action_type: 'daily_challenge', action_date: today })
     });
   } catch(e) {}
-  // Award pts
+  // Award pts — always fire, user is authenticated if they got here
   const today2 = new Date().toISOString().split('T')[0];
   const seed2 = today2.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
   const ch2 = DAILY_CHALLENGES[seed2 % DAILY_CHALLENGES.length];
   const pts = isCorrect ? ch2.pts : 5;
-  if (_creditsLoaded) earnCredits(pts);
+  earnCredits(pts);
   // Update the streak bar text
   const subEl = document.getElementById('dcSub');
   if (subEl) { subEl.textContent = '// Completed ✓ — come back tomorrow!'; subEl.style.color = 'var(--green)'; }
