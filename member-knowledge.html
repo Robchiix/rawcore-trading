@@ -1646,27 +1646,13 @@ async function saveProgressToDB(lessonId, score) {
 }
 
 async function saveCreditsToDb(newCredits) {
-  if (!_userId) return;
-  // Save the absolute total (newCredits is already the running total from in-memory credits var)
-  // Use upsert so it creates or updates
+  if (!_userId || !_jwt) return;
+  // Always PATCH — row is guaranteed to exist because loadProgressFromDB upserts it on load
   try {
-    // Use PATCH (update) if exists, POST (insert) if not - more reliable than upsert
-    const checkR = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`, {
-      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
-    });
-    const existing = checkR.ok ? await checkR.json() : [];
-    const method = existing.length > 0 ? 'PATCH' : 'POST';
-    const url = existing.length > 0
-      ? `${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`
-      : `${_sbUrl}/rest/v1/user_credits`;
-    await fetch(url, {
-      method,
-      headers: {
-        'apikey': _sbKey,
-        'Authorization': `Bearer ${_jwt || _sbKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ user_id: _userId, credits: newCredits, username: _username, updated_at: new Date().toISOString() })
+    await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`, {
+      method: 'PATCH',
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credits: newCredits, username: _username, updated_at: new Date().toISOString() })
     });
   } catch(e) { console.warn('Credits save failed:', e); }
 }
@@ -1778,7 +1764,7 @@ const DAILY_CHALLENGES = [
   }
 ];
 
-function loadDailyChallenge(userId) {
+async function loadDailyChallenge(userId) {
   const today = new Date().toISOString().split('T')[0];
   const seed = today.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
   const idx = seed % DAILY_CHALLENGES.length;
@@ -1798,8 +1784,15 @@ function loadDailyChallenge(userId) {
   const hours = Math.floor(diff / 3600000);
   const mins  = Math.floor((diff % 3600000) / 60000);
 
-  const key_dc = 'rc_dc_done_' + (userId || 'anon') + '_' + today;
-  const done   = localStorage.getItem(key_dc);
+  // Check via DB if challenge already done today
+  let done = false;
+  try {
+    const dcRes = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_type=eq.daily_challenge&action_date=eq.${today}&select=id`, {
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
+    });
+    const dcRows = dcRes.ok ? await dcRes.json() : [];
+    done = dcRows.length > 0;
+  } catch(e) {}
 
   if (subEl) {
     if (done) {
@@ -1849,56 +1842,67 @@ function loadDailyChallenge(userId) {
       startBtn.style.cssText = 'background:none;color:var(--green);border:1px solid rgba(0,255,136,0.3);cursor:default;';
     } else {
       startBtn.onclick = () => openChallenge();
+    // Also hook: if they close without answering, no pts awarded — pts only in answerChallenge
     }
   }
 }
 
-// ── REAL STREAK LOGIC ──
+// ── DB-BACKED STREAK LOGIC — no localStorage ──
 async function loadAndUpdateStreak(userId, jwt) {
-  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  const key_last = 'rc_last_login_' + userId;
-  const key_streak = 'rc_streak_' + userId;
-  
-  const lastLogin = localStorage.getItem(key_last);
-  let streak = parseInt(localStorage.getItem(key_streak) || '0');
-  
-  if (lastLogin === today) {
-    // Already logged in today, just show current streak
-  } else if (lastLogin) {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yd = yesterday.toISOString().split('T')[0];
-    if (lastLogin === yd) {
-      streak += 1; // continued streak
-    } else {
-      streak = 1; // streak broken, restart
-    }
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yd = yesterday.toISOString().split('T')[0];
+  const headers = { 'apikey': _sbKey, 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates' };
+
+  // Check if already logged in today
+  const todayRes = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_type=eq.login&action_date=eq.${today}&select=id`, { headers });
+  const todayRows = todayRes.ok ? await todayRes.json() : [];
+  const alreadyToday = todayRows.length > 0;
+
+  // Check yesterday for streak
+  const ydRes = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_type=eq.login&action_date=eq.${yd}&select=id`, { headers });
+  const ydRows = ydRes.ok ? await ydRes.json() : [];
+  const hadYesterday = ydRows.length > 0;
+
+  // Count current streak by walking back from today
+  let streak = 1;
+  if (!alreadyToday && !hadYesterday) {
+    streak = 1; // fresh start
   } else {
-    streak = 1; // first login
+    // Count consecutive days back
+    const allRes = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_type=eq.login&select=action_date&order=action_date.desc&limit=60`, { headers });
+    const allRows = allRes.ok ? await allRes.json() : [];
+    const dates = new Set(allRows.map(r => r.action_date));
+    let check = new Date();
+    if (!alreadyToday) check.setDate(check.getDate() - 1); // start from yesterday if not logged in today yet
+    streak = 0;
+    for (let i = 0; i < 60; i++) {
+      const d = check.toISOString().split('T')[0];
+      if (dates.has(d)) { streak++; check.setDate(check.getDate() - 1); }
+      else break;
+    }
+    if (alreadyToday) streak = Math.max(streak, 1);
   }
-  
-  localStorage.setItem(key_last, today);
-  localStorage.setItem(key_streak, streak.toString());
-  
+
+  // Record today's login (ignore if already exists — UNIQUE constraint handles it)
+  if (!alreadyToday) {
+    await fetch(`${_sbUrl}/rest/v1/daily_actions`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ user_id: userId, action_type: 'login', action_date: today })
+    });
+    // Award +10 daily login credits
+    if (_creditsLoaded) earnCredits(10);
+  }
+
   // Update display
   const el = document.getElementById('streakVal');
   if (el) el.textContent = streak;
   const rsEl = document.getElementById('rsStreak');
   if (rsEl) rsEl.textContent = '🔥 ' + streak + ' day' + (streak !== 1 ? 's' : '');
-  
-  // Fill streak dots
   const dots = document.querySelectorAll('.streak-dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('done', i < Math.min(streak, dots.length));
-  });
-  
-  // Award daily login credit (once per day)
-  const key_credit_day = 'rc_daily_credit_' + userId + '_' + today;
-  if (!localStorage.getItem(key_credit_day) && _creditsLoaded) {
-    localStorage.setItem(key_credit_day, '1');
-    earnCredits(10); // +10 for daily login
-  }
-  
+  dots.forEach((dot, i) => { dot.classList.toggle('done', i < Math.min(streak, dots.length)); });
+
   return streak;
 }
 
@@ -2254,9 +2258,14 @@ function answerChallenge(opt, isCorrect, feedback, userId, today) {
     fbEl.style.borderLeftColor = isCorrect ? 'var(--green)' : 'var(--red)';
     fbEl.style.background = isCorrect ? 'rgba(0,255,136,0.06)' : 'rgba(255,51,85,0.06)';
   }
-  // Mark done in localStorage
-  const key_dc = 'rc_dc_done_' + (userId || 'anon') + '_' + today;
-  localStorage.setItem(key_dc, '1');
+  // Mark done in DB (UNIQUE constraint prevents double-counting)
+  try {
+    await fetch(`${_sbUrl}/rest/v1/daily_actions`, {
+      method: 'POST',
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates' },
+      body: JSON.stringify({ user_id: userId || _userId, action_type: 'daily_challenge', action_date: today })
+    });
+  } catch(e) {}
   // Award pts
   const today2 = new Date().toISOString().split('T')[0];
   const seed2 = today2.split('-').reduce((a,b) => a + parseInt(b), 0) + (userId ? userId.charCodeAt(0) : 7);
