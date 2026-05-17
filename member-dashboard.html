@@ -608,212 +608,51 @@ async function signOut() {
 // ============================================
 const SUPABASE_URL = 'https://mlzxnrmctblfpijtihvm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4';
+const HEADERS = (token) => ({
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + token,
+  'Content-Type': 'application/json'
+});
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Check session on load
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+
+// Resolve display name — works for Google OAuth and email signups
+function resolveUsername(user) {
+  const m = user.user_metadata || {};
+  // Google OAuth stores name in full_name or name
+  // Email signup stores it in username
+  // Fallback: first part of email
+  const raw = m.username || m.full_name || m.name || user.email.split('@')[0];
+  return String(raw).trim().substring(0, 20) || 'member';
+}
+
+function setEl(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; }
+function setW(id, pct)  { const e = document.getElementById(id); if (e) e.style.width = pct + '%'; }
+
+// ── MAIN ─────────────────────────────────────────────────────────────────────
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
-  }
-  // Update UI with user info
-  const user = session.user;
-  const username = user.user_metadata?.username || user.user_metadata?.full_name || user.email.split('@')[0];
-  
-  // Nav username
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  const user     = session.user;
+  const token    = session.access_token;
+  const username = resolveUsername(user);
+
+  // Greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
+  setEl('welcomeGreeting', greeting);
+
+  // Nav / Welcome name — show first name only (cleaner for Google full names)
+  const displayName = username.split(' ')[0];
   const nameEl = document.querySelector('.nav-user span');
-  if (nameEl) nameEl.textContent = username;
-  
-  // Welcome name (Bebas Neue renders uppercase naturally)
-  const welcomeNameEl = document.getElementById('welcomeName');
-  if (welcomeNameEl) welcomeNameEl.textContent = username;
-  
-  // Nav username by ID too
-  const navUsernameEl = document.getElementById('navUsername');
-  if (navUsernameEl) navUsernameEl.textContent = username;
-  
-  // Load real credits from Supabase
-  try {
-    const cRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
-    });
-    if (cRes.ok) {
-      const cData = await cRes.json();
-      const userCredits = cData.length > 0 ? cData[0].credits : 0;
-      const creditsEl = document.getElementById('navCredits');
-      if (creditsEl) creditsEl.textContent = userCredits.toLocaleString() + ' pts';
-      const dashCreditsEl = document.getElementById('dashCredits');
-      if (dashCreditsEl) dashCreditsEl.textContent = userCredits.toLocaleString();
-      const headerCredits = document.getElementById('headerCredits');
-      if (headerCredits) headerCredits.textContent = userCredits.toLocaleString();
-      // Update leaderboard your row
-      const lbAv = document.getElementById('lbYourAv');
-      const lbName = document.getElementById('lbYourName');
-      const lbScore = document.getElementById('lbYourScore');
-      if (lbAv) lbAv.textContent = username.substring(0, 2).toUpperCase();
-      if (lbName) lbName.textContent = username + ' (you)';
-      if (lbScore) lbScore.textContent = userCredits.toLocaleString();
-    }
-  } catch(e) {
-    const creditsEl = document.getElementById('navCredits');
-    if (creditsEl) creditsEl.textContent = '0 pts';
-  }
+  if (nameEl) nameEl.textContent = displayName;
+  setEl('welcomeName', displayName);
+  setEl('navUsername', displayName);
 
-  // Load learning progress from Supabase
-  try {
-    const pRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_progress?user_id=eq.' + user.id + '&select=lesson_id,score', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
-    });
-    // Whether empty or full — always render the bars
-    const rows = pRes.ok ? await pRes.json() : [];
-    const topicMap = {
-      'psych-1':'psychology','psych-2':'psychology','psych-3':'psychology','psych-4':'psychology','psych-5':'psychology',
-      'markets-1':'markets','markets-2':'markets','markets-3':'markets','markets-4':'markets','markets-5':'markets',
-      'risk-1':'risk','risk-2':'risk','risk-3':'risk','risk-4':'risk','risk-5':'risk',
-      'bots-1':'bots','bots-2':'bots','bots-3':'bots','bots-4':'bots','bots-5':'bots',
-      'brokers-1':'brokers','brokers-2':'brokers','brokers-3':'brokers','brokers-4':'brokers','brokers-5':'brokers',
-    };
-    const counts = { psychology:0, markets:0, risk:0, bots:0, brokers:0 };
-    // Only count lessons where score is 'full' (passed), not 'partial' or null
-    rows.filter(r => r.score === 'full').forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
-    [['psychology','pctPsych','barPsych','donePsych'],['markets','pctMarkets','barMarkets','doneMarkets'],
-     ['risk','pctRisk','barRisk','doneRisk'],['bots','pctBots','barBots','doneBots'],
-     ['brokers','pctBrokers','barBrokers','doneBrokers']].forEach(([t,p,b,d]) => {
-      const pct = Math.round((counts[t] / 5) * 100);
-      const pEl = document.getElementById(p), bEl = document.getElementById(b), dEl = document.getElementById(d);
-      if (pEl) pEl.textContent = pct + '%';
-      if (bEl) bEl.style.width = pct + '%';
-      if (dEl) dEl.textContent = counts[t] + '/5 completed';
-    });
-  } catch(e) {
-    // On any error — still render 0% bars so it doesn't look broken
-    ['pctPsych','pctMarkets','pctRisk','pctBots','pctBrokers'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.textContent = '0%';
-    });
-    ['donePsych','doneMarkets','doneRisk','doneBots','doneBrokers'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.textContent = '0/5 completed';
-    });
-  }
-  
-  // Load leaderboard from Supabase — fetch top 5 + your own row
-  try {
-    // Fetch top 5
-    const lbRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc&limit=5', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
-    });
-    // Fetch your own entry + count all entries for true rank
-    const myRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits,username', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
-    });
-    const rankCountRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?credits=gte.' + 0 + '&select=user_id&order=credits.desc', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token, 'Prefer': 'count=exact', 'Range-Unit': 'items', 'Range': '0-999' }
-    });
-
-    if (lbRes.ok) {
-      const lbData = await lbRes.json();
-      const myData = myRes.ok ? await myRes.json() : [];
-      const myCredits = myData[0]?.credits ?? 0;
-      const myUsername = myData[0]?.username || username;
-
-      // If no row exists for this user yet — create one
-      if (myData.length === 0) {
-        await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits', {
-          method: 'POST',
-          headers: {
-            'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4',
-            'Authorization': 'Bearer ' + session.access_token,
-            'Content-Type': 'application/json',
-            'Prefer': 'resolution=ignore-duplicates'
-          },
-          body: JSON.stringify({ user_id: user.id, username: username, credits: 0 })
-        });
-      }
-
-      // Get true rank — count users with more credits than me
-      let myTrueRank = 1;
-      if (rankCountRes.ok) {
-        const allUsers = await rankCountRes.json();
-        myTrueRank = allUsers.filter(r => r.user_id !== user.id).filter(r => {
-          const found = lbData.find(l => l.user_id === r.user_id);
-          return (found?.credits ?? 0) >= myCredits;
-        }).length + 1;
-      }
-
-      const rankColors = ['var(--amber)', '#c8d4e0', '#cd7c2e', 'var(--text-dim)', 'var(--text-dim)'];
-      const lbRows = document.getElementById('lbRows');
-      const topMax = lbData[0]?.credits || 1;
-      const youInTop5 = lbData.some(r => r.user_id === user.id);
-
-      if (lbRows && lbData.length > 0) {
-        lbRows.innerHTML = lbData.map((row, i) => {
-          const initials = (row.username || 'RC').substring(0, 2).toUpperCase();
-          const barPct = Math.round((row.credits / topMax) * 100);
-          const isYou = row.user_id === user.id;
-          return `<div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)${isYou ? ';background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)' : ''}">
-            <div style="font-family:var(--display);font-size:20px;color:${isYou ? 'var(--blue)' : rankColors[i]};line-height:1">${i + 1}</div>
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">${initials}</div>
-            <div><div style="font-family:var(--mono);font-size:10px;color:${isYou ? 'var(--blue)' : 'var(--text-bright)'};margin-bottom:4px">${row.username || 'member'}${isYou ? ' (you)' : ''}</div><div style="height:2px;background:var(--border)"><div style="width:${barPct}%;height:100%;background:${isYou ? 'var(--blue)' : 'var(--green)'}"></div></div></div>
-            <div style="font-family:var(--display);font-size:18px;color:${isYou ? 'var(--blue)' : rankColors[i]};line-height:1">${row.credits.toLocaleString()}</div>
-          </div>`;
-        }).join('');
-      } else if (lbRows) {
-        // Empty leaderboard — show your own row as #1
-        const initials = myUsername.substring(0, 2).toUpperCase();
-        lbRows.innerHTML = `<div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)">
-          <div style="font-family:var(--display);font-size:20px;color:var(--blue);line-height:1">1</div>
-          <div style="width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--blue)">${initials}</div>
-          <div><div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px">${myUsername} (you)</div><div style="height:2px;background:var(--border)"><div style="width:0%;height:100%;background:var(--blue)"></div></div></div>
-          <div style="font-family:var(--display);font-size:18px;color:var(--blue);line-height:1">${myCredits}</div>
-        </div>
-        <div style="padding:12px 14px;font-family:var(--mono);font-size:9px;color:var(--text-dim);text-align:center">// Complete lessons and contribute to earn credits</div>`;
-        myTrueRank = 1;
-      }
-
-      // Show "your row" below top 5 only if not already in top 5
-      const yourRowEl = document.getElementById('lbYourRowExternal');
-      if (!youInTop5 && lbData.length > 0 && yourRowEl) {
-        yourRowEl.style.display = 'grid';
-        document.getElementById('lbYourRank').textContent = myTrueRank;
-        document.getElementById('lbYourAv').textContent = myUsername.substring(0, 2).toUpperCase();
-        document.getElementById('lbYourName').textContent = myUsername + ' (you)';
-        document.getElementById('lbYourScore').textContent = myCredits.toLocaleString();
-        const barPct = topMax > 0 ? Math.round((myCredits / topMax) * 100) : 0;
-        document.getElementById('lbYourBar').style.width = barPct + '%';
-      }
-
-      // Always update rank in welcome bar and stat card
-      const rankEl = document.getElementById('welcomeRank');
-      const rankCardEl = document.getElementById('rankCard');
-      const rankSubEl = document.getElementById('rankSub');
-      if (rankEl) rankEl.textContent = '#' + myTrueRank;
-      if (rankCardEl) rankCardEl.textContent = '#' + myTrueRank;
-      if (rankSubEl) rankSubEl.textContent = 'This month';
-    }
-  } catch(e) { console.error('Leaderboard error:', e); }
-
-  // Load member count for pot bar
-  try {
-    const mcRes = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/waitlist?select=id&subscription=eq.core', {
-      headers: { 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4', 'Authorization': 'Bearer ' + session.access_token }
-    });
-    if (mcRes.ok) {
-      const mcData = await mcRes.json();
-      const count = mcData.length;
-      const potLabel = document.getElementById('potMembersLabel');
-      const potBar = document.getElementById('potBar');
-      if (potLabel) potLabel.textContent = count + ' Core members';
-      if (potBar) potBar.style.width = Math.min(100, Math.round((count / 50) * 100)) + '%';
-    }
-  } catch(e) {}
-
-  // Set welcome bots count from bot list
-  const liveBots = document.querySelectorAll('.bot-dot.live').length;
-  const welcomeBotsEl = document.getElementById('welcomeBots');
-  if (welcomeBotsEl) welcomeBotsEl.textContent = liveBots;
-
-  // Dynamic tier badge based on role in user_metadata
+  // Tier badge
   const role = user.user_metadata?.role || 'core';
   const tierBadge = document.getElementById('navTierBadge');
   if (tierBadge) {
@@ -830,11 +669,137 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
     tierBadge.style.background = t.bg;
   }
 
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? '// GOOD MORNING' : hour < 17 ? '// GOOD AFTERNOON' : '// GOOD EVENING';
-  const greetingEl = document.getElementById('welcomeGreeting');
-  if (greetingEl) greetingEl.textContent = greeting;
+  // Upsert user_credits row — this is the key fix for Google OAuth users.
+  // Google auth never hits a signup handler, so we guarantee the row exists here.
+  try {
+    await fetch(SUPABASE_URL + '/rest/v1/user_credits', {
+      method: 'POST',
+      headers: { ...HEADERS(token), 'Prefer': 'resolution=ignore-duplicates' },
+      body: JSON.stringify({ user_id: user.id, username: username, credits: 0 })
+    });
+  } catch(e) { console.warn('Upsert user_credits failed:', e); }
+
+  // Credits
+  let myCredits = 0;
+  try {
+    const cRes = await fetch(SUPABASE_URL + '/rest/v1/user_credits?user_id=eq.' + user.id + '&select=credits', {
+      headers: HEADERS(token)
+    });
+    if (cRes.ok) {
+      const cData = await cRes.json();
+      myCredits = cData[0]?.credits ?? 0;
+    }
+  } catch(e) {}
+
+  setEl('navCredits', myCredits.toLocaleString() + ' pts');
+  setEl('dashCredits', myCredits.toLocaleString());
+  setEl('headerCredits', myCredits.toLocaleString());
+
+  // Bot count
+  const liveBots = document.querySelectorAll('.bot-dot.live').length;
+  setEl('welcomeBots', liveBots);
+
+  // Learning progress
+  try {
+    const pRes = await fetch(SUPABASE_URL + '/rest/v1/user_progress?user_id=eq.' + user.id + '&select=lesson_id,score', {
+      headers: HEADERS(token)
+    });
+    const rows = pRes.ok ? await pRes.json() : [];
+    const topicMap = {
+      'psych-1':'psychology','psych-2':'psychology','psych-3':'psychology','psych-4':'psychology','psych-5':'psychology',
+      'markets-1':'markets','markets-2':'markets','markets-3':'markets','markets-4':'markets','markets-5':'markets',
+      'risk-1':'risk','risk-2':'risk','risk-3':'risk','risk-4':'risk','risk-5':'risk',
+      'bots-1':'bots','bots-2':'bots','bots-3':'bots','bots-4':'bots','bots-5':'bots',
+      'brokers-1':'brokers','brokers-2':'brokers','brokers-3':'brokers','brokers-4':'brokers','brokers-5':'brokers',
+    };
+    const counts = { psychology:0, markets:0, risk:0, bots:0, brokers:0 };
+    rows.filter(r => r.score === 'full').forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
+    [['psychology','pctPsych','barPsych','donePsych'],
+     ['markets','pctMarkets','barMarkets','doneMarkets'],
+     ['risk','pctRisk','barRisk','doneRisk'],
+     ['bots','pctBots','barBots','doneBots'],
+     ['brokers','pctBrokers','barBrokers','doneBrokers']].forEach(([t,p,b,d]) => {
+      const pct = Math.round((counts[t] / 5) * 100);
+      setEl(p, pct + '%'); setW(b, pct); setEl(d, counts[t] + '/5 completed');
+    });
+  } catch(e) {
+    ['pctPsych','pctMarkets','pctRisk','pctBots','pctBrokers'].forEach(id => setEl(id, '0%'));
+    ['donePsych','doneMarkets','doneRisk','doneBots','doneBrokers'].forEach(id => setEl(id, '0/5 completed'));
+  }
+
+  // Leaderboard
+  try {
+    const [lbRes, allRes] = await Promise.all([
+      fetch(SUPABASE_URL + '/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc&limit=5', { headers: HEADERS(token) }),
+      fetch(SUPABASE_URL + '/rest/v1/user_credits?select=user_id,credits&order=credits.desc', { headers: HEADERS(token) })
+    ]);
+
+    const lbData  = lbRes.ok  ? await lbRes.json()  : [];
+    const allData = allRes.ok ? await allRes.json() : [];
+
+    // True rank = position in full sorted list
+    const myRankIdx  = allData.findIndex(r => r.user_id === user.id);
+    const myTrueRank = myRankIdx >= 0 ? myRankIdx + 1 : allData.length + 1;
+
+    const rankColors = ['var(--amber)', '#c8d4e0', '#cd7c2e', 'var(--text-dim)', 'var(--text-dim)'];
+    const lbRows    = document.getElementById('lbRows');
+    const topMax    = lbData[0]?.credits || 1;
+    const youInTop5 = lbData.some(r => r.user_id === user.id);
+
+    const rowHTML = (row, i, isYou) => {
+      const initials = (row.username || 'RC').substring(0, 2).toUpperCase();
+      const barPct   = Math.round(((row.credits || 0) / topMax) * 100);
+      const color    = isYou ? 'var(--blue)' : (rankColors[i] || 'var(--text-dim)');
+      const bg       = isYou ? ';background:rgba(59,130,246,0.06);border-left:2px solid var(--blue)' : '';
+      return '<div style="display:grid;grid-template-columns:28px 30px 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(26,31,38,0.5)' + bg + '">'
+        + '<div style="font-family:var(--display);font-size:20px;color:' + color + ';line-height:1">' + (i + 1) + '</div>'
+        + '<div style="width:28px;height:28px;border-radius:50%;background:var(--dark);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--text-dim)">' + initials + '</div>'
+        + '<div><div style="font-family:var(--mono);font-size:10px;color:' + (isYou ? 'var(--blue)' : 'var(--text-bright)') + ';margin-bottom:4px">' + (row.username || 'member') + (isYou ? ' (you)' : '') + '</div>'
+        + '<div style="height:2px;background:var(--border)"><div style="width:' + barPct + '%;height:100%;background:' + (isYou ? 'var(--blue)' : 'var(--green)') + '"></div></div></div>'
+        + '<div style="font-family:var(--display);font-size:18px;color:' + color + ';line-height:1">' + (row.credits || 0).toLocaleString() + '</div>'
+        + '</div>';
+    };
+
+    if (lbRows) {
+      if (lbData.length > 0) {
+        lbRows.innerHTML = lbData.map((row, i) => rowHTML(row, i, row.user_id === user.id)).join('');
+      } else {
+        // No data yet — show just your row as #1
+        lbRows.innerHTML = rowHTML({ user_id: user.id, username, credits: myCredits }, 0, true)
+          + '<div style="padding:12px 14px;font-family:var(--mono);font-size:9px;color:var(--text-dim);text-align:center">// Complete lessons and contribute to earn credits</div>';
+      }
+    }
+
+    // External your-row shown below top 5 when you are not in it
+    const yourRowEl = document.getElementById('lbYourRowExternal');
+    if (!youInTop5 && lbData.length > 0 && yourRowEl) {
+      yourRowEl.style.display = 'grid';
+      const barPct = topMax > 0 ? Math.round((myCredits / topMax) * 100) : 0;
+      setEl('lbYourRank', myTrueRank);
+      setEl('lbYourAv', username.substring(0, 2).toUpperCase());
+      setEl('lbYourName', username + ' (you)');
+      setEl('lbYourScore', myCredits.toLocaleString());
+      setW('lbYourBar', barPct);
+    }
+
+    setEl('welcomeRank', '#' + myTrueRank);
+    setEl('rankCard', '#' + myTrueRank);
+    setEl('rankSub', 'This month');
+
+  } catch(e) { console.error('Leaderboard error:', e); }
+
+  // Core pot member count
+  try {
+    const mcRes = await fetch(SUPABASE_URL + '/rest/v1/user_credits?select=user_id', { headers: HEADERS(token) });
+    if (mcRes.ok) {
+      const count = (await mcRes.json()).length;
+      setEl('potMembersLabel', count + ' Core members');
+      setW('potBar', Math.min(100, Math.round((count / 50) * 100)));
+    }
+  } catch(e) {}
+
 })();
+
 
 // Logout function
 async function logout() {
