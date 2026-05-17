@@ -2096,8 +2096,8 @@ async function answerTask(lessonId, optIdx, isCorrect) {
           const pts = isCorrect ? 20 : 0;
   // Wait for DB credits to load so we don't overwrite with wrong baseline
   if (!_creditsLoaded) await _creditsLoadPromise;
-  earnCredits(pts);
   todayTasks++;
+  earnCredits(pts);
 
   // Mark lesson progress score
   const score = isCorrect ? 'full' : 'partial';
@@ -2116,11 +2116,18 @@ async function answerTask(lessonId, optIdx, isCorrect) {
 function earnCredits(amount) {
   credits += amount;
   todayCredits += amount;
-  document.getElementById('creditsDisplay').textContent = credits.toLocaleString() + ' pts';
-  document.getElementById('rsCredits').textContent = '+' + todayCredits;
-  document.getElementById('rsLessons').textContent = todayLessons;
-  document.getElementById('rsTasks').textContent = todayTasks;
-  const lbEl = document.getElementById('lbPts'); if (lbEl) lbEl.textContent = credits.toLocaleString();
+  // Update nav credits
+  const credEl = document.getElementById('creditsDisplay');
+  if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
+  // Update right sidebar — null-safe
+  const rsC = document.getElementById('rsCredits');
+  if (rsC) rsC.textContent = '+' + todayCredits;
+  const rsL = document.getElementById('rsLessons');
+  if (rsL) rsL.textContent = todayLessons;
+  const rsT = document.getElementById('rsTasks');
+  if (rsT) rsT.textContent = todayTasks;
+  const lbEl = document.getElementById('lbPts');
+  if (lbEl) lbEl.textContent = credits.toLocaleString();
   saveCreditsToDb(credits);
 }
 
