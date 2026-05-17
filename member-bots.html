@@ -278,6 +278,7 @@
   .mobile-menu-user { padding: 14px 16px; background: var(--card); border: 1px solid var(--border); margin-top: 12px; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
   /* MOBILE */
   @media (max-width: 768px) {
+    .mobile-banner { display: flex !important; }
     .nav-items { display: none; }
     .nav-hamburger { display: flex; align-items: center; }
     .logout-btn { display: none; }
@@ -300,6 +301,7 @@
     .page-sub { font-size: 9px; }
     .status-pill { font-size: 8px; padding: 4px 8px; }
   }
+  .mobile-banner { display: none; }
   @media (max-width: 480px) {
     .page-title { font-size: 24px; }
     .bot-card-name { font-size: 20px; }
@@ -332,6 +334,10 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- NAV -->
+<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
+  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
+</div>
+
 <nav class="member-nav">
   <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
   <div class="nav-items">
@@ -348,7 +354,7 @@
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">—</span>
-      <span class="nav-tier">CORE</span>
+      <span class="nav-tier" id="navTierBadge">CORE</span>
     </div>
     <button class="logout-btn" onclick="logout()">LOGOUT</button>
   </div>
@@ -911,5 +917,27 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeM
 
 </script>
 
+<script>
+  // ── NAV: role badge + real credits ────────────────────────────────────────
+  (async () => {
+    try {
+      const _s = supabase.createClient('https://mlzxnrmctblfpijtihvm.supabase.co','sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4');
+      const { data:{ session } } = await _s.auth.getSession();
+      if (!session) return;
+      const _u = session.user, _t = session.access_token;
+      const _role = _u.user_metadata?.role || 'core';
+      const _tierEl = document.getElementById('navTierBadge') || document.querySelector('.nav-tier');
+      if (_tierEl) {
+        const _ts = { admin:{l:'ADMIN',c:'#ff3355',b:'rgba(255,51,85,0.4)'}, core:{l:'CORE',c:'#00ff88',b:'rgba(0,255,136,0.3)'}, builder:{l:'BUILDER',c:'#f59e0b',b:'rgba(245,158,11,0.3)'}, free:{l:'FREE',c:'#5a6a7a',b:'#1a1f26'} };
+        const _st = _ts[_role] || _ts.core;
+        _tierEl.textContent = _st.l; _tierEl.style.color = _st.c; _tierEl.style.borderColor = _st.b;
+      }
+      const _cr = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/user_credits?user_id=eq.'+_u.id+'&select=credits',{headers:{'apikey':'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4','Authorization':'Bearer '+_t}});
+      const _rows = _cr.ok ? await _cr.json() : [];
+      const _credEl = document.getElementById('navCredits');
+      if (_credEl) _credEl.textContent = (_rows[0]?.credits ?? 0).toLocaleString() + ' pts';
+    } catch(e) {}
+  })();
+</script>
 </body>
 </html>

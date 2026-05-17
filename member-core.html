@@ -293,6 +293,19 @@
   }
   .nav-hamburger { display: none; background: none; border: 1px solid #1a1f26; color: #5a6a7a; font-size: 14px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); transition: all 0.2s; }
   .nav-hamburger:hover { border-color: var(--green); color: var(--green); }
+  @media (max-width: 768px) {
+    body { cursor: default; }
+    .mobile-banner { display: flex !important; }
+    .member-nav { padding: 0 16px; overflow-x: auto; }
+    .nav-items { gap: 0; }
+    .nav-hamburger { display: flex !important; align-items: center; }
+    .nav-item { padding: 0 12px; font-size: 9px; }
+    .nav-credits { display: none; }
+    .nav-user span { display: none; }
+    .market-bar { padding: 6px 12px; gap: 14px; }
+    .market-item { font-size: 9px; }
+  }
+  .mobile-banner { display: none; }
 </style>
 </head>
 <body>
@@ -312,6 +325,10 @@
 </div>
 
 <!-- NAV -->
+<div class="mobile-banner" style="background:rgba(245,158,11,0.1);border-bottom:1px solid rgba(245,158,11,0.2);padding:8px 16px;font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:0.1em;text-align:center;align-items:center;justify-content:center;gap:8px">
+  ⚠ BEST EXPERIENCED ON DESKTOP — MOBILE VERSION COMING SOON
+</div>
+
 <nav class="member-nav">
   <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
   <div class="nav-items">
