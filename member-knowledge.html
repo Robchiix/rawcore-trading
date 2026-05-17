@@ -676,7 +676,9 @@
     }
     
     // Load progress and credits from Supabase
-    loadProgressFromDB(user.id, session.access_token);
+    // Sequential: loadProgressFromDB sets _jwt and _userId first
+    await loadProgressFromDB(user.id, session.access_token);
+    // Now _jwt is set — streak and challenge can use it safely
     loadAndUpdateStreak(user.id, session.access_token);
     loadDailyChallenge(user.id);
     window.signOut = async () => {
@@ -885,6 +887,11 @@
         <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px">// SELECT A TOPIC TO BEGIN</div>
         <div style="font-family:var(--display);font-size:48px;color:var(--text-bright);line-height:0.9;margin-bottom:16px">CHOOSE YOUR<br><span style="color:var(--green)">LESSON.</span></div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);max-width:560px;margin-top:24px">
+          <div style="background:var(--dark);padding:20px;cursor:pointer;border-left:2px solid var(--green)" onclick="openTopic('intro')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">INTRODUCTION</div>
+            <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Start here — all free</div>
+          </div>
           <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('psychology')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
             <div style="font-family:var(--mono);font-size:9px;color:var(--purple);margin-bottom:6px">PSYCHOLOGY</div>
             <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
@@ -2202,6 +2209,11 @@ function showHome() {
       <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:0.2em;margin-bottom:16px">// SELECT A TOPIC TO BEGIN</div>
       <div style="font-family:var(--display);font-size:48px;color:var(--text-bright);line-height:0.9;margin-bottom:16px">CHOOSE YOUR<br><span style="color:var(--green)">LESSON.</span></div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);max-width:560px;margin-top:24px">
+        <div style="background:var(--dark);padding:20px;cursor:pointer;border-left:2px solid var(--green)" onclick="openTopic('intro')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--green);margin-bottom:6px">INTRODUCTION</div>
+          <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:3px">Start here — all free</div>
+        </div>
         <div style="background:var(--dark);padding:20px;cursor:pointer" onclick="openTopic('psychology')" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='var(--dark)'">
           <div style="font-family:var(--mono);font-size:9px;color:var(--purple);margin-bottom:6px">PSYCHOLOGY</div>
           <div style="font-family:var(--display);font-size:20px;color:var(--text-bright)">5 LESSONS</div>
