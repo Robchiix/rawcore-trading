@@ -717,7 +717,7 @@
   </div>
   <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu" style="display:none;background:none;border:1px solid #1a1f26;color:#5a6a7a;font-size:14px;padding:4px 10px;cursor:pointer;font-family:var(--mono);transition:all 0.2s;flex-shrink:0">&#9776;</button>
   <div class="nav-right">
-    <div class="nav-credits" id="creditsDisplay">1,240 pts</div>
+    <div class="nav-credits" id="creditsDisplay">0 pts</div>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">RC</div>
       <span id="navUsername">Robchiix</span>
@@ -1597,20 +1597,17 @@ async function loadProgressFromDB(userId, accessToken) {
         lessonScores[row.lesson_id] = row.score;
       });
     }
-    // Load credits
+    // Load credits — upsert guarantees row exists for Google OAuth users
     const r2 = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${userId}&select=credits`, {
       headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
     });
-    if (r2.ok) {
-      const rows2 = await r2.json();
-      if (rows2.length > 0) {
-        credits = rows2[0].credits;
-      } else {
-        credits = 0;
-      }
-    }
-    // Upsert user_credits row — guarantees row exists for Google OAuth users
-    if (!rows2 || rows2.length === 0) {
+    let rows2 = [];
+    if (r2.ok) rows2 = await r2.json();
+    if (rows2.length > 0) {
+      credits = rows2[0].credits; // load real value from DB — this is the only source of truth
+    } else {
+      credits = 0;
+      // No row yet — create one (first Google OAuth login)
       await fetch(`${_sbUrl}/rest/v1/user_credits`, {
         method: 'POST',
         headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates' },
