@@ -2151,6 +2151,7 @@ function getTopicPct(t) {
 
 function isLessonUnlocked(lessonId) {
   const l = lessonData[lessonId];
+  if (!l) return false; // safety guard — lesson not in lessonData
   const tl = topicData[l.topic].lessons;
   const idx = tl.indexOf(lessonId);
   // First lesson of psychology always unlocked
@@ -2196,8 +2197,8 @@ function updateNextUp() {
     'psych-1','psych-2','psych-3','psych-4','psych-5',
     'market-1','market-2','market-3','market-4','market-5',
     'risk-1','risk-2','risk-3','risk-4','risk-5',
-    'systems-1','systems-2','systems-3','systems-4','systems-5'];
-  const next = allLessons.filter(lid => isLessonUnlocked(lid) && !lessonScores[lid]).slice(0,2);
+    'bots-1','bots-2','bots-3','bots-4','bots-5'];
+  const next = allLessons.filter(lid => lessonData[lid] && isLessonUnlocked(lid) && !lessonScores[lid]).slice(0,2);
   if (next.length === 0) {
     panel.innerHTML = '<div style="font-family:var(--mono);font-size:10px;color:var(--green)">All lessons complete! 🎉</div>';
     return;
@@ -2217,8 +2218,9 @@ function updateSidebarLocks() {
     'psych-1','psych-2','psych-3','psych-4','psych-5',
     'market-1','market-2','market-3','market-4','market-5',
     'risk-1','risk-2','risk-3','risk-4','risk-5',
-    'systems-1','systems-2','systems-3','systems-4','systems-5'];
+    'bots-1','bots-2','bots-3','bots-4','bots-5'];
   allLessons.forEach(lid => {
+    if (!lessonData[lid]) return; // skip unknown lessons
     const el = document.getElementById('ll-' + lid);
     if (!el) return;
     const unlocked = isLessonUnlocked(lid);
