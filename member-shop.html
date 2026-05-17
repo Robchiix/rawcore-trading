@@ -474,7 +474,7 @@
   <a href="member-dashboard.html" class="nav-logo">&gt;_ Raw<span>Core</span></a>
   <div class="nav-items">
     <a href="member-dashboard.html" class="nav-item"data-fixed>Home</a>
-    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
+    <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge" id="crBadge" style="display:none">0</span></a>
     <a href="member-bots.html" class="nav-item">Bots</a>
     <a href="member-knowledge.html" class="nav-item">Learn</a>
     <a href="member-core.html" class="nav-item">My Core</a>
@@ -582,17 +582,46 @@ async function logout() {
   window.location.href = 'index.html';
 }
 
-function notifyMe() {
-  const email = document.getElementById('notifyEmail').value.trim();
+async function notifyMe() {
+  const emailEl = document.getElementById('notifyEmail');
   const msg = document.getElementById('notifyMsg');
+  const email = emailEl.value.trim();
   if (!email || !email.includes('@')) {
     msg.style.color = 'var(--red)';
     msg.textContent = '// Invalid email address';
     return;
   }
-  msg.style.color = 'var(--green)';
-  msg.textContent = '// ✓ Got it — you\'ll be first to know when it drops.';
-  document.getElementById('notifyEmail').value = '';
+  msg.style.color = 'var(--text-dim)';
+  msg.textContent = '// Saving...';
+  try {
+    const r = await fetch('https://mlzxnrmctblfpijtihvm.supabase.co/rest/v1/waitlist', {
+      method: 'POST',
+      headers: {
+        'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4',
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=ignore-duplicates'
+      },
+      body: JSON.stringify({ email: email, source: 'shop_notify' })
+    });
+    if (r.ok || r.status === 201 || r.status === 204) {
+      msg.style.color = 'var(--green)';
+      msg.textContent = "// ✓ You're on the list — first access + 20% off when it drops.";
+      emailEl.value = '';
+    } else {
+      const err = await r.json().catch(()=>({}));
+      if (err.code === '23505') {
+        msg.style.color = 'var(--green)';
+        msg.textContent = '// ✓ Already on the list!';
+        emailEl.value = '';
+      } else {
+        msg.style.color = 'var(--red)';
+        msg.textContent = '// Something went wrong, try again.';
+      }
+    }
+  } catch(e) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '// Network error, try again.';
+  }
 }
 
 // ============ LIVE MARKET DATA ============
