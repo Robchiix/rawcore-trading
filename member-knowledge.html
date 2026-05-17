@@ -757,12 +757,9 @@
     <!-- PSYCHOLOGY -->
     <!-- INTRO TOPIC -->
     <div id="topic-intro" class="topic-item" onclick="openTopic('intro')">
-      <div class="ti-head">
-        <div class="ti-icon" style="color:var(--green)">→</div>
-        <div class="ti-info">
-          <div class="ti-title">INTRODUCTION</div>
-          <div class="ti-sub">5 LESSONS</div>
-        </div>
+      <div class="ti-header">
+        <span class="ti-icon" style="color:var(--green)">→</span>
+        <span class="ti-name">Introduction</span>
         <span class="ti-pct" id="pct-intro" style="font-family:var(--mono);font-size:9px;color:var(--green)">0%</span>
       </div>
       <div class="ti-progress-wrap"><div class="ti-progress-fill" id="bar-intro" style="width:0%;background:var(--green)"></div></div>
@@ -936,7 +933,7 @@
         </div>
         <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px">
           <span style="color:var(--text-dim)">Streak</span>
-          <span style="color:var(--amber)">🔥 3 days</span>
+          <span style="color:var(--amber)" id="rsStreak">🔥 — days</span>
         </div>
       </div>
     </div>
@@ -951,27 +948,13 @@
     <div class="rs-panel">
       <div class="rs-title">// LEARN LEADERBOARD</div>
       <div class="lb-mini">
-        <div class="lb-mini-item">
-          <span class="lb-mini-rank g">1</span>
-          <div class="lb-mini-av">MK</div>
-          <span class="lb-mini-name">USR_041</span>
-          <span class="lb-mini-pts">890</span>
+        <div id="lbMiniRows">
+          <!-- populated by loadLeaderboardMini() -->
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);padding:8px 0">Loading...</div>
         </div>
-        <div class="lb-mini-item">
-          <span class="lb-mini-rank">2</span>
-          <div class="lb-mini-av">AX</div>
-          <span class="lb-mini-name">USR_119</span>
-          <span class="lb-mini-pts">720</span>
-        </div>
-        <div class="lb-mini-item">
-          <span class="lb-mini-rank">3</span>
-          <div class="lb-mini-av">ST</div>
-          <span class="lb-mini-name">USR_087</span>
-          <span class="lb-mini-pts">640</span>
-        </div>
-        <div class="lb-mini-item you">
-          <span class="lb-mini-rank" style="color:var(--blue)">7</span>
-          <div class="lb-mini-av" style="background:rgba(59,130,246,0.1);color:var(--blue)">RC</div>
+        <div class="lb-mini-item you" id="lbMiniYou" style="display:none">
+          <span class="lb-mini-rank" style="color:var(--blue)" id="lbMiniYouRank">—</span>
+          <div class="lb-mini-av" style="background:rgba(59,130,246,0.1);color:var(--blue)" id="lbMiniYouAv">RC</div>
           <span class="lb-mini-name" style="color:var(--blue)" id="navUsername2">You</span>
           <span class="lb-mini-pts" style="color:var(--blue)" id="lbPts">—</span>
         </div>
@@ -1632,10 +1615,15 @@ async function loadProgressFromDB(userId, accessToken) {
     if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
     const lbEl = document.getElementById('lbPts');
     if (lbEl) lbEl.textContent = credits.toLocaleString();
+    // Also update nav username in leaderboard
+    const navU2 = document.getElementById('navUsername2');
+    if (navU2) navU2.textContent = _username || 'You';
     updateProgress();
     // Signal that credits baseline is loaded
     _creditsLoaded = true;
     if (_creditsLoadResolve) _creditsLoadResolve();
+    // Load leaderboard now that we have userId + jwt
+    loadLeaderboardMini();
   } catch(e) {
     console.warn('Progress load failed:', e);
   }
@@ -1895,6 +1883,8 @@ async function loadAndUpdateStreak(userId, jwt) {
   // Update display
   const el = document.getElementById('streakVal');
   if (el) el.textContent = streak;
+  const rsEl = document.getElementById('rsStreak');
+  if (rsEl) rsEl.textContent = '🔥 ' + streak + ' day' + (streak !== 1 ? 's' : '');
   
   // Fill streak dots
   const dots = document.querySelectorAll('.streak-dot');
@@ -2286,6 +2276,55 @@ function answerChallenge(opt, isCorrect, feedback, userId, today) {
 document.getElementById('challengeModal').addEventListener('click', function(e) { if (e.target===this) closeChallenge(); });
 // Init right sidebar on load
 updateProgress();
+
+async function loadLeaderboardMini() {
+  if (!_userId || !_jwt) return;
+  try {
+    const [lbRes, allRes] = await Promise.all([
+      fetch(`${_sbUrl}/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc&limit=3`, {
+        headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}` }
+      }),
+      fetch(`${_sbUrl}/rest/v1/user_credits?select=user_id,credits&order=credits.desc`, {
+        headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}` }
+      })
+    ]);
+    const top3   = lbRes.ok  ? await lbRes.json()  : [];
+    const allData = allRes.ok ? await allRes.json() : [];
+    const myRankIdx  = allData.findIndex(r => r.user_id === _userId);
+    const myTrueRank = myRankIdx >= 0 ? myRankIdx + 1 : allData.length + 1;
+    const youInTop3  = top3.some(r => r.user_id === _userId);
+    const rankColors = ['var(--amber)', '#c8d4e0', '#cd7c2e'];
+    const rows = document.getElementById('lbMiniRows');
+    if (rows && top3.length > 0) {
+      rows.innerHTML = top3.map((r, i) => {
+        const av  = (r.username || 'RC').substring(0, 2).toUpperCase();
+        const you = r.user_id === _userId;
+        return `<div class="lb-mini-item${you ? ' you' : ''}">
+          <span class="lb-mini-rank${i===0?' g':''}" style="color:${you?'var(--blue)':rankColors[i]}">${i+1}</span>
+          <div class="lb-mini-av" style="${you?'background:rgba(59,130,246,0.1);color:var(--blue)':''}">${av}</div>
+          <span class="lb-mini-name" style="${you?'color:var(--blue)':''}">${r.username||'member'}${you?' (you)':''}</span>
+          <span class="lb-mini-pts" style="${you?'color:var(--blue)':''}"> ${(r.credits||0).toLocaleString()}</span>
+        </div>`;
+      }).join('');
+    } else if (rows) {
+      rows.innerHTML = '<div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);padding:8px 0">// No data yet</div>';
+    }
+    // Your row
+    const youEl = document.getElementById('lbMiniYou');
+    const rankEl = document.getElementById('lbMiniYouRank');
+    const avEl   = document.getElementById('lbMiniYouAv');
+    const u2El   = document.getElementById('navUsername2');
+    if (!youInTop3 && youEl) {
+      youEl.style.display = 'flex';
+      if (rankEl) rankEl.textContent = myTrueRank;
+      if (avEl)   avEl.textContent   = (_username||'RC').substring(0,2).toUpperCase();
+      if (u2El)   u2El.textContent   = _username || 'You';
+    } else if (youEl) {
+      youEl.style.display = 'none';
+    }
+    // pts already set by loadProgressFromDB / earnCredits
+  } catch(e) { console.warn('Leaderboard mini failed:', e); }
+}
 
 function openMobileMenu(){const m=document.getElementById('mobileMenu');if(m){m.style.display='flex';document.body.style.overflow='hidden';}}
 function closeMobileMenu(){const m=document.getElementById('mobileMenu');if(m){m.style.display='none';document.body.style.overflow='';}}
