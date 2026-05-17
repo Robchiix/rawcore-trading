@@ -1659,6 +1659,10 @@ async function loadProgressFromDB(userId, accessToken) {
         completedLessons.add(row.lesson_id);
         lessonScores[row.lesson_id] = row.score;
       });
+      // todayTasks = all fully completed lessons (persists forever)
+      const fullCount = rows.filter(r => r.score === 'full').length;
+      todayTasks = fullCount;
+      todayLessons = fullCount;
     }
     // Load credits — upsert guarantees row exists for Google OAuth users
     const r2 = await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${userId}&select=credits`, {
@@ -1677,14 +1681,31 @@ async function loadProgressFromDB(userId, accessToken) {
         body: JSON.stringify({ user_id: _userId, username: _username, credits: 0 })
       });
     }
+    // Load today's earned credits from daily_actions
+    const today = new Date().toISOString().split('T')[0];
+    const todayRes = await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${userId}&action_date=eq.${today}&select=credits_today`, {
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt || _sbKey}` }
+    });
+    if (todayRes.ok) {
+      const todayRows = await todayRes.json();
+      // Sum credits_today across all action rows for today
+      todayCredits = todayRows.reduce((sum, r) => sum + (r.credits_today || 0), 0);
+    }
+
     // Update display
     const credEl = document.getElementById('creditsDisplay');
     if (credEl) credEl.textContent = credits.toLocaleString() + ' pts';
     const lbEl = document.getElementById('lbPts');
     if (lbEl) lbEl.textContent = credits.toLocaleString();
-    // Also update nav username in leaderboard
     const navU2 = document.getElementById('navUsername2');
     if (navU2) navU2.textContent = _username || 'You';
+    // Update sidebar stats from DB values
+    const rsC = document.getElementById('rsCredits');
+    if (rsC) rsC.textContent = todayCredits > 0 ? '+' + todayCredits : '+0';
+    const rsT = document.getElementById('rsTasks');
+    if (rsT) rsT.textContent = todayTasks;
+    const rsL = document.getElementById('rsLessons');
+    if (rsL) rsL.textContent = todayLessons;
     updateProgress();
     // Signal that credits baseline is loaded
     _creditsLoaded = true;
@@ -1714,12 +1735,20 @@ async function saveProgressToDB(lessonId, score) {
 
 async function saveCreditsToDb(newCredits) {
   if (!_userId || !_jwt) return;
-  // Always PATCH — row is guaranteed to exist because loadProgressFromDB upserts it on load
+  const today = new Date().toISOString().split('T')[0];
   try {
+    // Save total credits
     await fetch(`${_sbUrl}/rest/v1/user_credits?user_id=eq.${_userId}`, {
       method: 'PATCH',
       headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ credits: newCredits, username: _username, updated_at: new Date().toISOString() })
+    });
+    // Save today's earned credits to daily_actions login row
+    // PATCH the login row for today with current todayCredits total
+    await fetch(`${_sbUrl}/rest/v1/daily_actions?user_id=eq.${_userId}&action_type=eq.login&action_date=eq.${today}`, {
+      method: 'PATCH',
+      headers: { 'apikey': _sbKey, 'Authorization': `Bearer ${_jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credits_today: todayCredits })
     });
   } catch(e) { console.warn('Credits save failed:', e); }
 }
