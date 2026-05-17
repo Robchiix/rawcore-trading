@@ -495,6 +495,12 @@
         <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
 
           <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--green)">INTRODUCTION</span><span id="pctIntro" style="color:var(--text-dim)">0%</span></div>
+            <div style="height:4px;background:var(--border)"><div id="barIntro" style="width:0%;height:100%;background:var(--green);transition:width 1s"></div></div>
+            <div id="doneIntro" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 completed</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px"><span style="color:var(--purple)">PSYCHOLOGY</span><span id="pctPsych" style="color:var(--text-dim)">0%</span></div>
             <div style="height:4px;background:var(--border)"><div id="barPsych" style="width:0%;height:100%;background:var(--purple);transition:width 1s"></div></div>
             <div id="donePsych" style="font-family:var(--mono);font-size:8px;color:var(--text-dim)">0/5 completed</div>
@@ -709,15 +715,17 @@ function setW(id, pct)  { const e = document.getElementById(id); if (e) e.style.
     });
     const rows = pRes.ok ? await pRes.json() : [];
     const topicMap = {
+      'intro-1':'intro','intro-2':'intro','intro-3':'intro','intro-4':'intro','intro-5':'intro',
       'psych-1':'psychology','psych-2':'psychology','psych-3':'psychology','psych-4':'psychology','psych-5':'psychology',
-      'markets-1':'markets','markets-2':'markets','markets-3':'markets','markets-4':'markets','markets-5':'markets',
+      'market-1':'markets','market-2':'markets','market-3':'markets','market-4':'markets','market-5':'markets',
       'risk-1':'risk','risk-2':'risk','risk-3':'risk','risk-4':'risk','risk-5':'risk',
       'bots-1':'bots','bots-2':'bots','bots-3':'bots','bots-4':'bots','bots-5':'bots',
       'brokers-1':'brokers','brokers-2':'brokers','brokers-3':'brokers','brokers-4':'brokers','brokers-5':'brokers',
     };
-    const counts = { psychology:0, markets:0, risk:0, bots:0, brokers:0 };
+    const counts = { intro:0, psychology:0, markets:0, risk:0, bots:0, brokers:0 };
     rows.filter(r => r.score === 'full').forEach(r => { const t = topicMap[r.lesson_id]; if (t) counts[t]++; });
-    [['psychology','pctPsych','barPsych','donePsych'],
+    [['intro','pctIntro','barIntro','doneIntro'],
+     ['psychology','pctPsych','barPsych','donePsych'],
      ['markets','pctMarkets','barMarkets','doneMarkets'],
      ['risk','pctRisk','barRisk','doneRisk'],
      ['bots','pctBots','barBots','doneBots'],
@@ -726,8 +734,8 @@ function setW(id, pct)  { const e = document.getElementById(id); if (e) e.style.
       setEl(p, pct + '%'); setW(b, pct); setEl(d, counts[t] + '/5 completed');
     });
   } catch(e) {
-    ['pctPsych','pctMarkets','pctRisk','pctBots','pctBrokers'].forEach(id => setEl(id, '0%'));
-    ['donePsych','doneMarkets','doneRisk','doneBots','doneBrokers'].forEach(id => setEl(id, '0/5 completed'));
+    ['pctIntro','pctPsych','pctMarkets','pctRisk','pctBots','pctBrokers'].forEach(id => setEl(id, '0%'));
+    ['doneIntro','donePsych','doneMarkets','doneRisk','doneBots','doneBrokers'].forEach(id => setEl(id, '0/5 completed'));
   }
 
   // Leaderboard
