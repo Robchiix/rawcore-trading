@@ -185,6 +185,32 @@
 
   /* ── ACHIEVEMENTS ── */
   .achievement-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+
+  .ach-claim-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    padding: 6px 14px; margin-top: 8px;
+    background: var(--green); color: var(--black);
+    border: none; cursor: pointer; font-weight: 700;
+    animation: pulse-claim 2s ease-in-out infinite;
+  }
+  .ach-claim-btn:hover { opacity: 0.85; }
+  .ach-claim-btn:disabled { opacity: 0.5; cursor: not-allowed; animation: none; }
+  @keyframes pulse-claim {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(0,255,136,0); }
+  }
+  .ach-claimed-badge {
+    font-family: var(--mono); font-size: 9px; color: var(--green);
+    margin-top: 6px; display: flex; align-items: center; gap: 5px;
+  }
+  /* Nav badge for unclaimed achievements */
+  .nav-ach-badge {
+    font-size: 8px; background: var(--green); color: var(--black);
+    border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center;
+    font-weight: 700; display: none;
+  }
+  .nav-ach-badge.show { display: inline-block; }
   .ach-item { background: var(--dark); padding: 14px; display: flex; gap: 12px; align-items: flex-start; transition: background 0.15s; }
   .ach-item:hover { background: var(--card); }
   .ach-item.locked { opacity: 0.4; }
@@ -293,7 +319,7 @@
     <a href="core-room.html" class="nav-item">Core Room <span class="nav-badge">3</span></a>
     <a href="member-bots.html" class="nav-item">Bots</a>
     <a href="member-knowledge.html" class="nav-item">Learn</a>
-    <a href="member-core.html" class="nav-item active">My Core</a>
+    <a href="member-core.html" class="nav-item active">My Core <span class="nav-ach-badge" id="achNavBadge"></span></a>
     <a href="member-shop.html" class="nav-item">Shop</a>
   </div>
   <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menu">&#9776;</button>
@@ -566,17 +592,21 @@ let currentUsername = '';
   }
 
   // Load all data in parallel
-  const [credRes, progressRes, dailyRes, allUsersRes] = await Promise.all([
+  const [credRes, progressRes, dailyRes, allUsersRes, achRes] = await Promise.all([
     fetch(`${SUPABASE_URL}/rest/v1/user_credits?user_id=eq.${uid}&select=credits,username`, { headers: H(tok) }),
     fetch(`${SUPABASE_URL}/rest/v1/user_progress?user_id=eq.${uid}&select=lesson_id,score`, { headers: H(tok) }),
     fetch(`${SUPABASE_URL}/rest/v1/daily_actions?user_id=eq.${uid}&select=action_type,action_date&order=action_date.desc`, { headers: H(tok) }),
     fetch(`${SUPABASE_URL}/rest/v1/user_credits?select=user_id,credits,username&order=credits.desc`, { headers: H(tok) }),
+    fetch(`${SUPABASE_URL}/rest/v1/user_achievements?user_id=eq.${uid}&select=achievement_id,claimed_at`, { headers: H(tok) }),
   ]);
 
   const credData    = credRes.ok    ? await credRes.json()    : [];
   const progressData= progressRes.ok? await progressRes.json(): [];
   const dailyData   = dailyRes.ok   ? await dailyRes.json()  : [];
   const allUsers    = allUsersRes.ok ? await allUsersRes.json(): [];
+  const achClaimed  = achRes.ok     ? await achRes.json()    : [];
+  const claimedIds  = new Set(achClaimed.map(r => r.achievement_id));
+  const claimedDates = Object.fromEntries(achClaimed.map(r => [r.achievement_id, r.claimed_at]));
 
   const myCredits  = credData[0]?.credits ?? 0;
   const myRankIdx  = allUsers.findIndex(r => r.user_id === uid);
@@ -635,19 +665,28 @@ let currentUsername = '';
   // ── RENDER ACHIEVEMENTS ───────────────────────────────────────────────────
   const grid = document.getElementById('achievementGrid');
   const achCountEl = document.getElementById('achCount');
-  let unlocked = 0;
+  let unlocked = 0, unclaimed = 0;
   if (grid) {
     grid.innerHTML = ACHIEVEMENTS.map(a => {
       const isUnlocked = a.check(achData);
+      const isClaimed  = claimedIds.has(a.id);
       if (isUnlocked) unlocked++;
-      return `<div class="ach-item ${isUnlocked ? '' : 'locked'}">
+      if (isUnlocked && !isClaimed) unclaimed++;
+      const claimedDate = isClaimed ? new Date(claimedDates[a.id]).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : null;
+      let bottomHtml = '';
+      if (!isUnlocked) {
+        bottomHtml = `<div class="ach-reward locked">+${a.pts.toLocaleString()} pts · ${getProgressHint(a.id, achData)}</div>`;
+      } else if (isClaimed) {
+        bottomHtml = `<div class="ach-claimed-badge">✓ Claimed · +${a.pts.toLocaleString()} pts · ${claimedDate}</div>`;
+      } else {
+        bottomHtml = `<button class="ach-claim-btn" onclick="claimAchievement('${a.id}', ${a.pts}, this)" id="claim-${a.id}">⚡ CLAIM +${a.pts} PTS</button>`;
+      }
+      return `<div class="ach-item ${isUnlocked ? '' : 'locked'}" id="ach-${a.id}">
         <div class="ach-icon">${a.icon}</div>
         <div class="ach-info">
           <div class="ach-name ${isUnlocked ? '' : 'locked'}">${a.name}</div>
           <div class="ach-desc">${a.desc}</div>
-          <div class="ach-reward ${isUnlocked ? 'earned' : 'locked'}">
-            ${isUnlocked ? `+${a.pts.toLocaleString()} pts earned` : `+${a.pts.toLocaleString()} pts · ${getProgressHint(a.id, achData)}`}
-          </div>
+          ${bottomHtml}
         </div>
       </div>`;
     }).join('');
@@ -659,6 +698,9 @@ let currentUsername = '';
   if (mcAch) mcAch.textContent = unlocked;
   const mcAchSub = document.getElementById('mcAchSub');
   if (mcAchSub) mcAchSub.textContent = `of ${ACHIEVEMENTS.length} unlocked`;
+
+  // Nav badge — show unclaimed count
+  updateAchNavBadge(unclaimed);
 
   // ── LEADERBOARD — real data ────────────────────────────────────────────────
   renderLeaderboard('monthly', allUsers, uid, currentUsername, myCredits);
@@ -691,6 +733,9 @@ let currentUsername = '';
   // ── STREAK DISPLAY ──────────────────────────────────────────────────────────
   const mcStreak = document.getElementById('mcStreakVal');
   if (mcStreak) mcStreak.textContent = streak;
+
+  // ── STORE SESSION FOR CLAIM CALLS ────────────────────────────────────────────
+  setClaimSession(uid, tok, myCredits);
 
   // ── LEADERBOARD RANK DELTA ─────────────────────────────────────────────────
   const deltaEl = document.getElementById('rankDelta');
@@ -841,6 +886,70 @@ function renderCreditHistory(progressData, dailyData, totalCredits) {
       </div>
       <div class="credit-amount earn">+${item.pts}</div>
     </div>`).join('');
+}
+
+// ── CLAIM ACHIEVEMENT ────────────────────────────────────────────────────────
+let _claimUid = null, _claimTok = null, _claimCredits = 0;
+
+// Store session info for claim calls (set during main load)
+function setClaimSession(uid, tok, credits) { _claimUid = uid; _claimTok = tok; _claimCredits = credits; }
+
+function updateAchNavBadge(count) {
+  const badge = document.getElementById('achNavBadge');
+  if (!badge) return;
+  if (count > 0) { badge.textContent = count; badge.classList.add('show'); }
+  else { badge.textContent = ''; badge.classList.remove('show'); }
+}
+
+async function claimAchievement(achId, pts, btn) {
+  if (!_claimUid || !_claimTok) return;
+  btn.disabled = true;
+  btn.textContent = 'CLAIMING...';
+
+  try {
+    // Insert into user_achievements (UNIQUE constraint prevents double-claim)
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/user_achievements`, {
+      method: 'POST',
+      headers: { ...H(_claimTok), 'Prefer': 'resolution=ignore-duplicates' },
+      body: JSON.stringify({ user_id: _claimUid, achievement_id: achId })
+    });
+
+    if (r.ok || r.status === 201 || r.status === 204) {
+      // Award credits
+      _claimCredits += pts;
+      await fetch(`${SUPABASE_URL}/rest/v1/user_credits?user_id=eq.${_claimUid}`, {
+        method: 'PATCH',
+        headers: H(_claimTok),
+        body: JSON.stringify({ credits: _claimCredits, username: document.getElementById('navUsername')?.textContent })
+      });
+
+      // Update nav credits display
+      const navPts = document.getElementById('navCredits');
+      if (navPts) navPts.textContent = _claimCredits.toLocaleString() + ' pts';
+      const mcCred = document.getElementById('mcCreditsVal');
+      if (mcCred) mcCred.textContent = _claimCredits.toLocaleString();
+
+      // Replace button with claimed badge
+      const today = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      btn.parentElement.innerHTML = btn.parentElement.innerHTML.replace(
+        btn.outerHTML,
+        `<div class="ach-claimed-badge">✓ Claimed · +${pts.toLocaleString()} pts · ${today}</div>`
+      );
+
+      // Decrement nav badge
+      const badge = document.getElementById('achNavBadge');
+      if (badge) {
+        const current = parseInt(badge.textContent) || 0;
+        updateAchNavBadge(Math.max(0, current - 1));
+      }
+    } else {
+      btn.disabled = false;
+      btn.textContent = `⚡ CLAIM +${pts} PTS`;
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = `⚡ CLAIM +${pts} PTS`;
+  }
 }
 
 // ── MISC ─────────────────────────────────────────────────────────────────────
