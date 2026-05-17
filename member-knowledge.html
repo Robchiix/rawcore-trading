@@ -118,9 +118,8 @@
   .streak-val { font-family: var(--display); font-size: 22px; color: var(--amber); line-height: 1; }
   .streak-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
   .streak-dots { display: flex; gap: 4px; margin-top: 6px; }
-  .streak-dot { width: 20px; height: 4px; background: var(--border); }
-  .streak-dot.done { background: var(--amber); }
-  .streak-dot.today { background: var(--green); }
+  .streak-dot { width: 20px; height: 4px; background: var(--border); border-radius: 2px; }
+  .streak-dot.done { background: var(--green); }
 
   /* TOPIC ITEMS */
   .topic-group { padding: 10px 0; border-bottom: 1px solid rgba(26,31,38,0.5); }
@@ -744,15 +743,16 @@
       <div class="streak-info">
         <div class="streak-val" id="streakVal">—</div>
         <div class="streak-label">// DAY STREAK</div>
-        <div class="streak-dots">
+                <div class="streak-dots">
           <div class="streak-dot"></div>
           <div class="streak-dot"></div>
           <div class="streak-dot"></div>
-          <div class="streak-dot today"></div>
+          <div class="streak-dot"></div>
           <div class="streak-dot"></div>
           <div class="streak-dot"></div>
           <div class="streak-dot"></div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -1905,7 +1905,7 @@ async function loadAndUpdateStreak(userId, jwt) {
   const rsEl = document.getElementById('rsStreak');
   if (rsEl) rsEl.textContent = '🔥 ' + streak + ' day' + (streak !== 1 ? 's' : '');
   const dots = document.querySelectorAll('.streak-dot');
-  dots.forEach((dot, i) => { dot.classList.toggle('done', i < Math.min(streak, dots.length)); });
+  dots.forEach((dot, i) => { dot.classList.remove('today'); dot.classList.toggle('done', i < Math.min(streak, dots.length)); });
 
   return streak;
 }
@@ -2238,7 +2238,7 @@ function showHome() {
 function openChallenge() { document.getElementById('challengeModal').classList.add('open'); }
 function closeChallenge() { document.getElementById('challengeModal').classList.remove('open'); }
 
-function answerChallenge(opt, isCorrect, feedback, userId, today) {
+async function answerChallenge(opt, isCorrect, feedback, userId, today) {
   // Disable all options
   document.querySelectorAll('#challengeOptions .cb-option').forEach(o => {
     o.classList.add('disabled');
