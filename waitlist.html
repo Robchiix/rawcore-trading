@@ -695,10 +695,10 @@ async function joinWaitlist() {
     localStorage.setItem('rc_waitlist_count', count);
     // Send welcome email via Edge Function (fire and forget)
     try {
-      fetch('https://mlzxnrmctblfpijtihvm.supabase.co/functions/v1/send-email', {
+      fetch('/api/send-email', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'sb_publishable_Z0AsFKg4XNKTlrV1XSpisw_l3jviTO4' },
-        body: JSON.stringify({ action: 'welcome', email, name: email.split('@')[0] })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'waitlist', email, name: email.split('@')[0] })
       });
     } catch(e) {}
     document.getElementById('formRow').style.display = 'none';
