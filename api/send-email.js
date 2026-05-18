@@ -7,84 +7,266 @@ export const config = { runtime: 'edge' };
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = 'RawCore Trading <hello@rawcoretrading.com>';
 
-// Template IDs from Resend
-const TEMPLATES = {
-  waitlist: '709d915a-13c0-4447-a1f1-06f60b7a6aa5',
-  welcome:  '22cf098a-eb83-42e4-89d5-3029f44dcb6f',
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json',
 };
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json',
-};
+function getWaitlistHtml(name) {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>You're on the waitlist — RawCore Trading</title>
+    </head>
+    <body style="margin:0;padding:0;background:#030405;font-family:'Courier New',monospace;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#030405;">
+      <tr><td align="center" style="padding:40px 20px;">
+          <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+                <!-- TOP BAR -->
+                      <tr><td style="padding:16px 32px;border-bottom:1px solid rgba(0,255,136,0.15);">
+                              <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                                        <td style="font-family:'Courier New',monospace;font-size:13px;color:#eaf2ff;">
+                                                    &gt;_ Raw<span style="color:#00ff88;">Core</span>Trading
+                                                              </td>
+                                                                        <td align="right" style="font-family:'Courier New',monospace;font-size:10px;color:rgba(0,255,136,0.5);letter-spacing:0.15em;">
+                                                                                    WAITLIST CONFIRMED
+                                                                                              </td>
+                                                                                                      </tr></table>
+                                                                                                            </td></tr>
+                                                                                                            
+                                                                                                                  <!-- HERO -->
+                                                                                                                        <tr><td style="padding:48px 32px 32px;background:linear-gradient(180deg,rgba(0,255,136,0.06) 0%,transparent 100%);text-align:center;">
+                                                                                                                                <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(0,255,136,0.5);letter-spacing:0.25em;margin-bottom:12px;">// ACCESS_REQUEST: CONFIRMED</div>
+                                                                                                                                        <div style="font-family:Georgia,serif;font-size:52px;font-weight:900;color:#eaf2ff;line-height:1;letter-spacing:0.02em;">YOU'RE</div>
+                                                                                                                                                <div style="font-family:Georgia,serif;font-size:52px;font-weight:900;color:#00ff88;line-height:1;letter-spacing:0.02em;">IN.</div>
+                                                                                                                                                        <div style="font-family:'Courier New',monospace;font-size:10px;color:rgba(0,255,136,0.4);letter-spacing:0.2em;margin-top:12px;">// RAWCORE STYLE</div>
+                                                                                                                                                              </td></tr>
+                                                                                                                                                              
+                                                                                                                                                                    <!-- DIVIDER -->
+                                                                                                                                                                          <tr><td style="padding:0 32px;"><div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,0.3),transparent);"></div></td></tr>
+                                                                                                                                                                          
+                                                                                                                                                                                <!-- MAIN CONTENT -->
+                                                                                                                                                                                      <tr><td style="padding:32px 32px 0;">
+                                                                                                                                                                                              <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.15);border-left:2px solid #00ff88;padding:20px 24px;">
+                                                                                                                                                                                                        <div style="font-family:'Courier New',monospace;font-size:9px;color:#00ff88;letter-spacing:0.25em;margin-bottom:12px;">// STATUS UPDATE</div>
+                                                                                                                                                                                                                  <p style="font-family:'Courier New',monospace;font-size:13px;color:#c8d4e0;line-height:1.8;margin:0;">
+                                                                                                                                                                                                                              Hey ${name},<br><br>
+                                                                                                                                                                                                                                          Your spot is locked in.<br>
+                                                                                                                                                                                                                                                      When the doors open — you'll be first to know.<br>
+                                                                                                                                                                                                                                                                  <span style="color:#00ff88;">Stay raw.</span>
+                                                                                                                                                                                                                                                                            </p>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                          </td></tr>
+                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                <!-- WHY RAWCORE -->
+                                                                                                                                                                                                                                                                                                      <tr><td style="padding:32px 32px 0;">
+                                                                                                                                                                                                                                                                                                              <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(0,255,136,0.4);letter-spacing:0.2em;margin-bottom:16px;">// WHY YOU'RE HERE</div>
+                                                                                                                                                                                                                                                                                                                      <table width="100%" cellpadding="0" cellspacing="0">
+                                                                                                                                                                                                                                                                                                                                <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                            <span style="color:rgba(0,255,136,0.5);font-family:'Courier New',monospace;font-size:11px;">//</span>
+                                                                                                                                                                                                                                                                                                                                                        <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Real trading knowledge — free for everyone</span>
+                                                                                                                                                                                                                                                                                                                                                                  </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                            <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                                                                        <span style="color:rgba(0,255,136,0.5);font-family:'Courier New',monospace;font-size:11px;">//</span>
+                                                                                                                                                                                                                                                                                                                                                                                                    <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Automated bots built in a garage, not a boardroom</span>
+                                                                                                                                                                                                                                                                                                                                                                                                              </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                        <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <span style="color:rgba(0,255,136,0.5);font-family:'Courier New',monospace;font-size:11px;">//</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Transparent even when the bots lose</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                          </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <tr><td style="padding:8px 0;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span style="color:rgba(0,255,136,0.5);font-family:'Courier New',monospace;font-size:11px;">//</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">No gurus. No lambos. Just the core.</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <!-- FOOTER -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <tr><td style="padding:32px;text-align:center;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,212,224,0.3);letter-spacing:0.15em;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  // NO SPAM &middot; NO COURSES &middot; JUST THE LAUNCH NOTIFICATION
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,212,224,0.2);margin-top:8px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            &copy; 2026 rawcoretrading.com &middot; <a href="https://rawcoretrading.com" style="color:rgba(0,255,136,0.4);text-decoration:none;">rawcoretrading.com</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </body>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </html>`;
+}
+
+function getWelcomeHtml(name) {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Welcome to the Core — RawCore Trading</title>
+    </head>
+    <body style="margin:0;padding:0;background:#030405;font-family:'Courier New',monospace;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#030405;">
+      <tr><td align="center" style="padding:40px 20px;">
+          <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+                <!-- TOP BAR -->
+                      <tr><td style="padding:16px 32px;border-bottom:1px solid rgba(0,255,136,0.15);">
+                              <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                                        <td style="font-family:'Courier New',monospace;font-size:13px;color:#eaf2ff;">
+                                                    &gt;_ Raw<span style="color:#00ff88;">Core</span>Trading
+                                                              </td>
+                                                                        <td align="right" style="font-family:'Courier New',monospace;font-size:10px;color:rgba(0,255,136,0.5);letter-spacing:0.15em;">
+                                                                                    ACCESS_GRANTED
+                                                                                              </td>
+                                                                                                      </tr></table>
+                                                                                                            </td></tr>
+                                                                                                            
+                                                                                                                  <!-- HERO -->
+                                                                                                                        <tr><td style="padding:48px 32px 32px;background:linear-gradient(180deg,rgba(0,255,136,0.06) 0%,transparent 100%);text-align:center;">
+                                                                                                                                <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(0,255,136,0.5);letter-spacing:0.25em;margin-bottom:12px;">// MEMBER_STATUS: ACTIVE</div>
+                                                                                                                                        <div style="font-family:Georgia,serif;font-size:52px;font-weight:900;color:#eaf2ff;line-height:1;">WELCOME</div>
+                                                                                                                                                <div style="font-family:Georgia,serif;font-size:52px;font-weight:900;color:#eaf2ff;line-height:1;">TO THE</div>
+                                                                                                                                                        <div style="font-family:Georgia,serif;font-size:52px;font-weight:900;color:#00ff88;line-height:1;">CORE.</div>
+                                                                                                                                                                <div style="font-family:'Courier New',monospace;font-size:10px;color:rgba(0,255,136,0.4);letter-spacing:0.2em;margin-top:12px;">// NO GURUS &middot; NO LAMBOS &middot; JUST THE CORE</div>
+                                                                                                                                                                      </td></tr>
+                                                                                                                                                                      
+                                                                                                                                                                            <!-- DIVIDER -->
+                                                                                                                                                                                  <tr><td style="padding:0 32px;"><div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,255,136,0.3),transparent);"></div></td></tr>
+                                                                                                                                                                                  
+                                                                                                                                                                                        <!-- GREETING -->
+                                                                                                                                                                                              <tr><td style="padding:32px 32px 0;">
+                                                                                                                                                                                                      <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.15);border-left:2px solid #00ff88;padding:20px 24px;">
+                                                                                                                                                                                                                <div style="font-family:'Courier New',monospace;font-size:9px;color:#00ff88;letter-spacing:0.25em;margin-bottom:12px;">// SYSTEM MESSAGE</div>
+                                                                                                                                                                                                                          <p style="font-family:'Courier New',monospace;font-size:13px;color:#c8d4e0;line-height:1.8;margin:0;">
+                                                                                                                                                                                                                                      Hey ${name},<br><br>
+                                                                                                                                                                                                                                                  You're in. No fake signals, no rented lambos, no "10x your account in a week" nonsense.<br><br>
+                                                                                                                                                                                                                                                              Just real trading, real systems, and a community that actually knows what it's doing.
+                                                                                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                      </td></tr>
+                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                            <!-- WHAT YOU'VE GOT -->
+                                                                                                                                                                                                                                                                                                  <tr><td style="padding:32px 32px 0;">
+                                                                                                                                                                                                                                                                                                          <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(0,255,136,0.4);letter-spacing:0.2em;margin-bottom:16px;">// WHAT YOU'VE GOT ACCESS TO</div>
+                                                                                                                                                                                                                                                                                                                  <table width="100%" cellpadding="0" cellspacing="0">
+                                                                                                                                                                                                                                                                                                                            <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                        <span style="color:#00ff88;font-family:'Courier New',monospace;font-size:11px;">&#8594;</span>
+                                                                                                                                                                                                                                                                                                                                                    <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Real trading knowledge — free for everyone</span>
+                                                                                                                                                                                                                                                                                                                                                              </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                        <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                                                                    <span style="color:#00ff88;font-family:'Courier New',monospace;font-size:11px;">&#8594;</span>
+                                                                                                                                                                                                                                                                                                                                                                                                <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Signal feed with full trade explanations</span>
+                                                                                                                                                                                                                                                                                                                                                                                                          </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                                                                                                                                                                                                                                                                                                                                                                                                                                <span style="color:#00ff88;font-family:'Courier New',monospace;font-size:11px;">&#8594;</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                            <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Live community chat + AI trading assistant</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                      </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                <tr><td style="padding:8px 0;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <span style="color:#00ff88;font-family:'Courier New',monospace;font-size:11px;">&#8594;</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <span style="font-family:'Courier New',monospace;font-size:11px;color:#c8d4e0;margin-left:10px;">Bot library, Core Credits and monthly pot</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <!-- CTA -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <tr><td style="padding:32px;text-align:center;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="https://rawcoretrading.com/member-dashboard" style="display:inline-block;background:#00ff88;color:#030405;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.2em;padding:16px 40px;text-decoration:none;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ENTER THE CORE &#8594;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <!-- FOOTER -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <tr><td style="padding:0 32px 32px;text-align:center;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,212,224,0.3);letter-spacing:0.15em;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          // Stay raw. Stay real.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,212,224,0.2);margin-top:8px;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    &copy; 2026 rawcoretrading.com &middot; <a href="https://rawcoretrading.com" style="color:rgba(0,255,136,0.4);text-decoration:none;">rawcoretrading.com</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </td></tr>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </table>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </body>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </html>`;
+}
 
 export default async function handler(req) {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders });
-  }
+    if (req.method === 'OPTIONS') {
+          return new Response(null, { status: 204, headers: corsHeaders });
+    }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: corsHeaders,
-    });
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+                status: 405, headers: corsHeaders,
+        });
   }
 
   try {
-    const { action, email, name } = await req.json();
+        const { action, email, name } = await req.json();
 
-    if (!email || !action) {
-      return new Response(JSON.stringify({ error: 'Missing email or action' }), {
-        status: 400, headers: corsHeaders,
+      if (!email || !action) {
+              return new Response(JSON.stringify({ error: 'Missing email or action' }), {
+                        status: 400, headers: corsHeaders,
+              });
+      }
+
+      const displayName = name || email.split('@')[0];
+
+      let subject, html;
+        if (action === 'waitlist') {
+                subject = '// You\'re on the waitlist — RawCore Trading';
+                html = getWaitlistHtml(displayName);
+        } else if (action === 'welcome') {
+                subject = 'Welcome to the Core // RawCore Trading';
+                html = getWelcomeHtml(displayName);
+        } else {
+                return new Response(JSON.stringify({ error: 'Unknown action: ' + action }), {
+                          status: 400, headers: corsHeaders,
+                });
+        }
+
+      const payload = {
+              from: FROM,
+              to: [email],
+              subject,
+              html,
+      };
+
+      const res = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                        'Authorization': `Bearer ${RESEND_API_KEY}`,
+                        'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
       });
-    }
 
-    const templateId = TEMPLATES[action];
-    if (!templateId) {
-      return new Response(JSON.stringify({ error: 'Unknown action: ' + action }), {
-        status: 400, headers: corsHeaders,
+      const data = await res.json();
+
+      if (!res.ok) {
+              console.error('Resend error:', data);
+              return new Response(JSON.stringify({ error: data.message || 'Send failed' }), {
+                        status: res.status, headers: corsHeaders,
+              });
+      }
+
+      return new Response(JSON.stringify({ success: true, id: data.id }), {
+              status: 200, headers: corsHeaders,
       });
-    }
-
-    const displayName = name || email.split('@')[0];
-
-    const payload = {
-      from: FROM,
-      to: [email],
-      template_id: templateId,
-      data: {
-        name: displayName,
-        email: email,
-      },
-    };
-
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error('Resend error:', data);
-      return new Response(JSON.stringify({ error: data.message || 'Send failed' }), {
-        status: res.status, headers: corsHeaders,
-      });
-    }
-
-    return new Response(JSON.stringify({ success: true, id: data.id }), {
-      status: 200, headers: corsHeaders,
-    });
 
   } catch (err) {
-    console.error('send-email error:', err);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500, headers: corsHeaders,
-    });
+        console.error('send-email error:', err);
+        return new Response(JSON.stringify({ error: err.message }), {
+                status: 500, headers: corsHeaders,
+        });
   }
 }
