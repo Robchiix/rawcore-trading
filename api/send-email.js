@@ -1,4 +1,4 @@
-// api/send-email.js — RawCore Trading Email API
+—————// api/send-email.js — RawCore Trading Email API
 // Handles: waitlist confirmation + welcome emails via Resend
 // Env var required: RESEND_API_KEY
 
