@@ -943,9 +943,9 @@ async function signInWithGoogle() {
 
 // ---- EMAIL REGISTER ----
 async function handleRegister() {
-  const username = document.getElementById('username')?.value?.trim();
-  const email = document.getElementById('email')?.value?.trim();
-  const password = document.getElementById('password')?.value;
+  const username = document.getElementById('regUsername')?.value?.trim();
+  const email = document.getElementById('regEmail')?.value?.trim();
+  const password = document.getElementById('regPassword')?.value;
   const terms = document.getElementById('termsCheck')?.checked;
   const btn = document.getElementById('registerBtn');
 
@@ -965,11 +965,15 @@ async function handleRegister() {
 
   if (btn) { btn.textContent = 'CREATING ACCOUNT...'; btn.disabled = true; }
 
+  // Read selected tier from UI
+  const tierEl = document.querySelector('.tier-option.selected .tier-option-name');
+  const tier = (tierEl?.textContent || 'FREE').toLowerCase();
+
   const { data, error } = await sb.auth.signUp({
     email,
     password,
     options: {
-      data: { username: username || email.split('@')[0] },
+      data: { username: username || email.split('@')[0], tier },
       emailRedirectTo: 'https://www.rawcoretrading.com/member-dashboard.html'
     }
   });
@@ -978,6 +982,16 @@ async function handleRegister() {
     showError(error.message);
     if (btn) { btn.textContent = 'CREATE ACCOUNT →'; btn.disabled = false; }
     return;
+  }
+
+  // Upsert profile with tier (trigger creates it, this updates tier + username)
+  if (data?.user) {
+    await sb.from('profiles').upsert({
+      id: data.user.id,
+      email,
+      username: username || email.split('@')[0],
+      tier,
+    }, { onConflict: 'id' });
   }
 
   // Success — show confirmation
@@ -996,8 +1010,8 @@ async function handleRegister() {
 
 // ---- EMAIL LOGIN ----
 async function handleLogin() {
-  const email = document.getElementById('login-email')?.value?.trim();
-  const password = document.getElementById('login-password')?.value;
+  const email = document.getElementById('loginEmail')?.value?.trim();
+  const password = document.getElementById('loginPassword')?.value;
   const btn = document.getElementById('loginBtn');
 
   if (!email || !password) {
