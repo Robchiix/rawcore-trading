@@ -983,6 +983,15 @@ async function handleRegister() {
   // Success — show confirmation
   if (btn) btn.textContent = 'CHECK YOUR EMAIL ✓';
   showSuccess('Account created! Check your email to confirm your address, then come back to sign in.');
+  
+  // Send welcome email via Resend
+  try {
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'welcome', email, name: username || email.split('@')[0] })
+    });
+  } catch(e) { console.error('Welcome email error:', e); }
 }
 
 // ---- EMAIL LOGIN ----
