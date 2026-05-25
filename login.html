@@ -6,633 +6,319 @@
 <title>Join the Core — RawCore Trading</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #050608;
-    --dark: #0a0c0f;
-    --card: #0e1114;
-    --border: #1a1f26;
-    --green: #00ff88;
-    --green-muted: #00ff8815;
-    --red: #ff3355;
-    --text: #c8d4e0;
-    --text-dim: #5a6a7a;
-    --text-bright: #eaf2ff;
-    --mono: 'Share Tech Mono', monospace;
-    --display: 'Bebas Neue', sans-serif;
-    --body: 'Rajdhani', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
-
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: var(--body);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.01) 2px, rgba(0,255,136,0.01) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  /* NAV */
-  nav {
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 48px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text-bright); text-decoration: none; }
-  .nav-logo span { color: var(--green); }
-  .nav-back { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; transition: color 0.2s; display: flex; align-items: center; gap: 8px; }
-  .nav-back:hover { color: var(--green); }
-
-  /* MAIN */
-  .main {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* LEFT SIDE — BRAND */
-  .brand-side {
-    padding: 60px 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .brand-side::before {
-    content: 'RC';
-    position: absolute;
-    right: -40px; bottom: -40px;
-    font-family: var(--display);
-    font-size: 300px;
-    color: var(--green);
-    opacity: 0.025;
-    pointer-events: none;
-    line-height: 1;
-  }
-
-  .brand-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
-  .brand-tag::before { content: ''; width: 24px; height: 1px; background: var(--green); }
-
-  .brand-title { font-family: var(--display); font-size: clamp(48px, 5vw, 72px); line-height: 0.92; color: var(--text-bright); margin-bottom: 24px; }
-  .brand-title .green { color: var(--green); }
-
-  .brand-desc { font-size: 15px; color: var(--text-dim); line-height: 1.7; max-width: 400px; margin-bottom: 40px; }
-  .brand-desc strong { color: var(--text); }
-
-  .brand-perks { display: flex; flex-direction: column; gap: 12px; }
-
-  .perk-item { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-  .perk-item::before { content: '→'; color: var(--green); flex-shrink: 0; }
-
-  .brand-note { margin-top: 48px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); padding: 14px 16px; border: 1px solid var(--border); line-height: 1.6; max-width: 400px; }
-  .brand-note span { color: var(--green); }
-
-  /* RIGHT SIDE — FORM */
-  .form-side {
-    padding: 60px 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  /* TABS */
-  .form-tabs { display: flex; gap: 0; margin-bottom: 40px; border-bottom: 1px solid var(--border); }
-
-  .form-tab {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 12px 24px;
-    color: var(--text-dim);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.2s;
-  }
-
-  .form-tab:hover { color: var(--text); }
-  .form-tab.active { color: var(--green); border-bottom-color: var(--green); }
-
-  /* FORM */
-  .auth-form { display: none; }
-  .auth-form.active { display: block; }
-
-  .form-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 8px; letter-spacing: 0.05em; }
-  .form-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 32px; }
-
-  .form-group { margin-bottom: 16px; }
-  .form-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; display: block; margin-bottom: 7px; }
-
-  .form-input {
-    width: 100%;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    color: var(--text-bright);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-input:focus { border-color: var(--green); }
-  .form-input::placeholder { color: var(--text-dim); opacity: 0.4; }
-  .form-input.error { border-color: var(--red); }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .form-error { font-family: var(--mono); font-size: 10px; color: var(--red); margin-top: 5px; display: none; }
-  .form-error.show { display: block; }
-
-  .form-submit {
-    width: 100%;
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 14px;
-    background: var(--green);
-    color: var(--black);
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    margin-top: 8px;
-    transition: opacity 0.2s;
-    position: relative;
-  }
-
-  .form-submit:hover { opacity: 0.9; }
-  .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .form-divider {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin: 20px 0;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-  }
-
-  .form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* SOCIAL LOGIN */
-  .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-  .social-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    padding: 11px 16px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-decoration: none;
-  }
-
-  .social-btn:hover { border-color: var(--text-dim); color: var(--text); }
-
-  .form-footer { margin-top: 20px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-align: center; }
-  .form-footer a { color: var(--green); text-decoration: none; }
-  .form-footer a:hover { text-decoration: underline; }
-
-  /* TIER SELECTOR */
-  .tier-selector { margin-bottom: 20px; }
-  .tier-selector-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 10px; }
-
-  .tier-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); }
-
-  .tier-option {
-    background: var(--dark);
-    padding: 12px 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-align: center;
-    border: 1px solid transparent;
-  }
-
-  .tier-option:hover { background: var(--card); }
-  .tier-option.selected { background: var(--green-muted); border-color: rgba(0,255,136,0.3); }
-
-  .tier-option-name { font-family: var(--display); font-size: 18px; color: var(--text-bright); letter-spacing: 0.05em; }
-  .tier-option.selected .tier-option-name { color: var(--green); }
-  .tier-option-price { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 3px; }
-
-  /* PASSWORD STRENGTH */
-  .pwd-strength { margin-top: 6px; }
-  .pwd-bar { height: 2px; background: var(--border); margin-bottom: 4px; }
-  .pwd-fill { height: 2px; width: 0%; transition: width 0.3s, background 0.3s; }
-  .pwd-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
-
-  /* TERMS */
-  .terms-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; cursor: pointer; }
-  .terms-check input { width: 14px; height: 14px; margin-top: 2px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
-  .terms-check span { font-family: var(--mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
-  .terms-check a { color: var(--green); text-decoration: none; }
-
-  /* SUCCESS STATE */
-  .success-state {
-    display: none;
-    text-align: center;
-    padding: 40px 0;
-  }
-
-  .success-icon { font-family: var(--mono); font-size: 48px; color: var(--green); margin-bottom: 16px; }
-  .success-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 12px; }
-  .success-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.7; }
-  .success-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 32px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; display: inline-block; }
-
-  /* FOOTER */
-  .page-footer { padding: 20px 48px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; flex-shrink: 0; }
-  .page-footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
-  .page-footer a:hover { color: var(--green); }
-
-  /* ============================================
-     MOBILE RESPONSIVE — under 768px
-  ============================================ */
-  @media (max-width: 768px) {
-    body { cursor: default; }
-
-    nav {
-      padding: 0 20px;
-      height: 56px;
-    }
-
-    .nav-links { display: none; }
-    .nav-cta { font-size: 9px; padding: 7px 12px; }
-
-    .mobile-menu-btn {
-      display: flex !important;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-      margin-left: 12px;
-    }
-
-    .mobile-menu-btn span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--text-dim);
-    }
-
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 56px; left: 0; right: 0;
-      background: rgba(5,6,8,0.98);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 20px;
-      flex-direction: column;
-      gap: 0;
-      z-index: 99;
-    }
-
-    .mobile-nav.open { display: flex !important; }
-
-    .mobile-nav a {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text-dim);
-      text-decoration: none;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .mobile-nav a:last-child { border-bottom: none; }
-
-    /* HERO */
-    .hero, .about-hero, .shop-hero {
-      padding: 88px 24px 40px;
-    }
-
-    .hero-title, .about-title {
-      font-size: clamp(52px, 13vw, 80px);
-    }
-
-    .hero-stats {
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    /* 2 COL GRIDS → 1 COL */
-    .manifesto-grid, .story-grid, .nfe-grid,
-    .grid-2, .pot-grid, .credits-grid,
-    .contrib-grid, .how-grid, .tiers-grid,
-    .contact-section, .ungurued-strip,
-    .live-section, .bottom-grid,
-    .featured-section, .families-section,
-    .featured-bot, .contribute-section,
-    .promise-btns, .cta-btns, .join-btns,
-    .hero-buttons, .sub-actions {
-      grid-template-columns: 1fr !important;
-      flex-direction: column !important;
-      gap: 20px !important;
-    }
-
-    /* 3-4 COL GRIDS → 1 COL */
-    .features-grid, .how-grid.row-3,
-    .coming-grid, .community-grid,
-    .trust-grid, .faq-grid,
-    .achievements-grid, .actions-grid,
-    .overview-grid, .config-grid,
-    .products-grid, .stat-row,
-    .form-row, .pricing-grid,
-    .families-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1px !important;
-    }
-
-    /* BOTTOM GRID 3 COL */
-    .bottom-grid {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 12px !important;
-    }
-
-    /* PADDING */
-    .manifesto, .story-section, .nfe-section,
-    .promise-section, .features, .how-section,
-    .tiers-section, .pot-section, .credits-section,
-    .contrib-section, .contact-section, .faq-section,
-    .bottom-cta, .quote-section, .pricing-section,
-    .compare-section, .pot-mini, .trust-section,
-    .families-section, .featured-section,
-    .community-section, .coming-section,
-    .contribute-section, .cta-section,
-    .products-section, .join-section,
-    .telegram-section, .ungurued-strip {
-      padding: 40px 20px !important;
-    }
-
-    /* TYPOGRAPHY */
-    .big-statement, .manifesto-title, .story-title,
-    .about-title, .features-title, .pricing-title,
-    .contrib-title, .credits-title, .pot-title,
-    .ungurued-title, .tg-title, .cta-title,
-    .join-title, .promise-title {
-      font-size: clamp(32px, 9vw, 52px) !important;
-      line-height: 0.95 !important;
-    }
-
-    /* COMPARISON TABLE */
-    .compare-table { font-size: 9px; }
-    .compare-table td, .compare-table th { padding: 8px 6px; }
-
-    /* FOOTER */
-    footer {
-      padding: 24px 20px !important;
-      flex-direction: column !important;
-      gap: 16px !important;
-      text-align: center !important;
-    }
-
-    .footer-links {
-      flex-wrap: wrap !important;
-      justify-content: center !important;
-      gap: 12px !important;
-    }
-
-    .footer-right { justify-content: center !important; }
-
-    /* BUTTONS */
-    .btn-primary, .btn-secondary, .tg-btn,
-    .price-btn, .tier-btn, .form-submit,
-    .checkout-btn, .config-save, .save-btn {
-      width: 100% !important;
-      text-align: center !important;
-    }
-
-    /* PROFILE HERO */
-    .profile-hero {
-      grid-template-columns: 1fr !important;
-      gap: 20px !important;
-    }
-
-    .profile-stats {
-      flex-wrap: wrap !important;
-      gap: 16px !important;
-    }
-
-    /* PAGE TABS */
-    .page-tabs { overflow-x: auto; }
-    .page-tab { font-size: 9px; padding: 10px 12px; white-space: nowrap; }
-
-    /* FILTER BAR */
-    .filter-bar { flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
-    .sort-select { width: 100%; margin-left: 0 !important; }
-
-    /* MODAL */
-    .modal { grid-template-columns: 1fr !important; }
-    .modal-left { display: none; }
-
-    /* HERO DISCLAIMER */
-    .hero-disclaimer { font-size: 9px; }
-
-    /* TICKER - hide on mobile */
-    .ticker-wrap { display: none; }
-
-    /* SIGNAL CARD */
-    .sc-body { grid-template-columns: 1fr 1fr !important; }
-
-    /* OVERVIEW GRID 4 col */
-    .overview-grid { grid-template-columns: 1fr 1fr !important; }
-  }
-
-  @media (max-width: 480px) {
-    .hero-title, .about-title {
-      font-size: clamp(40px, 11vw, 60px) !important;
-    }
-    nav { padding: 0 16px; }
-  }
-
-  .mobile-menu-btn { display: none; }
-  .mobile-nav { display: none; }
-
-
-  /* ============================================
-     LOGIN MOBILE RESPONSIVE
-  ============================================ */
-  @media (max-width: 768px) {
-    body { cursor: default; overflow-y: auto; }
-
-    nav { padding: 0 20px; }
-
-    /* HIDE BRAND SIDE ON MOBILE */
-    .brand-side { display: none !important; }
-
-    /* FULL WIDTH FORM */
-    .main {
-      grid-template-columns: 1fr !important;
-      min-height: calc(100vh - 60px);
-    }
-
-    .form-side {
-      padding: 32px 24px !important;
-      justify-content: flex-start;
-    }
-
-    /* TABS */
-    .form-tabs { margin-bottom: 28px; }
-    .form-tab { padding: 10px 18px; font-size: 11px; }
-
-    /* TITLE */
-    .form-title { font-size: 28px; }
-    .form-subtitle { font-size: 10px; margin-bottom: 24px; }
-
-    /* TIER SELECTOR */
-    .tier-options {
-      grid-template-columns: repeat(3, 1fr) !important;
-    }
-
-    .tier-option-name { font-size: 14px; }
-    .tier-option-price { font-size: 9px; }
-
-    /* FORM ROWS STACK */
-    .form-row {
-      grid-template-columns: 1fr !important;
-      gap: 0 !important;
-    }
-
-    /* INPUTS */
-    .form-input, .form-select {
-      font-size: 14px;
-      padding: 13px 14px;
-    }
-
-    /* SUBMIT */
-    .form-submit {
-      padding: 16px;
-      font-size: 13px;
-      margin-top: 12px;
-    }
-
-    /* SOCIAL BUTTONS */
-    .social-btns {
-      grid-template-columns: 1fr 1fr !important;
-      gap: 10px !important;
-    }
-
-    .social-btn { padding: 13px; font-size: 11px; }
-
-    /* TERMS */
-    .terms-check span { font-size: 11px; }
-
-    /* FOOTER */
-    .page-footer {
-      padding: 16px 20px !important;
-      flex-direction: column !important;
-      gap: 12px !important;
-      text-align: center !important;
-    }
-
-    .footer-links { justify-content: center !important; flex-wrap: wrap !important; }
-
-    /* SUCCESS STATE */
-    .success-state { padding: 20px 0; }
-    .success-title { font-size: 28px; }
-    .success-btn { width: 100%; text-align: center; display: block; }
-  }
-
-  @media (max-width: 480px) {
-    .form-side { padding: 24px 18px !important; }
-    .form-tabs { margin-bottom: 20px; }
-  }
-
-
-  @media (max-width: 768px) {
-
-    /* FIX BOTTOM OVERLAP */
-    .form-divider {
-      margin: 16px 0 !important;
-    }
-
-    /* SOCIAL BUTTONS - keep separate from footer */
-    .social-btns {
-      margin-bottom: 0 !important;
-    }
-
-    /* PAGE FOOTER - fix overlap with form */
-    .page-footer {
-      position: relative !important;
-      padding: 16px 20px !important;
-      flex-direction: column !important;
-      gap: 10px !important;
-      text-align: center !important;
-      border-top: 1px solid var(--border) !important;
-      margin-top: 0 !important;
-    }
-
-    .footer-links {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      justify-content: center !important;
-      gap: 12px !important;
-    }
-
-    /* MAIN - allow scrolling, no fixed height */
-    .main {
-      height: auto !important;
-      min-height: auto !important;
-      overflow: visible !important;
-    }
-
-    html, body {
-      height: auto !important;
-      overflow-y: auto !important;
-    }
-
-    /* FORM FOOTER TEXT */
-    .form-footer {
-      margin-top: 16px !important;
-      padding-bottom: 8px !important;
-    }
-
-    /* HIDE the "or continue with" copyright overlap */
-    .form-divider + .social-btns {
-      margin-bottom: 12px !important;
-    }
-  }
-
+:root {
+--black: #050608;
+--dark: #0a0c0f;
+--card: #0e1114;
+--border: #1a1f26;
+--green: #00ff88;
+--green-muted: #00ff8815;
+--red: #ff3355;
+--text: #c8d4e0;
+--text-dim: #5a6a7a;
+--text-bright: #eaf2ff;
+--mono: 'Share Tech Mono', monospace;
+--display: 'Bebas Neue', sans-serif;
+--body: 'Rajdhani', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+background: var(--black);
+color: var(--text);
+font-family: var(--body);
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+body::before {
+content: '';
+position: fixed;
+inset: 0;
+background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.01) 2px, rgba(0,255,136,0.01) 4px);
+pointer-events: none;
+z-index: 9999;
+}
+
+/* NAV */
+nav {
+height: 60px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 48px;
+border-bottom: 1px solid var(--border);
+flex-shrink: 0;
+}
+
+.nav-logo { font-family: var(--mono); font-size: 15px; color: var(--text-bright); text-decoration: none; }
+.nav-logo span { color: var(--green); }
+.nav-back { font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-decoration: none; letter-spacing: 0.15em; transition: color 0.2s; display: flex; align-items: center; gap: 8px; }
+.nav-back:hover { color: var(--green); }
+
+/* MAIN */
+.main {
+flex: 1;
+display: grid;
+grid-template-columns: 1fr 1fr;
+}
+
+/* LEFT SIDE — BRAND */
+.brand-side {
+padding: 60px 80px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+border-right: 1px solid var(--border);
+position: relative;
+overflow: hidden;
+}
+
+.brand-side::before {
+content: 'RC';
+position: absolute;
+right: -40px; bottom: -40px;
+font-family: var(--display);
+font-size: 300px;
+color: var(--green);
+opacity: 0.025;
+pointer-events: none;
+line-height: 1;
+}
+
+.brand-tag { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+.brand-tag::before { content: ''; width: 24px; height: 1px; background: var(--green); }
+
+.brand-title { font-family: var(--display); font-size: clamp(48px, 5vw, 72px); line-height: 0.92; color: var(--text-bright); margin-bottom: 24px; }
+.brand-title .green { color: var(--green); }
+
+.brand-desc { font-size: 15px; color: var(--text-dim); line-height: 1.7; max-width: 400px; margin-bottom: 40px; }
+.brand-desc strong { color: var(--text); }
+
+.brand-perks { display: flex; flex-direction: column; gap: 12px; }
+
+.perk-item { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+.perk-item::before { content: '\2192'; color: var(--green); flex-shrink: 0; }
+
+.brand-note { margin-top: 48px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); padding: 14px 16px; border: 1px solid var(--border); line-height: 1.6; max-width: 400px; }
+.brand-note span { color: var(--green); }
+
+/* RIGHT SIDE — FORM */
+.form-side {
+padding: 60px 80px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+/* TABS */
+.form-tabs { display: flex; gap: 0; margin-bottom: 40px; border-bottom: 1px solid var(--border); }
+
+.form-tab {
+font-family: var(--mono);
+font-size: 11px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 12px 24px;
+color: var(--text-dim);
+cursor: pointer;
+border-bottom: 2px solid transparent;
+margin-bottom: -1px;
+transition: all 0.2s;
+}
+
+.form-tab:hover { color: var(--text); }
+.form-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* FORM */
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+.form-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 8px; letter-spacing: 0.05em; }
+.form-subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 32px; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; display: block; margin-bottom: 7px; }
+
+.form-input {
+width: 100%;
+background: var(--dark);
+border: 1px solid var(--border);
+color: var(--text-bright);
+font-family: var(--mono);
+font-size: 13px;
+padding: 12px 16px;
+outline: none;
+transition: border-color 0.2s;
+}
+
+.form-input:focus { border-color: var(--green); }
+.form-input::placeholder { color: var(--text-dim); opacity: 0.4; }
+.form-input.error { border-color: var(--red); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.form-error { font-family: var(--mono); font-size: 10px; color: var(--red); margin-top: 5px; display: none; }
+.form-error.show { display: block; }
+
+.form-submit {
+width: 100%;
+font-family: var(--mono);
+font-size: 12px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 14px;
+background: var(--green);
+color: var(--black);
+border: none;
+cursor: pointer;
+font-weight: 700;
+margin-top: 8px;
+transition: opacity 0.2s;
+position: relative;
+}
+
+.form-submit:hover { opacity: 0.9; }
+.form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.form-divider {
+display: flex;
+align-items: center;
+gap: 16px;
+margin: 20px 0;
+font-family: var(--mono);
+font-size: 10px;
+color: var(--text-dim);
+}
+
+.form-divider::before, .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* SOCIAL LOGIN */
+.social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.social-btn {
+font-family: var(--mono);
+font-size: 10px;
+letter-spacing: 0.12em;
+padding: 11px 16px;
+background: transparent;
+border: 1px solid var(--border);
+color: var(--text-dim);
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+text-decoration: none;
+}
+
+.social-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+.form-footer { margin-top: 20px; font-family: var(--mono); font-size: 10px; color: var(--text-dim); text-align: center; }
+.form-footer a { color: var(--green); text-decoration: none; }
+.form-footer a:hover { text-decoration: underline; }
+
+/* TIER SELECTOR */
+.tier-selector { margin-bottom: 20px; }
+.tier-selector-label { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.15em; margin-bottom: 10px; }
+
+.tier-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); }
+
+.tier-option {
+background: var(--dark);
+padding: 12px 10px;
+cursor: pointer;
+transition: background 0.2s;
+text-align: center;
+border: 1px solid transparent;
+}
+
+.tier-option:hover { background: var(--card); }
+.tier-option.selected { background: var(--green-muted); border-color: rgba(0,255,136,0.3); }
+
+.tier-option-name { font-family: var(--display); font-size: 18px; color: var(--text-bright); letter-spacing: 0.05em; }
+.tier-option.selected .tier-option-name { color: var(--green); }
+.tier-option-price { font-family: var(--mono); font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+/* PASSWORD STRENGTH */
+.pwd-strength { margin-top: 6px; }
+.pwd-bar { height: 2px; background: var(--border); margin-bottom: 4px; }
+.pwd-fill { height: 2px; width: 0%; transition: width 0.3s, background 0.3s; }
+.pwd-label { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+/* TERMS */
+.terms-check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; cursor: pointer; }
+.terms-check input { width: 14px; height: 14px; margin-top: 2px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+.terms-check span { font-family: var(--mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+.terms-check a { color: var(--green); text-decoration: none; }
+
+/* SUCCESS STATE */
+.success-state {
+display: none;
+text-align: center;
+padding: 40px 0;
+}
+
+.success-icon { font-family: var(--mono); font-size: 48px; color: var(--green); margin-bottom: 16px; }
+.success-title { font-family: var(--display); font-size: 36px; color: var(--text-bright); margin-bottom: 12px; }
+.success-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.7; }
+.success-btn { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 14px 32px; background: var(--green); color: var(--black); border: none; cursor: pointer; font-weight: 700; text-decoration: none; display: inline-block; }
+
+/* FOOTER */
+.page-footer { padding: 20px 48px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 10px; color: var(--text-dim); display: flex; justify-content: space-between; flex-shrink: 0; }
+.page-footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+.page-footer a:hover { color: var(--green); }
+
+@media (max-width: 768px) {
+body { cursor: default; }
+nav { padding: 0 20px; height: 56px; }
+.brand-side { display: none !important; }
+.main { grid-template-columns: 1fr !important; min-height: calc(100vh - 60px); }
+.form-side { padding: 32px 24px !important; justify-content: flex-start; }
+.form-tabs { margin-bottom: 28px; }
+.form-tab { padding: 10px 18px; font-size: 11px; }
+.form-title { font-size: 28px; }
+.form-subtitle { font-size: 10px; margin-bottom: 24px; }
+.tier-options { grid-template-columns: repeat(3, 1fr) !important; }
+.tier-option-name { font-size: 14px; }
+.tier-option-price { font-size: 9px; }
+.form-row { grid-template-columns: 1fr !important; gap: 0 !important; }
+.form-input { font-size: 14px; padding: 13px 14px; }
+.form-submit { padding: 16px; font-size: 13px; margin-top: 12px; }
+.social-btns { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+.social-btn { padding: 13px; font-size: 11px; }
+.terms-check span { font-size: 11px; }
+.page-footer { padding: 16px 20px !important; flex-direction: column !important; gap: 12px !important; text-align: center !important; }
+.success-state { padding: 20px 0; }
+.success-title { font-size: 28px; }
+.success-btn { width: 100%; text-align: center; display: block; }
+.main { height: auto !important; min-height: auto !important; overflow: visible !important; }
+html, body { height: auto !important; overflow-y: auto !important; }
+.form-footer { margin-top: 16px !important; padding-bottom: 8px !important; }
+.form-divider { margin: 16px 0 !important; }
+}
+
+@media (max-width: 480px) {
+.form-side { padding: 24px 18px !important; }
+nav { padding: 0 16px; }
+}
+
+.mobile-menu-btn { display: none; }
+.mobile-nav { display: none; }
 </style>
-  <!-- Supabase Auth -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Auth -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
-  <a href="index.html" class="nav-back">← BACK TO SITE</a>
+  <a href="/" class="nav-logo">&gt;_ Raw<span>Core</span>Trading</a>
+  <a href="/" class="nav-back">← BACK TO SITE</a>
 </nav>
 
 <div class="main">
@@ -653,7 +339,7 @@
       <div class="perk-item">Core Credits, leaderboard and monthly pot</div>
       <div class="perk-item">Cancel anytime — weekly or monthly</div>
     </div>
-    <div class="brand-note" style="margin-bottom:12px"><span>// CEO / FOUNDER ACCESS</span><br><span style="color:var(--text-dim)">Registering as the founder? Use Google or Telegram login — your account will be flagged as FOUNDER automatically. First account created gets the crown 👑</span></div>
+    <div class="brand-note" style="margin-bottom:12px"><span>// CEO / FOUNDER ACCESS</span><br><span style="color:var(--text-dim)">Registering as the founder? Use Google login — your account will be flagged as FOUNDER automatically.</span></div>
     <div class="brand-note">
       <span>// FOUNDING MEMBER LOCK</span><br>
       Join now and your price is locked forever. When we grow and pricing increases, you stay at the founding rate. Always.
@@ -715,7 +401,7 @@
 
       <div class="terms-check">
         <input type="checkbox" id="termsCheck" />
-        <span>I understand that nothing on RawCore Trading is financial advice. Trading involves risk and I am responsible for my own decisions. I agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.</span>
+        <span>I understand that nothing on RawCore Trading is financial advice. Trading involves risk and I am responsible for my own decisions. I agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.</span>
       </div>
 
       <button class="form-submit" onclick="handleRegister()" id="registerBtn">CREATE ACCOUNT →</button>
@@ -723,10 +409,10 @@
       <div class="form-divider">or continue with</div>
 
       <div class="social-btns">
-        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtn">G · GOOGLE</button>
+        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtnReg">G · GOOGLE</button>
         <button class="social-btn" style="opacity:0.4;cursor:not-allowed" title="Coming soon">TG · TELEGRAM</button>
       </div>
-      <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google or Telegram — fastest, no password needed</p>
+      <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google — fastest, no password needed</p>
 
       <div class="form-footer">
         Already have an account? <a href="#" onclick="switchTab('login')">Sign in →</a>
@@ -735,8 +421,8 @@
       <div class="success-state" id="registerSuccess">
         <div class="success-icon">✓</div>
         <div class="success-title">WELCOME TO THE CORE</div>
-        <div class="success-sub">// Account created successfully.<br>// Redirecting to your dashboard...</div>
-        <a href="member-dashboard.html" class="success-btn">ENTER THE CORE →</a>
+        <div class="success-sub">// Account created! Check your email to confirm.<br>// Then sign in to access your dashboard.</div>
+        <a href="/login" class="success-btn">GO TO SIGN IN →</a>
       </div>
     </div>
 
@@ -746,8 +432,8 @@
       <div class="form-subtitle">// Sign in to your Core account</div>
 
       <div class="form-group">
-        <label class="form-label">// EMAIL OR USERNAME</label>
-        <input class="form-input" type="text" id="loginEmail" placeholder="email or username" />
+        <label class="form-label">// EMAIL</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="you@email.com" />
       </div>
 
       <div class="form-group">
@@ -760,7 +446,7 @@
         <label style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;color:var(--text-dim);cursor:pointer">
           <input type="checkbox" style="accent-color:var(--green)" /> REMEMBER ME
         </label>
-        <a href="#" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">FORGOT PASSWORD?</a>
+        <a href="#" onclick="handleForgotPassword()" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--text-dim)'">FORGOT PASSWORD?</a>
       </div>
 
       <button class="form-submit" onclick="handleLogin()" id="loginBtn">SIGN IN →</button>
@@ -768,10 +454,10 @@
       <div class="form-divider">or continue with</div>
 
       <div class="social-btns">
-        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtn">G · GOOGLE</button>
+        <button onclick="signInWithGoogle()" class="social-btn" id="googleBtnLogin">G · GOOGLE</button>
         <button class="social-btn" style="opacity:0.4;cursor:not-allowed" title="Coming soon">TG · TELEGRAM</button>
       </div>
-      <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google or Telegram — fastest, no password needed</p>
+      <p style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:8px;text-align:center">// Google — fastest, no password needed</p>
 
       <div class="form-footer" style="margin-top:20px">
         Don't have an account? <a href="#" onclick="switchTab('register')">Create one free →</a>
@@ -781,7 +467,7 @@
         <div class="success-icon">✓</div>
         <div class="success-title">SIGNED IN</div>
         <div class="success-sub">// Welcome back.<br>// Taking you to your dashboard...</div>
-        <a href="member-dashboard.html" class="success-btn">ENTER THE CORE →</a>
+        <a href="/member-dashboard" class="success-btn">ENTER THE CORE →</a>
       </div>
     </div>
 
@@ -791,10 +477,10 @@
 <div class="page-footer">
   <span>© 2026 RAWCORETRADING.COM</span>
   <div style="display:flex;gap:24px">
-    <a href="#">TERMS</a>
-    <a href="#">PRIVACY</a>
-    <a href="contact.html">CONTACT</a>
-    <a href="index.html">BACK TO SITE</a>
+    <a href="/terms">TERMS</a>
+    <a href="/privacy">PRIVACY</a>
+    <a href="/contact">CONTACT</a>
+    <a href="/">BACK TO SITE</a>
   </div>
 </div>
 
@@ -805,6 +491,8 @@ function switchTab(tab) {
   });
   document.getElementById('registerForm').classList.toggle('active', tab === 'register');
   document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+  const el = document.getElementById('auth-message');
+  if (el) el.style.display = 'none';
 }
 
 function selectTier(el) {
@@ -833,70 +521,13 @@ function checkPassword(input) {
   if (/[A-Z]/.test(val)) strength++;
   if (/[0-9]/.test(val)) strength++;
   if (/[^a-zA-Z0-9]/.test(val)) strength++;
-
-  const colors = ['var(--red)', 'var(--red)', 'var(--amber)', 'var(--green)', 'var(--green)'];
+  const colors = ['var(--red)', 'var(--red)', '#ff9900', 'var(--green)', 'var(--green)'];
   const labels = ['// too short', '// weak', '// okay', '// strong', '// very strong'];
   const widths = ['0%', '25%', '50%', '75%', '100%'];
-
   fill.style.width = widths[strength];
   fill.style.background = colors[strength];
   label.textContent = val.length === 0 ? '// enter password' : labels[strength];
 }
-
-function handleRegister() {
-  const username = document.getElementById('regUsername').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const terms = document.getElementById('termsCheck').checked;
-
-  if (!username || !email || !password || !terms) {
-    const btn = document.querySelector('#registerForm .form-submit');
-    btn.textContent = 'FILL IN ALL FIELDS ✕';
-    btn.style.background = 'var(--red)';
-    setTimeout(() => { btn.textContent = 'CREATE ACCOUNT →'; btn.style.background = 'var(--green)'; }, 2000);
-    return;
-  }
-
-  const btn = document.querySelector('#registerForm .form-submit');
-  btn.textContent = 'CREATING ACCOUNT...';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    btn.style.display = 'none';
-    document.getElementById('registerSuccess').style.display = 'block';
-  }, 1200);
-}
-
-function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-
-  if (!email || !password) {
-    document.getElementById('loginError').classList.add('show');
-    document.getElementById('loginPassword').classList.add('error');
-    return;
-  }
-
-  const btn = document.querySelector('#loginForm .form-submit');
-  btn.textContent = 'SIGNING IN...';
-  btn.disabled = true;
-
-  setTimeout(() => {
-    btn.style.display = 'none';
-    document.getElementById('loginSuccess').style.display = 'block';
-  }, 1000);
-}
-
-function toggleMobileMenu() {
-  const nav = document.getElementById('mobileNav');
-  nav.classList.toggle('open');
-}
-document.querySelectorAll('.mobile-nav a').forEach(a => {
-  a.addEventListener('click', () => {
-    document.getElementById('mobileNav').classList.remove('open');
-  });
-});
-
 </script>
 
 <script>
@@ -912,32 +543,33 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
-    window.location.href = 'member-dashboard.html';
+    window.location.href = '/member-dashboard';
   }
 })();
 
 // Handle auth state changes (after OAuth redirect)
 sb.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN' && session) {
-    window.location.href = 'member-dashboard.html';
+    window.location.href = '/member-dashboard';
   }
 });
 
 // ---- GOOGLE LOGIN ----
 async function signInWithGoogle() {
-  const btn = document.getElementById('googleBtn');
+  const btn = document.getElementById('googleBtnReg') || document.getElementById('googleBtnLogin');
   if (btn) { btn.textContent = 'CONNECTING...'; btn.disabled = true; }
 
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'https://www.rawcoretrading.com/member-dashboard.html'
+      redirectTo: 'https://www.rawcoretrading.com/member-dashboard'
     }
   });
 
   if (error) {
     showError('Google login failed: ' + error.message);
-    if (btn) { btn.textContent = 'G · GOOGLE'; btn.disabled = false; }
+    const btns = [document.getElementById('googleBtnReg'), document.getElementById('googleBtnLogin')];
+    btns.forEach(b => { if (b) { b.textContent = 'G \u00b7 GOOGLE'; b.disabled = false; } });
   }
 }
 
@@ -949,23 +581,12 @@ async function handleRegister() {
   const terms = document.getElementById('termsCheck')?.checked;
   const btn = document.getElementById('registerBtn');
 
-  // Validation
-  if (!email || !password) {
-    showError('Please fill in your email and password.');
-    return;
-  }
-  if (password.length < 8) {
-    showError('Password must be at least 8 characters.');
-    return;
-  }
-  if (!terms) {
-    showError('Please agree to the Terms and Privacy Policy.');
-    return;
-  }
+  if (!email || !password) { showError('Please fill in your email and password.'); return; }
+  if (password.length < 8) { showError('Password must be at least 8 characters.'); return; }
+  if (!terms) { showError('Please agree to the Terms and Privacy Policy.'); return; }
 
   if (btn) { btn.textContent = 'CREATING ACCOUNT...'; btn.disabled = true; }
 
-  // Read selected tier from UI
   const tierEl = document.querySelector('.tier-option.selected .tier-option-name');
   const tier = (tierEl?.textContent || 'FREE').toLowerCase();
 
@@ -974,17 +595,17 @@ async function handleRegister() {
     password,
     options: {
       data: { username: username || email.split('@')[0], tier },
-      emailRedirectTo: 'https://www.rawcoretrading.com/member-dashboard.html'
+      emailRedirectTo: 'https://www.rawcoretrading.com/member-dashboard'
     }
   });
 
   if (error) {
     showError(error.message);
-    if (btn) { btn.textContent = 'CREATE ACCOUNT →'; btn.disabled = false; }
+    if (btn) { btn.textContent = 'CREATE ACCOUNT \u2192'; btn.disabled = false; }
     return;
   }
 
-  // Upsert profile with tier (trigger creates it, this updates tier + username)
+  // Upsert profile
   if (data?.user) {
     await sb.from('profiles').upsert({
       id: data.user.id,
@@ -994,18 +615,18 @@ async function handleRegister() {
     }, { onConflict: 'id' });
   }
 
-  // Success — show confirmation
-  if (btn) btn.textContent = 'CHECK YOUR EMAIL ✓';
-  showSuccess('Account created! Check your email to confirm your address, then come back to sign in.');
-  
-  // Send welcome email via Resend
+  if (btn) btn.textContent = 'CHECK YOUR EMAIL \u2713';
+  showSuccess('Account created! Check your email to confirm your address, then sign in.');
+  document.getElementById('registerSuccess').style.display = 'block';
+
+  // Silent welcome email attempt
   try {
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'welcome', email, name: username || email.split('@')[0] })
     });
-  } catch(e) { console.error('Welcome email error:', e); }
+  } catch(e) {}
 }
 
 // ---- EMAIL LOGIN ----
@@ -1014,10 +635,7 @@ async function handleLogin() {
   const password = document.getElementById('loginPassword')?.value;
   const btn = document.getElementById('loginBtn');
 
-  if (!email || !password) {
-    showError('Please enter your email and password.');
-    return;
-  }
+  if (!email || !password) { showError('Please enter your email and password.'); return; }
 
   if (btn) { btn.textContent = 'SIGNING IN...'; btn.disabled = true; }
 
@@ -1025,12 +643,24 @@ async function handleLogin() {
 
   if (error) {
     showError(error.message);
-    if (btn) { btn.textContent = 'SIGN IN →'; btn.disabled = false; }
+    if (btn) { btn.textContent = 'SIGN IN \u2192'; btn.disabled = false; }
     return;
   }
 
-  // Redirect to dashboard
-  window.location.href = 'member-dashboard.html';
+  window.location.href = '/member-dashboard';
+}
+
+// ---- FORGOT PASSWORD ----
+async function handleForgotPassword() {
+  const email = document.getElementById('loginEmail')?.value?.trim();
+  if (!email) { showError('Enter your email above first, then click Forgot Password.'); return; }
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://www.rawcoretrading.com/login'
+  });
+
+  if (error) { showError(error.message); return; }
+  showSuccess('Password reset email sent! Check your inbox.');
 }
 
 // ---- HELPERS ----
@@ -1040,8 +670,8 @@ function showError(msg) {
     el = document.createElement('div');
     el.id = 'auth-message';
     el.style.cssText = 'font-family:var(--mono);font-size:11px;padding:10px 14px;margin:10px 0;border-left:2px solid var(--red);background:rgba(255,51,85,0.08);color:var(--red);';
-    const form = document.querySelector('.form-side');
-    if (form) form.appendChild(el);
+    const activeForm = document.querySelector('.auth-form.active .form-submit');
+    if (activeForm) activeForm.insertAdjacentElement('beforebegin', el);
   }
   el.style.borderLeftColor = 'var(--red)';
   el.style.color = 'var(--red)';
@@ -1056,8 +686,8 @@ function showSuccess(msg) {
     el = document.createElement('div');
     el.id = 'auth-message';
     el.style.cssText = 'font-family:var(--mono);font-size:11px;padding:10px 14px;margin:10px 0;border-left:2px solid var(--green);background:rgba(0,255,136,0.08);color:var(--green);';
-    const form = document.querySelector('.form-side');
-    if (form) form.appendChild(el);
+    const activeForm = document.querySelector('.auth-form.active .form-submit');
+    if (activeForm) activeForm.insertAdjacentElement('beforebegin', el);
   }
   el.style.borderLeftColor = 'var(--green)';
   el.style.color = 'var(--green)';
